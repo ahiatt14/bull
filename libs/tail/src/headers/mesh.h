@@ -5,18 +5,18 @@
 
 #include "vec3.h"
 
-typedef struct VEC2 {
+struct vec2 {
   float x, y;
-} vec2;
+};
 
-typedef struct VERTEX {
-  vec3 position;
-  vec3 normal;
-  vec2 uv;
-} vertex;
+struct vertex {
+  struct vec3 position;
+  struct vec3 normal;
+  struct vec2 uv;
+};
 
-typedef struct DRAWABLE_MESH {
-  vertex *vertex_buffer;
+struct drawable_mesh {
+  struct vertex *vertex_buffer;
   unsigned int *index_buffer;
   size_t vertex_buffer_size;
   size_t index_buffer_size;
@@ -24,6 +24,6 @@ typedef struct DRAWABLE_MESH {
   unsigned int _impl_vbo_id;
   unsigned int _impl_ibo_id;
   unsigned int _impl_vao_id;
-} drawable_mesh;
+};
 
 #endif

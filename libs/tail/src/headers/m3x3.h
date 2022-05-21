@@ -3,22 +3,22 @@
 
 #include "m3x3.h"
 
-typedef struct M3X3 {
+struct m3x3 {
   float data[9];
-} m3x3;
+};
 
 void m3x3_create(
   float i0, float i3, float i6,
   float i1, float i4, float i7,
   float i2, float i5, float i8,
-  m3x3 *m
+  struct m3x3 *m
 );
-void m3x3_identity(m3x3 *m);
-float m3x3_minor(int r, int c, const m3x3 *m);
-void m3x3_minors(const m3x3 *src, m3x3 *dest);
-void m3x3_cofactors(const m3x3 *src, m3x3 *dest);
-void m3x3_transpose(const m3x3 *src, m3x3 *dest);
-float m3x3_determinant(const m3x3 *m);
-void m3x3_inverse(const m3x3 *src, m3x3 *dest);
+void m3x3_identity(struct m3x3 *m);
+float m3x3_minor(int r, int c, const struct m3x3 *m);
+void m3x3_minors(const struct m3x3 *src, struct m3x3 *dest);
+void m3x3_cofactors(const struct m3x3 *src, struct m3x3 *dest);
+void m3x3_transpose(const struct m3x3 *src, struct m3x3 *dest);
+float m3x3_determinant(const struct m3x3 *m);
+void m3x3_inverse(const struct m3x3 *src, struct m3x3 *dest);
 
 #endif

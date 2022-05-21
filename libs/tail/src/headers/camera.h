@@ -5,32 +5,38 @@
 #include "m4x4.h"
 #include "vec3.h"
 
-typedef struct CAMERA {
-  m4x4 _lookat;
-  m4x4 _perspective;
-  vec3 _position;
-  vec3 _look_target;
+struct camera {
+  struct m4x4 _lookat;
+  struct m4x4 _perspective;
+  struct vec3 _position;
+  struct vec3 _look_target;
   float _near_clip_distance;
   float _far_clip_distance;
   float _horizontal_fov_in_deg;
   short int _lookat_needs_recalculating;
   short int _perspective_needs_recalculating;
-} camera;
+};
 
-void camera__init(camera *c);
-const m4x4* camera__calculate_lookat(const vec3 *world_up, camera *c);
-const m4x4* camera__calculate_perspective(viewport *vwprt, camera *c);
-const m4x4* camera__get_lookat(const camera *c);
-const m4x4* camera__get_perspective(const camera *c);
-const vec3* camera__get_position(camera *c);
-const vec3* camera__get_look_target(camera *c);
-float camera__get_horizontal_fov_in_deg(const camera *c);
-void camera__set_position(float x, float y, float z, camera *c);
-void camera__set_look_target(const vec3 *t, camera *c);
-void camera__set_horizontal_fov_in_deg(float fov, camera *c);
-void camera__set_near_clip_distance(float n, camera *c);
-void camera__set_far_clip_distance(float f, camera *c);
-short int camera__lookat_needs_recalculating(const camera *c);
-short int camera__perspective_needs_recalculating(const camera *c);
+void camera__init(struct camera *c);
+const struct m4x4* camera__calculate_lookat(
+  const struct vec3 *world_up,
+  struct camera *c
+);
+const struct m4x4* camera__calculate_perspective(
+  struct viewport *vwprt,
+  struct camera *c
+);
+const struct m4x4* camera__get_lookat(const struct camera *c);
+const struct m4x4* camera__get_perspective(const struct camera *c);
+const struct vec3* camera__get_position(struct camera *c);
+const struct vec3* camera__get_look_target(struct camera *c);
+float camera__get_horizontal_fov_in_deg(const struct camera *c);
+void camera__set_position(float x, float y, float z, struct camera *c);
+void camera__set_look_target(const struct vec3 *t, struct camera *c);
+void camera__set_horizontal_fov_in_deg(float fov, struct camera *c);
+void camera__set_near_clip_distance(float n, struct camera *c);
+void camera__set_far_clip_distance(float f, struct camera *c);
+short int camera__lookat_needs_recalculating(const struct camera *c);
+short int camera__perspective_needs_recalculating(const struct camera *c);
 
 #endif

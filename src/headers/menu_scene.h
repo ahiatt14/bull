@@ -4,11 +4,11 @@
 #include "tail.h"
 #include "scene.h"
 
-void menu__init(window_api *window, const gpu_api *gpu);
+void menu__init(struct window_api *window, struct gpu_api *gpu);
 void menu__tick(
   double seconds_since_creation,
-  const viewport *vw,
-  const gpu_api *gpu,
+  const struct viewport *vw,
+  struct gpu_api *gpu,
   struct scene **scenes,
   void switch_scene(struct scene* new_scene)
 );

@@ -8,12 +8,12 @@ unsigned short int paused = 0;
 void pause() { paused = 1; }
 void unpause() { paused = 0; }
 
-window_api *window;
-const gpu_api *gpu;
+struct window_api window;
+struct gpu_api gpu;
 
-viewport vwprt;
+struct viewport vwprt;
 void handle_resize(int w, int h) {
-  gpu->set_viewport(0, 0, w, h);
+  gpu.set_viewport(0, 0, w, h);
   viewport__set_width(w, &vwprt); // see note A
   viewport__set_height(h, &vwprt);
 }
@@ -26,25 +26,34 @@ void switch_scene(struct scene* new_scene) { current_scene = new_scene; }
 
 int main() {
 
-  window = window__create(
+   if (!window__create(
     800,
     800,
     "BULL",
-    REQUEST_VSYNC_ON
-  );
+    REQUEST_VSYNC_ON,
+    &window
+  )) return 1;
 
-  window->register_listener_for_focus(unpause, pause);
-  window->register_listener_for_minimize(pause, unpause);
-  window->register_listener_for_resize(handle_resize);
+  window.register_listener_for_focus(unpause, pause);
+  window.register_listener_for_minimize(pause, unpause);
+  window.register_listener_for_resize(handle_resize);
 
-  gpu = gpu__create_api();
+  gpu__create_api(&gpu);
 
   menu_scene.init = menu__init;
   menu_scene.tick = menu__tick;
 
+  current_scene = &menu_scene;
+
   while (!window__received_closed_event()) {
-    
-    window->request_buffer_swap();
+    if (!paused) current_scene->tick(
+      window.get_seconds_since_creation(),
+      &vwprt,
+      &gpu,
+      scenes,
+      switch_scene
+    );
+    window.request_buffer_swap();
     window__poll_events();
   }
   

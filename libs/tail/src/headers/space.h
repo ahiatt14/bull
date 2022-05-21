@@ -4,22 +4,22 @@
 #include "m4x4.h"
 #include "vec3.h"
 
-typedef struct COORDINATE_SPACE {
-  vec3 up;
-  vec3 right;
-  vec3 forward;
-} coordinate_space;
+struct coordinate_space {
+  struct vec3 up;
+  struct vec3 right;
+  struct vec3 forward;
+};
 
-typedef struct TRANSFORM {
-  vec3 position;
-  vec3 rotation_in_deg; // TODO: we'll want to represent rotation as quats eventually
+struct transform {
+  struct vec3 position;
+  struct vec3 rotation_in_deg; // TODO: we'll want to represent rotation as quats eventually
   float scale;
-} transform;
+};
 
 void space__create_model(
-  const coordinate_space *space,
-  const transform *t,
-  m4x4 *model
+  const struct coordinate_space *space,
+  const struct transform *t,
+  struct m4x4 *model
 );
 
 #endif
