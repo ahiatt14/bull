@@ -14,7 +14,7 @@ struct gpu_api gpu;
 struct viewport vwprt;
 void handle_resize(int w, int h) {
   gpu.set_viewport(0, 0, w, h);
-  viewport__set_width(w, &vwprt); // see note A
+  viewport__set_width(w, &vwprt);
   viewport__set_height(h, &vwprt);
 }
 
@@ -45,6 +45,8 @@ int main() {
 
   current_scene = &menu_scene;
 
+  current_scene->init(&window, &gpu);
+
   while (!window__received_closed_event()) {
     if (!paused) current_scene->tick(
       window.get_seconds_since_creation(),
@@ -60,16 +62,3 @@ int main() {
   window__end();
   return 0;
 }
-
-/*
-
-  NOTES  NOTES  NOTES  NOTES  NOTES  NOTES  
-
-  Note A) TODO: instead of checking if projection needs
-  recalc every frame, we could assign diff fn pnters
-  in these fns, and the client scene can call
-  the "possibly recalc perspective" fn every frame, it just
-  might be noop
-  also check why we can't calculate persp when these are set?
-  (I think persp calc is in camera maybe..)
-*/

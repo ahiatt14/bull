@@ -9,8 +9,7 @@ struct camera foreground_cam;
 struct camera background_cam;
 
 struct drawable_mesh burdock_mesh;
-void init_burdock_mesh(struct drawable_mesh *dm);
-
+struct gpu_program leaf_shader;
 
 void menu__init(struct window_api *window, struct gpu_api *gpu) {
 
@@ -20,6 +19,16 @@ void menu__init(struct window_api *window, struct gpu_api *gpu) {
   gpu->enable_depth_test();
   gpu->cull_no_faces();
 
+  leaf_shader.frag_shader_src = solid_color_frag_shader_src;
+  leaf_shader.vert_shader_src = plain_vert_shader_src;
+  
+  gpu->copy_program_to_gpu(&leaf_shader);
+
+  burdock_mesh.vertex_buffer = burdock_vertices;
+  burdock_mesh.index_buffer = burdock_indices;
+  burdock_mesh.vertex_buffer_size = sizeof(burdock_vertices);
+  burdock_mesh.index_buffer_size = sizeof(burdock_indices);
+  burdock_mesh.index_buffer_length = 1140;
   gpu->copy_mesh_to_gpu(&burdock_mesh);
 }
 
@@ -30,16 +39,8 @@ void menu__tick(
   struct scene **scenes,
   void switch_scene(struct scene* new_scene)
 ) {
-
-  gpu->draw_mesh(&burdock_mesh);
-
   gpu->clear(COLOR_LIGHT_GREY);
-}
 
-void init_burdock_mesh(struct drawable_mesh *dm) {
-  dm->vertex_buffer = burdock_vertices;
-  dm->index_buffer = burdock_indices;
-  dm->vertex_buffer_size = sizeof(burdock_vertices);
-  dm->index_buffer_size = sizeof(burdock_indices);
-  dm->index_buffer_length = 1140;
+  gpu->select_gpu_program(&leaf_shader);
+  gpu->draw_mesh(&burdock_mesh);
 }
