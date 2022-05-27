@@ -1,6 +1,6 @@
 #include "tail.h"
 #include "scene.h"
-#include "burdock.h"
+#include "assets.h"
 #include "shaders.h"
 #include "menu_scene.h"
 #include "constants.h"
@@ -28,7 +28,7 @@ void menu__init(struct window_api *window, struct gpu_api *gpu) {
   burdock_mesh.index_buffer = burdock_indices;
   burdock_mesh.vertex_buffer_size = sizeof(burdock_vertices);
   burdock_mesh.index_buffer_size = sizeof(burdock_indices);
-  burdock_mesh.index_buffer_length = 1140;
+  burdock_mesh.index_buffer_length = burdock_index_count;
   gpu->copy_mesh_to_gpu(&burdock_mesh);
 }
 
