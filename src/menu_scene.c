@@ -1,9 +1,14 @@
+// TODO: remove
+#include <stdio.h>
+
 #include "tail.h"
 #include "scene.h"
-#include "assets.h"
-#include "shaders.h"
 #include "menu_scene.h"
 #include "constants.h"
+
+#include "default_vert.h"
+#include "solid_color_frag.h"
+#include "burdock_mesh.h"
 
 struct camera foreground_cam;
 struct camera background_cam;
@@ -19,8 +24,8 @@ void menu__init(struct window_api *window, struct gpu_api *gpu) {
   gpu->enable_depth_test();
   gpu->cull_no_faces();
 
-  leaf_shader.frag_shader_src = solid_color_frag_shader_src;
-  leaf_shader.vert_shader_src = plain_vert_shader_src;
+  leaf_shader.frag_shader_src = solid_color_frag_src;
+  leaf_shader.vert_shader_src = default_vert_src;
   
   gpu->copy_program_to_gpu(&leaf_shader);
 
