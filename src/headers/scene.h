@@ -6,6 +6,7 @@ struct scene;
 struct scene {
   void (*init)(
     struct window_api *window,
+    struct viewport *vwprt,
     struct gpu_api *gpu
   );
   void (*tick)(

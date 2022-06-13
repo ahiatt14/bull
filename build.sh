@@ -1,7 +1,8 @@
 #!/bin/bash
 
 tools="libs/tail/tools/"
-options="-O2 -Wall -mwindows"
+options="-O2 -Wall"
+# -mwindows
 includes="-Ilibs/tail/include -Isrc/headers"
 
 rm -rf game.exe

@@ -12,7 +12,7 @@ struct coordinate_space {
 
 struct transform {
   struct vec3 position;
-  struct vec3 rotation_in_deg; // TODO: we'll want to represent rotation as quats eventually
+  struct vec3 rotation_in_deg;
   float scale;
 };
 
@@ -20,6 +20,18 @@ void space__create_model(
   const struct coordinate_space *space,
   const struct transform *t,
   struct m4x4 *model
+);
+
+void space__create_normals_model(
+  const struct m4x4 *mesh_model,
+  struct m3x3 *dest
+);
+
+void space__slerp_righthand_rotate(
+  const struct transform *obj,
+  const struct vec3 *axis,
+  float radians,
+  struct vec3 *dest
 );
 
 #endif

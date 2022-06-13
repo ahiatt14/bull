@@ -20,7 +20,7 @@ uniform mat4 perspective = mat4(
   vec4(0.0, 0.0, 1.0, 0.0),
   vec4(0.0, 0.0, 0.0, 1.0)
 );
-uniform mat3 normal_model = mat3(
+uniform mat3 normals_model = mat3(
   vec3(1.0, 0.0, 0.0),
   vec3(0.0, 1.0, 0.0),
   vec3(0.0, 0.0, 1.0)
@@ -31,7 +31,7 @@ out vec2 TexCoord;
 void main()
 {
   TexCoord = uv;
-  normal = normalize(normal_model * local_normal);
+  normal = normalize(normals_model * local_normal);
   frag_world_position = vec3(model * vec4(position, 1.0));
   gl_Position = perspective * lookat * model * vec4(position, 1.0);
 }

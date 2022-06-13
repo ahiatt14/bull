@@ -39,13 +39,15 @@ int main() {
   window.register_listener_for_resize(handle_resize);
 
   gpu__create_api(&gpu);
+  viewport__set_width(gpu.get_viewport_width(), &vwprt);
+  viewport__set_height(gpu.get_viewport_height(), &vwprt);
 
   menu_scene.init = menu__init;
   menu_scene.tick = menu__tick;
 
   current_scene = &menu_scene;
 
-  current_scene->init(&window, &gpu);
+  current_scene->init(&window, &vwprt, &gpu);
 
   while (!window__received_closed_event()) {
     if (!paused) current_scene->tick(

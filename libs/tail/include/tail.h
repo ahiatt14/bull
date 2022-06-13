@@ -4,6 +4,7 @@
 #include "../src/headers/m2x2.h"
 #include "../src/headers/m3x3.h"
 #include "../src/headers/m4x4.h"
+#include "../src/headers/quaternion.h"
 #include "../src/headers/vec3.h"
 #include "../src/headers/mesh.h"
 #include "../src/headers/gpu.h"

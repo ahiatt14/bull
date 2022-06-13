@@ -4,7 +4,11 @@
 #include "tail.h"
 #include "scene.h"
 
-void menu__init(struct window_api *window, struct gpu_api *gpu);
+void menu__init(
+  struct window_api *window,
+  struct viewport *vwprt,
+  struct gpu_api *gpu
+);
 void menu__tick(
   double seconds_since_creation,
   const struct viewport *vw,
