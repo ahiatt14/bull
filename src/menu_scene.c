@@ -2,15 +2,16 @@
 #include <stdio.h>
 
 #include "tail.h"
+
 #include "scene.h"
 #include "menu_scene.h"
 #include "constants.h"
 
+#include "burdock_mesh.h"
+#include "capsule_apartment_mesh.h"
 #include "default_vert.h"
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
-#include "burdock_mesh.h"
-#include "capsule_apartment_mesh.h"
 
 #define DELTA_TIME_CAP 1.0f / 30.0f
 
@@ -21,7 +22,7 @@ struct camera foreground_camera;
 struct camera background_camera;
 
 struct drawable_mesh apartment_mesh;
-struct transform apartment_transform = {{ 1, 0, -14 }, { 0, 0, 0 }, 1};
+struct transform apartment_transform = {{ 0, 0, -10 }, { 0, 0, 0 }, 1};
 struct m4x4 apartment_model;
 struct m3x3 apartment_normals_model;
 
@@ -40,11 +41,12 @@ void menu__init(
 ) {
 
   gpu->enable_depth_test();
+  gpu->cull_no_faces();
 
   camera__init(&foreground_camera);
   camera__init(&background_camera);
 
-  camera__set_position(0, 0, 3, &foreground_camera);
+  camera__set_position(0, 0.2f, 0.6f, &foreground_camera);
   camera__set_look_target(&ORIGIN, &foreground_camera);
   camera__set_horizontal_fov_in_deg(80, &foreground_camera);
   camera__set_near_clip_distance(0.2f, &foreground_camera);
@@ -52,7 +54,7 @@ void menu__init(
   camera__calculate_lookat(&WORLDSPACE.up, &foreground_camera);
   camera__calculate_perspective(vwprt, &foreground_camera);
 
-  leaf_shader.frag_shader_src = solid_color_frag_src;
+  leaf_shader.frag_shader_src = normal_debug_frag_src;
   leaf_shader.vert_shader_src = default_vert_src;
   gpu->copy_program_to_gpu(&leaf_shader);
 
@@ -75,7 +77,6 @@ void menu__init(
   burdock_mesh.index_buffer_length = burdock_index_count;
   gpu->copy_mesh_to_gpu(&burdock_mesh);
   m4x4__identity(&burdock_model);
-  space__create_model(&WORLDSPACE, &burdock_transform, &burdock_model);
 }
 
 int vwprt_printed = 0;
@@ -91,15 +92,14 @@ void menu__tick(
   start_time = seconds_since_creation;
 
   // UPDATE
-  apartment_transform.rotation_in_deg.z += 20.0f * delta_time;
+  burdock_transform.rotation_in_deg.z += 20.0f * delta_time;
 
   // DRAW
   gpu->clear(&COLOR_LIGHT_GREY.x);
 
-  gpu->cull_back_faces();
   gpu->select_gpu_program(&apartment_shader);
   space__create_model(&WORLDSPACE, &apartment_transform, &apartment_model);
-  space__create_normals_model(&apartment_model, &apartment_normals_model);
+    space__create_normals_model(&apartment_model, &apartment_normals_model);
   gpu->set_vertex_shader_m4x4(
     &apartment_shader,
     "model",
@@ -123,12 +123,13 @@ void menu__tick(
   gpu->set_fragment_shader_vec3(
     &apartment_shader,
     "color",
-    &COLOR_BLACK
+    &COLOR_WHITE
   );
   gpu->draw_mesh(&apartment_mesh);
 
-  gpu->cull_no_faces();
   gpu->select_gpu_program(&leaf_shader);
+  space__create_model(&WORLDSPACE, &burdock_transform, &burdock_model);
+  space__create_normals_model(&burdock_model, &burdock_normals_model);
   gpu->set_vertex_shader_m4x4(
     &leaf_shader,
     "model",

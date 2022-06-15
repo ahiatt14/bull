@@ -57,7 +57,7 @@ int main() {
       scenes,
       switch_scene
     );
-    window.request_buffer_swap();
+    window.request_buffer_swap(); // TODO: this still eats gpu resources when game is paused. idr why we do it if the game is paused
     window__poll_events();
   }
   
