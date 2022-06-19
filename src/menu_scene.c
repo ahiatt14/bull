@@ -7,6 +7,8 @@
 #include "menu_scene.h"
 #include "constants.h"
 
+#include "menu_sky.h"
+
 #include "burdock_mesh.h"
 #include "capsule_apartment_mesh.h"
 #include "default_vert.h"
@@ -42,6 +44,7 @@ void menu__init(
 
   gpu->enable_depth_test();
   gpu->cull_no_faces();
+  // gpu->cull_back_faces();
 
   camera__init(&foreground_camera);
   camera__init(&background_camera);
@@ -53,6 +56,16 @@ void menu__init(
   camera__set_far_clip_distance(100, &foreground_camera);
   camera__calculate_lookat(&WORLDSPACE.up, &foreground_camera);
   camera__calculate_perspective(vwprt, &foreground_camera);
+
+  camera__set_position(0, 0, 1, &background_camera);
+  camera__set_look_target(&ORIGIN, &background_camera);
+  camera__set_horizontal_fov_in_deg(80, &background_camera);
+  camera__set_near_clip_distance(0.2f, &background_camera);
+  camera__set_far_clip_distance(20, &background_camera);
+  camera__calculate_lookat(&WORLDSPACE.up, &background_camera);
+  camera__calculate_perspective(vwprt, &background_camera);
+
+  menu_sky__init(gpu);
 
   leaf_shader.frag_shader_src = normal_debug_frag_src;
   leaf_shader.vert_shader_src = default_vert_src;
@@ -94,12 +107,21 @@ void menu__tick(
   // UPDATE
   burdock_transform.rotation_in_deg.z += 20.0f * delta_time;
 
+  menu_sky__tick(delta_time);
+
   // DRAW
-  gpu->clear(&COLOR_LIGHT_GREY.x);
+  gpu->clear(&COLOR_WHITE.x);
+
+  menu_sky__draw(
+    gpu,
+    camera__get_lookat(&background_camera),
+    camera__get_perspective(&background_camera)
+  );
+  gpu->clear_depth_buffer();
 
   gpu->select_gpu_program(&apartment_shader);
   space__create_model(&WORLDSPACE, &apartment_transform, &apartment_model);
-    space__create_normals_model(&apartment_model, &apartment_normals_model);
+  space__create_normals_model(&apartment_model, &apartment_normals_model);
   gpu->set_vertex_shader_m4x4(
     &apartment_shader,
     "model",

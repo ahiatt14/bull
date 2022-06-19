@@ -25,6 +25,7 @@ struct gpu_program {
 struct gpu_api {
 
   void (*clear)(const float *color);
+  void (*clear_depth_buffer)();
   void (*enable_depth_test)();
   void (*cull_back_faces)();
   void (*cull_no_faces)();

@@ -3,9 +3,9 @@
 
 #include "tail.h"
 
-void load_sky(const struct gpu_api *gpu);
-void warp_sky_mesh(double delta_time, struct drawable_mesh *dm);
-void draw_sky(
+void menu_sky__init(const struct gpu_api *gpu);
+void menu_sky__tick(double delta_time);
+void menu_sky__draw(
   const struct gpu_api *gpu,
   const struct m4x4 *view,
   const struct m4x4 *perspective
