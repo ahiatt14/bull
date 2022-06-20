@@ -14,15 +14,15 @@
 
 #define VERTS_PER_SIDE 21
 #define INDEX_COUNT 2400
-#define SQUARE_FACE_SIDE_LENGTH 0.05f
+#define SQUARE_FACE_WIDTH 0.1f
 
 static struct gpu_program shader;
 static struct m4x4 local_to_world;
 static struct m3x3 normals_local_to_world;
 static struct transform trans = {
-  .position = { 0, 0, 0 },
+  .position = { -1, -1, 0 },
   .rotation_in_deg = { 0, 0, 0 },
-  .scale = 2
+  .scale = 1
 };
 
 static struct vertex vertices[VERTS_PER_SIDE * VERTS_PER_SIDE];
@@ -43,15 +43,16 @@ void menu_sky__init(const struct gpu_api *gpu) {
   int vert_index = 0;
   for (int y = 0; y < VERTS_PER_SIDE; y++) {
     for (int x = 0; x < VERTS_PER_SIDE; x++) {
-      mesh.vertex_buffer[vert_index].position.x = x * SQUARE_FACE_SIDE_LENGTH;
-      mesh.vertex_buffer[vert_index].position.y = y * SQUARE_FACE_SIDE_LENGTH;
+      mesh.vertex_buffer[vert_index].position.x = x * SQUARE_FACE_WIDTH;
+      mesh.vertex_buffer[vert_index].position.y = y * SQUARE_FACE_WIDTH;
       mesh.vertex_buffer[vert_index].position.z = 0;
       mesh.vertex_buffer[vert_index].normal.x = 0;
       mesh.vertex_buffer[vert_index].normal.y = 0;
       mesh.vertex_buffer[vert_index].normal.z = 1;
-      // TODO: uvs ain't right!
-      mesh.vertex_buffer[vert_index].uv.x = x * SQUARE_FACE_SIDE_LENGTH;
-      mesh.vertex_buffer[vert_index].uv.y = y * SQUARE_FACE_SIDE_LENGTH;
+      mesh.vertex_buffer[vert_index].uv.x =
+        x * SQUARE_FACE_WIDTH / SQUARE_FACE_WIDTH * VERTS_PER_SIDE;
+      mesh.vertex_buffer[vert_index].uv.y =
+        y * SQUARE_FACE_WIDTH / SQUARE_FACE_WIDTH * VERTS_PER_SIDE;
       vert_index++;
     }
   }
@@ -72,7 +73,6 @@ void menu_sky__init(const struct gpu_api *gpu) {
   }
 
   shader.frag_shader_src = normal_debug_frag_src;
-  // shader.frag_shader_src = solid_color_frag_src;
   shader.vert_shader_src = default_vert_src;
 
   gpu->copy_mesh_to_gpu(&mesh);
@@ -80,7 +80,7 @@ void menu_sky__init(const struct gpu_api *gpu) {
 }
 
 void menu_sky__tick(double delta_time) {
-  trans.rotation_in_deg.z += 20.0f * delta_time;
+
 }
 
 void menu_sky__draw(
