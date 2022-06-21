@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "tail.h"
 
@@ -21,7 +22,7 @@ static struct m4x4 local_to_world;
 static struct m3x3 normals_local_to_world;
 static struct transform trans = {
   .position = { -1, -1, 0 },
-  .rotation_in_deg = { 0, 0, 0 },
+  .rotation_in_deg = { 0, 25, 0 }, // TODO: why is this rotation around the y axis...
   .scale = 1
 };
 
@@ -35,7 +36,8 @@ static struct drawable_mesh mesh = {
   .index_buffer_length = INDEX_COUNT
 };
 
-// static void recalculate_normals(struct drawable_mesh *dm);
+static void warp_mesh(double seconds_since_creation);
+// static void recalculate_normals();
 
 void menu_sky__init(const struct gpu_api *gpu) {
 
@@ -45,7 +47,7 @@ void menu_sky__init(const struct gpu_api *gpu) {
     for (int x = 0; x < VERTS_PER_SIDE; x++) {
       mesh.vertex_buffer[vert_index].position.x = x * SQUARE_FACE_WIDTH;
       mesh.vertex_buffer[vert_index].position.y = y * SQUARE_FACE_WIDTH;
-      mesh.vertex_buffer[vert_index].position.z = 0;
+      mesh.vertex_buffer[vert_index].position.z = sin(y) * 0.1f;
       mesh.vertex_buffer[vert_index].normal.x = 0;
       mesh.vertex_buffer[vert_index].normal.y = 0;
       mesh.vertex_buffer[vert_index].normal.z = 1;
@@ -75,12 +77,18 @@ void menu_sky__init(const struct gpu_api *gpu) {
   shader.frag_shader_src = normal_debug_frag_src;
   shader.vert_shader_src = default_vert_src;
 
-  gpu->copy_mesh_to_gpu(&mesh);
+  gpu->copy_dynamic_mesh_to_gpu(&mesh);
   gpu->copy_program_to_gpu(&shader);
 }
 
-void menu_sky__tick(double delta_time) {
-
+void menu_sky__tick(
+  double delta_time,
+  double seconds_since_creation,
+  const struct gpu_api *gpu
+) {
+  warp_mesh(seconds_since_creation);
+  gpu->update_gpu_mesh_data(&mesh);
+  // recalculate_normals();
 }
 
 void menu_sky__draw(
@@ -88,6 +96,7 @@ void menu_sky__draw(
   const struct m4x4 *view,
   const struct m4x4 *perspective
 ) {
+  gpu->cull_back_faces();
   gpu->select_gpu_program(&shader);
   space__create_model(&WORLDSPACE, &trans, &local_to_world);
   space__create_normals_model(&local_to_world, &normals_local_to_world);
@@ -103,6 +112,21 @@ void menu_sky__draw(
   gpu->draw_mesh(&mesh);
 }
 
-// static void recalculate_normals(struct drawable_mesh *dm) {
+static void warp_mesh(double seconds_since_creation) {
+  int vert_index = 0;
+  for (int y = 0; y < VERTS_PER_SIDE; y++) {
+    for (int x = 0; x < VERTS_PER_SIDE; x++) {
+      mesh.vertex_buffer[vert_index].position.z = 0.1f * sin(
+        seconds_since_creation +
+        10 * mesh.vertex_buffer[vert_index].position.y
+      );
+      vert_index++;
+    }
+  }
+}
+
+// static struct vec3 temp_x_edge = { 1, 0, 0 };
+// static struct vec3 temp_y_edge0, temp_y_edge1;
+// static void recalculate_normals() {
 
 // }

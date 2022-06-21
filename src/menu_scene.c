@@ -29,7 +29,7 @@ struct m4x4 apartment_model;
 struct m3x3 apartment_normals_model;
 
 struct drawable_mesh burdock_mesh;
-struct transform burdock_transform = {{ 0, 0, 0 }, { 30, 15, 45 }, 1};
+struct transform burdock_transform = {{ 0, 0, 0 }, { 0, 0, 0 }, 1};
 struct m4x4 burdock_model;
 struct m3x3 burdock_normals_model;
 
@@ -80,7 +80,7 @@ void menu__init(
   apartment_mesh.vertex_buffer_size = sizeof(capsule_apartment_vertices);
   apartment_mesh.index_buffer_size = sizeof(capsule_apartment_indices);
   apartment_mesh.index_buffer_length = capsule_apartment_index_count;
-  gpu->copy_mesh_to_gpu(&apartment_mesh);
+  gpu->copy_static_mesh_to_gpu(&apartment_mesh);
   m4x4__identity(&apartment_model);
 
   burdock_mesh.vertex_buffer = burdock_vertices;
@@ -88,7 +88,7 @@ void menu__init(
   burdock_mesh.vertex_buffer_size = sizeof(burdock_vertices);
   burdock_mesh.index_buffer_size = sizeof(burdock_indices);
   burdock_mesh.index_buffer_length = burdock_index_count;
-  gpu->copy_mesh_to_gpu(&burdock_mesh);
+  gpu->copy_static_mesh_to_gpu(&burdock_mesh);
   m4x4__identity(&burdock_model);
 }
 
@@ -105,9 +105,9 @@ void menu__tick(
   start_time = seconds_since_creation;
 
   // UPDATE
-  burdock_transform.rotation_in_deg.z += 20.0f * delta_time;
+  burdock_transform.rotation_in_deg.y += 20.0f * delta_time;
 
-  menu_sky__tick(delta_time);
+  menu_sky__tick(delta_time, seconds_since_creation, gpu);
 
   // DRAW
   gpu->clear(&COLOR_WHITE.x);

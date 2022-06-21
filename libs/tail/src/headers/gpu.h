@@ -30,7 +30,10 @@ struct gpu_api {
   void (*cull_back_faces)();
   void (*cull_no_faces)();
 
-  void (*copy_mesh_to_gpu)(struct drawable_mesh *dm);
+  void (*copy_dynamic_mesh_to_gpu)(struct drawable_mesh *dm);
+  void (*copy_static_mesh_to_gpu)(struct drawable_mesh *dm);
+  void (*update_gpu_mesh_data)(const struct drawable_mesh *dm);
+
   void (*copy_rgb_texture_to_gpu)(struct texture *tex);
 
   void (*copy_program_to_gpu)(struct gpu_program *gpup);
