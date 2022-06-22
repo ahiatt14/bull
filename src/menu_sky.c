@@ -13,16 +13,16 @@
 #include "normal_debug_frag.h"
 #include "solid_color_frag.h"
 
-#define VERTS_PER_SIDE 21
-#define INDEX_COUNT 2400
-#define SQUARE_FACE_WIDTH 0.1f
+#define VERTS_PER_SIDE 41
+#define INDEX_COUNT 9600
+#define SQUARE_FACE_WIDTH 0.05f
 
 static struct gpu_program shader;
 static struct m4x4 local_to_world;
 static struct m3x3 normals_local_to_world;
 static struct transform trans = {
   .position = { -1, -1, 0 },
-  .rotation_in_deg = { 0, 25, 0 }, // TODO: why is this rotation around the y axis...
+  .rotation_in_deg = { 0, 25, 0 },
   .scale = 1
 };
 
@@ -37,7 +37,7 @@ static struct drawable_mesh mesh = {
 };
 
 static void warp_mesh(double seconds_since_creation);
-// static void recalculate_normals();
+static void recalculate_normals();
 
 void menu_sky__init(const struct gpu_api *gpu) {
 
@@ -47,10 +47,6 @@ void menu_sky__init(const struct gpu_api *gpu) {
     for (int x = 0; x < VERTS_PER_SIDE; x++) {
       mesh.vertex_buffer[vert_index].position.x = x * SQUARE_FACE_WIDTH;
       mesh.vertex_buffer[vert_index].position.y = y * SQUARE_FACE_WIDTH;
-      mesh.vertex_buffer[vert_index].position.z = sin(y) * 0.1f;
-      mesh.vertex_buffer[vert_index].normal.x = 0;
-      mesh.vertex_buffer[vert_index].normal.y = 0;
-      mesh.vertex_buffer[vert_index].normal.z = 1;
       mesh.vertex_buffer[vert_index].uv.x =
         x * SQUARE_FACE_WIDTH / SQUARE_FACE_WIDTH * VERTS_PER_SIDE;
       mesh.vertex_buffer[vert_index].uv.y =
@@ -88,7 +84,7 @@ void menu_sky__tick(
 ) {
   warp_mesh(seconds_since_creation);
   gpu->update_gpu_mesh_data(&mesh);
-  // recalculate_normals();
+  recalculate_normals();
 }
 
 void menu_sky__draw(
@@ -114,19 +110,60 @@ void menu_sky__draw(
 
 static void warp_mesh(double seconds_since_creation) {
   int vert_index = 0;
+  float z_position = 0;
   for (int y = 0; y < VERTS_PER_SIDE; y++) {
-    for (int x = 0; x < VERTS_PER_SIDE; x++) {
-      mesh.vertex_buffer[vert_index].position.z = 0.1f * sin(
-        seconds_since_creation +
-        10 * mesh.vertex_buffer[vert_index].position.y
-      );
-      vert_index++;
-    }
+    z_position = 0.1f * sin(
+      seconds_since_creation * 2 +
+      10 * y * SQUARE_FACE_WIDTH
+    );
+    for (int x = 0; x < VERTS_PER_SIDE; x++)
+      mesh.vertex_buffer[vert_index++].position.z = z_position;
   }
 }
 
-// static struct vec3 temp_x_edge = { 1, 0, 0 };
-// static struct vec3 temp_y_edge0, temp_y_edge1;
-// static void recalculate_normals() {
+static void recalculate_normals() {
 
-// }
+  int vert_index = 0;
+  struct vec3 x_edge = { 1, 0, 0 };
+  struct vec3 y_edges[2] = {0};
+  struct vec3 final_y_edge = {0};
+  struct vec3 normal = {0};
+
+  for (int y = 0; y < VERTS_PER_SIDE; y++) {
+
+    if (y == 0) {
+      vec3_minus_vec3(
+        &mesh.vertex_buffer[vert_index].position,
+        &mesh.vertex_buffer[vert_index + VERTS_PER_SIDE].position,
+        &final_y_edge
+      );
+    } else if (y == VERTS_PER_SIDE - 1) {
+      vec3_minus_vec3(
+        &mesh.vertex_buffer[vert_index - VERTS_PER_SIDE].position,
+        &mesh.vertex_buffer[vert_index].position,
+        &final_y_edge
+      );
+    } else {
+      vec3_minus_vec3(
+        &mesh.vertex_buffer[vert_index].position,
+        &mesh.vertex_buffer[vert_index + VERTS_PER_SIDE].position,
+        &y_edges[0]
+      );
+      vec3_minus_vec3(
+        &mesh.vertex_buffer[vert_index - VERTS_PER_SIDE].position,
+        &mesh.vertex_buffer[vert_index].position,
+        &y_edges[1]
+      );
+      vec3__mean(y_edges, 2, &final_y_edge);
+    }
+
+    vec3__cross(&final_y_edge, &x_edge, &normal);
+    vec3__normalize(&normal, &normal);
+
+    for (int x = 0; x < VERTS_PER_SIDE; x++) memcpy(
+      &mesh.vertex_buffer[vert_index++].normal.x,
+      &normal.x,
+      sizeof(struct vec3)
+    );
+  }
+}

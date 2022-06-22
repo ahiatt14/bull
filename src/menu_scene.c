@@ -10,7 +10,6 @@
 #include "menu_sky.h"
 
 #include "burdock_mesh.h"
-#include "capsule_apartment_mesh.h"
 #include "default_vert.h"
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
@@ -23,18 +22,12 @@ double start_time;
 struct camera foreground_camera;
 struct camera background_camera;
 
-struct drawable_mesh apartment_mesh;
-struct transform apartment_transform = {{ 0, 0, -10 }, { 0, 0, 0 }, 1};
-struct m4x4 apartment_model;
-struct m3x3 apartment_normals_model;
-
 struct drawable_mesh burdock_mesh;
 struct transform burdock_transform = {{ 0, 0, 0 }, { 0, 0, 0 }, 1};
 struct m4x4 burdock_model;
 struct m3x3 burdock_normals_model;
 
 struct gpu_program leaf_shader;
-struct gpu_program apartment_shader;
 
 void menu__init(
   struct window_api *window,
@@ -71,18 +64,6 @@ void menu__init(
   leaf_shader.vert_shader_src = default_vert_src;
   gpu->copy_program_to_gpu(&leaf_shader);
 
-  apartment_shader.frag_shader_src = normal_debug_frag_src;
-  apartment_shader.vert_shader_src = default_vert_src;
-  gpu->copy_program_to_gpu(&apartment_shader);
-
-  apartment_mesh.vertex_buffer = capsule_apartment_vertices;
-  apartment_mesh.index_buffer = capsule_apartment_indices;
-  apartment_mesh.vertex_buffer_size = sizeof(capsule_apartment_vertices);
-  apartment_mesh.index_buffer_size = sizeof(capsule_apartment_indices);
-  apartment_mesh.index_buffer_length = capsule_apartment_index_count;
-  gpu->copy_static_mesh_to_gpu(&apartment_mesh);
-  m4x4__identity(&apartment_model);
-
   burdock_mesh.vertex_buffer = burdock_vertices;
   burdock_mesh.index_buffer = burdock_indices;
   burdock_mesh.vertex_buffer_size = sizeof(burdock_vertices);
@@ -118,36 +99,6 @@ void menu__tick(
     camera__get_perspective(&background_camera)
   );
   gpu->clear_depth_buffer();
-
-  gpu->select_gpu_program(&apartment_shader);
-  space__create_model(&WORLDSPACE, &apartment_transform, &apartment_model);
-  space__create_normals_model(&apartment_model, &apartment_normals_model);
-  gpu->set_vertex_shader_m4x4(
-    &apartment_shader,
-    "model",
-    &apartment_model
-  );
-  gpu->set_vertex_shader_m4x4(
-    &apartment_shader,
-    "lookat",
-    camera__get_lookat(&foreground_camera)
-  );
-  gpu->set_vertex_shader_m3x3(
-    &apartment_shader,
-    "normals_model",
-    &apartment_normals_model
-  );
-  gpu->set_vertex_shader_m4x4(
-    &apartment_shader,
-    "perspective",
-    camera__get_perspective(&foreground_camera)
-  );
-  gpu->set_fragment_shader_vec3(
-    &apartment_shader,
-    "color",
-    &COLOR_WHITE
-  );
-  gpu->draw_mesh(&apartment_mesh);
 
   gpu->select_gpu_program(&leaf_shader);
   space__create_model(&WORLDSPACE, &burdock_transform, &burdock_model);
