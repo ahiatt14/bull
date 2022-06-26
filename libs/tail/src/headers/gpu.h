@@ -35,6 +35,7 @@ struct gpu_api {
   void (*update_gpu_mesh_data)(const struct drawable_mesh *dm);
 
   void (*copy_rgb_texture_to_gpu)(struct texture *tex);
+  void (*copy_mono_texture_to_gpu)(struct texture *tex);
 
   void (*copy_program_to_gpu)(struct gpu_program *gpup);
   void (*select_gpu_program)(const struct gpu_program *gpup);

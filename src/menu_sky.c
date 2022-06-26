@@ -8,6 +8,7 @@
 #include "gpu_helpers.h"
 #include "constants.h"
 
+#include "clod256_texture.h"
 #include "sky_frag.h"
 #include "default_vert.h"
 #include "normal_debug_frag.h"
@@ -21,19 +22,25 @@ static struct gpu_program shader;
 static struct m4x4 local_to_world;
 static struct m3x3 normals_local_to_world;
 static struct transform trans = {
-  .position = { -1, -1, 0 },
-  .rotation_in_deg = { 0, 25, 0 },
-  .scale = 1
+  .position = { 0, 0, 0 },
+  .rotation_in_deg = { 0, 0, 0 },
+  .scale = 2
 };
 
 static struct vertex vertices[VERTS_PER_SIDE * VERTS_PER_SIDE];
 static unsigned int indices[INDEX_COUNT];
 static struct drawable_mesh mesh = {
-  .vertex_buffer = vertices,
-  .index_buffer = indices,
-  .vertex_buffer_size = sizeof(vertices),
-  .index_buffer_size = sizeof(indices),
-  .index_buffer_length = INDEX_COUNT
+  .vertices = vertices,
+  .indices = indices,
+  .vertices_size = sizeof(vertices),
+  .indices_size = sizeof(indices),
+  .indices_length = INDEX_COUNT
+};
+
+static const struct vec3 ORIGIN_OFFSET = {
+  -SQUARE_FACE_WIDTH * VERTS_PER_SIDE / 2.0f,
+  -SQUARE_FACE_WIDTH * VERTS_PER_SIDE / 2.0f,
+  0
 };
 
 static void warp_mesh(double seconds_since_creation);
@@ -45,11 +52,13 @@ void menu_sky__init(const struct gpu_api *gpu) {
   int vert_index = 0;
   for (int y = 0; y < VERTS_PER_SIDE; y++) {
     for (int x = 0; x < VERTS_PER_SIDE; x++) {
-      mesh.vertex_buffer[vert_index].position.x = x * SQUARE_FACE_WIDTH;
-      mesh.vertex_buffer[vert_index].position.y = y * SQUARE_FACE_WIDTH;
-      mesh.vertex_buffer[vert_index].uv.x =
+      mesh.vertices[vert_index].position.x =
+        ORIGIN_OFFSET.x + x * SQUARE_FACE_WIDTH;
+      mesh.vertices[vert_index].position.y =
+        ORIGIN_OFFSET.y + y * SQUARE_FACE_WIDTH;
+      mesh.vertices[vert_index].uv.x =
         x * SQUARE_FACE_WIDTH / SQUARE_FACE_WIDTH * VERTS_PER_SIDE;
-      mesh.vertex_buffer[vert_index].uv.y =
+      mesh.vertices[vert_index].uv.y =
         y * SQUARE_FACE_WIDTH / SQUARE_FACE_WIDTH * VERTS_PER_SIDE;
       vert_index++;
     }
@@ -62,16 +71,19 @@ void menu_sky__init(const struct gpu_api *gpu) {
   while (vert_index++ < VERTS_PER_SIDE * (VERTS_PER_SIDE - 1) - 1) {
     column_index = (vert_index + 1) % VERTS_PER_SIDE;
     if (vert_index > 0 && column_index == 0) continue;
-    mesh.index_buffer[indices_index++] = vert_index;
-    mesh.index_buffer[indices_index++] = vert_index + 1;
-    mesh.index_buffer[indices_index++] = vert_index + VERTS_PER_SIDE + 1;
-    mesh.index_buffer[indices_index++] = vert_index;
-    mesh.index_buffer[indices_index++] = vert_index + VERTS_PER_SIDE + 1;
-    mesh.index_buffer[indices_index++] = vert_index + VERTS_PER_SIDE;
+    mesh.indices[indices_index++] = vert_index;
+    mesh.indices[indices_index++] = vert_index + 1;
+    mesh.indices[indices_index++] = vert_index + VERTS_PER_SIDE + 1;
+    mesh.indices[indices_index++] = vert_index;
+    mesh.indices[indices_index++] = vert_index + VERTS_PER_SIDE + 1;
+    mesh.indices[indices_index++] = vert_index + VERTS_PER_SIDE;
   }
 
-  shader.frag_shader_src = normal_debug_frag_src;
+  // shader.frag_shader_src = normal_debug_frag_src;
+  shader.frag_shader_src = sky_frag_src;
   shader.vert_shader_src = default_vert_src;
+
+  gpu->copy_rgb_texture_to_gpu(&clod256_texture);
 
   gpu->copy_dynamic_mesh_to_gpu(&mesh);
   gpu->copy_program_to_gpu(&shader);
@@ -82,9 +94,13 @@ void menu_sky__tick(
   double seconds_since_creation,
   const struct gpu_api *gpu
 ) {
+
+  // TODO: update transform in Tail to refer to axes
+  // as up, right, and forward
+  trans.rotation_in_deg.y -= 2.0f * delta_time;
   warp_mesh(seconds_since_creation);
-  gpu->update_gpu_mesh_data(&mesh);
   recalculate_normals();
+  gpu->update_gpu_mesh_data(&mesh);
 }
 
 void menu_sky__draw(
@@ -92,8 +108,9 @@ void menu_sky__draw(
   const struct m4x4 *view,
   const struct m4x4 *perspective
 ) {
-  gpu->cull_back_faces();
+  // gpu->cull_back_faces();
   gpu->select_gpu_program(&shader);
+  gpu->select_texture(&clod256_texture);
   space__create_model(&WORLDSPACE, &trans, &local_to_world);
   space__create_normals_model(&local_to_world, &normals_local_to_world);
   gpu__set_mvp(
@@ -112,12 +129,12 @@ static void warp_mesh(double seconds_since_creation) {
   int vert_index = 0;
   float z_position = 0;
   for (int y = 0; y < VERTS_PER_SIDE; y++) {
-    z_position = 0.1f * sin(
-      seconds_since_creation * 2 +
-      10 * y * SQUARE_FACE_WIDTH
+    z_position = ORIGIN_OFFSET.z + 0.05f * sin(
+      seconds_since_creation +
+      15 * y * SQUARE_FACE_WIDTH
     );
     for (int x = 0; x < VERTS_PER_SIDE; x++)
-      mesh.vertex_buffer[vert_index++].position.z = z_position;
+      mesh.vertices[vert_index++].position.z = z_position;
   }
 }
 
@@ -133,25 +150,25 @@ static void recalculate_normals() {
 
     if (y == 0) {
       vec3_minus_vec3(
-        &mesh.vertex_buffer[vert_index].position,
-        &mesh.vertex_buffer[vert_index + VERTS_PER_SIDE].position,
+        &mesh.vertices[vert_index].position,
+        &mesh.vertices[vert_index + VERTS_PER_SIDE].position,
         &final_y_edge
       );
     } else if (y == VERTS_PER_SIDE - 1) {
       vec3_minus_vec3(
-        &mesh.vertex_buffer[vert_index - VERTS_PER_SIDE].position,
-        &mesh.vertex_buffer[vert_index].position,
+        &mesh.vertices[vert_index - VERTS_PER_SIDE].position,
+        &mesh.vertices[vert_index].position,
         &final_y_edge
       );
     } else {
       vec3_minus_vec3(
-        &mesh.vertex_buffer[vert_index].position,
-        &mesh.vertex_buffer[vert_index + VERTS_PER_SIDE].position,
+        &mesh.vertices[vert_index].position,
+        &mesh.vertices[vert_index + VERTS_PER_SIDE].position,
         &y_edges[0]
       );
       vec3_minus_vec3(
-        &mesh.vertex_buffer[vert_index - VERTS_PER_SIDE].position,
-        &mesh.vertex_buffer[vert_index].position,
+        &mesh.vertices[vert_index - VERTS_PER_SIDE].position,
+        &mesh.vertices[vert_index].position,
         &y_edges[1]
       );
       vec3__mean(y_edges, 2, &final_y_edge);
@@ -161,7 +178,7 @@ static void recalculate_normals() {
     vec3__normalize(&normal, &normal);
 
     for (int x = 0; x < VERTS_PER_SIDE; x++) memcpy(
-      &mesh.vertex_buffer[vert_index++].normal.x,
+      &mesh.vertices[vert_index++].normal.x,
       &normal.x,
       sizeof(struct vec3)
     );

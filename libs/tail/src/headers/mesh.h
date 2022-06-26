@@ -16,11 +16,11 @@ struct vertex {
 };
 
 struct drawable_mesh {
-  struct vertex *vertex_buffer;
-  unsigned int *index_buffer;
-  size_t vertex_buffer_size;
-  size_t index_buffer_size;
-  int index_buffer_length;
+  struct vertex *vertices;
+  unsigned int *indices;
+  size_t vertices_size;
+  size_t indices_size;
+  int indices_length;
   unsigned int _impl_vbo_id;
   unsigned int _impl_ibo_id;
   unsigned int _impl_vao_id;
