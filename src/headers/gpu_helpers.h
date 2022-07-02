@@ -5,9 +5,8 @@
 
 void gpu__set_mvp(
   const struct m4x4 *model,
-  const struct m4x4 *view,
-  const struct m4x4 *perspective,
   const struct m3x3 *normals_model,
+  const struct camera *cam,
   const struct gpu_program *prog,
   const struct gpu_api *gpu
 );

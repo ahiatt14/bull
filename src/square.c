@@ -83,9 +83,8 @@ void square__draw(
   );
   gpu__set_mvp(
     &shared_temp_model,
-    camera__get_lookat(cam),
-    camera__get_perspective(cam),
     &shared_temp_normals_model,
+    cam,
     &sq->_shader,
     gpu
   );

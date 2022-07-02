@@ -11,8 +11,7 @@ void menu_sky__tick(
 );
 void menu_sky__draw(
   const struct gpu_api *gpu,
-  const struct m4x4 *view,
-  const struct m4x4 *perspective
+  const struct camera *cam
 );
 
 #endif

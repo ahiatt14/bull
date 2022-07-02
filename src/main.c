@@ -49,6 +49,8 @@ int main() {
 
   current_scene->init(&window, &vwprt, &gpu);
 
+  gpu.enable_depth_test();
+
   while (!window__received_closed_event()) {
     if (!paused) current_scene->tick(
       window.get_seconds_since_creation(),

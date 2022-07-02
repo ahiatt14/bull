@@ -9,7 +9,7 @@
 #include "constants.h"
 
 #include "clod256_texture.h"
-#include "sky_frag.h"
+#include "flat_texture_frag.h"
 #include "default_vert.h"
 #include "normal_debug_frag.h"
 #include "solid_color_frag.h"
@@ -32,8 +32,8 @@ static unsigned int indices[INDEX_COUNT];
 static struct drawable_mesh mesh = {
   .vertices = vertices,
   .indices = indices,
-  .vertices_size = sizeof(vertices),
-  .indices_size = sizeof(indices),
+  .vertices_size = sizeof(struct vertex) * VERTS_PER_SIDE * VERTS_PER_SIDE,
+  .indices_size = sizeof(unsigned int) * INDEX_COUNT,
   .indices_length = INDEX_COUNT
 };
 
@@ -80,7 +80,7 @@ void menu_sky__init(const struct gpu_api *gpu) {
   }
 
   // shader.frag_shader_src = normal_debug_frag_src;
-  shader.frag_shader_src = sky_frag_src;
+  shader.frag_shader_src = flat_texture_frag_src;
   shader.vert_shader_src = default_vert_src;
 
   gpu->copy_rgb_texture_to_gpu(&clod256_texture);
@@ -105,23 +105,20 @@ void menu_sky__tick(
 
 void menu_sky__draw(
   const struct gpu_api *gpu,
-  const struct m4x4 *view,
-  const struct m4x4 *perspective
+  const struct camera *cam
 ) {
-  // gpu->cull_back_faces();
+  gpu->cull_back_faces();
   gpu->select_gpu_program(&shader);
   gpu->select_texture(&clod256_texture);
   space__create_model(&WORLDSPACE, &trans, &local_to_world);
   space__create_normals_model(&local_to_world, &normals_local_to_world);
   gpu__set_mvp(
     &local_to_world,
-    view,
-    perspective,
     &normals_local_to_world,
+    cam,
     &shader,
     gpu
   );
-  gpu->set_fragment_shader_vec3(&shader, "color", &COLOR_BLACK);
   gpu->draw_mesh(&mesh);
 }
 

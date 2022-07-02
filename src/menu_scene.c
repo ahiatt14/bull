@@ -8,14 +8,13 @@
 #include "menu_scene.h"
 #include "constants.h"
 
-#include "menu_sky.h"
+// #include "menu_sky.h"
 
-// TODO: temp
 #include "square.h"
-#include "sky_frag.h"
+#include "flat_texture_frag.h"
 #include "clod256_texture.h"
 
-#include "burdock_mesh.h"
+#include "pyramid_mesh.h"
 #include "default_vert.h"
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
@@ -28,13 +27,12 @@ double start_time;
 struct camera foreground_camera;
 struct camera background_camera;
 
-struct transform burdock_transform = {{ 0, 0, 0 }, { 0, 0, 0 }, 1};
-struct m4x4 burdock_model;
-struct m3x3 burdock_normals_model;
+struct transform pyramid_transform = {{ 0, 0, 0 }, { 0, 0, 0 }, 1};
+struct gpu_program pyramid_shader;
+struct m4x4 pyramid_local_to_world;
+struct m3x3 pyramid_normals_local_to_world;
 
 struct square sky_square;
-
-struct gpu_program leaf_shader;
 
 void menu__init(
   struct window_api *window,
@@ -42,16 +40,15 @@ void menu__init(
   struct gpu_api *gpu
 ) {
 
-  gpu->enable_depth_test();
   gpu->cull_no_faces();
 
   camera__init(&foreground_camera);
   camera__init(&background_camera);
 
-  camera__set_position(0, 0.2f, 0.6f, &foreground_camera);
+  camera__set_position(0, 1.5f, 2, &foreground_camera);
   camera__set_look_target(&ORIGIN, &foreground_camera);
   camera__set_horizontal_fov_in_deg(80, &foreground_camera);
-  camera__set_near_clip_distance(0.2f, &foreground_camera);
+  camera__set_near_clip_distance(0.1f, &foreground_camera);
   camera__set_far_clip_distance(100, &foreground_camera);
   camera__calculate_lookat(&WORLDSPACE.up, &foreground_camera);
   camera__calculate_perspective(vwprt, &foreground_camera);
@@ -73,23 +70,21 @@ void menu__init(
   square__create(
     (struct transform){{ 0, 0, 0 }, { 0, 0, 0 }, 1},
     clod256_texture,
-    // sky_frag_src,
     normal_debug_frag_src,
     &sky_square,
     gpu
   );
 
-  menu_sky__init(gpu);
+  pyramid_shader.frag_shader_src = flat_texture_frag_src;
+  pyramid_shader.vert_shader_src = default_vert_src;
+  gpu->copy_program_to_gpu(&pyramid_shader);
+  gpu->copy_static_mesh_to_gpu(&pyramid_mesh);
 
-  leaf_shader.frag_shader_src = normal_debug_frag_src;
-  leaf_shader.vert_shader_src = default_vert_src;
-  gpu->copy_program_to_gpu(&leaf_shader);
+  gpu->copy_rgb_texture_to_gpu(&clod256_texture);
 
-  gpu->copy_static_mesh_to_gpu(&burdock_mesh);
-  m4x4__identity(&burdock_model);
+  // menu_sky__init(gpu);
 }
 
-int vwprt_printed = 0;
 void menu__tick(
   double seconds_since_creation,
   const struct viewport *vwprt,
@@ -102,20 +97,20 @@ void menu__tick(
   start_time = seconds_since_creation;
 
   // UPDATE
-  burdock_transform.rotation_in_deg.y += 20.0f * delta_time;
 
-  menu_sky__tick(delta_time, seconds_since_creation, gpu);
+  pyramid_transform.rotation_in_deg.y += 20.0f * delta_time;
+
+  // menu_sky__tick(delta_time, seconds_since_creation, gpu);
 
   // DRAW
   // TODO: update clear to accept vec3*
-  gpu->clear(&COLOR_LIGHT_GREY.x);
+  gpu->clear(&COLOR_LIGHT_GREY);
 
-  menu_sky__draw(
-    gpu,
-    camera__get_lookat(&background_camera),
-    camera__get_perspective(&background_camera)
-  );
-  gpu->clear_depth_buffer();
+  // menu_sky__draw(
+  //   gpu,
+  //   &background_camera
+  // );
+  // gpu->clear_depth_buffer();
 
   square__draw(
     &sky_square,
@@ -123,21 +118,28 @@ void menu__tick(
     gpu
   );
 
-  gpu->select_gpu_program(&leaf_shader);
-  space__create_model(&WORLDSPACE, &burdock_transform, &burdock_model);
-  space__create_normals_model(&burdock_model, &burdock_normals_model);
+  gpu->select_gpu_program(&pyramid_shader);
+  gpu->select_texture(&clod256_texture);
+  space__create_model(
+    &WORLDSPACE,
+    &pyramid_transform,
+    &pyramid_local_to_world
+  );
+  space__create_normals_model(
+    &pyramid_local_to_world,
+    &pyramid_normals_local_to_world
+  );
   gpu__set_mvp(
-    &burdock_model,
-    camera__get_lookat(&foreground_camera),
-    camera__get_perspective(&foreground_camera),
-    &burdock_normals_model,
-    &leaf_shader,
+    &pyramid_local_to_world,
+    &pyramid_normals_local_to_world,
+    &foreground_camera,
+    &pyramid_shader,
     gpu
   );
-  gpu->set_fragment_shader_vec3(
-    &leaf_shader,
-    "color",
-    &COLOR_WHITE
-  );
-  gpu->draw_mesh(&burdock_mesh);
+  // gpu->set_fragment_shader_vec3(
+  //   &pyramid_shader,
+  //   "color",
+  //   &COLOR_RED
+  // );
+  gpu->draw_mesh(&pyramid_mesh);
 }
