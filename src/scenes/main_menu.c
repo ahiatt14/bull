@@ -5,7 +5,7 @@
 
 #include "gpu_helpers.h"
 #include "scene.h"
-#include "menu_scene.h"
+#include "main_menu_scene.h"
 #include "constants.h"
 
 // #include "menu_sky.h"
@@ -19,7 +19,7 @@
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
 
-#define DELTA_TIME_CAP 1.0f / 30.0f
+#define SEC_UNTIL_ARENA 2
 
 double delta_time;
 double start_time;
@@ -32,12 +32,12 @@ struct gpu_program pyramid_shader;
 struct m4x4 pyramid_local_to_world;
 struct m3x3 pyramid_normals_local_to_world;
 
-struct square sky_square;
+static double sec_until_arena = SEC_UNTIL_ARENA; 
 
-void menu__init(
-  struct window_api *window,
-  struct viewport *vwprt,
-  struct gpu_api *gpu
+void main_menu__init(
+  struct window_api const *const window,
+  struct viewport *const vwprt,
+  struct gpu_api const *const gpu
 ) {
 
   gpu->cull_no_faces();
@@ -67,14 +67,6 @@ void menu__init(
   camera__calculate_lookat(&WORLDSPACE.up, &background_camera);
   camera__calculate_perspective(vwprt, &background_camera);
 
-  square__create(
-    (struct transform){{ 0, 0, 0 }, { 0, 0, 0 }, 1},
-    clod256_texture,
-    normal_debug_frag_src,
-    &sky_square,
-    gpu
-  );
-
   pyramid_shader.frag_shader_src = flat_texture_frag_src;
   pyramid_shader.vert_shader_src = default_vert_src;
   gpu->copy_program_to_gpu(&pyramid_shader);
@@ -85,13 +77,15 @@ void menu__init(
   // menu_sky__init(gpu);
 }
 
-void menu__tick(
-  double seconds_since_creation,
-  const struct viewport *vwprt,
-  struct gpu_api *gpu,
-  struct scene **scenes,
-  void switch_scene(struct scene* new_scene)
+static double seconds_since_creation;
+void main_menu__tick(
+  struct window_api const *const window,
+  struct viewport *const vwprt,
+  struct gpu_api const *const gpu,
+  struct scene const *const *const scenes,
+  void (*switch_scene)(struct scene const *const new_scene)
 ) {
+  seconds_since_creation = window->get_seconds_since_creation();
   delta_time = seconds_since_creation - start_time;
   if (delta_time > DELTA_TIME_CAP) delta_time = DELTA_TIME_CAP;
   start_time = seconds_since_creation;
@@ -99,11 +93,16 @@ void menu__tick(
   // UPDATE
 
   pyramid_transform.rotation_in_deg.y += 20.0f * delta_time;
+  sec_until_arena -= delta_time;
+  if (sec_until_arena <= 0) {
+    scenes[1]->init(window, vwprt, gpu);
+    switch_scene(scenes[1]);
+    sec_until_arena = SEC_UNTIL_ARENA;
+  }
 
-  // menu_sky__tick(delta_time, seconds_since_creation, gpu);
+  // menu_sky__tick(delta_time, sec onds_since_creation, gpu);
 
   // DRAW
-  // TODO: update clear to accept vec3*
   gpu->clear(&COLOR_LIGHT_GREY);
 
   // menu_sky__draw(
@@ -111,12 +110,6 @@ void menu__tick(
   //   &background_camera
   // );
   // gpu->clear_depth_buffer();
-
-  square__draw(
-    &sky_square,
-    &background_camera,
-    gpu
-  );
 
   gpu->select_gpu_program(&pyramid_shader);
   gpu->select_texture(&clod256_texture);
@@ -136,10 +129,5 @@ void menu__tick(
     &pyramid_shader,
     gpu
   );
-  // gpu->set_fragment_shader_vec3(
-  //   &pyramid_shader,
-  //   "color",
-  //   &COLOR_RED
-  // );
   gpu->draw_mesh(&pyramid_mesh);
 }

@@ -17,21 +17,14 @@ struct transform {
 };
 
 void space__create_model(
-  const struct coordinate_space *space,
-  const struct transform *t,
-  struct m4x4 *model
+  struct coordinate_space const *const space,
+  struct transform const *const t,
+  struct m4x4 *const dest
 );
 
 void space__create_normals_model(
-  const struct m4x4 *mesh_model,
-  struct m3x3 *dest
-);
-
-void space__slerp_righthand_rotate(
-  const struct transform *obj,
-  const struct vec3 *axis,
-  float radians,
-  struct vec3 *dest
+  struct m4x4 const *const mesh_model,
+  struct m3x3 *const dest
 );
 
 #endif

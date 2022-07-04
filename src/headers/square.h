@@ -1,29 +1,10 @@
-#ifndef __BULL_QUAD__
-#define __BULL_QUAD__
+#ifndef __BULL_SQUARE__
+#define __BULL_SQUARE__
 
 #include "tail.h"
 
-struct square {
-  struct transform _transform;
-  struct texture _texture;
-  struct gpu_program _shader;
-  const struct drawable_mesh *_mesh;
-};
-
-void square__create(
-  struct transform trans,
-  struct texture tex,
-  const char *frag_shader_src,
-  struct square *mem,
-  const struct gpu_api *gpu
-);
-
-void square__draw(
-  const struct square *sq,
-  const struct camera *cam,
-  const struct gpu_api *gpu
-);
-
-// void square__translate(float x, float y, float z, struct *square);
+extern const struct drawable_mesh shared_square_mesh;
+extern struct m4x4 shared_square_local_to_world;
+extern struct m3x3 shared_square_normals_local_to_world;
 
 #endif

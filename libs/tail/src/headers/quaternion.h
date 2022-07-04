@@ -10,22 +10,22 @@ struct quaternion {
 };
 
 void quaternion__multiply(
-  const struct quaternion *left_p,
-  const struct quaternion *right_p,
-  struct quaternion *dest
+  struct quaternion const *const left_p,
+  struct quaternion const *const right_p,
+  struct quaternion *const dest
 );
 void quaternion__conjugate(
-  const struct quaternion *p,
-  struct quaternion *dest
+  struct quaternion const *const p,
+  struct quaternion *const dest
 );
 void quaternion__create(
-  const struct vec3 *axis,
+  struct vec3 const *const axis,
   float radians,
-  struct quaternion *dest
+  struct quaternion *const dest
 );
 void quaternion__to_m4x4(
-  const struct quaternion *p,
-  struct m4x4 *m
+  struct quaternion const *const p,
+  struct m4x4 *const m
 );
 
 #endif

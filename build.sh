@@ -29,6 +29,8 @@ ${includes} \
 ${options} \
 -o game.exe \
 src/*.c \
+src/scenes/*.c \
+src/static_assets/*.c \
 libs/tail/static/tail.a
 
 rm -f src/headers/burdock_mesh.h

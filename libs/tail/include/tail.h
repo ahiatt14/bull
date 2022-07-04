@@ -9,7 +9,6 @@
 #include "../src/headers/mesh.h"
 #include "../src/headers/gpu.h"
 #include "../src/headers/window.h"
-#include "../src/headers/debugger.h"
 #include "../src/headers/tail_math.h"
 #include "../src/headers/camera.h"
 #include "../src/headers/space.h"

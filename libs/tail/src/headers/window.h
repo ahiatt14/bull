@@ -23,7 +23,7 @@ unsigned short int window__create(
   const char *name,
   unsigned short int vsync,
   // unsigned short int fullscreen, TODO: add support
-  struct window_api *window
+  struct window_api *const window
 );
 
 unsigned short int window__received_closed_event();

@@ -10,8 +10,8 @@ struct m2x2 {
 void m2x2__create(
   float i0, float i2,
   float i1, float i3,
-  struct m2x2 *m
+  struct m2x2 *const m
 );
-float m2x2__determinant(const struct m2x2 *m);
+float m2x2__determinant(struct m2x2 const *const m);
 
 #endif

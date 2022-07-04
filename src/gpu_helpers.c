@@ -1,6 +1,7 @@
 #include "tail.h"
 
 #include "gpu_helpers.h"
+#include "constants.h"
 
 void gpu__set_mvp(
   const struct m4x4 *model,
