@@ -5,7 +5,6 @@
 
 #include "gpu_helpers.h"
 #include "scene.h"
-#include "main_menu_scene.h"
 #include "constants.h"
 
 // #include "menu_sky.h"
@@ -19,20 +18,22 @@
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
 
-#define SEC_UNTIL_ARENA 2
+#define SEC_UNTIL_ARENA 3
 
-double delta_time;
-double start_time;
+static double seconds_since_creation;
+static double tick_start_time;
+static double delta_time;
 
-struct camera foreground_camera;
-struct camera background_camera;
+static struct camera foreground_camera;
+static struct camera background_camera;
 
-struct transform pyramid_transform = {{ 0, 0, 0 }, { 0, 0, 0 }, 1};
-struct gpu_program pyramid_shader;
-struct m4x4 pyramid_local_to_world;
-struct m3x3 pyramid_normals_local_to_world;
+static struct transform pyramid_transform = {{ 0, 0, 0 }, { 0, 0, 0 }, 1};
+static struct gpu_program pyramid_shader;
+static struct m4x4 pyramid_local_to_world;
+static struct m3x3 pyramid_normals_local_to_world;
 
 static double sec_until_arena = SEC_UNTIL_ARENA; 
+static double seconds_since_creation;
 
 void main_menu__init(
   struct window_api const *const window,
@@ -77,7 +78,6 @@ void main_menu__init(
   // menu_sky__init(gpu);
 }
 
-static double seconds_since_creation;
 void main_menu__tick(
   struct window_api const *const window,
   struct viewport *const vwprt,
@@ -86,13 +86,14 @@ void main_menu__tick(
   void (*switch_scene)(struct scene const *const new_scene)
 ) {
   seconds_since_creation = window->get_seconds_since_creation();
-  delta_time = seconds_since_creation - start_time;
+  delta_time = seconds_since_creation - tick_start_time;
   if (delta_time > DELTA_TIME_CAP) delta_time = DELTA_TIME_CAP;
-  start_time = seconds_since_creation;
+  tick_start_time = seconds_since_creation;
 
   // UPDATE
 
   pyramid_transform.rotation_in_deg.y += 20.0f * delta_time;
+  pyramid_transform.position.x += 0.1f * delta_time;
   sec_until_arena -= delta_time;
   if (sec_until_arena <= 0) {
     scenes[1]->init(window, vwprt, gpu);

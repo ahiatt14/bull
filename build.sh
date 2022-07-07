@@ -3,7 +3,7 @@
 tools="libs/tail/tools/"
 # -mwindows
 options="-O2 -Wall"
-includes="-Ilibs/tail/include -Isrc/headers"
+includes="-Ilibs/tail/include -Isrc/headers -Isrc/player -Isrc/scenes"
 
 # TODO: this ain't sustainable!
 
@@ -23,6 +23,7 @@ rm -rf game.exe
 ./${tools}sourcify-png.exe assets/png/concrete32bit.png 3 src/headers/concrete32bit_texture.h src/concrete32bit_texture.c && \
 ./${tools}sourcify-obj.exe assets/mesh/burdock.obj smooth src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/pyramid.obj flat src/headers/ src/ && \
+./${tools}sourcify-obj.exe assets/mesh/sphere.obj flat src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/capsule_apartment.obj smooth src/headers/ src/ && \
 i686-w64-mingw32-gcc \
 ${includes} \
@@ -30,16 +31,19 @@ ${options} \
 -o game.exe \
 src/*.c \
 src/scenes/*.c \
+src/player/*.c \
 src/static_assets/*.c \
 libs/tail/static/tail.a
 
 rm -f src/headers/burdock_mesh.h
 rm -f src/headers/pyramid_mesh.h
 rm -f src/headers/capsule_apartment_mesh.h
+rm -f src/headers/sphere_mesh.h
 
 rm -f src/burdock_mesh.c
 rm -f src/capsule_apartment_mesh.c
 rm -f src/pyramid_mesh.c
+rm -f src/sphere_mesh.c
 
 rm -f src/headers/clod256_texture.h
 rm -f src/clod256_texture.c

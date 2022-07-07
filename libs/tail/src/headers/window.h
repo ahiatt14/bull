@@ -1,8 +1,15 @@
 #ifndef __TAIL_WINDOW__
 #define __TAIL_WINDOW__
 
+#include "input.h"
+
 struct window_api {
   double (*get_seconds_since_creation)();
+  // TODO: implement!
+  void (*register_listener_for_gamepad_connection_event)(
+    void (*handle_gamepad_connect)();
+    void (*handle_gamepad_disconnect)();
+  );
   void (*register_listener_for_minimize)(
     void (*handle_minimize)(),
     void (*handle_restore)()
@@ -15,6 +22,7 @@ struct window_api {
     void (*handle_resize)(int width, int height)
   );
   void (*request_buffer_swap)();
+  void (*get_gamepad_input)(struct gamepad_input *const input);
 };
 
 unsigned short int window__create(

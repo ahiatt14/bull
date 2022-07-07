@@ -1,7 +1,5 @@
 #include "tail.h"
 #include "scene.h"
-#include "main_menu_scene.h"
-#include "arena_scene.h"
 
 #define REQUEST_VSYNC_ON 1
 
