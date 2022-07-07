@@ -11,8 +11,8 @@
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
 
-#define PLAYER_SPEED 0.2f
-#define DEADZONE 0.25f
+#define PLAYER_SPEED 1.5f
+#define DEADZONE 0.2f
 
 static struct gpu_program idle_shader;
 static struct gpu_program thrusting_shader;
@@ -50,9 +50,11 @@ static void player_idle__update(
   if (mag > DEADZONE) {
     playr->current_state = states[PLAYER_STATE__THRUSTING];
     playr->transform.position.x +=
-      shared_normalized_left_stick_direction.x * mag * delta_time;
+      shared_normalized_left_stick_direction.x *
+      PLAYER_SPEED * mag * delta_time;
     playr->transform.position.z +=
-      shared_normalized_left_stick_direction.y * mag * delta_time;
+      shared_normalized_left_stick_direction.y *
+      PLAYER_SPEED * mag * delta_time;;
   }
 }
 
@@ -100,9 +102,11 @@ static void player_thrusting__update(
   if (mag > DEADZONE) {
     playr->transform.rotation_in_deg.y += 900 * delta_time;
     playr->transform.position.x +=
-      shared_normalized_left_stick_direction.x * mag * delta_time;
+      shared_normalized_left_stick_direction.x *
+      PLAYER_SPEED * mag * delta_time;
     playr->transform.position.z +=
-      shared_normalized_left_stick_direction.y * mag * delta_time;
+      shared_normalized_left_stick_direction.y *
+      PLAYER_SPEED * mag * delta_time;;
   } else {
     playr->current_state = states[PLAYER_STATE__IDLE];
   }

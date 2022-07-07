@@ -1,12 +1,13 @@
 #ifndef __TAIL_WINDOW__
 #define __TAIL_WINDOW__
 
+#include <stdint.h>
 #include "input.h"
 
 struct window_api {
   double (*get_seconds_since_creation)();
   // TODO: implement!
-  void (*register_listener_for_gamepad_connect_event)(
+  void (*register_listener_for_gamepad_connect)(
     void (*handle_gamepad_connect)();
     void (*handle_gamepad_disconnect)();
   );
@@ -23,6 +24,7 @@ struct window_api {
   );
   void (*request_buffer_swap)();
   void (*get_gamepad_input)(struct gamepad_input *const input);
+  uint8_t (*gamepad_is_connected)();
 };
 
 unsigned short int window__create(
