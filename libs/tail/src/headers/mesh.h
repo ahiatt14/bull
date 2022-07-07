@@ -3,11 +3,7 @@
 
 #include <stddef.h>
 
-#include "vec3.h"
-
-struct vec2 {
-  float x, y;
-};
+#include "vector.h"
 
 struct vertex {
   struct vec3 position;

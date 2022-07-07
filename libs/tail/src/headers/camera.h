@@ -3,7 +3,7 @@
 
 #include "viewport.h"
 #include "m4x4.h"
-#include "vec3.h"
+#include "vector.h"
 
 struct camera {
   struct m4x4 _lookat;

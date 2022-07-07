@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "tail.h"
 #include "scene.h"
 
@@ -17,6 +19,14 @@ void handle_resize(int w, int h) {
   viewport__set_height(h, &vwprt);
 }
 
+void print_gamepad_connected(int slot) {
+  printf("gamepad connected! slot: %i\n", slot);
+}
+
+void print_gamepad_disconnected(int slot) {
+  printf("gamepad disconnected! slot: %i\n", slot);
+}
+
 struct scene const *current_scene;
 void switch_scene(struct scene const *const new_scene) {
   current_scene = new_scene;
@@ -24,7 +34,7 @@ void switch_scene(struct scene const *const new_scene) {
 
 int main() {
 
-   if (!window__create(
+  if (!window__create(
     800,
     800,
     "BULL",
@@ -35,6 +45,11 @@ int main() {
   window.register_listener_for_focus(unpause, pause);
   window.register_listener_for_minimize(pause, unpause);
   window.register_listener_for_resize(handle_resize);
+  // TODO: rename for consistency
+  window.register_listener_for_gamepad_connect_event(
+    print_gamepad_connected,
+    print_gamepad_disconnected
+  );
 
   gpu__create_api(&gpu);
   viewport__set_width(gpu.get_viewport_width(), &vwprt);

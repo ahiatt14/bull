@@ -2,7 +2,7 @@
 #define __TAIL_SPACE__
 
 #include "m4x4.h"
-#include "vec3.h"
+#include "vector.h"
 
 struct coordinate_space {
   struct vec3 up;

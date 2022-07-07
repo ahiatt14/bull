@@ -1,7 +1,7 @@
 #ifndef __TAIL_M4X4__
 #define __TAIL_M4X4__
 
-#include "vec3.h"
+#include "vector.h"
 #include "m3x3.h"
 
 struct m4x4 {

@@ -3,9 +3,10 @@
 
 #include <stdint.h>
 
+#include "vector.h"
+
 struct gamepad_input {
-  float x_direction;
-  float y_direction;
+  struct vec2 left_stick_direction;
   float right_trigger;
   float left_trigger; 
   uint8_t start_down;

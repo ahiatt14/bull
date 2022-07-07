@@ -4,7 +4,7 @@
 #include "mesh.h"
 #include "m4x4.h"
 #include "m3x3.h"
-#include "vec3.h"
+#include "vector.h"
 
 struct texture {
   unsigned int _impl_id;

@@ -1,7 +1,7 @@
 #ifndef __TAIL_QUATERNION__
 #define __TAIL_QUATERNION__
 
-#include "vec3.h"
+#include "vector.h"
 #include "m4x4.h"
 
 struct quaternion {

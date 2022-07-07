@@ -3,6 +3,10 @@
 
 #include "precision.h"
 
+struct vec2 {
+  float x, y;
+};
+
 struct vec3 {
   float x, y, z;
 };
@@ -19,7 +23,9 @@ void vec3_minus_vec3(
   struct vec3 *const diff
 );
 float vec3__magnitude(struct vec3 const *const t);
+float vec2__magnitude(struct vec2 const *const t);
 void vec3__normalize(struct vec3 const *const t, struct vec3 *const normalized);
+void vec2__normalize(struct vec2 const *const t, struct vec2 *const normalized);
 void vec3__mean(
   struct vec3 const *const vec3s,
   int count,

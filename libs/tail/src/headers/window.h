@@ -6,7 +6,7 @@
 struct window_api {
   double (*get_seconds_since_creation)();
   // TODO: implement!
-  void (*register_listener_for_gamepad_connection_event)(
+  void (*register_listener_for_gamepad_connect_event)(
     void (*handle_gamepad_connect)();
     void (*handle_gamepad_disconnect)();
   );

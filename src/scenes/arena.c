@@ -45,7 +45,7 @@ void arena__init(
   player__copy_assets_to_gpu(gpu);
   player__init_states(player_states);
   playr = (struct player){
-    .trans = (struct transform){{0,0,0},{0,0,0},1},
+    .transform = (struct transform){{0,0,0},{0,0,0},0.33f},
     .current_state = player_states[PLAYER_STATE__IDLE]
   };
 }
@@ -61,8 +61,8 @@ void arena__tick(
   delta_time = seconds_since_creation - tick_start_time;
   if (delta_time > DELTA_TIME_CAP) delta_time = DELTA_TIME_CAP;
   tick_start_time = seconds_since_creation;
+  
   window->get_gamepad_input(&input);
-
   playr.current_state->update(
     delta_time,
     &input,

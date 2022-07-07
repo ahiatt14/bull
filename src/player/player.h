@@ -11,7 +11,7 @@
 struct player_state;
 
 struct player {
-  struct transform trans;
+  struct transform transform;
   struct player_state *current_state;
 };
 
