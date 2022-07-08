@@ -12,7 +12,8 @@ struct player_state;
 
 struct player {
   struct transform transform;
-  struct player_state *current_state;
+  struct player_state *current_state; // TODO: change this to 
+  // a uint8_t code like we did for scenes
 };
 
 struct player_state {

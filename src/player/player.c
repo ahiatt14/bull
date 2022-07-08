@@ -11,11 +11,11 @@
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
 
-#define PLAYER_SPEED 1.5f
+#define PLAYER_SPEED 3.0f
 #define DEADZONE 0.2f
 
-static struct gpu_program idle_shader;
-static struct gpu_program thrusting_shader;
+static struct shader idle_shader;
+static struct shader thrusting_shader;
 
 static struct m4x4 shared_local_to_world;
 static struct m3x3 shared_normals_local_to_world;
@@ -25,10 +25,10 @@ static struct vec2 shared_normalized_left_stick_direction;
 void player__copy_assets_to_gpu(struct gpu_api const *const gpu) {
   idle_shader.frag_shader_src = solid_color_frag_src;
   idle_shader.vert_shader_src = default_vert_src;
-  gpu->copy_program_to_gpu(&idle_shader);
+  gpu->copy_shader_to_gpu(&idle_shader);
   thrusting_shader.frag_shader_src = normal_debug_frag_src;
   thrusting_shader.vert_shader_src = default_vert_src;
-  gpu->copy_program_to_gpu(&thrusting_shader);
+  gpu->copy_shader_to_gpu(&thrusting_shader);
   gpu->copy_static_mesh_to_gpu(&sphere_mesh);
 }
 
@@ -72,7 +72,7 @@ static void player_idle__draw(
     &shared_local_to_world,
     &shared_normals_local_to_world
   );
-  gpu->select_gpu_program(&idle_shader);
+  gpu->select_shader(&idle_shader);
   gpu->set_fragment_shader_vec3(&idle_shader, "color", &COLOR_WHITE);
   gpu__set_mvp(
     &shared_local_to_world,
@@ -126,7 +126,7 @@ static void player_thrusting__draw(
     &shared_local_to_world,
     &shared_normals_local_to_world
   );
-  gpu->select_gpu_program(&thrusting_shader);
+  gpu->select_shader(&thrusting_shader);
   gpu__set_mvp(
     &shared_local_to_world,
     &shared_normals_local_to_world,

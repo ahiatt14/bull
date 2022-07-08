@@ -7,7 +7,7 @@ void gpu__set_mvp(
   struct m4x4 const *const model,
   struct m3x3 const *const normals_model,
   struct camera const *const cam,
-  struct gpu_program const *const prog,
+  struct shader const *const shad,
   struct gpu_api const *const gpu
 );
 

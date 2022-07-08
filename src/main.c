@@ -1,15 +1,18 @@
 #include <stdio.h>
+#include <stdint.h>
 
 #include "tail.h"
 #include "scene.h"
 
 #define REQUEST_VSYNC_ON 1
 
-struct window_api window;
-struct gpu_api gpu;
-struct viewport vwprt;
+#define SCENE_COUNT 3
 
-unsigned short int paused = 0;
+static struct window_api window;
+static struct gpu_api gpu;
+static struct viewport vwprt;
+
+static uint8_t paused = 0;
 void pause() { paused = 1; }
 void unpause() { paused = 0; }
 
@@ -27,8 +30,9 @@ void print_gamepad_disconnected(int slot) {
   printf("gamepad disconnected! slot: %i\n", slot);
 }
 
-struct scene const *current_scene;
-void switch_scene(struct scene const *const new_scene) {
+static uint8_t current_scene, previous_scene;
+void switch_scene(uint8_t new_scene) {
+  previous_scene = current_scene;
   current_scene = new_scene;
 }
 
@@ -45,8 +49,7 @@ int main() {
   window.register_listener_for_focus(unpause, pause);
   window.register_listener_for_minimize(pause, unpause);
   window.register_listener_for_resize(handle_resize);
-  // TODO: rename for consistency
-  window.register_listener_for_gamepad_connect_event(
+  window.register_listener_for_gamepad_connect(
     print_gamepad_connected,
     print_gamepad_disconnected
   );
@@ -57,28 +60,35 @@ int main() {
 
   struct scene main_menu_scene;
   struct scene arena_scene;
+  struct scene connect_gamepad;
   main_menu_scene.init = main_menu__init;
   main_menu_scene.tick = main_menu__tick;
   arena_scene.init = arena__init;
   arena_scene.tick = arena__tick;
+  connect_gamepad.init = connect_gamepad__init;
+  connect_gamepad.tick = connect_gamepad__tick;
 
-  struct scene const *const scenes[2] = {
-    &main_menu_scene, &arena_scene
+  struct scene const *const scenes[SCENE_COUNT] = {
+    &main_menu_scene,
+    &arena_scene,
+    &connect_gamepad
   };
 
-  current_scene = &main_menu_scene;
+  for (int i = 0; i < SCENE_COUNT; i++)
+    scenes[i]->init(&window, &vwprt, &gpu);
 
-  current_scene->init(&window, &vwprt, &gpu);
+  current_scene = SCENE__MAIN_MENU;
+  previous_scene = SCENE__MAIN_MENU;
 
   gpu.enable_depth_test();
 
   while (!window__received_closed_event()) {
-    if (!paused) {
-      current_scene->tick(
+    if (!paused) {      
+      scenes[current_scene]->tick(
         &window,
         &vwprt,
         &gpu,
-        scenes,
+        previous_scene,
         switch_scene
       );
       window.request_buffer_swap();            

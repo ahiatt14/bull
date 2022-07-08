@@ -34,7 +34,7 @@ void arena__init(
 ) {
 
   camera__init(&cam);
-  camera__set_position(0, 6, 1, &cam); // TODO: not working if z is 0?
+  camera__set_position(0, 6, 0.1f, &cam); // TODO: not working if z is 0?
   camera__set_look_target(&ORIGIN, &cam);
   camera__set_horizontal_fov_in_deg(70, &cam);
   camera__set_near_clip_distance(1, &cam);
@@ -54,13 +54,18 @@ void arena__tick(
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu,
-  struct scene const *const *const scenes,
-  void switch_scene(struct scene const *const new_scene)
+  uint8_t previous_scene,
+  void switch_scene(uint8_t new_scene)
 ) {
   seconds_since_creation = window->get_seconds_since_creation();
   delta_time = seconds_since_creation - tick_start_time;
   if (delta_time > DELTA_TIME_CAP) delta_time = DELTA_TIME_CAP;
   tick_start_time = seconds_since_creation;
+
+  if (!window->gamepad_is_connected()) {
+    switch_scene(SCENE__CONNECT_GAMEPAD);
+    return;
+  }
   
   window->get_gamepad_input(&input);
   playr.current_state->update(

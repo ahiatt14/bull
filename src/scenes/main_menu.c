@@ -1,4 +1,3 @@
-// TODO: remove
 #include <stdio.h>
 
 #include "tail.h"
@@ -28,7 +27,7 @@ static struct camera foreground_camera;
 static struct camera background_camera;
 
 static struct transform pyramid_transform = {{ 0, 0, 0 }, { 0, 0, 0 }, 1};
-static struct gpu_program pyramid_shader;
+static struct shader pyramid_shader;
 static struct m4x4 pyramid_local_to_world;
 static struct m3x3 pyramid_normals_local_to_world;
 
@@ -70,7 +69,7 @@ void main_menu__init(
 
   pyramid_shader.frag_shader_src = flat_texture_frag_src;
   pyramid_shader.vert_shader_src = default_vert_src;
-  gpu->copy_program_to_gpu(&pyramid_shader);
+  gpu->copy_shader_to_gpu(&pyramid_shader);
   gpu->copy_static_mesh_to_gpu(&pyramid_mesh);
 
   gpu->copy_rgb_texture_to_gpu(&clod256_texture);
@@ -82,13 +81,18 @@ void main_menu__tick(
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu,
-  struct scene const *const *const scenes,
-  void (*switch_scene)(struct scene const *const new_scene)
+  uint8_t previous_scene,
+  void (*switch_scene)(uint8_t new_scene)
 ) {
   seconds_since_creation = window->get_seconds_since_creation();
   delta_time = seconds_since_creation - tick_start_time;
   if (delta_time > DELTA_TIME_CAP) delta_time = DELTA_TIME_CAP;
   tick_start_time = seconds_since_creation;
+
+  if (!window->gamepad_is_connected()) {
+    switch_scene(SCENE__CONNECT_GAMEPAD);
+    return;
+  }
 
   // UPDATE
 
@@ -96,9 +100,10 @@ void main_menu__tick(
   pyramid_transform.position.x += 0.1f * delta_time;
   sec_until_arena -= delta_time;
   if (sec_until_arena <= 0) {
-    scenes[1]->init(window, vwprt, gpu);
-    switch_scene(scenes[1]);
     sec_until_arena = SEC_UNTIL_ARENA;
+    pyramid_transform = (struct transform){0};
+    switch_scene(SCENE__ARENA);
+    return;
   }
 
   // menu_sky__tick(delta_time, sec onds_since_creation, gpu);
@@ -112,7 +117,7 @@ void main_menu__tick(
   // );
   // gpu->clear_depth_buffer();
 
-  gpu->select_gpu_program(&pyramid_shader);
+  gpu->select_shader(&pyramid_shader);
   gpu->select_texture(&clod256_texture);
   space__create_model(
     &WORLDSPACE,

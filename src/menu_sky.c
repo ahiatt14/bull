@@ -18,7 +18,7 @@
 #define INDEX_COUNT 9600
 #define SQUARE_FACE_WIDTH 0.05f
 
-static struct gpu_program shader;
+static struct shader shad;
 static struct m4x4 local_to_world;
 static struct m3x3 normals_local_to_world;
 static struct transform trans = {
@@ -79,14 +79,14 @@ void menu_sky__init(const struct gpu_api *gpu) {
     mesh.indices[indices_index++] = vert_index + VERTS_PER_SIDE;
   }
 
-  // shader.frag_shader_src = normal_debug_frag_src;
-  shader.frag_shader_src = flat_texture_frag_src;
-  shader.vert_shader_src = default_vert_src;
+  // shad.frag_shad_src = normal_debug_frag_src;
+  shad.frag_shader_src = flat_texture_frag_src;
+  shad.vert_shader_src = default_vert_src;
 
   gpu->copy_rgb_texture_to_gpu(&clod256_texture);
 
   gpu->copy_dynamic_mesh_to_gpu(&mesh);
-  gpu->copy_program_to_gpu(&shader);
+  gpu->copy_shader_to_gpu(&shad);
 }
 
 void menu_sky__tick(
@@ -108,7 +108,7 @@ void menu_sky__draw(
   const struct camera *cam
 ) {
   gpu->cull_back_faces();
-  gpu->select_gpu_program(&shader);
+  gpu->select_shader(&shad);
   gpu->select_texture(&clod256_texture);
   space__create_model(&WORLDSPACE, &trans, &local_to_world);
   space__create_normals_model(&local_to_world, &normals_local_to_world);
@@ -116,7 +116,7 @@ void menu_sky__draw(
     &local_to_world,
     &normals_local_to_world,
     cam,
-    &shader,
+    &shad,
     gpu
   );
   gpu->draw_mesh(&mesh);
