@@ -4,7 +4,7 @@
 #include "tail.h"
 #include "scene.h"
 
-#define ASPECT_RATIO 1.0f/1.0f
+#define ASPECT_RATIO 1
 #define REQUEST_VSYNC_ON 1
 
 #define SCENE_COUNT 3
@@ -17,10 +17,14 @@ static uint8_t paused = 0;
 void pause() { paused = 1; }
 void unpause() { paused = 0; }
 
-void handle_resize(int w, int h) {
-  gpu.set_viewport(0, 0, w, h);
-  viewport__set_width(w, &vwprt);
-  viewport__set_height(h, &vwprt);
+void handle_resize(uint16_t framebuffer_width, uint16_t framebuffer_height) {
+
+  // TODO: letterboxing!
+  // if 
+
+  gpu.set_viewport(0, 0, framebuffer_width, framebuffer_height);
+  viewport__set_width(framebuffer_width, &vwprt);
+  viewport__set_height(framebuffer_height, &vwprt);
 }
 
 void print_gamepad_connected(int slot) {
@@ -46,16 +50,16 @@ int main() {
     REQUEST_VSYNC_ON,
     &window
   )) return 1;
+  gpu__create_api(&gpu);
 
-  window.register_listener_for_focus(unpause, pause);
-  window.register_listener_for_minimize(pause, unpause);
-  window.register_listener_for_resize(handle_resize);
-  window.register_listener_for_gamepad_connect(
+  window.on_focus_and_unfocus(unpause, pause);
+  window.on_minimize_and_restore(pause, unpause);
+  window.on_framebuffer_resize(handle_resize);
+  window.on_gamepad_connect_and_disconnect(
     print_gamepad_connected,
     print_gamepad_disconnected
   );
-
-  gpu__create_api(&gpu);
+  
   viewport__set_width(gpu.get_viewport_width(), &vwprt);
   viewport__set_height(gpu.get_viewport_height(), &vwprt);
 

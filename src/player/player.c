@@ -22,6 +22,24 @@ static struct m3x3 shared_normals_local_to_world;
 
 static struct vec2 shared_normalized_left_stick_direction;
 
+static void move_player(
+  struct transform *const position,
+  struct vec2 const *const direction,
+  double delta_time
+) {
+  float mag = vec2__magnitude(direction);
+  vec2__normalize(
+    direction,
+    &shared_normalized_left_stick_direction
+  );
+  position->position.x +=
+    shared_normalized_left_stick_direction.x *
+    PLAYER_SPEED * mag * mag * delta_time;
+  position->position.z +=
+    shared_normalized_left_stick_direction.y *
+    PLAYER_SPEED * mag * mag * delta_time;
+}
+
 void player__copy_assets_to_gpu(struct gpu_api const *const gpu) {
   idle_shader.frag_shader_src = solid_color_frag_src;
   idle_shader.vert_shader_src = default_vert_src;
@@ -42,19 +60,13 @@ static void player_idle__update(
     struct player_state **const states,
     struct player *const playr
 ) {
-  vec2__normalize(
-    &input->left_stick_direction,
-    &shared_normalized_left_stick_direction
-  );
-  float mag = vec2__magnitude(&input->left_stick_direction);
-  if (mag > DEADZONE) {
+  if (vec2__magnitude(&input->left_stick_direction) > DEADZONE) {
+    move_player(
+      &playr->transform,
+      &input->left_stick_direction,
+      delta_time
+    );
     playr->current_state = states[PLAYER_STATE__THRUSTING];
-    playr->transform.position.x +=
-      shared_normalized_left_stick_direction.x *
-      PLAYER_SPEED * mag * delta_time;
-    playr->transform.position.z +=
-      shared_normalized_left_stick_direction.y *
-      PLAYER_SPEED * mag * delta_time;;
   }
 }
 
@@ -94,19 +106,13 @@ static void player_thrusting__update(
     struct player_state **const states,
     struct player *const playr
 ) {
-  vec2__normalize(
-    &input->left_stick_direction,
-    &shared_normalized_left_stick_direction
-  );
-  float mag = vec2__magnitude(&input->left_stick_direction);
-  if (mag > DEADZONE) {
+  if (vec2__magnitude(&input->left_stick_direction) > DEADZONE) {
     playr->transform.rotation_in_deg.y += 900 * delta_time;
-    playr->transform.position.x +=
-      shared_normalized_left_stick_direction.x *
-      PLAYER_SPEED * mag * delta_time;
-    playr->transform.position.z +=
-      shared_normalized_left_stick_direction.y *
-      PLAYER_SPEED * mag * delta_time;;
+    move_player(
+      &playr->transform,
+      &input->left_stick_direction,
+      delta_time
+    );
   } else {
     playr->current_state = states[PLAYER_STATE__IDLE];
   }
