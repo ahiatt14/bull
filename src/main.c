@@ -4,6 +4,7 @@
 #include "tail.h"
 #include "scene.h"
 
+#define ASPECT_RATIO 1.0f/1.0f
 #define REQUEST_VSYNC_ON 1
 
 #define SCENE_COUNT 3

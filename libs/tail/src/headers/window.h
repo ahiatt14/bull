@@ -20,23 +20,25 @@ struct window_api {
     void (*handle_unfocus)()
   );
   void (*register_listener_for_resize)(
-    void (*handle_resize)(int width, int height)
+    void (*handle_resize)(uint16_t width, uint16_t height)
   );
   void (*request_buffer_swap)();
   void (*get_gamepad_input)(struct gamepad_input *const input);
   uint8_t (*gamepad_is_connected)();
 };
 
-unsigned short int window__create(
-  int window_width,
-  int window_height,
+uint8_t window__create(
+  uint16_t window_width,
+  uint16_t window_height,
   const char *name,
-  unsigned short int vsync,
+  uint8_t vsync,
   // unsigned short int fullscreen, TODO: add support
   struct window_api *const window
 );
 
-unsigned short int window__received_closed_event();
+// TODO: these could be attached to the struct like the rest,
+// dunno why they aren't?
+uint8_t window__received_closed_event();
 void window__poll_events();
 void window__end();
 

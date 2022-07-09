@@ -25,6 +25,7 @@ struct scene {
   );
 };
 
+// TODO: take another crack at removing this redundancy!
 void main_menu__init(
   struct window_api const *const window,
   struct viewport *const vwprt,
