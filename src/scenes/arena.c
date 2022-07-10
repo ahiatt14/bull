@@ -50,7 +50,8 @@ void arena__init(
   player__init_states(player_states);
   playr = (struct player){
     .transform = (struct transform){{0,0,0},{0,0,0},0.33f},
-    .current_state = player_states[PLAYER_STATE__IDLE]
+    .previous_position = (struct vec3){0,0,0},
+    .current_state = PLAYER_STATE__IDLE
   };
 }
 
@@ -72,17 +73,14 @@ void arena__tick(
   }
   
   window->get_gamepad_input(&input);
-  playr.current_state->update(
+  player_states[playr.current_state]->update(
     delta_time,
     &input,
-    player_states,
     &playr
   );
-  // TODO: this should only run when player is moving!
-  // face_player(&playr.transform);
 
   // DRAW
   gpu->clear(&COLOR_RED);
 
-  playr.current_state->draw(&cam, gpu, &playr);
+  player_states[playr.current_state]->draw(&cam, gpu, &playr);
 }

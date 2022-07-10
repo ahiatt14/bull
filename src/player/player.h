@@ -13,15 +13,13 @@ struct player_state;
 struct player {
   struct transform transform;
   struct vec3 previous_position;
-  struct player_state *current_state; // TODO: change this to 
-  // a uint8_t code like we did for scenes
+  uint8_t current_state;
 };
 
 struct player_state {
   void (*update)(
     double delta_time,
     struct gamepad_input const *const input,
-    struct player_state **const states,
     struct player *const playr
   );
   void (*draw)(

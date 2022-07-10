@@ -41,7 +41,6 @@ static void move_player(
 static void player_idle__update(
     double delta_time,
     struct gamepad_input const *const input,
-    struct player_state **const states,
     struct player *const playr
 ) {
   if (vec2__magnitude(&input->left_stick_direction) > DEADZONE) {
@@ -51,7 +50,7 @@ static void player_idle__update(
       delta_time
     );
     face_player(playr);
-    playr->current_state = states[PLAYER_STATE__THRUSTING];
+    playr->current_state = PLAYER_STATE__THRUSTING;
   }
 }
 
@@ -88,7 +87,6 @@ static void player_idle__draw(
 static void player_thrusting__update(
     double delta_time,
     struct gamepad_input const *const input,
-    struct player_state **const states,
     struct player *const playr
 ) {
   if (vec2__magnitude(&input->left_stick_direction) > DEADZONE) {
@@ -99,7 +97,7 @@ static void player_thrusting__update(
     );
     face_player(playr);
   } else {
-    playr->current_state = states[PLAYER_STATE__IDLE];
+    playr->current_state = PLAYER_STATE__IDLE;
   }
 }
 
