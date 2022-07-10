@@ -1,10 +1,12 @@
-#include <stdio.h>
+#include <stdio.h> // TODO: remove
+#include <math.h>
 
 #include "tail.h"
 
 #include "scene.h"
 #include "constants.h"
 #include "gpu_helpers.h"
+#include "bull_math.h"
 #include "player.h"
 
 #include "sphere_mesh.h"
@@ -12,6 +14,8 @@
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
 #include "default_vert.h"
+
+#define ARENA_RADIUS 2
 
 #define PLAYER_STATE_COUNT 2
 
@@ -34,7 +38,7 @@ void arena__init(
 ) {
 
   camera__init(&cam);
-  camera__set_position(0, 6, 0.1f, &cam); // TODO: not working if z is 0?
+  camera__set_position(0, 8, 0.1f, &cam); // TODO: not working if z is 0?
   camera__set_look_target(&ORIGIN, &cam);
   camera__set_horizontal_fov_in_deg(70, &cam);
   camera__set_near_clip_distance(1, &cam);
@@ -74,6 +78,8 @@ void arena__tick(
     player_states,
     &playr
   );
+  // TODO: this should only run when player is moving!
+  // face_player(&playr.transform);
 
   // DRAW
   gpu->clear(&COLOR_RED);

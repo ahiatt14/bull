@@ -28,6 +28,7 @@ rm -rf game.exe
 ./${tools}sourcify-obj.exe assets/mesh/sphere.obj flat src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/exclamation.obj flat src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/capsule_apartment.obj smooth src/headers/ src/ && \
+./${tools}sourcify-obj.exe assets/mesh/ship.obj smooth src/headers/ src/ && \
 # ./${tools}sourcify-obj.exe assets/mesh/gamepad.obj flat src/headers/ src/ && \
 i686-w64-mingw32-gcc \
 ${includes} \
@@ -43,6 +44,7 @@ rm -f src/headers/burdock_mesh.h
 rm -f src/headers/pyramid_mesh.h
 rm -f src/headers/capsule_apartment_mesh.h
 rm -f src/headers/sphere_mesh.h
+rm -f src/headers/ship_mesh.h
 rm -f src/headers/exclamation_mesh.h
 # rm -f src/headers/gamepad_mesh.h
 
@@ -50,6 +52,7 @@ rm -f src/burdock_mesh.c
 rm -f src/capsule_apartment_mesh.c
 rm -f src/pyramid_mesh.c
 rm -f src/sphere_mesh.c
+rm -f src/ship_mesh.c
 rm -f src/exclamation_mesh.c
 # rm -f src/gamepad_mesh.c
 
