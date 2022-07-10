@@ -27,6 +27,24 @@ static struct m3x3 shared_normals_local_to_world;
 
 static struct vec2 shared_normalized_left_stick_direction;
 
+static struct vec2 vec2__90_deg_to_right(
+  struct vec2 const *const src,
+  struct vec2 *const dest
+) {
+  dest->x = src->y;
+  dest->y = -src->x;
+  return *dest;
+}
+
+static struct vec2 vec2__90_deg_to_left(
+  struct vec2 const *const src,
+  struct vec2 *const dest
+) {
+  dest->x = -src->y;
+  dest->y = src->x;
+  return *dest;
+}
+
 static void face_player(struct player *const playr);
 static void move_player(
   struct transform *const position,
@@ -140,7 +158,15 @@ void player__init_states(struct player_state **const states) {
   states[PLAYER_STATE__THRUSTING] = &thrusting_state;
 }
 
-
+void player__copy_assets_to_gpu(struct gpu_api const *const gpu) {
+  idle_shader.frag_shader_src = solid_color_frag_src;
+  idle_shader.vert_shader_src = default_vert_src;
+  gpu->copy_shader_to_gpu(&idle_shader);
+  thrusting_shader.frag_shader_src = normal_debug_frag_src;
+  thrusting_shader.vert_shader_src = default_vert_src;
+  gpu->copy_shader_to_gpu(&thrusting_shader);
+  gpu->copy_static_mesh_to_gpu(&ship_mesh);
+}
 
 
 
@@ -164,22 +190,14 @@ static void move_player(
     PLAYER_SPEED * mag * mag * delta_time;
 }
 
-void player__copy_assets_to_gpu(struct gpu_api const *const gpu) {
-  idle_shader.frag_shader_src = solid_color_frag_src;
-  idle_shader.vert_shader_src = default_vert_src;
-  gpu->copy_shader_to_gpu(&idle_shader);
-  thrusting_shader.frag_shader_src = normal_debug_frag_src;
-  thrusting_shader.vert_shader_src = default_vert_src;
-  gpu->copy_shader_to_gpu(&thrusting_shader);
-  gpu->copy_static_mesh_to_gpu(&ship_mesh);
-}
-
 static void face_player(
   struct player *const playr
 ) {
+
   struct vec3 center_to_player = {0};
   struct vec3 previous_to_current_position = {0};
   struct vec3 cross = {0};
+
   vec3_minus_vec3(
     &playr->transform.position,
     &ORIGIN,
@@ -195,26 +213,16 @@ static void face_player(
     &previous_to_current_position,
     &cross
   );
-  // TODO: could clean/reduce redudancy here
-  struct vec2 facing = cross.z ?
-    vec2__turn_90_deg(
-      LEFT,
-      (struct vec2){ center_to_player.x, center_to_player.z }
-    ) :
-    vec2__turn_90_deg(
-      RIGHT,
-      (struct vec2){ center_to_player.x, center_to_player.z }
-    );
+  uint8_t facing_cw = cross.y <= 0 ? 1 : 0;
 
-  printf(
-    "c2p: %.2f %.2f pr2p: %.8f %.8f fcng: %.2f %.2f\n",
-    center_to_player.x, center_to_player.z,
-    previous_to_current_position.x, previous_to_current_position.z,
-    facing.x, facing.y
-  );
-
+  float ccw_rotation_in_deg = rad_to_deg(atan(
+    -playr->transform.position.z /
+    playr->transform.position.x
+  ));
   playr->transform.rotation_in_deg.y =
-    rad_to_deg(atan2(facing.y, facing.x));
+    facing_cw ?
+    ccw_rotation_in_deg + 180 :
+    ccw_rotation_in_deg;
 
   playr->previous_position = playr->transform.position;
 }

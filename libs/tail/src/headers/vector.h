@@ -35,6 +35,10 @@ float vec3__dot(
   struct vec3 const *const t0,
   struct vec3 const *const t1
 );
+float vec2__dot(
+  struct vec2 const *const t0,
+  struct vec2 const *const t1
+);
 void vec3__cross(
   struct vec3 const *const t0,
   struct vec3 const *const t1,
