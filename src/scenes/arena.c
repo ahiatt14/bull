@@ -10,12 +10,15 @@
 #include "player.h"
 
 #include "sphere_mesh.h"
+#include "core_mesh.h"
+#include "cage_mesh.h"
 
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
 #include "default_vert.h"
 
-#define ARENA_RADIUS 2
+#define ARENA_RADIUS 3
+#define CORE_RADIUS 1
 
 #define PLAYER_STATE_COUNT 2
 
@@ -26,6 +29,24 @@ static double delta_time;
 static double seconds_since_creation;
 
 static struct camera cam;
+
+static struct transform cage_transform =
+  (struct transform){
+    {0,0,0},
+    {0,0,0},
+    ARENA_RADIUS * 2
+  };
+static struct shader cage_shader;
+
+// static struct transform core_transform =
+//   (struct transform){
+//     {0,0,0},
+//     {0,0,0},
+//     CORE_RADIUS * 2
+//   };
+static struct shader core_shader;
+static struct m4x4 shared_local_to_world;
+static struct m3x3 shared_normals_local_to_world;
 
 static struct player_state *player_states[PLAYER_STATE_COUNT];
 static struct player playr;
@@ -38,13 +59,24 @@ void arena__init(
 ) {
 
   camera__init(&cam);
-  camera__set_position(0, 8, 0.1f, &cam); // TODO: not working if z is 0?
+  camera__set_position(0, 15, 1, &cam); // TODO: not working if z is 0?
   camera__set_look_target(&ORIGIN, &cam);
-  camera__set_horizontal_fov_in_deg(70, &cam);
+  camera__set_horizontal_fov_in_deg(50, &cam);
   camera__set_near_clip_distance(1, &cam);
-  camera__set_far_clip_distance(30, &cam);
+  camera__set_far_clip_distance(50, &cam);
   camera__calculate_lookat(&WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
+
+  gpu->copy_static_mesh_to_gpu(&core_mesh);
+  gpu->copy_static_mesh_to_gpu(&cage_mesh);
+
+  core_shader.frag_shader_src = solid_color_frag_src;
+  core_shader.vert_shader_src = default_vert_src;
+  gpu->copy_shader_to_gpu(&core_shader);
+
+  cage_shader.frag_shader_src = solid_color_frag_src;
+  cage_shader.vert_shader_src = default_vert_src;
+  gpu->copy_shader_to_gpu(&cage_shader);
 
   player__copy_assets_to_gpu(gpu);
   player__init_states(player_states);
@@ -79,8 +111,38 @@ void arena__tick(
     &playr
   );
 
+  cage_transform.rotation_in_deg.x += 3 * delta_time;
+  cage_transform.rotation_in_deg.z += 7 * delta_time;
+
   // DRAW
-  gpu->clear(&COLOR_RED);
+  gpu->clear(&COLOR_BLACK);
 
   player_states[playr.current_state]->draw(&cam, gpu, &playr);
+
+  gpu->cull_back_faces();
+  gpu->select_shader(&cage_shader);
+  gpu->set_fragment_shader_vec3(
+    &cage_shader,
+    "color",
+    &COLOR_SKY_BLUE
+  );
+  gpu->enable_wireframe_mode();
+  space__create_model(
+    &WORLDSPACE,
+    &cage_transform,
+    &shared_local_to_world
+  );
+  space__create_normals_model(
+    &shared_local_to_world,
+    &shared_normals_local_to_world
+  );
+  gpu__set_mvp(
+    &shared_local_to_world,
+    &shared_normals_local_to_world,
+    &cam,
+    &cage_shader,
+    gpu
+  );
+  gpu->draw_mesh(&cage_mesh);
+  gpu->disable_wireframe_mode();
 }

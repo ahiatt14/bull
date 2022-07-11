@@ -1,8 +1,7 @@
 #!/bin/bash
 
 tools="libs/tail/tools/"
-# -mwindows
-options="-O2 -Wall"
+options="-O2 -Wall -mwindows"
 includes="-Ilibs/tail/include -Isrc/headers -Isrc/player -Isrc/scenes"
 
 # TODO: this ain't sustainable!
@@ -29,6 +28,8 @@ rm -rf game.exe
 ./${tools}sourcify-obj.exe assets/mesh/exclamation.obj flat src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/capsule_apartment.obj smooth src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/ship.obj smooth src/headers/ src/ && \
+./${tools}sourcify-obj.exe assets/mesh/core.obj smooth src/headers/ src/ && \
+./${tools}sourcify-obj.exe assets/mesh/cage.obj smooth src/headers/ src/ && \
 # ./${tools}sourcify-obj.exe assets/mesh/gamepad.obj flat src/headers/ src/ && \
 i686-w64-mingw32-gcc \
 ${includes} \
@@ -40,14 +41,17 @@ src/player/*.c \
 src/static_assets/*.c \
 libs/tail/static/tail.a
 
+rm -f src/headers/core_mesh.h
 rm -f src/headers/burdock_mesh.h
 rm -f src/headers/pyramid_mesh.h
 rm -f src/headers/capsule_apartment_mesh.h
 rm -f src/headers/sphere_mesh.h
 rm -f src/headers/ship_mesh.h
 rm -f src/headers/exclamation_mesh.h
+rm -f src/headers/cage_mesh.h
 # rm -f src/headers/gamepad_mesh.h
 
+rm -f src/core_mesh.c
 rm -f src/burdock_mesh.c
 rm -f src/capsule_apartment_mesh.c
 rm -f src/pyramid_mesh.c
@@ -55,6 +59,7 @@ rm -f src/sphere_mesh.c
 rm -f src/ship_mesh.c
 rm -f src/exclamation_mesh.c
 # rm -f src/gamepad_mesh.c
+rm -f src/cage_mesh.c
 
 rm -f src/headers/clod256_texture.h
 rm -f src/clod256_texture.c

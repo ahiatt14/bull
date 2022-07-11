@@ -6,6 +6,7 @@
 
 #define ASPECT_RATIO 1
 #define REQUEST_VSYNC_ON 1
+#define REQUEST_VSYNC_OFF 0
 
 #define SCENE_COUNT 3
 
@@ -88,6 +89,8 @@ int main() {
   gpu.enable_depth_test();
 
   while (!window__received_closed_event()) {
+    // TODO: maybe we can sleep on pause instead of just zooming this loop
+    // while doing no work? look into that
     if (!paused) {      
       scenes[current_scene]->tick(
         &window,
@@ -95,9 +98,13 @@ int main() {
         &gpu,
         previous_scene,
         switch_scene
-      );
-      window.request_buffer_swap();            
+      );         
     }
+    // TODO: we put this out here because if there's no
+    // buffer swapping while the game is paused, opengl
+    // doesn't sync with the cpu and this window loop runs loose,
+    // eating up cpu
+    window.request_buffer_swap();
     window__poll_events();
   }
   

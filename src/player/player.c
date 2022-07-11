@@ -13,7 +13,7 @@
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
 
-#define PLAYER_SPEED 3.0f
+#define PLAYER_SPEED 6
 #define DEADZONE 0.2f
 
 #define LEFT 1
@@ -26,24 +26,6 @@ static struct m4x4 shared_local_to_world;
 static struct m3x3 shared_normals_local_to_world;
 
 static struct vec2 shared_normalized_left_stick_direction;
-
-static struct vec2 vec2__90_deg_to_right(
-  struct vec2 const *const src,
-  struct vec2 *const dest
-) {
-  dest->x = src->y;
-  dest->y = -src->x;
-  return *dest;
-}
-
-static struct vec2 vec2__90_deg_to_left(
-  struct vec2 const *const src,
-  struct vec2 *const dest
-) {
-  dest->x = -src->y;
-  dest->y = src->x;
-  return *dest;
-}
 
 static void face_player(struct player *const playr);
 static void move_player(
@@ -219,6 +201,7 @@ static void face_player(
     -playr->transform.position.z /
     playr->transform.position.x
   ));
+  if (playr->transform.position.x < 0) ccw_rotation_in_deg += 180;
   playr->transform.rotation_in_deg.y =
     facing_cw ?
     ccw_rotation_in_deg + 180 :
