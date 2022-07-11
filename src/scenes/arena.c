@@ -13,9 +13,13 @@
 #include "core_mesh.h"
 #include "cage_mesh.h"
 
+#include "arena_cage_frag.h"
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
 #include "default_vert.h"
+
+#include "noise_texture.h"
+#include "noise2_texture.h"
 
 #define ARENA_RADIUS 3
 #define CORE_RADIUS 1
@@ -67,6 +71,9 @@ void arena__init(
   camera__calculate_lookat(&WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
+  gpu->copy_rgb_texture_to_gpu(&noise_texture);
+  gpu->copy_rgb_texture_to_gpu(&noise2_texture);
+
   gpu->copy_static_mesh_to_gpu(&core_mesh);
   gpu->copy_static_mesh_to_gpu(&cage_mesh);
 
@@ -74,7 +81,7 @@ void arena__init(
   core_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&core_shader);
 
-  cage_shader.frag_shader_src = solid_color_frag_src;
+  cage_shader.frag_shader_src = arena_cage_frag_src;
   cage_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&cage_shader);
 
@@ -121,12 +128,11 @@ void arena__tick(
 
   gpu->cull_back_faces();
   gpu->select_shader(&cage_shader);
-  gpu->set_fragment_shader_vec3(
-    &cage_shader,
-    "color",
-    &COLOR_SKY_BLUE
+  gpu->select_textures(
+    // TODO: cache an array for this
+    (struct texture const *const []){ &noise_texture, &noise2_texture },
+    2
   );
-  gpu->enable_wireframe_mode();
   space__create_model(
     &WORLDSPACE,
     &cage_transform,
@@ -143,6 +149,5 @@ void arena__tick(
     &cage_shader,
     gpu
   );
-  gpu->draw_mesh(&cage_mesh);
-  gpu->disable_wireframe_mode();
+  gpu->draw_wireframe(&cage_mesh);
 }

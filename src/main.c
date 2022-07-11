@@ -4,7 +4,8 @@
 #include "tail.h"
 #include "scene.h"
 
-#define ASPECT_RATIO 1
+#define ASPECT_RATIO 4.0f / 3.0f
+#define VIEWPORT_HEIGHT 
 #define REQUEST_VSYNC_ON 1
 #define REQUEST_VSYNC_OFF 0
 

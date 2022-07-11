@@ -1,6 +1,8 @@
 #ifndef __FOOL_RENDERER__
 #define __FOOL_RENDERER__
 
+#include <stdint.h>
+
 #include "mesh.h"
 #include "m4x4.h"
 #include "m3x3.h"
@@ -29,8 +31,6 @@ struct gpu_api {
   void (*enable_depth_test)();
   void (*cull_back_faces)();
   void (*cull_no_faces)();
-  void (*enable_wireframe_mode)();
-  void (*disable_wireframe_mode)();
 
   void (*copy_dynamic_mesh_to_gpu)(struct drawable_mesh *const dm);
   void (*copy_static_mesh_to_gpu)(struct drawable_mesh *const dm);
@@ -42,6 +42,10 @@ struct gpu_api {
   void (*copy_shader_to_gpu)(struct shader *const gpup);
   void (*select_shader)(struct shader const *const gpup);
   void (*select_texture)(struct texture const *const tex);
+  void (*select_textures)(
+    struct texture const *const *const textures,
+    uint8_t texture_count
+  );
 
   void (*set_viewport)(int x, int y, int w, int h);
   int (*get_viewport_height)();
@@ -69,6 +73,7 @@ struct gpu_api {
   );
 
   void (*draw_mesh)(struct drawable_mesh const *const dm);
+  void (*draw_wireframe)(struct drawable_mesh const *const dm);
 };
 
 void gpu__create_api(struct gpu_api *const gpu);
