@@ -17,7 +17,7 @@
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
 
-#define SEC_UNTIL_ARENA 3
+#define SEC_UNTIL_ARENA 1.5f
 
 static double seconds_since_creation;
 static double tick_start_time;

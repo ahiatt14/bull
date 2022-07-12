@@ -30,9 +30,10 @@ static double seconds_since_creation;
 static double tick_start_time;
 static double delta_time;
 
-static double seconds_since_creation;
-
 static struct camera cam;
+
+static struct m4x4 shared_local_to_world;
+static struct m3x3 shared_normals_local_to_world;
 
 static struct transform cage_transform =
   (struct transform){
@@ -42,15 +43,13 @@ static struct transform cage_transform =
   };
 static struct shader cage_shader;
 
-// static struct transform core_transform =
-//   (struct transform){
-//     {0,0,0},
-//     {0,0,0},
-//     CORE_RADIUS * 2
-//   };
+static struct transform core_transform =
+  (struct transform){
+    {0,0,0},
+    {0,0,0},
+    CORE_RADIUS * 2
+  };
 static struct shader core_shader;
-static struct m4x4 shared_local_to_world;
-static struct m3x3 shared_normals_local_to_world;
 
 static struct player_state *player_states[PLAYER_STATE_COUNT];
 static struct player playr;
@@ -63,7 +62,7 @@ void arena__init(
 ) {
 
   camera__init(&cam);
-  camera__set_position(0, 15, 1, &cam); // TODO: not working if z is 0?
+  camera__set_position(0, 16, 1, &cam); // TODO: not working if z is 0?
   camera__set_look_target(&ORIGIN, &cam);
   camera__set_horizontal_fov_in_deg(50, &cam);
   camera__set_near_clip_distance(1, &cam);
@@ -88,7 +87,7 @@ void arena__init(
   player__copy_assets_to_gpu(gpu);
   player__init_states(player_states);
   playr = (struct player){
-    .transform = (struct transform){{0,0,0},{0,0,0},0.33f},
+    .transform = (struct transform){{0,0,0},{0,0,0},0.5f},
     .previous_position = (struct vec3){0,0,0},
     .current_state = PLAYER_STATE__IDLE
   };
@@ -118,20 +117,29 @@ void arena__tick(
     &playr
   );
 
-  cage_transform.rotation_in_deg.x += 3 * delta_time;
-  cage_transform.rotation_in_deg.z += 7 * delta_time;
+  cage_transform.rotation_in_deg.x += 2 * delta_time;
+  cage_transform.rotation_in_deg.z += 4 * delta_time;
 
   // DRAW
-  gpu->clear(&COLOR_BLACK);
+  gpu->clear(&COLOR_SKY_BLUE);
 
   player_states[playr.current_state]->draw(&cam, gpu, &playr);
 
   gpu->cull_back_faces();
   gpu->select_shader(&cage_shader);
   gpu->select_textures(
-    // TODO: cache an array for this
     (struct texture const *const []){ &noise_texture, &noise2_texture },
     2
+  );
+  gpu->set_fragment_shader_vec3(
+    &cage_shader,
+    "hot_color",
+    &COLOR_GOLDEN_YELLOW
+  );
+  gpu->set_fragment_shader_vec3(
+    &cage_shader,
+    "cool_color",
+    &COLOR_NEON_PURPLE
   );
   space__create_model(
     &WORLDSPACE,
@@ -150,4 +158,28 @@ void arena__tick(
     gpu
   );
   gpu->draw_wireframe(&cage_mesh);
+  
+  gpu->select_shader(&core_shader);
+  gpu->set_fragment_shader_vec3(
+    &core_shader,
+    "color",
+    &COLOR_GOLDEN_YELLOW
+  );
+  space__create_model(
+    &WORLDSPACE,
+    &core_transform,
+    &shared_local_to_world
+  );
+  space__create_normals_model(
+    &shared_local_to_world,
+    &shared_normals_local_to_world
+  );
+  gpu__set_mvp(
+    &shared_local_to_world,
+    &shared_normals_local_to_world,
+    &cam,
+    &core_shader,
+    gpu
+  );
+  gpu->draw_mesh(&core_mesh);
 }

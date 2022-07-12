@@ -5,14 +5,18 @@
 
 #define PLAYER_STATE__IDLE 0
 #define PLAYER_STATE__THRUSTING 1
-#define PLAYER_STATE__COASTING 2
-#define PLAYER_STATE__DYING 3
+#define PLAYER_STATE__CCW_TO_CW 2
+#define PLAYER_STATE__CW_TO_CCW 3
+// #define PLAYER_STATE__COASTING 
+// #define PLAYER_STATE__DYING 
 
 struct player_state;
 
 struct player {
   struct transform transform;
   struct vec3 previous_position;
+  uint8_t facing_cw; // TODO: is this redundant?
+  // does the transform contain info enough to derive from?
   uint8_t current_state;
 };
 

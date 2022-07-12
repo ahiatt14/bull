@@ -46,8 +46,8 @@ void switch_scene(uint8_t new_scene) {
 int main() {
 
   if (!window__create(
-    800,
-    800,
+    1000,
+    1000,
     "BULL",
     REQUEST_VSYNC_ON,
     &window

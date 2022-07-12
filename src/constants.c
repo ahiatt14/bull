@@ -11,6 +11,16 @@ const struct vec3 COLOR_SKY_BLUE = {
   206.0f / 255.0f,
   235.0f / 255.0f
 };
+const struct vec3 COLOR_GOLDEN_YELLOW = {
+  255.0f / 255.0f,
+  184.0f / 255.0f,
+  28.0f / 255.0f
+};
+const struct vec3 COLOR_NEON_PURPLE = {
+  199.0f / 255.0f,
+  36.0f / 255.0f,
+  177.0f / 255.0f
+};
 
 const struct vec3 ORIGIN = { 0, 0, 0 };
 const struct coordinate_space WORLDSPACE = {

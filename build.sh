@@ -34,6 +34,7 @@ rm -rf game.exe
 ./${tools}sourcify-obj.exe assets/mesh/ship.obj smooth src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/core.obj smooth src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/cage.obj smooth src/headers/ src/ && \
+./${tools}sourcify-obj.exe assets/mesh/bird.obj flat src/headers/ src/ && \
 # ./${tools}sourcify-obj.exe assets/mesh/gamepad.obj flat src/headers/ src/ && \
 i686-w64-mingw32-gcc \
 ${includes} \
@@ -53,6 +54,7 @@ rm -f src/headers/sphere_mesh.h
 rm -f src/headers/ship_mesh.h
 rm -f src/headers/exclamation_mesh.h
 rm -f src/headers/cage_mesh.h
+rm -f src/headers/bird_mesh.h
 # rm -f src/headers/gamepad_mesh.h
 
 rm -f src/core_mesh.c
@@ -64,6 +66,7 @@ rm -f src/ship_mesh.c
 rm -f src/exclamation_mesh.c
 # rm -f src/gamepad_mesh.c
 rm -f src/cage_mesh.c
+rm -f src/bird_mesh.c
 
 rm -f src/headers/clod256_texture.h
 rm -f src/clod256_texture.c

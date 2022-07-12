@@ -8,7 +8,7 @@
 #include "gpu_helpers.h"
 #include "player.h"
 
-#include "ship_mesh.h"
+#include "bird_mesh.h"
 #include "default_vert.h"
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
@@ -77,7 +77,7 @@ static void player_idle__draw(
     &idle_shader,
     gpu
   );
-  gpu->draw_mesh(&ship_mesh);
+  gpu->draw_mesh(&bird_mesh);
 }
 
 /*
@@ -95,6 +95,8 @@ static void player_thrusting__update(
       &input->left_stick_direction,
       delta_time
     );
+    // check if player is moving the same direction as they were
+    // last frame. if not, move to a flipping state
     face_player(playr);
   } else {
     playr->current_state = PLAYER_STATE__IDLE;
@@ -123,9 +125,27 @@ static void player_thrusting__draw(
     &thrusting_shader,
     gpu
   );
-  gpu->draw_mesh(&ship_mesh);
+  gpu->draw_mesh(&bird_mesh);
 }
 
+static void player_cw_to_ccw__udpate(
+  double delta_time,
+  struct gamepad_input const *const input,
+  struct player *const playr
+) {
+  if (vec2__magnitude(&input->left_stick_direction) > DEADZONE) {
+    move_player(
+      &playr->transform,
+      &input->left_stick_direction,
+      delta_time
+    );
+  }
+
+}
+
+// INITIALIZATION
+
+// TODO: no reason not to share some draw fns here!
 static struct player_state idle_state = {
   .update = player_idle__update,
   .draw = player_idle__draw,
@@ -134,6 +154,10 @@ static struct player_state thrusting_state = {
   .update = player_thrusting__update,
   .draw = player_thrusting__draw
 };
+// static struct player_state cw_to_ccw_state = {
+//   .update = player_cw_to_ccw__udpate,
+//   .draw = player_cw_to_ccw__draw
+// };
 
 void player__init_states(struct player_state **const states) {
   states[PLAYER_STATE__IDLE] = &idle_state;
@@ -144,13 +168,11 @@ void player__copy_assets_to_gpu(struct gpu_api const *const gpu) {
   idle_shader.frag_shader_src = solid_color_frag_src;
   idle_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&idle_shader);
-  thrusting_shader.frag_shader_src = normal_debug_frag_src;
+  thrusting_shader.frag_shader_src = solid_color_frag_src;
   thrusting_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&thrusting_shader);
-  gpu->copy_static_mesh_to_gpu(&ship_mesh);
+  gpu->copy_static_mesh_to_gpu(&bird_mesh);
 }
-
-
 
 // HELPERS
 
@@ -180,6 +202,8 @@ static void face_player(
   struct vec3 previous_to_current_position = {0};
   struct vec3 cross = {0};
 
+  // TODO: move the "facing_cw" determination logic
+  // into local static fn so we can use it in other states
   vec3_minus_vec3(
     &playr->transform.position,
     &ORIGIN,
