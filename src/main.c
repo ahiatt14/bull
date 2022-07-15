@@ -73,9 +73,9 @@ int main() {
     WINDOW_HEIGHT,
     50,
     50,
-    "HEAVEN FOR BIRDS",
+    "ONE GOOD HAWK",
     REQUEST_VSYNC_ON,
-    REQUEST_FULLSCREEN,
+    REQUEST_WINDOWED,
     &window
   )) return 1;
   gpu__create_api(&gpu);
@@ -92,18 +92,18 @@ int main() {
   viewport__set_height(gpu.get_viewport_height(), &vwprt);
 
   struct scene main_menu_scene;
-  struct scene arena_scene;
+  struct scene action_scene;
   struct scene connect_gamepad;
   main_menu_scene.init = main_menu__init;
   main_menu_scene.tick = main_menu__tick;
-  arena_scene.init = arena__init;
-  arena_scene.tick = arena__tick;
+  action_scene.init = action__init;
+  action_scene.tick = action__tick;
   connect_gamepad.init = connect_gamepad__init;
   connect_gamepad.tick = connect_gamepad__tick;
 
   struct scene const *const scenes[SCENE_COUNT] = {
     &main_menu_scene,
-    &arena_scene,
+    &action_scene,
     &connect_gamepad
   };
 

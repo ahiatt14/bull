@@ -4,7 +4,7 @@
 #include "tail.h"
 
 #define SCENE__MAIN_MENU 0
-#define SCENE__ARENA 1
+#define SCENE__ACTION 1
 #define SCENE__CONNECT_GAMEPAD 2
 
 struct scene;
@@ -39,12 +39,12 @@ void main_menu__tick(
   void (*switch_scene)(uint8_t new_scene)
 );
 
-void arena__init(
+void action__init(
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu
 );
-void arena__tick(
+void action__tick(
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu,

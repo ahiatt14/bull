@@ -17,7 +17,7 @@
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
 
-#define SEC_UNTIL_ARENA 1.5f
+#define SEC_UNTIL_ACTION 1.5f
 
 static double seconds_since_creation;
 static double tick_start_time;
@@ -31,7 +31,7 @@ static struct shader pyramid_shader;
 static struct m4x4 pyramid_local_to_world;
 static struct m3x3 pyramid_normals_local_to_world;
 
-static double sec_until_arena = SEC_UNTIL_ARENA; 
+static double sec_until_action = SEC_UNTIL_ACTION; 
 static double seconds_since_creation;
 
 void main_menu__init(
@@ -98,11 +98,11 @@ void main_menu__tick(
 
   pyramid_transform.rotation_in_deg.y += 20.0f * delta_time;
   pyramid_transform.position.x += 0.1f * delta_time;
-  sec_until_arena -= delta_time;
-  if (sec_until_arena <= 0) {
-    sec_until_arena = SEC_UNTIL_ARENA;
+  sec_until_action -= delta_time;
+  if (sec_until_action <= 0) {
+    sec_until_action = SEC_UNTIL_ACTION;
     pyramid_transform = (struct transform){0};
-    switch_scene(SCENE__ARENA);
+    switch_scene(SCENE__ACTION);
     return;
   }
 

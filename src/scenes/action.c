@@ -55,14 +55,14 @@ static struct player_state *player_states[PLAYER_STATE_COUNT];
 static struct player playr;
 static struct gamepad_input gamepad;
 
-void arena__init(
+void action__init(
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu
 ) {
 
   camera__init(&cam);
-  camera__set_position(0, 16, 1, &cam); // TODO: not working if z is 0?
+  camera__set_position(0, 20, 1, &cam); // TODO: not working if z is 0?
   camera__set_look_target(&ORIGIN, &cam);
   camera__set_horizontal_fov_in_deg(50, &cam);
   camera__set_near_clip_distance(1, &cam);
@@ -89,14 +89,14 @@ void arena__init(
   // TODO: create a player struct init function I guess
   // since we're exposing implementation here 
   playr = (struct player){
-    .transform = (struct transform){{0,0,0},{0,0,0},2},
+    .transform = (struct transform){{0,0,0},{0,0,0},1},
     .previous_position = (struct vec3){0},
     .previously_moving_cw = 0,
     .current_state = PLAYER_STATE__IDLE
   };
 }
 
-void arena__tick(
+void action__tick(
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu,
