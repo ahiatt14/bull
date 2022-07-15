@@ -4,10 +4,8 @@
 #include "tail.h"
 #include "scene.h"
 
-#define ASPECT_RATIO 4.0f / 3.0f
-#define VIEWPORT_HEIGHT 
-#define REQUEST_VSYNC_ON 1
-#define REQUEST_VSYNC_OFF 0
+#define ASPECT_RATIO (4.0f / 3.0f)
+#define WINDOW_HEIGHT 900
 
 #define SCENE_COUNT 3
 
@@ -15,16 +13,41 @@ static struct window_api window;
 static struct gpu_api gpu;
 static struct viewport vwprt;
 
+static struct gamepad_input gamepad;
+
 static uint8_t paused = 0;
 void pause() { paused = 1; }
 void unpause() { paused = 0; }
 
 void handle_resize(uint16_t framebuffer_width, uint16_t framebuffer_height) {
+  // TODO: I think there's a converstion out there for going from
+  // glfw screen coords & dpi to resolution. need that here, since
+  // we're using both pixels and screen coords in this math
 
-  // TODO: letterboxing!
-  // if 
+  int viewport_origin_x_pos = 0;
+  int viewport_origin_y_pos = 0;
 
-  gpu.set_viewport(0, 0, framebuffer_width, framebuffer_height);
+  uint16_t viewport_width = framebuffer_width;
+  uint16_t viewport_height = framebuffer_height;
+
+  struct vec2 window_dimensions = window.get_window_dimensions();
+  uint8_t window_aspect_is_wider_than_ours =
+    window_dimensions.x / window_dimensions.y > ASPECT_RATIO ? 1 : 0;
+
+  if (window_aspect_is_wider_than_ours) {
+    viewport_width = viewport_height * ASPECT_RATIO;
+    viewport_origin_x_pos = (window_dimensions.x - viewport_width) / 2.0f;
+  } else {
+    viewport_height = viewport_width / ASPECT_RATIO;
+    viewport_origin_y_pos = (window_dimensions.y - viewport_height) / 2.0f;
+  }
+
+  gpu.set_viewport(
+    viewport_origin_x_pos,
+    viewport_origin_y_pos,
+    viewport_width,
+    viewport_height
+  );
   viewport__set_width(framebuffer_width, &vwprt);
   viewport__set_height(framebuffer_height, &vwprt);
 }
@@ -46,10 +69,13 @@ void switch_scene(uint8_t new_scene) {
 int main() {
 
   if (!window__create(
-    1000,
-    1000,
-    "BULL",
+    WINDOW_HEIGHT * ASPECT_RATIO,
+    WINDOW_HEIGHT,
+    50,
+    50,
+    "HEAVEN FOR BIRDS",
     REQUEST_VSYNC_ON,
+    REQUEST_FULLSCREEN,
     &window
   )) return 1;
   gpu__create_api(&gpu);
@@ -89,10 +115,30 @@ int main() {
 
   gpu.enable_depth_test();
 
-  while (!window__received_closed_event()) {
+  while (!window.received_closed_event()) {
+    window.poll_events();
     // TODO: maybe we can sleep on pause instead of just zooming this loop
-    // while doing no work? look into that
-    if (!paused) {      
+    // while doing no work? seems like we can use
+    // glfwWaitEvents & glfwPostEmptyEvent
+    if (!paused) {
+
+      gamepad = window.get_gamepad_input(gamepad);
+
+      // TODO: ultimately don't like this fn's API.
+      // should be passing in the gamepad struct smh
+      if (button_was_released(
+        BUTTON_SELECT,
+        gamepad.buttons,
+        gamepad.previous_buttons
+      )) {
+        if (window.is_fullscreen()) {
+          window.switch_to_windowed();
+        } else {
+          window.switch_to_fullscreen();
+
+        }
+      }
+
       scenes[current_scene]->tick(
         &window,
         &vwprt,
@@ -106,9 +152,8 @@ int main() {
     // doesn't sync with the cpu and this window loop runs loose,
     // eating up cpu
     window.request_buffer_swap();
-    window__poll_events();
   }
   
-  window__end();
+  window.end();
   return 0;
 }

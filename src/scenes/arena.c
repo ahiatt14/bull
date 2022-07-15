@@ -53,7 +53,7 @@ static struct shader core_shader;
 
 static struct player_state *player_states[PLAYER_STATE_COUNT];
 static struct player playr;
-static struct gamepad_input input;
+static struct gamepad_input gamepad;
 
 void arena__init(
   struct window_api const *const window,
@@ -86,9 +86,12 @@ void arena__init(
 
   player__copy_assets_to_gpu(gpu);
   player__init_states(player_states);
+  // TODO: create a player struct init function I guess
+  // since we're exposing implementation here 
   playr = (struct player){
-    .transform = (struct transform){{0,0,0},{0,0,0},0.5f},
-    .previous_position = (struct vec3){0,0,0},
+    .transform = (struct transform){{0,0,0},{0,0,0},2},
+    .previous_position = (struct vec3){0},
+    .previously_moving_cw = 0,
     .current_state = PLAYER_STATE__IDLE
   };
 }
@@ -110,10 +113,10 @@ void arena__tick(
     return;
   }
   
-  window->get_gamepad_input(&input);
+  gamepad = window->get_gamepad_input(gamepad);
   player_states[playr.current_state]->update(
     delta_time,
-    &input,
+    &gamepad,
     &playr
   );
 

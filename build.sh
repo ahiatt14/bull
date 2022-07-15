@@ -1,7 +1,7 @@
 #!/bin/bash
 
 tools="libs/tail/tools/"
-options="-O2 -Wall -mwindows"
+options="-O2 -Wall"
 includes="-Ilibs/tail/include -Isrc/headers -Isrc/player -Isrc/scenes"
 
 # TODO: this ain't sustainable!

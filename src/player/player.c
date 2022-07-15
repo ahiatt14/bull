@@ -27,12 +27,16 @@ static struct m3x3 shared_normals_local_to_world;
 
 static struct vec2 shared_normalized_left_stick_direction;
 
+static uint8_t player_is_moving_cw(
+  struct player const *const playr
+);
 static void face_player(struct player *const playr);
 static void move_player(
-  struct transform *const position,
+  struct player *const playr,
   struct vec2 const *const direction,
   double delta_time
 );
+static void save_player_history(struct player *const playr);
 
 /*
   IDLE
@@ -40,18 +44,21 @@ static void move_player(
 
 static void player_idle__update(
     double delta_time,
-    struct gamepad_input const *const input,
+    struct gamepad_input const *const gamepad,
     struct player *const playr
 ) {
-  if (vec2__magnitude(&input->left_stick_direction) > DEADZONE) {
+  if (vec2__magnitude(&gamepad->left_stick_direction) > DEADZONE) {
     move_player(
-      &playr->transform,
-      &input->left_stick_direction,
+      playr,
+      &gamepad->left_stick_direction,
       delta_time
     );
     face_player(playr);
     playr->current_state = PLAYER_STATE__THRUSTING;
+  } else {
+
   }
+  save_player_history(playr);
 }
 
 static void player_idle__draw(
@@ -86,21 +93,24 @@ static void player_idle__draw(
 
 static void player_thrusting__update(
     double delta_time,
-    struct gamepad_input const *const input,
+    struct gamepad_input const *const gamepad,
     struct player *const playr
 ) {
-  if (vec2__magnitude(&input->left_stick_direction) > DEADZONE) {
+  if (vec2__magnitude(&gamepad->left_stick_direction) > DEADZONE) {
     move_player(
-      &playr->transform,
-      &input->left_stick_direction,
+      playr,
+      &gamepad->left_stick_direction,
       delta_time
     );
-    // check if player is moving the same direction as they were
-    // last frame. if not, move to a flipping state
+    // if (
+    //   player_is_moving_cw(playr) &&
+    //   playr.moved_cw_last_frame
+    // )
     face_player(playr);
   } else {
     playr->current_state = PLAYER_STATE__IDLE;
   }
+  save_player_history(playr);
 }
 
 static void player_thrusting__draw(
@@ -130,17 +140,17 @@ static void player_thrusting__draw(
 
 static void player_cw_to_ccw__udpate(
   double delta_time,
-  struct gamepad_input const *const input,
+  struct gamepad_input const *const gamepad,
   struct player *const playr
 ) {
-  if (vec2__magnitude(&input->left_stick_direction) > DEADZONE) {
+  if (vec2__magnitude(&gamepad->left_stick_direction) > DEADZONE) {
     move_player(
-      &playr->transform,
-      &input->left_stick_direction,
+      playr,
+      &gamepad->left_stick_direction,
       delta_time
     );
   }
-
+  save_player_history(playr);
 }
 
 // INITIALIZATION
@@ -177,7 +187,7 @@ void player__copy_assets_to_gpu(struct gpu_api const *const gpu) {
 // HELPERS
 
 static void move_player(
-  struct transform *const position,
+  struct player *const playr,
   struct vec2 const *const direction,
   double delta_time
 ) {
@@ -186,50 +196,50 @@ static void move_player(
     direction,
     &shared_normalized_left_stick_direction
   );
-  position->position.x +=
+  playr->transform.position.x +=
     shared_normalized_left_stick_direction.x *
     PLAYER_SPEED * mag * mag * delta_time;
-  position->position.z +=
+  playr->transform.position.z +=
     shared_normalized_left_stick_direction.y *
     PLAYER_SPEED * mag * mag * delta_time;
 }
 
-static void face_player(
-  struct player *const playr
+static uint8_t player_is_moving_cw(
+  struct player const *const playr
 ) {
-
-  struct vec3 center_to_player = {0};
   struct vec3 previous_to_current_position = {0};
   struct vec3 cross = {0};
-
-  // TODO: move the "facing_cw" determination logic
-  // into local static fn so we can use it in other states
-  vec3_minus_vec3(
-    &playr->transform.position,
-    &ORIGIN,
-    &center_to_player
-  );
   vec3_minus_vec3(
     &playr->transform.position,
     &playr->previous_position,
     &previous_to_current_position
   );
   vec3__cross(
-    &center_to_player,
+    &playr->transform.position,
     &previous_to_current_position,
     &cross
   );
-  uint8_t facing_cw = cross.y <= 0 ? 1 : 0;
+  return cross.y <= 0 ? 1 : 0;
+}
 
+static void face_player(
+  struct player *const playr
+) {
+  uint8_t moving_cw = player_is_moving_cw(playr);
   float ccw_rotation_in_deg = rad_to_deg(atan(
     -playr->transform.position.z /
     playr->transform.position.x
   ));
   if (playr->transform.position.x < 0) ccw_rotation_in_deg += 180;
   playr->transform.rotation_in_deg.y =
-    facing_cw ?
+    moving_cw ?
     ccw_rotation_in_deg + 180 :
     ccw_rotation_in_deg;
+}
 
+static void save_player_history(
+  struct player *const playr
+) {
+  playr->previously_moving_cw = player_is_moving_cw(playr);
   playr->previous_position = playr->transform.position;
 }

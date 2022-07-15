@@ -15,8 +15,7 @@ struct player_state;
 struct player {
   struct transform transform;
   struct vec3 previous_position;
-  uint8_t facing_cw; // TODO: is this redundant?
-  // does the transform contain info enough to derive from?
+  uint8_t previously_moving_cw;
   uint8_t current_state;
 };
 
