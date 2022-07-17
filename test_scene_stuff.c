@@ -6,18 +6,26 @@ static void send_the_arm_home() {
 
 }
 
-// TODO: wonder if we want to handle entering/leaving for "bullets"
-// or small items. double the checks could be expensive and we'll probably
-// have lotsa bullets?
+struct collision_check {
+  void (*check_overlaps)(
+    void (*handle_enter_overlap)(),
+    void (*handle_leave_overlap)(),
+    struct player
+  );
+  void (*handle_enter_overlap)();
+  void (*handle_leave_overlap)();
+};
+
 static struct collision_check collision_checks[COLLISION_CHECK_COUNT] = {
   (struct collision_check){
     check_bullet_overlaps,
-    handle_bullet_enter_overlap,
-    handle_bullet_leave_overlap
+    handle_bullet_enter,
+    handle_bullet_leave
   },
   (struct collision_check){
-    check_laser_overlaps,
-    handle_
+    check_hard_block_overlaps,
+    handle_hard_block_enter,
+    handle_hard_block_leave
   }
 };
 
@@ -27,8 +35,7 @@ action__tick() {
   move_player(
     player,
     arena,
-    bring_out_the_arm,
-    send_the_arm_home
+    player_arena_callbacks
   );
 
   update_bullets();
@@ -44,29 +51,30 @@ action__tick() {
       collision_checks[i].handle_leave_overlap
     );
     if (
-      player.current_state == PLAYER_STATE__REELING ||
-      player.current_state == PLAYER_STATE__DYING
+      player.current_input_state == PLAYER_STATE__REELING ||
+      player.current_effect_state == PLAYER_STATE__DYING
     ) break;
   }
 
 
 }
 
-struct collision_check {
-  void (*check_overlaps)(
-    void (*handle_enter_overlap)(),
-    void (*handle_leave_overlap)(),
-    struct player
-  );
-  void (*handle_enter_overlap)();
-  void (*handle_leave_overlap)();
+struct player_arena_callbacks {
+  void (*handle_player_entering_core)()
+  void (*handle_player_leaving_arena)();
+  void (*handle_player_entering_arena)();
 };
 
 static void move_player(
-  struct player,
-  struct arena,
-  void (*handle_player_leaving_arena)()
-  void (*handle_player_entering_arena)()
+  double delta_time,
+  struct gamepad_input const *const gamepad,
+  struct player_arena_callbacks const *const callbacks,
+  struct *const player,
+  struct *const arena
 ) {
-
+  player_states[player->current_state]->update(
+    delta_time,
+    gamepad
+  );
 }
+
