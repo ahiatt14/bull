@@ -29,21 +29,21 @@ static struct collision_check collision_checks[COLLISION_CHECK_COUNT] = {
   }
 };
 
+action__init() {
+  
+}
+
 action__tick() {
 
-
-  move_player(
+  handle_player_input(
     player,
+    player_action_callbacks,
     arena,
     player_arena_callbacks
   );
 
-  update_bullets();
-  update_lasers();
-  update_blocks();
-  update_arms(); 
+  // update_bullets();
 
-  // e.g.
   for (int i = 0; i < COLLISION_CHECK_COUNT; i++) {
     collision_checks[i].check_overlaps(
       playr,
@@ -52,17 +52,22 @@ action__tick() {
     );
     if (
       player.current_input_state == PLAYER_STATE__REELING ||
-      player.current_effect_state == PLAYER_STATE__DYING
+      player.current_input_state == PLAYER_STATE__DYING
     ) break;
   }
 
 
 }
 
+struct player_action_callbacks {
+  void (*start_main_auto_fire)();
+  void (*stop_main_auto_fire)();
+  void (*fire_special)();
+};
 struct player_arena_callbacks {
-  void (*handle_player_entering_core)()
-  void (*handle_player_leaving_arena)();
-  void (*handle_player_entering_arena)();
+  void (*player_entered_core)();
+  void (*player_left_arena)();
+  void (*player_entered_arena)();
 };
 
 static void move_player(
