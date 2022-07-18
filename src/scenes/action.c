@@ -17,17 +17,13 @@
 
 // CONSTANTS
 
-#define CORE_RADIUS 0.66f
+#define CORE_RADIUS 1
 #define ARENA_RADIUS 3
-
-#define PLAYER_INPUT_STATE_COUNT 2
-#define PLAYER_EFFECT_STATE_COUNT 1
 
 // FORWARD DECS
 
 static uint8_t player_is_moving_cw(struct player const *const playr);
 static void face_player(struct player *const playr);
-
 
 // LOCALS
 
@@ -59,19 +55,6 @@ struct player player_one = (struct player){
   .input_state = PLAYER_INPUT_STATE__IDLE,
   .effect_state = PLAYER_EFFECT_STATE__HEALTHY
 };
-
-// TODO: move these lists back into player.c!
-void (*player_input_state_updates[PLAYER_INPUT_STATE_COUNT])(
-  double delta_time,
-  struct gamepad_input const *const gamepad,
-  struct player *const player_one,
-  struct player_actions const *const actions 
-);
-
-void (*player_effect_state_updates[PLAYER_EFFECT_STATE_COUNT])(
-  double delta_time,
-  struct player *const player_one
-);
 
 static void print_autofiring() {
   printf("autofiring!\n");
@@ -106,12 +89,6 @@ void action__init(
   core__copy_assets_to_gpu(gpu);
   arena__copy_assets_to_gpu(gpu);
 
-  // TODO: already forgot why we want the state update lists
-  // out here instead of hidden in the player module smdh
-  player__init_state_lists(
-    player_input_state_updates,
-    player_effect_state_updates
-  );
   player__copy_assets_to_gpu(gpu);
 }
 
@@ -125,10 +102,10 @@ void action__tick(
 
   // GAME TIME
 
+  tick_start_time = seconds_since_creation;
   seconds_since_creation = window->get_seconds_since_creation();
   delta_time = seconds_since_creation - tick_start_time;
   if (delta_time > DELTA_TIME_CAP) delta_time = DELTA_TIME_CAP;
-  tick_start_time = seconds_since_creation;
 
   // HANDLE UNPLUGGED GAMEPAD
   
@@ -138,15 +115,21 @@ void action__tick(
   }
 
   // GAMEPLAY
+
+  arena__update(
+    delta_time,
+    &arena
+  );
   
-  window->get_gamepad_input(gamepad);
-  player_input_state_updates[player_one.input_state](
+  gamepad = window->get_gamepad_input(gamepad);
+  player__update(
     delta_time,
     gamepad,
-    &player_one,
-    &player_one_actions
+    &player_one_actions,
+    &player_one
   );
-  player_one.transform.position = player_one.desired_position;
+  face_player(&player_one);
+  player_one.transform.position = player_one.projected_position;
 
   // DRAW
 
@@ -159,14 +142,16 @@ void action__tick(
 
 // HELPERS
 
+// TODO: these could be used for any object not just the player
+// move into arena and add to its API
 static uint8_t player_is_moving_cw(
   struct player const *const playr
 ) {
   struct vec3 previous_to_current_position = {0};
   struct vec3 cross = {0};
   vec3_minus_vec3(
+    &playr->projected_position,
     &playr->transform.position,
-    &playr->previous_position,
     &previous_to_current_position
   );
   vec3__cross(

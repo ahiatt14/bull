@@ -84,10 +84,10 @@ void main_menu__tick(
   uint8_t previous_scene,
   void (*switch_scene)(uint8_t new_scene)
 ) {
+  tick_start_time = seconds_since_creation;
   seconds_since_creation = window->get_seconds_since_creation();
   delta_time = seconds_since_creation - tick_start_time;
   if (delta_time > DELTA_TIME_CAP) delta_time = DELTA_TIME_CAP;
-  tick_start_time = seconds_since_creation;
 
   if (!window->gamepad_is_connected()) {
     switch_scene(SCENE__CONNECT_GAMEPAD);

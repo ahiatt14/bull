@@ -13,14 +13,24 @@
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
 
-#define PLAYER_SPEED 6
-#define DEADZONE 0.2f
+// CONSTANTS
 
-static uint8_t move_player_if_thats_what_they_want(
+#define PLAYER_INPUT_STATE_COUNT 3
+#define PLAYER_EFFECT_STATE_COUNT 1
+
+#define PLAYER_SPEED 6
+#define TRIGGER_DEADZONE 0.5f
+#define STICK_DEADZONE 0.2f
+
+// FORWARD DECS
+
+static uint8_t project_player_position(
   double delta_time,
   struct vec2 const *const direction,
   struct player *const playr
 );
+
+// LOCALS
 
 static struct shader shared_healthy_shader;
 
@@ -29,22 +39,22 @@ static struct m3x3 shared_normals_local_to_world;
 
 static struct vec2 shared_normalized_left_stick_direction;
 
-// STATES
+// STATE STUFF
 
 static void player_idle__update(
   double delta_time,
   struct gamepad_input gamepad,
-  struct player *const playr,
-  struct player_actions const *const actions
+  struct player_actions const *const actions,
+  struct player *const playr
 ) {
 
-  if (move_player_if_thats_what_they_want(
+  if (project_player_position(
     delta_time,
     &gamepad.left_stick_direction,
     playr
-  )) playr->input_state = PLAYER_INPUT_STATE__THRUSTING;;
+  )) playr->input_state = PLAYER_INPUT_STATE__THRUSTING;
 
-  if (gamepad.left_and_right_triggers.y >= DEADZONE) {
+  if (gamepad.left_and_right_triggers.y >= TRIGGER_DEADZONE) {
     actions->start_auto_fire();
     playr->input_state = PLAYER_INPUT_STATE__AUTOFIRING;
   }
@@ -53,17 +63,17 @@ static void player_idle__update(
 static void player_thrusting__update(
   double delta_time,
   struct gamepad_input gamepad,
-  struct player *const playr,
-  struct player_actions const *const actions
+  struct player_actions const *const actions,
+  struct player *const playr
 ) {
 
-  if (!move_player_if_thats_what_they_want(
+  if (!project_player_position(
     delta_time,
     &gamepad.left_stick_direction,
     playr
   )) playr->input_state = PLAYER_INPUT_STATE__IDLE;
 
-  if (gamepad.left_and_right_triggers.y >= DEADZONE) {
+  if (gamepad.left_and_right_triggers.y >= TRIGGER_DEADZONE) {
     actions->start_auto_fire();
     playr->input_state = PLAYER_INPUT_STATE__AUTOFIRING;
   }
@@ -72,17 +82,17 @@ static void player_thrusting__update(
 static void player_autofiring__update(
   double delta_time,
   struct gamepad_input gamepad,
-  struct player *const playr,
-  struct player_actions const *const actions
+  struct player_actions const *const actions,
+  struct player *const playr
 ) {
 
-  move_player_if_thats_what_they_want(
+  project_player_position(
     delta_time,
     &gamepad.left_stick_direction,
     playr
   );
 
-  if (gamepad.left_and_right_triggers.y < DEADZONE) {
+  if (gamepad.left_and_right_triggers.y < TRIGGER_DEADZONE) {
     actions->stop_auto_fire();
     playr->input_state = PLAYER_INPUT_STATE__IDLE;
   }
@@ -95,6 +105,24 @@ static void player_healthy__update(
   return;
 }
 
+void (*player_input_state_updates[PLAYER_INPUT_STATE_COUNT])(
+  double delta_time,
+  struct gamepad_input gamepad,
+  struct player_actions const *const actions,
+  struct player *const playr
+) = {
+  player_idle__update,
+  player_thrusting__update,
+  player_autofiring__update
+};
+
+void (*player_effect_state_updates[PLAYER_EFFECT_STATE_COUNT])(
+  double delta_time,
+  struct player *const playr
+) = {
+  player_healthy__update
+};
+
 // PUBLIC API
 
 void player__copy_assets_to_gpu(
@@ -106,24 +134,19 @@ void player__copy_assets_to_gpu(
   gpu->copy_static_mesh_to_gpu(&bird_mesh);
 }
 
-void player__init_state_lists(
-  void (*input_state_updates[])(
-    double delta_time,
-    struct gamepad_input const *const gamepad,
-    struct player *const playr,
-    struct player_actions const *const actions 
-  ),
-  void (*effect_state_updates[])(
-    double delta_time,
-    struct player *const playr
-  )
+void player__update(
+  double delta_time,
+  struct gamepad_input gamepad,
+  struct player_actions const *const actions,
+  struct player *const playr
 ) {
-  input_state_updates[PLAYER_INPUT_STATE__IDLE] = player_idle__update;
-  input_state_updates[PLAYER_INPUT_STATE__THRUSTING] = player_thrusting__update;
-  input_state_updates[PLAYER_INPUT_STATE__AUTOFIRING] =
-    player_autofiring__update;
-
-  effect_state_updates[PLAYER_EFFECT_STATE__HEALTHY] = player_healthy__update;
+  player_input_state_updates[playr->input_state](
+    delta_time,
+    gamepad,
+    actions,
+    playr
+  );
+  // TODO: add effect update call
 }
 
 void player__draw(
@@ -158,22 +181,22 @@ void player__draw(
 
 // HELPERS
 
-static uint8_t move_player_if_thats_what_they_want(
+static uint8_t project_player_position(
   double delta_time,
   struct vec2 const *const direction,
   struct player *const playr
 ) {
   // TODO: maybe vector library should take vecs by value instead of ptr
   float mag = vec2__magnitude(direction);
-  if (mag < DEADZONE) return 0;
+  if (mag < STICK_DEADZONE) return 0;
   vec2__normalize(
     direction,
     &shared_normalized_left_stick_direction
   );
-  playr->desired_position.x +=
+  playr->projected_position.x +=
     shared_normalized_left_stick_direction.x *
     PLAYER_SPEED * mag * mag * delta_time;
-  playr->desired_position.z +=
+  playr->projected_position.z +=
     shared_normalized_left_stick_direction.y *
     PLAYER_SPEED * mag * mag * delta_time;
   return 1;

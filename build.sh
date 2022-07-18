@@ -43,6 +43,7 @@ ${options} \
 src/*.c \
 src/scenes/*.c \
 src/player/*.c \
+src/gameplay/*.c \
 src/static_assets/*.c \
 libs/tail/static/tail.a
 

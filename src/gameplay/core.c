@@ -1,4 +1,5 @@
 #include "tail.h"
+#include "core.h"
 
 #include "gpu_helpers.h"
 #include "constants.h"
@@ -6,6 +7,8 @@
 #include "core_mesh.h"
 #include "solid_color_frag.h"
 #include "default_vert.h"
+
+static struct shader core_shader;
 
 static struct m4x4 shared_local_to_world;
 static struct m3x3 shared_normals_local_to_world;
@@ -39,7 +42,7 @@ void core__draw(
   );
   space__create_model(
     &WORLDSPACE,
-    &core_transform,
+    &core->transform,
     &shared_local_to_world
   );
   space__create_normals_model(
@@ -49,7 +52,7 @@ void core__draw(
   gpu__set_mvp(
     &shared_local_to_world,
     &shared_normals_local_to_world,
-    &cam,
+    cam,
     &core_shader,
     gpu
   );

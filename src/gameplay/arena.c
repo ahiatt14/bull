@@ -1,6 +1,7 @@
 #include <stdint.h>
 
 #include "tail.h"
+#include "arena.h"
 
 #include "gpu_helpers.h"
 #include "constants.h"
@@ -55,7 +56,7 @@ void arena__draw(
   gpu__set_mvp(
     &shared_local_to_world,
     &shared_normals_local_to_world,
-    &cam,
+    cam,
     &cage_shader,
     gpu
   );
