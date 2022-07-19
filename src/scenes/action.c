@@ -79,11 +79,11 @@ void action__init(
 
   camera__init(&cam);
   camera__set_position(0, 20, 1, &cam); // TODO: not working if z is 0?
-  camera__set_look_target(&ORIGIN, &cam);
+  camera__set_look_target(ORIGIN, &cam);
   camera__set_horizontal_fov_in_deg(50, &cam);
   camera__set_near_clip_distance(1, &cam);
   camera__set_far_clip_distance(50, &cam);
-  camera__calculate_lookat(&WORLDSPACE.up, &cam);
+  camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
   core__copy_assets_to_gpu(gpu);
@@ -129,6 +129,10 @@ void action__tick(
     &player_one
   );
   face_player(&player_one);
+  
+  // collision with core
+  // if ()
+
   player_one.transform.position = player_one.projected_position;
 
   // DRAW
@@ -147,17 +151,13 @@ void action__tick(
 static uint8_t player_is_moving_cw(
   struct player const *const playr
 ) {
-  struct vec3 previous_to_current_position = {0};
-  struct vec3 cross = {0};
-  vec3_minus_vec3(
-    &playr->projected_position,
-    &playr->transform.position,
-    &previous_to_current_position
+  struct vec3 previous_to_current_position = vec3_minus_vec3(
+    playr->projected_position,
+    playr->transform.position
   );
-  vec3__cross(
-    &playr->transform.position,
-    &previous_to_current_position,
-    &cross
+  struct vec3 cross = vec3__cross(
+    playr->transform.position,
+    previous_to_current_position
   );
   return cross.y <= 0 ? 1 : 0;
 }
@@ -175,4 +175,8 @@ static void face_player(
     moving_cw ?
     ccw_rotation_in_deg + 180 :
     ccw_rotation_in_deg;
+  
+  // TODO: add step to tilt player to left or right on their
+  // forward axis depending on cw/ccw movement
+  // so they're banking
 }

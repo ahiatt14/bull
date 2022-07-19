@@ -26,7 +26,7 @@
 
 static uint8_t project_player_position(
   double delta_time,
-  struct vec2 const *const direction,
+  struct vec2 direction,
   struct player *const playr
 );
 
@@ -50,7 +50,7 @@ static void player_idle__update(
 
   if (project_player_position(
     delta_time,
-    &gamepad.left_stick_direction,
+    gamepad.left_stick_direction,
     playr
   )) playr->input_state = PLAYER_INPUT_STATE__THRUSTING;
 
@@ -69,7 +69,7 @@ static void player_thrusting__update(
 
   if (!project_player_position(
     delta_time,
-    &gamepad.left_stick_direction,
+    gamepad.left_stick_direction,
     playr
   )) playr->input_state = PLAYER_INPUT_STATE__IDLE;
 
@@ -88,7 +88,7 @@ static void player_autofiring__update(
 
   project_player_position(
     delta_time,
-    &gamepad.left_stick_direction,
+    gamepad.left_stick_direction,
     playr
   );
 
@@ -183,16 +183,13 @@ void player__draw(
 
 static uint8_t project_player_position(
   double delta_time,
-  struct vec2 const *const direction,
+  struct vec2 direction,
   struct player *const playr
 ) {
   // TODO: maybe vector library should take vecs by value instead of ptr
   float mag = vec2__magnitude(direction);
   if (mag < STICK_DEADZONE) return 0;
-  vec2__normalize(
-    direction,
-    &shared_normalized_left_stick_direction
-  );
+  shared_normalized_left_stick_direction = vec2__normalize(direction);
   playr->projected_position.x +=
     shared_normalized_left_stick_direction.x *
     PLAYER_SPEED * mag * mag * delta_time;

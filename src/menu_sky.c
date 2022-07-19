@@ -146,38 +146,30 @@ static void recalculate_normals() {
   for (int y = 0; y < VERTS_PER_SIDE; y++) {
 
     if (y == 0) {
-      vec3_minus_vec3(
-        &mesh.vertices[vert_index].position,
-        &mesh.vertices[vert_index + VERTS_PER_SIDE].position,
-        &final_y_edge
+      final_y_edge = vec3_minus_vec3(
+        mesh.vertices[vert_index].position,
+        mesh.vertices[vert_index + VERTS_PER_SIDE].position
       );
     } else if (y == VERTS_PER_SIDE - 1) {
-      vec3_minus_vec3(
-        &mesh.vertices[vert_index - VERTS_PER_SIDE].position,
-        &mesh.vertices[vert_index].position,
-        &final_y_edge
+      final_y_edge = vec3_minus_vec3(
+        mesh.vertices[vert_index - VERTS_PER_SIDE].position,
+        mesh.vertices[vert_index].position
       );
     } else {
-      vec3_minus_vec3(
-        &mesh.vertices[vert_index].position,
-        &mesh.vertices[vert_index + VERTS_PER_SIDE].position,
-        &y_edges[0]
+      y_edges[0] = vec3_minus_vec3(
+        mesh.vertices[vert_index].position,
+        mesh.vertices[vert_index + VERTS_PER_SIDE].position
       );
-      vec3_minus_vec3(
-        &mesh.vertices[vert_index - VERTS_PER_SIDE].position,
-        &mesh.vertices[vert_index].position,
-        &y_edges[1]
+      y_edges[1] = vec3_minus_vec3(
+        mesh.vertices[vert_index - VERTS_PER_SIDE].position,
+        mesh.vertices[vert_index].position
       );
-      vec3__mean(y_edges, 2, &final_y_edge);
+      final_y_edge = vec3__mean(y_edges, 2);
     }
 
-    vec3__cross(&final_y_edge, &x_edge, &normal);
-    vec3__normalize(&normal, &normal);
+    normal = vec3__normalize(vec3__cross(final_y_edge, x_edge));
 
-    for (int x = 0; x < VERTS_PER_SIDE; x++) memcpy(
-      &mesh.vertices[vert_index++].normal.x,
-      &normal.x,
-      sizeof(struct vec3)
-    );
+    for (int x = 0; x < VERTS_PER_SIDE; x++)
+      mesh.vertices[vert_index++].normal = normal;
   }
 }

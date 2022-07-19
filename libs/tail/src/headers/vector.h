@@ -7,42 +7,50 @@ struct vec2 {
   float x, y;
 };
 
+struct vec2 vec2__normalize(
+  struct vec2 t
+);
+float vec2__magnitude(
+  struct vec2 t
+);
+float vec2__dot(
+  struct vec2 t0,
+  struct vec2 t1
+);
+
 struct vec3 {
   float x, y, z;
 };
 
-void vec3__create(float x, float y, float z, struct vec3 *const t);
-void vec3_plus_vec3(
-  struct vec3 const *const t0,
-  struct vec3 const *const t1,
-  struct vec3 *const sum
+struct vec3 vec3_plus_vec3(
+  struct vec3 t0,
+  struct vec3 t1
 );
-void vec3_minus_vec3(
-  struct vec3 const *const t0,
-  struct vec3 const *const t1,
-  struct vec3 *const diff
+struct vec3 vec3_minus_vec3(
+  struct vec3 t0,
+  struct vec3 t1
 );
-float vec3__magnitude(struct vec3 const *const t);
-float vec2__magnitude(struct vec2 const *const t);
-void vec3__normalize(struct vec3 const *const t, struct vec3 *const normalized);
-void vec2__normalize(struct vec2 const *const t, struct vec2 *const normalized);
-void vec3__mean(
-  struct vec3 const *const vec3s,
-  int count,
-  struct vec3 *const avg
+float vec3__distance(
+  struct vec3 t0,
+  struct vec3 t1
+);
+float vec3__magnitude(
+  struct vec3 t
+);
+struct vec3 vec3__normalize(
+  struct vec3 t
 );
 float vec3__dot(
-  struct vec3 const *const t0,
-  struct vec3 const *const t1
+  struct vec3 t0,
+  struct vec3 t1
 );
-float vec2__dot(
-  struct vec2 const *const t0,
-  struct vec2 const *const t1
+struct vec3 vec3__cross(
+  struct vec3 t0,
+  struct vec3 t1
 );
-void vec3__cross(
-  struct vec3 const *const t0,
-  struct vec3 const *const t1,
-  struct vec3 *const cross
+struct vec3 vec3__mean(
+  struct vec3 const *const vec3s,
+  int count
 );
 
 #endif
