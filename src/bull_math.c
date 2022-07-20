@@ -1,3 +1,6 @@
+#include <math.h>
+#include <stdint.h>
+
 #include "bull_math.h"
 
 char array_contains_u_i(
@@ -16,4 +19,45 @@ struct vec2 vec2__turn_90_deg(
   return left ?
     ((struct vec2){ -src.y, src.x }) : 
     ((struct vec2){ src.y, -src.x });
+}
+
+// TODO: make this work for arbitrary origins
+uint8_t is_moving_cw_around_world_up(
+  struct vec3 position,
+  struct vec3 previous_position
+) {
+  struct vec3 previous_to_current_position = vec3_minus_vec3(
+    position,
+    previous_position
+  );
+  struct vec3 cross = vec3__cross(
+    position,
+    previous_to_current_position
+  );
+  return cross.y <= 0 ? 1 : 0;
+}
+
+float find_cw_or_ccw_facing_around_world_up(
+  struct vec3 position,
+  struct vec3 previous_position
+) {
+  float ccw_rotation_in_deg = rad_to_deg(atan(
+    -position.z /
+    position.x
+  ));
+  if (position.x < 0) ccw_rotation_in_deg += 180;
+  return
+    is_moving_cw_around_world_up(
+      position,
+      previous_position
+    ) ?
+    ccw_rotation_in_deg + 180 :
+    ccw_rotation_in_deg;
+}
+
+float rads_from_arc_len_and_radius(
+  float arc_length,
+  float radius
+) {
+  return arc_length / radius;
 }

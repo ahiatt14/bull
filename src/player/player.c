@@ -56,6 +56,10 @@ static void player_idle__update(
 
   if (gamepad.left_and_right_triggers.y >= TRIGGER_DEADZONE) {
     actions->start_auto_fire();
+    playr->autofire_start_locked_to_cw = is_moving_cw_around_world_up(
+      playr->projected_position,
+      playr->transform.position
+    );
     playr->input_state = PLAYER_INPUT_STATE__AUTOFIRING;
   }
 }
@@ -75,6 +79,10 @@ static void player_thrusting__update(
 
   if (gamepad.left_and_right_triggers.y >= TRIGGER_DEADZONE) {
     actions->start_auto_fire();
+    playr->autofire_start_locked_to_cw = is_moving_cw_around_world_up(
+      playr->projected_position,
+      playr->transform.position
+    );
     playr->input_state = PLAYER_INPUT_STATE__AUTOFIRING;
   }
 }
@@ -188,7 +196,10 @@ static uint8_t project_player_position(
 ) {
   // TODO: maybe vector library should take vecs by value instead of ptr
   float mag = vec2__magnitude(direction);
-  if (mag < STICK_DEADZONE) return 0;
+  if (mag < STICK_DEADZONE) {
+    playr->projected_position = playr->transform.position;
+    return 0;
+  }
   shared_normalized_left_stick_direction = vec2__normalize(direction);
   playr->projected_position.x +=
     shared_normalized_left_stick_direction.x *

@@ -65,4 +65,17 @@ void connect_gamepad__tick(
   void (*switch_scene)(uint8_t new_scene)
 );
 
+void ocean__init(
+  struct window_api const *const window,
+  struct viewport *const vwprt,
+  struct gpu_api const *const gpu
+);
+void ocean__tick(
+  struct window_api const *const window,
+  struct viewport *const vwprt,
+  struct gpu_api const *const gpu,
+  uint8_t previous_scene,
+  void (*switch_scene)(uint8_t new_scene)
+);
+
 #endif

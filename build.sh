@@ -2,7 +2,8 @@
 
 tools="libs/tail/tools/"
 options="-O2 -Wall"
-includes="-Ilibs/tail/include -Isrc/headers -Isrc/player -Isrc/scenes -Isrc/gameplay"
+includes="-Ilibs/tail/include -Isrc/headers \
+-Isrc/player -Isrc/scenes -Isrc/gameplay -I src/ocean"
 
 # TODO: this ain't sustainable!
 

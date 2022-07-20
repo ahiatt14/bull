@@ -17,6 +17,7 @@ struct player {
   struct vec3 projected_position;
   uint8_t input_state;
   uint8_t effect_state;
+  uint8_t autofire_start_locked_to_cw;
 };
 
 struct player_actions {

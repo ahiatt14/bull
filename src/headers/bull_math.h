@@ -16,4 +16,19 @@ struct vec2 vec2__turn_90_deg(
   struct vec2 src
 );
 
+uint8_t is_moving_cw_around_world_up(
+  struct vec3 position,
+  struct vec3 previous_position
+);
+
+float find_cw_or_ccw_facing_around_world_up(
+  struct vec3 position,
+  struct vec3 previous_position
+);
+
+float rads_from_arc_len_and_radius(
+  float arc_length,
+  float radius
+);
+
 #endif

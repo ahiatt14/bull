@@ -20,10 +20,18 @@
 #define CORE_RADIUS 1
 #define ARENA_RADIUS 3
 
+#define MIN_PLAYER_RADIUS CORE_RADIUS * 2.2f
+#define MAX_PLAYER_RADIUS ARENA_RADIUS * 2
+
 // FORWARD DECS
 
-static uint8_t player_is_moving_cw(struct player const *const playr);
-static void face_player(struct player *const playr);
+// static struct vec3 vec3__negate(struct vec3 t);
+static struct vec3 vec3_x_scalar(float s, struct vec3 t);
+struct vec3 slide_along_radius_around_world_origin(
+  float radius,
+  struct vec3 projected_pos,
+  struct vec3 pos
+);
 
 // LOCALS
 
@@ -51,7 +59,7 @@ static struct core_state core = (struct core_state){
 };
 
 struct player player_one = (struct player){
-  .transform = {{1, 0, 0}, {0, 0, 0}, 1},
+  .transform = {{3, 0, 0}, {0, 0, 0}, 1},
   .input_state = PLAYER_INPUT_STATE__IDLE,
   .effect_state = PLAYER_EFFECT_STATE__HEALTHY
 };
@@ -121,17 +129,28 @@ void action__tick(
     &arena
   );
   
-  gamepad = window->get_gamepad_input(gamepad);
   player__update(
     delta_time,
-    gamepad,
+    window->get_gamepad_input(gamepad),
     &player_one_actions,
     &player_one
   );
-  face_player(&player_one);
+  player_one.transform.rotation_in_deg.y =
+    find_cw_or_ccw_facing_around_world_up(
+      player_one.projected_position,
+      player_one.transform.position
+    );
   
-  // collision with core
-  // if ()
+  // TODO: lock player facing when autofiring
+  
+  if (
+    vec3__distance(player_one.projected_position, ORIGIN) <
+    MIN_PLAYER_RADIUS
+  ) player_one.projected_position = slide_along_radius_around_world_origin(
+    MIN_PLAYER_RADIUS,
+    player_one.projected_position,
+    player_one.transform.position
+  );
 
   player_one.transform.position = player_one.projected_position;
 
@@ -146,37 +165,29 @@ void action__tick(
 
 // HELPERS
 
-// TODO: these could be used for any object not just the player
-// move into arena and add to its API
-static uint8_t player_is_moving_cw(
-  struct player const *const playr
-) {
-  struct vec3 previous_to_current_position = vec3_minus_vec3(
-    playr->projected_position,
-    playr->transform.position
-  );
-  struct vec3 cross = vec3__cross(
-    playr->transform.position,
-    previous_to_current_position
-  );
-  return cross.y <= 0 ? 1 : 0;
+// TODO: move to tail
+// static struct vec3 vec3__negate(struct vec3 t) {
+//   return (struct vec3) { -t.x, -t.y, -t.z };
+// }
+
+// TODO: move to tail
+static struct vec3 vec3_x_scalar(float s, struct vec3 t) {
+  return (struct vec3) { t.x * s, t.y * s, t.z * s };
 }
 
-static void face_player(
-  struct player *const playr
+struct vec3 slide_along_radius_around_world_origin(
+  float radius,
+  struct vec3 projected_pos,
+  struct vec3 pos
 ) {
-  uint8_t moving_cw = player_is_moving_cw(playr);
-  float ccw_rotation_in_deg = rad_to_deg(atan(
-    -playr->transform.position.z /
-    playr->transform.position.x
-  ));
-  if (playr->transform.position.x < 0) ccw_rotation_in_deg += 180;
-  playr->transform.rotation_in_deg.y =
-    moving_cw ?
-    ccw_rotation_in_deg + 180 :
-    ccw_rotation_in_deg;
-  
-  // TODO: add step to tilt player to left or right on their
-  // forward axis depending on cw/ccw movement
-  // so they're banking
+  struct vec3 pos_at_radius = vec3_x_scalar(
+    radius / vec3__distance(pos, ORIGIN),
+    pos
+  );
+  float distance_left = vec3__distance(projected_pos, pos_at_radius);
+  float rads = rads_from_arc_len_and_radius(distance_left, radius);
+  if (is_moving_cw_around_world_up(projected_pos, pos)) rads = -rads;
+  struct m4x4 rotation = {0};
+  m4x4__rotation(rads, WORLDSPACE.up, &rotation);
+  return m4x4_x_point(&rotation, pos_at_radius);
 }
