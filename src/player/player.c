@@ -197,7 +197,7 @@ static uint8_t project_player_position(
   // TODO: maybe vector library should take vecs by value instead of ptr
   float mag = vec2__magnitude(direction);
   if (mag < STICK_DEADZONE) {
-    playr->projected_position = playr->transform.position;
+    // playr->projected_position = playr->transform.position;
     return 0;
   }
   shared_normalized_left_stick_direction = vec2__normalize(direction);

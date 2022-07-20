@@ -37,6 +37,9 @@ uint8_t is_moving_cw_around_world_up(
   return cross.y <= 0 ? 1 : 0;
 }
 
+// TODO: bug here. we get correct cw/ccw facing
+// when the player is moving, but when the player stops it always faces
+// back one direction
 float find_cw_or_ccw_facing_around_world_up(
   struct vec3 position,
   struct vec3 previous_position

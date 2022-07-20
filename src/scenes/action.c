@@ -20,8 +20,7 @@
 #define CORE_RADIUS 1
 #define ARENA_RADIUS 3
 
-#define MIN_PLAYER_RADIUS CORE_RADIUS * 2.2f
-#define MAX_PLAYER_RADIUS ARENA_RADIUS * 2
+#define MIN_PLAYER_RADIUS CORE_RADIUS * 2.1f
 
 // FORWARD DECS
 
@@ -41,6 +40,8 @@ static double delta_time;
 
 static struct camera cam;
 static struct gamepad_input gamepad;
+
+static uint8_t player_one_is_outside_arena;
 
 static struct arena_state arena = (struct arena_state){
   .transform = {
@@ -124,10 +125,7 @@ void action__tick(
 
   // GAMEPLAY
 
-  arena__update(
-    delta_time,
-    &arena
-  );
+  arena__update(delta_time, &arena);
   
   player__update(
     delta_time,
@@ -135,11 +133,20 @@ void action__tick(
     &player_one_actions,
     &player_one
   );
-  player_one.transform.rotation_in_deg.y =
-    find_cw_or_ccw_facing_around_world_up(
-      player_one.projected_position,
-      player_one.transform.position
-    );
+
+  if (player_one_is_outside_arena) {
+    player_one.transform.rotation_in_deg.y =
+      rad_to_deg(atan(
+        -player_one.transform.position.z /
+        player_one.transform.position.x
+      )) + 90;
+  } else {
+    player_one.transform.rotation_in_deg.y =
+      find_cw_or_ccw_facing_around_world_up(
+        player_one.projected_position,
+        player_one.transform.position
+      );
+  }
   
   // TODO: lock player facing when autofiring
   
@@ -153,6 +160,10 @@ void action__tick(
   );
 
   player_one.transform.position = player_one.projected_position;
+  player_one_is_outside_arena =
+    // TODO: why do we need to be 2x the radius?????
+    vec3__distance(player_one.transform.position, ORIGIN) >
+    (ARENA_RADIUS * 2) ? 1 : 0;
 
   // DRAW
 
