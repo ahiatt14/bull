@@ -7,7 +7,7 @@
 #define ASPECT_RATIO (4.0f / 3.0f)
 #define WINDOW_HEIGHT 900
 
-#define SCENE_COUNT 3
+#define SCENE_COUNT 4
 
 static struct window_api window;
 static struct gpu_api gpu;
@@ -94,24 +94,30 @@ int main() {
   struct scene main_menu_scene;
   struct scene action_scene;
   struct scene connect_gamepad;
+  struct scene ocean;
   main_menu_scene.init = main_menu__init;
   main_menu_scene.tick = main_menu__tick;
   action_scene.init = action__init;
   action_scene.tick = action__tick;
   connect_gamepad.init = connect_gamepad__init;
   connect_gamepad.tick = connect_gamepad__tick;
+  ocean.init = ocean__init;
+  ocean.tick = ocean__tick;
 
   struct scene const *const scenes[SCENE_COUNT] = {
     &main_menu_scene,
     &action_scene,
-    &connect_gamepad
+    &connect_gamepad,
+    &ocean
   };
 
   for (int i = 0; i < SCENE_COUNT; i++)
     scenes[i]->init(&window, &vwprt, &gpu);
 
-  current_scene = SCENE__MAIN_MENU;
-  previous_scene = SCENE__MAIN_MENU;
+  // current_scene = SCENE__MAIN_MENU;
+  // previous_scene = SCENE__MAIN_MENU;
+  current_scene = SCENE__OCEAN;
+  previous_scene = SCENE__OCEAN;
 
   gpu.enable_depth_test();
 

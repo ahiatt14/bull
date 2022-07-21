@@ -24,6 +24,7 @@
 
 // FORWARD DECS
 
+static void noop(uint8_t d) {}
 // static struct vec3 vec3__negate(struct vec3 t);
 static struct vec3 vec3_x_scalar(float s, struct vec3 t);
 struct vec3 slide_along_radius_around_world_origin(
@@ -99,6 +100,12 @@ void action__init(
   arena__copy_assets_to_gpu(gpu);
 
   player__copy_assets_to_gpu(gpu);
+
+  ocean__init(
+    window,
+    vwprt,
+    gpu
+  );
 }
 
 void action__tick(
@@ -167,10 +174,19 @@ void action__tick(
 
   // DRAW
 
-  gpu->clear(&COLOR_BLACK);
+  gpu->clear(&COLOR_SKY_BLUE);
+
+  ocean__tick(
+    window,
+    vwprt,
+    gpu,
+    SCENE__MAIN_MENU,
+    noop
+  );
+  gpu->clear_depth_buffer();
 
   arena__draw(&cam, gpu, &arena);
-  core__draw(&cam, gpu, &core);
+  // core__draw(&cam, gpu, &core);
   player__draw(&cam, gpu, &player_one);
 }
 

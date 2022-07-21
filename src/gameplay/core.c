@@ -34,6 +34,7 @@ void core__draw(
   struct gpu_api const *const gpu,
   struct core_state const *const core
 ) {
+  gpu->cull_back_faces();
   gpu->select_shader(&core_shader);
   gpu->set_fragment_shader_vec3(
     &core_shader,
