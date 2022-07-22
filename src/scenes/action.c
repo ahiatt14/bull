@@ -174,7 +174,7 @@ void action__tick(
 
   // DRAW
 
-  gpu->clear(&COLOR_SKY_BLUE);
+  gpu->clear(&COLOR_BLACK);
 
   ocean__tick(
     window,

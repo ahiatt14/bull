@@ -7,9 +7,11 @@
 #include "bull_math.h"
 #include "gpu_helpers.h"
 
+#include "noise2_texture.h"
+
 #include "default_vert.h"
+#include "water_surface_frag.h"
 #include "normal_debug_frag.h"
-#include "solid_color_frag.h"
 
 // CONSTANTS
 
@@ -52,8 +54,8 @@ static const struct vec3 OCEAN_ORIGIN_OFFSET = {
 
 static struct transform ocean_transform = (struct transform){
   {0, 0, 0},
-  {270, 0, 0},
-  2
+  {270, 30, 0},
+  10
 };
 static struct shader water_surface_shader;
 static struct m4x4 shared_local_to_world;
@@ -83,11 +85,11 @@ void ocean__init(
       ocean_mesh.vertices[vert_index].position.y =
         OCEAN_ORIGIN_OFFSET.y + y * OCEAN_SQUARE_FACE_WIDTH;
       ocean_mesh.vertices[vert_index].uv.x = x *
-      OCEAN_SQUARE_FACE_WIDTH / OCEAN_SQUARE_FACE_WIDTH *
-      OCEAN_VERTS_PER_SIDE;
+      OCEAN_SQUARE_FACE_WIDTH / (OCEAN_SQUARE_FACE_WIDTH *
+      OCEAN_VERTS_PER_SIDE);
       ocean_mesh.vertices[vert_index].uv.y = y *
-      OCEAN_SQUARE_FACE_WIDTH / OCEAN_SQUARE_FACE_WIDTH *
-      OCEAN_VERTS_PER_SIDE;
+      OCEAN_SQUARE_FACE_WIDTH / (OCEAN_SQUARE_FACE_WIDTH *
+      OCEAN_VERTS_PER_SIDE);
       vert_index++;
     }
   }
@@ -107,12 +109,12 @@ void ocean__init(
     ocean_mesh.indices[indices_index++] = vert_index + OCEAN_VERTS_PER_SIDE;
   }
 
-  // shad.frag_shader_src = flat_texture_frag_src;
   water_surface_shader.vert_shader_src = default_vert_src;
-  water_surface_shader.frag_shader_src = normal_debug_frag_src;
+  water_surface_shader.frag_shader_src = water_surface_frag_src;
 
   // gpu->copy_rgb_texture_to_gpu(&clod256_texture);
 
+  gpu->copy_rgb_texture_to_gpu(&noise2_texture);
   gpu->copy_dynamic_mesh_to_gpu(&ocean_mesh);
   gpu->copy_shader_to_gpu(&water_surface_shader);
 }
@@ -139,15 +141,13 @@ void ocean__tick(
     seconds_since_creation
   );
   recalculate_ocean_normals();
+  gpu->update_gpu_mesh_data(&ocean_mesh);
 
   // DRAW
 
-  // TODO: temp
-  gpu->clear(&COLOR_SKY_BLUE);
-
   gpu->cull_back_faces();
   gpu->select_shader(&water_surface_shader);
-  // gpu->select_texture(&clod256_texture);
+  gpu->select_texture(&noise2_texture);
   space__create_model(
     &WORLDSPACE,
     &ocean_transform,
@@ -176,7 +176,7 @@ static void warp_ocean_mesh(
   int vert_index = 0;
   float z_position = 0;
   for (int y = 0; y < OCEAN_VERTS_PER_SIDE; y++) {
-    z_position = OCEAN_ORIGIN_OFFSET.z + 0.05f * sin(
+    z_position = 0.02f * sin(
       seconds_since_creation +
       15 * y * OCEAN_SQUARE_FACE_WIDTH
     );
