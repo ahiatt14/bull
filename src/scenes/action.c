@@ -174,8 +174,6 @@ void action__tick(
 
   // DRAW
 
-  gpu->clear(&COLOR_BLACK);
-
   ocean__tick(
     window,
     vwprt,
@@ -186,7 +184,7 @@ void action__tick(
   gpu->clear_depth_buffer();
 
   arena__draw(&cam, gpu, &arena);
-  // core__draw(&cam, gpu, &core);
+  core__draw(&cam, gpu, &core);
   player__draw(&cam, gpu, &player_one);
 }
 

@@ -12,5 +12,6 @@ int vec_equals_vec(
   struct float_tolerance const *const ft
 );
 int iclamp(int v, int min, int max);
+float fclamp(float v, float min, float max);
 
 #endif

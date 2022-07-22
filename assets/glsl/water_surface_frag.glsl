@@ -11,6 +11,11 @@ uniform vec3 water_color = vec3(
   95.0/255.0,
   124.0/255.0
 );
+// uniform vec3 water_color = vec3(
+//   79.0/255.0,
+//   101.0/255.0,
+//   122.0/255.0
+// );
 uniform vec3 light_dir = vec3(
   0.14762034939153687,
   -0.0984135662610246,
@@ -32,9 +37,9 @@ void main()
 {
   FragColor = vec4(
     mix(
-      water_color,
-      light_color * (texture(noise1, TexCoord).rgb * 2),
-      1 - dot(normal, light_dir)
+      light_color,
+      water_color * (texture(noise1, TexCoord).rgb * 2),
+      max(1 - dot(normal, -light_dir), 0.75)
     ),
     1.0
   );

@@ -9,7 +9,6 @@
 #include "exclamation_mesh.h"
 
 #include "solid_color_frag.h"
-#include "connect_gamepad_bg_frag.h"
 #include "default_vert.h"
 
 #define EXCLAIM_HORIZONTAL_SPACING 0.2f
