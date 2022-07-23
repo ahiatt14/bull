@@ -7,11 +7,17 @@
 #include "bull_math.h"
 #include "gpu_helpers.h"
 
+#include "turbine.h"
+
 #include "noise_texture.h"
 
 #include "default_vert.h"
 #include "water_surface_frag.h"
 #include "normal_debug_frag.h"
+
+// TODO: parameterize or make into constants 
+// 1) ocean wave amplitude, wavelength, speed
+// 2) water base color, light color
 
 // CONSTANTS
 
@@ -20,6 +26,11 @@
 #define OCEAN_SQUARE_FACE_WIDTH 0.05f
 
 #define CLOUD_KM_PER_SECOND 0.002f
+
+#define WAVE_AMPLITUDE 0.01f
+#define WAVE_FREQUENCY 1
+
+#define TURBINE_ALTITUDE 0
 
 // FORWARD DECS
 
@@ -36,6 +47,8 @@ static double tick_start_time;
 static double delta_time;
 
 static struct camera cam;
+
+// WATER SURFACE
 
 static struct vertex vertices[OCEAN_VERTS_PER_SIDE * OCEAN_VERTS_PER_SIDE];
 static unsigned int indices[OCEAN_INDEX_COUNT];
@@ -55,13 +68,51 @@ static const struct vec3 OCEAN_ORIGIN_OFFSET = {
 };
 
 static struct transform ocean_transform = (struct transform){
-  {0, 0, 0},
+  {0, -0.1f, 0},
   {270, 30, 0},
-  50
+  3
 };
 static struct shader water_surface_shader;
 static struct m4x4 shared_local_to_world;
 static struct m3x3 shared_normals_local_to_world;
+
+// TURBINES
+
+static struct turbine turbine1 = (struct turbine){
+  .transform = {
+    {0, TURBINE_ALTITUDE, 0},
+    {0, 0, 0},
+    0.1f
+  }
+};
+static struct turbine turbine2 = (struct turbine){
+  .transform = {
+    {1, TURBINE_ALTITUDE, -0.7},
+    {0, 0, 0},
+    0.1f
+  }
+};
+static struct turbine turbine3 = (struct turbine){
+  .transform = {
+    {0.3f, TURBINE_ALTITUDE, -1.2},
+    {0, 0, 0},
+    0.1f
+  }
+};
+static struct turbine turbine4 = (struct turbine){
+  .transform = {
+    {-0.3f, TURBINE_ALTITUDE, 1.2f},
+    {0, 0, 0},
+    0.1f
+  }
+};
+static struct turbine turbine5 = (struct turbine){
+  .transform = {
+    {0.08f, TURBINE_ALTITUDE, 1.68f},
+    {0, 0, 0},
+    0.1f
+  }
+};
 
 void ocean__init(
   struct window_api const *const window,
@@ -70,11 +121,11 @@ void ocean__init(
 ) {
 
   camera__init(&cam);
-  camera__set_position(0, 6, 5, &cam);
-  camera__set_look_target((struct vec3){ 0, 6, 0 }, &cam);
+  camera__set_position(0, 0.08f, 2, &cam);
+  camera__set_look_target((struct vec3){ 0, 0.25f, 0 }, &cam);
   camera__set_horizontal_fov_in_deg(60, &cam);
-  camera__set_near_clip_distance(1, &cam);
-  camera__set_far_clip_distance(40, &cam);
+  camera__set_near_clip_distance(0.3f, &cam);
+  camera__set_far_clip_distance(4, &cam);
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
@@ -116,6 +167,8 @@ void ocean__init(
 
   // gpu->copy_rgb_texture_to_gpu(&clod256_texture);
 
+  turbine__copy_assets_to_gpu(gpu);
+
   gpu->copy_rgb_texture_to_gpu(&noise_texture);
   gpu->copy_dynamic_mesh_to_gpu(&ocean_mesh);
   gpu->copy_shader_to_gpu(&water_surface_shader);
@@ -145,9 +198,21 @@ void ocean__tick(
   recalculate_ocean_normals();
   gpu->update_gpu_mesh_data(&ocean_mesh);
 
+  turbine__spin_blades(delta_time, 30, &turbine1);
+  turbine__spin_blades(delta_time, 40, &turbine2);
+  turbine__spin_blades(delta_time, 60, &turbine3);
+  turbine__spin_blades(delta_time, 20, &turbine4);
+  turbine__spin_blades(delta_time, 5, &turbine5);
+
   // DRAW
 
   gpu->clear(&COLOR_SKY_BLUE);
+
+  turbine__draw(&cam, gpu, &turbine1);
+  turbine__draw(&cam, gpu, &turbine2);
+  turbine__draw(&cam, gpu, &turbine3);
+  turbine__draw(&cam, gpu, &turbine4);
+  turbine__draw(&cam, gpu, &turbine5);
 
   gpu->cull_back_faces();
   gpu->select_shader(&water_surface_shader);
@@ -180,9 +245,8 @@ static void warp_ocean_mesh(
   int vert_index = 0;
   float z_position = 0;
   for (int y = 0; y < OCEAN_VERTS_PER_SIDE; y++) {
-    z_position = 0.005f * sin(
-      seconds_since_creation +
-      50 * y * OCEAN_SQUARE_FACE_WIDTH
+    z_position = WAVE_AMPLITUDE * sin(
+      seconds_since_creation + WAVE_FREQUENCY * y
     );
     for (int x = 0; x < OCEAN_VERTS_PER_SIDE; x++) {
       ocean_mesh.vertices[vert_index].uv.x -= CLOUD_KM_PER_SECOND * delta_time;

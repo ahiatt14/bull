@@ -6,6 +6,7 @@
 #define SCENE__MAIN_MENU 0
 #define SCENE__ACTION 1
 #define SCENE__CONNECT_GAMEPAD 2
+#define SCENE__OCEAN 3
 
 struct scene;
 

@@ -3,11 +3,9 @@
 
 #include "tail.h"
 
-#define TURBINE_BLADE_OFFSET { 0, 0.5f, -0.1f }
-
 struct turbine {
-  struct transform base_transform;
-  struct transform blades_transform;
+  struct transform transform;
+  float blades_rotation_in_deg;
 };
 
 void turbine__copy_assets_to_gpu(
@@ -17,7 +15,7 @@ void turbine__copy_assets_to_gpu(
 void turbine__spin_blades(
   double delta_time,
   float degrees_per_second,
-  struct turbine const *const turb
+  struct turbine *const turb
 );
 
 void turbine__draw(

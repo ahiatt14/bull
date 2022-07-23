@@ -25,8 +25,6 @@
 // FORWARD DECS
 
 static void noop(uint8_t d) {}
-// static struct vec3 vec3__negate(struct vec3 t);
-static struct vec3 vec3_x_scalar(float s, struct vec3 t);
 struct vec3 slide_along_radius_around_world_origin(
   float radius,
   struct vec3 projected_pos,
@@ -125,10 +123,10 @@ void action__tick(
 
   // HANDLE UNPLUGGED GAMEPAD
   
-  if (!window->gamepad_is_connected()) {
-    switch_scene(SCENE__CONNECT_GAMEPAD);
-    return;
-  }
+  // if (!window->gamepad_is_connected()) {
+  //   switch_scene(SCENE__CONNECT_GAMEPAD);
+  //   return;
+  // }
 
   // GAMEPLAY
 
@@ -190,22 +188,12 @@ void action__tick(
 
 // HELPERS
 
-// TODO: move to tail
-// static struct vec3 vec3__negate(struct vec3 t) {
-//   return (struct vec3) { -t.x, -t.y, -t.z };
-// }
-
-// TODO: move to tail
-static struct vec3 vec3_x_scalar(float s, struct vec3 t) {
-  return (struct vec3) { t.x * s, t.y * s, t.z * s };
-}
-
 struct vec3 slide_along_radius_around_world_origin(
   float radius,
   struct vec3 projected_pos,
   struct vec3 pos
 ) {
-  struct vec3 pos_at_radius = vec3_x_scalar(
+  struct vec3 pos_at_radius = scalar_x_vec3(
     radius / vec3__distance(pos, ORIGIN),
     pos
   );

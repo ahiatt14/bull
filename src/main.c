@@ -73,7 +73,7 @@ int main() {
     WINDOW_HEIGHT,
     50,
     50,
-    "GOOD HAWK",
+    "HAWKEE",
     REQUEST_VSYNC_ON,
     REQUEST_WINDOWED,
     &window
@@ -94,12 +94,15 @@ int main() {
   struct scene main_menu_scene;
   struct scene action_scene;
   struct scene connect_gamepad;
+  struct scene ocean; 
   main_menu_scene.init = main_menu__init;
   main_menu_scene.tick = main_menu__tick;
   action_scene.init = action__init;
   action_scene.tick = action__tick;
   connect_gamepad.init = connect_gamepad__init;
   connect_gamepad.tick = connect_gamepad__tick;
+  ocean.init = ocean__init;
+  ocean.tick = ocean__tick;
 
   struct scene const *const scenes[SCENE_COUNT] = {
     &main_menu_scene,

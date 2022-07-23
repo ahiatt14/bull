@@ -6,6 +6,7 @@
 #include "gpu_helpers.h"
 #include "constants.h"
 
+#include "normal_debug_frag.h"
 #include "arena_cage_frag.h"
 #include "default_vert.h"
 #include "cage_mesh.h"
@@ -18,6 +19,7 @@ static struct m3x3 shared_normals_local_to_world;
 void arena__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
+  // cage_shader.frag_shader_src = normal_debug_frag_src;
   cage_shader.frag_shader_src = arena_cage_frag_src;
   cage_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&cage_shader);

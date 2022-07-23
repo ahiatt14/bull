@@ -38,8 +38,8 @@ void main()
   FragColor = vec4(
     mix(
       light_color,
-      water_color * (texture(noise1, TexCoord).rgb * 2),
-      max(1 - dot(normal, -light_dir), 0.75)
+      water_color * (texture(noise1, TexCoord).rgb) * 3,
+      1 - dot(normal, -light_dir)
     ),
     1.0
   );

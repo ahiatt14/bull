@@ -52,5 +52,12 @@ struct vec3 vec3__mean(
   struct vec3 const *const vec3s,
   int count
 );
+struct vec3 vec3__negate(
+  struct vec3 t
+);
+struct vec3 scalar_x_vec3(
+  float s,
+  struct vec3 t
+);
 
 #endif
