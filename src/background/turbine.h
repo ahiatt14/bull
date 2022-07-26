@@ -21,6 +21,9 @@ void turbine__spin_blades(
 void turbine__draw(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
+  // struct vec2 shadow_uv,
+  struct vec3 sunlight_direction,
+  struct vec3 sunlight_color,
   struct turbine const *const turb
 );
 

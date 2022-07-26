@@ -90,7 +90,7 @@ void connect_gamepad__tick(
   gpu->set_fragment_shader_vec3(
     &exclamation_shader,
     "color",
-    &COLOR_RED
+    COLOR_RED
   );
   gpu->draw_mesh(&exclamation_mesh);
 }

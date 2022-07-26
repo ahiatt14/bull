@@ -1,31 +1,15 @@
 #version 330 core
 
-float calc_perceived_brightness(vec3 t) {
-  return (t.r * 0.21 + t.g * 0.72 + t.b * 0.07) / 3.0;
-}
-
-uniform sampler2D noise1;
+uniform sampler2D cloud_cover;
+uniform sampler2D surface_texture;
 
 uniform vec3 water_color = vec3(
   65.0/255.0,
   95.0/255.0,
   124.0/255.0
 );
-// uniform vec3 water_color = vec3(
-//   79.0/255.0,
-//   101.0/255.0,
-//   122.0/255.0
-// );
-uniform vec3 light_dir = vec3(
-  0.14762034939153687,
-  -0.0984135662610246,
-  0.9841356626102459
-);
-uniform vec3 light_color = vec3(
-  234.0/255.0,
-  208.0/255.0,
-  146.0/255.0
-);
+uniform vec3 light_dir = vec3(0, 0, -1);
+uniform vec3 light_color = vec3(1, 1, 1);
 
 in vec2 TexCoord;
 in vec3 normal;
@@ -35,12 +19,13 @@ out vec4 FragColor;
 
 void main()
 {
-  FragColor = vec4(
-    mix(
-      light_color,
-      water_color * (texture(noise1, TexCoord).rgb) * 3,
-      1 - dot(normal, -light_dir)
-    ),
-    1.0
-  );
+  vec3 material =
+    water_color *
+    (texture(surface_texture, TexCoord).rgb * 0.15 + 0.6);
+  vec3 diffuse =
+    light_color *
+    texture(cloud_cover, TexCoord).rgb * 1.4;
+  float albedo = 1 - max(dot(normal, -light_dir), 0);
+  
+  FragColor = vec4(material + diffuse * albedo, 1);
 }

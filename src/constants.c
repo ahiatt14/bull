@@ -21,6 +21,11 @@ const struct vec3 COLOR_NEON_PURPLE = {
   36.0f / 255.0f,
   177.0f / 255.0f
 };
+const struct vec3 COLOR_EVENING_SUNLIGHT = {
+  234.0 / 255.0,
+  208.0 / 255.0,
+  146.0 / 255.0
+};
 
 const struct vec3 ORIGIN = { 0, 0, 0 };
 const struct coordinate_space WORLDSPACE = {

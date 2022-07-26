@@ -7,7 +7,7 @@
 #define ASPECT_RATIO (4.0f / 3.0f)
 #define WINDOW_HEIGHT 900
 
-#define SCENE_COUNT 3
+#define SCENE_COUNT 4
 
 static struct window_api window;
 static struct gpu_api gpu;
@@ -73,7 +73,7 @@ int main() {
     WINDOW_HEIGHT,
     50,
     50,
-    "HAWKEE",
+    "GOOD HAWK",
     REQUEST_VSYNC_ON,
     REQUEST_WINDOWED,
     &window
@@ -107,14 +107,18 @@ int main() {
   struct scene const *const scenes[SCENE_COUNT] = {
     &main_menu_scene,
     &action_scene,
-    &connect_gamepad
+    &connect_gamepad,
+    &ocean
   };
 
-  for (int i = 0; i < SCENE_COUNT; i++)
-    scenes[i]->init(&window, &vwprt, &gpu);
+  // for (int i = 0; i < SCENE_COUNT; i++)
+  //   scenes[i]->init(&window, &vwprt, &gpu);
+  scenes[SCENE__OCEAN]->init(&window, &vwprt, &gpu);
 
-  current_scene = SCENE__MAIN_MENU;
-  previous_scene = SCENE__MAIN_MENU;
+  // current_scene = SCENE__MAIN_MENU;
+  // previous_scene = SCENE__MAIN_MENU;
+  current_scene = SCENE__OCEAN;
+  previous_scene = SCENE__OCEAN;
 
   gpu.enable_depth_test();
 
@@ -125,7 +129,7 @@ int main() {
     // glfwWaitEvents & glfwPostEmptyEvent
     if (!paused) {
 
-      gamepad = window.get_gamepad_input(gamepad);
+      window.get_gamepad_input(&gamepad);
 
       // TODO: ultimately don't like this fn's API.
       // should be passing in the gamepad struct smh
@@ -138,7 +142,6 @@ int main() {
           window.switch_to_windowed();
         } else {
           window.switch_to_fullscreen();
-
         }
       }
 

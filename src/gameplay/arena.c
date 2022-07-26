@@ -44,7 +44,7 @@ void arena__draw(
   gpu->set_fragment_shader_vec3(
     &cage_shader,
     "hot_color",
-    &COLOR_GOLDEN_YELLOW
+    COLOR_GOLDEN_YELLOW
   );
   space__create_model(
     &WORLDSPACE,

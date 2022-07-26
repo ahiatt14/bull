@@ -175,7 +175,7 @@ void player__draw(
   gpu->set_fragment_shader_vec3(
     &shared_healthy_shader,
     "color",
-    &COLOR_WHITE
+    COLOR_WHITE
   );
   gpu__set_mvp(
     &shared_local_to_world,

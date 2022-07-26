@@ -43,8 +43,10 @@ struct gpu_api {
   void (*select_shader)(struct shader const *const gpup);
   void (*select_texture)(struct texture const *const tex);
   void (*select_textures)(
-    struct texture const *const *const textures,
-    uint8_t texture_count
+    struct shader const *const shad,
+    uint8_t texture_count,
+    char const *const *const uniform_names,
+    struct texture const *const *const textures
   );
 
   void (*set_viewport)(int x, int y, int w, int h);
@@ -61,10 +63,15 @@ struct gpu_api {
     char const *name,
     struct m4x4 const *const value
   );
+  void (*set_fragment_shader_vec2)(
+    struct shader const *const gpup,
+    char const *name,
+    struct vec2 value
+  );  
   void (*set_fragment_shader_vec3)(
     struct shader const *const gpup,
     char const *name,
-    struct vec3 const *const value
+    struct vec3 value
   );
   void (*set_fragment_shader_float)(
     struct shader const *const gpup,

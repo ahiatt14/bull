@@ -33,9 +33,7 @@ struct window_api {
   );
 
   uint8_t (*gamepad_is_connected)();
-  struct gamepad_input (*get_gamepad_input)(
-    struct gamepad_input gamepad
-  );
+  void (*get_gamepad_input)(struct gamepad_input *const gamepad);
 
   uint8_t (*is_fullscreen)();
   struct vec2 (*get_window_dimensions)();

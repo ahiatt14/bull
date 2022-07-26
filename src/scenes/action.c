@@ -121,6 +121,8 @@ void action__tick(
   delta_time = seconds_since_creation - tick_start_time;
   if (delta_time > DELTA_TIME_CAP) delta_time = DELTA_TIME_CAP;
 
+  window->get_gamepad_input(&gamepad);
+
   // HANDLE UNPLUGGED GAMEPAD
   
   // if (!window->gamepad_is_connected()) {
@@ -134,7 +136,7 @@ void action__tick(
   
   player__update(
     delta_time,
-    window->get_gamepad_input(gamepad),
+    gamepad,
     &player_one_actions,
     &player_one
   );

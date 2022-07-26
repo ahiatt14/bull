@@ -8,6 +8,8 @@
 #include "turbine_base_mesh.h"
 #include "turbine_blades_mesh.h"
 
+#include "cloud_cover_texture.h"
+
 #include "turbine_frag.h"
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
@@ -42,6 +44,9 @@ void turbine__spin_blades(
 void turbine__draw(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
+  // struct vec2 shadow_uv,
+  struct vec3 sunlight_direction,
+  struct vec3 sunlight_color,
   struct turbine const *const turb
 ) {
   shared_blades_transform = (struct transform){
@@ -55,6 +60,22 @@ void turbine__draw(
 
   gpu->cull_back_faces();
   gpu->select_shader(&shared_turbine_shader);
+  gpu->select_texture(&cloud_cover_texture);
+  gpu->set_fragment_shader_vec3(
+    &shared_turbine_shader,
+    "light_dir",
+    sunlight_direction
+  );
+  gpu->set_fragment_shader_vec3(
+    &shared_turbine_shader,
+    "light_color",
+    sunlight_color
+  );
+  // gpu->set_fragment_shader_vec2(
+  //   &shared_turbine_shader,
+  //   "shadow_uv",
+  //   shadow_uv
+  // );
   space__create_model(
     &WORLDSPACE,
     &turb->transform,

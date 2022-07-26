@@ -10,7 +10,6 @@
 
 #include "square.h"
 #include "flat_texture_frag.h"
-#include "clod256_texture.h"
 
 #include "pyramid_mesh.h"
 #include "default_vert.h"
@@ -70,8 +69,6 @@ void main_menu__init(
   gpu->copy_shader_to_gpu(&pyramid_shader);
   gpu->copy_static_mesh_to_gpu(&pyramid_mesh);
 
-  gpu->copy_rgb_texture_to_gpu(&clod256_texture);
-
   // menu_sky__init(gpu);
 }
 
@@ -116,7 +113,6 @@ void main_menu__tick(
   // gpu->clear_depth_buffer();
 
   gpu->select_shader(&pyramid_shader);
-  gpu->select_texture(&clod256_texture);
   space__create_model(
     &WORLDSPACE,
     &pyramid_transform,

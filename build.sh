@@ -3,7 +3,7 @@
 tools="libs/tail/tools/"
 options="-O2 -Wall"
 includes="-Ilibs/tail/include -Isrc/headers \
--Isrc/player -Isrc/scenes -Isrc/gameplay"
+-Isrc/player -Isrc/scenes -Isrc/gameplay -Isrc/background"
 
 # TODO: this ain't sustainable!
 
@@ -27,9 +27,9 @@ rm -rf game.exe
 ./${tools}sourcify-glsl.exe assets/glsl/core_frag.glsl src/headers/ src/ && \
 ./${tools}sourcify-glsl.exe assets/glsl/turbine_frag.glsl src/headers/ src/ \
 && \
-./${tools}sourcify-png.exe assets/png/clod256.png 3 src/headers/clod256_texture.h src/clod256_texture.c && \
-./${tools}sourcify-png.exe assets/png/noise.png 3 src/headers/noise_texture.h src/noise_texture.c && \
-./${tools}sourcify-png.exe assets/png/concrete32bit.png 3 src/headers/concrete32bit_texture.h src/concrete32bit_texture.c \
+./${tools}sourcify-png.exe assets/png/clouds.png 3 src/headers/clouds_texture.h src/clouds_texture.c && \
+./${tools}sourcify-png.exe assets/png/water.png 3 src/headers/water_texture.h src/water_texture.c && \
+./${tools}sourcify-png.exe assets/png/cloud_cover.png 3 src/headers/cloud_cover_texture.h src/cloud_cover_texture.c \
 && \
 ./${tools}sourcify-obj.exe assets/mesh/burdock.obj smooth src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/pyramid.obj flat src/headers/ src/ && \
@@ -50,6 +50,7 @@ src/*.c \
 src/scenes/*.c \
 src/player/*.c \
 src/gameplay/*.c \
+src/background/*.c \
 src/static_assets/*.c \
 libs/tail/static/tail.a
 
@@ -75,14 +76,12 @@ rm -f src/bird_mesh.c
 rm -f src/turbine_blades_mesh.c
 rm -f src/turbine_base_mesh.c
 
-rm -f src/headers/clod256_texture.h
-rm -f src/clod256_texture.c
-
-rm -f src/headers/concrete32bit_texture.h
-rm -f src/concrete32bit_texture.c
-
-rm -f src/headers/noise_texture.h
-rm -f src/noise_texture.c
+rm -f src/headers/water_texture.h
+rm -f src/water_texture.c
+rm -f src/clouds_texture.c
+rm -f src/headers/clouds_texture.h
+rm -f src/headers/cloud_cover_texture.h
+rm -f src/cloud_cover_texture.c
 
 rm -f src/headers/solid_color_frag.h
 rm -f src/headers/normal_debug_frag.h
