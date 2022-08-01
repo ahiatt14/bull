@@ -31,4 +31,6 @@ float rads_from_arc_len_and_radius(
   float radius
 );
 
+float loop_float(float v, float min, float max);
+
 #endif

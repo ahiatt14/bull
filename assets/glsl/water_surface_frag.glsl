@@ -8,7 +8,7 @@ uniform vec3 water_color = vec3(
   95.0/255.0,
   124.0/255.0
 );
-uniform vec3 light_dir = vec3(0, 0, -1);
+uniform vec3 light_dir = vec3(0, -1, 0);
 uniform vec3 light_color = vec3(1, 1, 1);
 
 in vec2 TexCoord;
@@ -20,12 +20,12 @@ out vec4 FragColor;
 void main()
 {
   vec3 material =
-    water_color *
-    (texture(surface_texture, TexCoord).rgb * 0.15 + 0.6);
+    water_color +
+    texture(surface_texture, TexCoord).rgb * 0.07;
   vec3 diffuse =
     light_color *
-    texture(cloud_cover, TexCoord).rgb * 1.4;
-  float albedo = 1 - max(dot(normal, -light_dir), 0);
+    texture(cloud_cover, TexCoord).rgb - 0.3;
+  float albedo = max(dot(normal, -light_dir), 0);
   
   FragColor = vec4(material + diffuse * albedo, 1);
 }

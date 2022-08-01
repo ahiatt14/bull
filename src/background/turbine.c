@@ -33,18 +33,9 @@ void turbine__copy_assets_to_gpu(
   gpu->copy_static_mesh_to_gpu(&turbine_blades_mesh);
 }
 
-void turbine__spin_blades(
-  double delta_time,
-  float degrees_per_second,
-  struct turbine *const turb
-) {
-  turb->blades_rotation_in_deg += degrees_per_second * delta_time;
-}
-
 void turbine__draw(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
-  // struct vec2 shadow_uv,
   struct vec3 sunlight_direction,
   struct vec3 sunlight_color,
   struct turbine const *const turb
@@ -60,7 +51,6 @@ void turbine__draw(
 
   gpu->cull_back_faces();
   gpu->select_shader(&shared_turbine_shader);
-  gpu->select_texture(&cloud_cover_texture);
   gpu->set_fragment_shader_vec3(
     &shared_turbine_shader,
     "light_dir",
@@ -71,11 +61,11 @@ void turbine__draw(
     "light_color",
     sunlight_color
   );
-  // gpu->set_fragment_shader_vec2(
-  //   &shared_turbine_shader,
-  //   "shadow_uv",
-  //   shadow_uv
-  // );
+  gpu->set_fragment_shader_float(
+    &shared_turbine_shader,
+    "ratio_of_sunlight",
+    turb->ratio_of_sunlight
+  );
   space__create_model(
     &WORLDSPACE,
     &turb->transform,

@@ -8,9 +8,9 @@
 
 // #include "menu_sky.h"
 
-#include "square.h"
 #include "flat_texture_frag.h"
 
+#include "clouds_texture.h"
 #include "pyramid_mesh.h"
 #include "default_vert.h"
 #include "solid_color_frag.h"
@@ -67,6 +67,7 @@ void main_menu__init(
   pyramid_shader.frag_shader_src = flat_texture_frag_src;
   pyramid_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&pyramid_shader);
+  gpu->copy_rgb_texture_to_gpu(&clouds_texture);
   gpu->copy_static_mesh_to_gpu(&pyramid_mesh);
 
   // menu_sky__init(gpu);
@@ -113,6 +114,7 @@ void main_menu__tick(
   // gpu->clear_depth_buffer();
 
   gpu->select_shader(&pyramid_shader);
+  gpu->select_texture(&clouds_texture);
   space__create_model(
     &WORLDSPACE,
     &pyramid_transform,

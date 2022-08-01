@@ -64,3 +64,9 @@ float rads_from_arc_len_and_radius(
 ) {
   return arc_length / radius;
 }
+
+float loop_float(float v, float min, float max) {
+  if (v < min) return max - min - v;
+  if (v > max) return min + v - max;
+  return v;
+}

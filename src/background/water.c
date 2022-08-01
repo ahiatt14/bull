@@ -18,19 +18,18 @@
 // CONSTANTS
 
 #define VERTS_PER_SIDE 41
+#define FACE_WIDE_KM_LENGTH OCEAN_KM_WIDE / VERTS_PER_SIDE
 #define INDEX_COUNT 9600
-#define SQUARE_FACE_WIDTH 0.05f
-#define WIDTH VERTS_PER_SIDE * SQUARE_FACE_WIDTH * SCALE
 
-#define WAVE_AMPLITUDE 0.005f
+#define WAVE_AMPLITUDE 0.04f
 #define WAVE_FREQUENCY 1
 
 // LOCALS
 
 static struct transform trans = (struct transform){
-  {0, 0, 0},
-  {270, 30, 0},
-  2
+  {0, -0.13f, 0},
+  {270, 0, 0},
+  1
 };
 
 static struct vertex vertices[VERTS_PER_SIDE * VERTS_PER_SIDE];
@@ -45,8 +44,8 @@ static struct drawable_mesh mesh = {
 };
 
 static const struct vec3 ORIGIN_OFFSET = {
-  -SQUARE_FACE_WIDTH * VERTS_PER_SIDE * 0.5f,
-  -SQUARE_FACE_WIDTH * VERTS_PER_SIDE * 0.5f,
+  -FACE_WIDE_KM_LENGTH * VERTS_PER_SIDE * 0.5f,
+  -FACE_WIDE_KM_LENGTH * VERTS_PER_SIDE * 0.5f,
   0
 };
 
@@ -62,15 +61,15 @@ void water__init_mesh_data() {
   for (int y = 0; y < VERTS_PER_SIDE; y++) {
     for (int x = 0; x < VERTS_PER_SIDE; x++) {
       mesh.vertices[vert_index].position.x =
-        ORIGIN_OFFSET.x + x * SQUARE_FACE_WIDTH;
+        ORIGIN_OFFSET.x + x * FACE_WIDE_KM_LENGTH;
       mesh.vertices[vert_index].position.y =
-        ORIGIN_OFFSET.y + y * SQUARE_FACE_WIDTH;
+        ORIGIN_OFFSET.y + y * FACE_WIDE_KM_LENGTH;
       mesh.vertices[vert_index].uv.x = x *
-      SQUARE_FACE_WIDTH / (SQUARE_FACE_WIDTH *
-      VERTS_PER_SIDE);
+        FACE_WIDE_KM_LENGTH / (FACE_WIDE_KM_LENGTH *
+        VERTS_PER_SIDE);
       mesh.vertices[vert_index].uv.y = y *
-      SQUARE_FACE_WIDTH / (SQUARE_FACE_WIDTH *
-      VERTS_PER_SIDE);
+        FACE_WIDE_KM_LENGTH / (FACE_WIDE_KM_LENGTH *
+        VERTS_PER_SIDE);
       vert_index++;
     }
   }
@@ -103,7 +102,7 @@ void water__copy_assets_to_gpu(
 }
 
 void water__update_waves(
-  float wind_km_per_sec,
+  struct vec2 wind_km_per_sec,
   double delta_time,
   double seconds_since_creation,
   struct gpu_api const *const gpu
@@ -119,8 +118,8 @@ void water__update_waves(
       seconds_since_creation + WAVE_FREQUENCY * y
     );
     for (int x = 0; x < VERTS_PER_SIDE; x++) {
-      // mesh.vertices[vert_index].uv.x = wind_km_per_sec * delta_time;
-      // mesh.vertices[vert_index].uv.y = wind_km_per_sec * delta_time;
+      mesh.vertices[vert_index].uv.x += wind_km_per_sec.x * delta_time;
+      mesh.vertices[vert_index].uv.y += wind_km_per_sec.y * delta_time;
       mesh.vertices[vert_index++].position.z = z_position;
     }
   }

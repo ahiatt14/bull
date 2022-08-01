@@ -6,16 +6,11 @@
 struct turbine {
   struct transform transform;
   float blades_rotation_in_deg;
+  float ratio_of_sunlight;
 };
 
 void turbine__copy_assets_to_gpu(
   struct gpu_api const *const gpu
-);
-
-void turbine__spin_blades(
-  double delta_time,
-  float degrees_per_second,
-  struct turbine *const turb
 );
 
 void turbine__draw(

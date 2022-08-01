@@ -1,21 +1,15 @@
 #version 330 core
 
-float calc_perceived_brightness(vec3 t) {
-  return (t.r * 0.21 + t.g * 0.72 + t.b * 0.07) / 3.0;
-}
-
-uniform sampler2D cloud_cover;
-
-uniform vec2 shadow_uv = vec2(0, 0);
+uniform float ratio_of_sunlight = 1;
 
 uniform vec3 color = vec3(
-  0.8,
-  0.8,
-  0.8
+  0.6,
+  0.61,
+  0.61
 );
 uniform vec3 light_dir = vec3(
-  .707,
-  -.707,
+  0,
+  -1,
   0
 );
 uniform vec3 light_color = vec3(
@@ -32,18 +26,13 @@ out vec4 FragColor;
 
 void main()
 {
-  // float shadow = calc_perceived_brightness(
-  //   texture(cloud_cover, shadow_uv).rgb
-  // );
-
-  vec3 shadow = texture(cloud_cover, shadow_uv).rgb;
 
   vec3 diffuse =
     light_color *
-    (1 - max(dot(normal, -light_dir), 0.0));
+    max(dot(normal, -light_dir), 0);
 
   FragColor = vec4(
-    color * shadow + diffuse,
+    (color + diffuse) * ratio_of_sunlight + 0.2,
     1.0
   );
 }

@@ -3,13 +3,16 @@
 
 #include "tail.h"
 
+#define OCEAN_KM_WIDE 20.0f
+#define OCEAN_CCW_ROTATION_IN_DEG 30
+
 void water__init_mesh_data();
 void water__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 );
 // TODO: we'll want uv scroll accumulator
 void water__update_waves(
-  float wind_km_per_sec,
+  struct vec2 wind_speed,
   double delta_time,
   double seconds_since_creation,
   struct gpu_api const *const gpu
