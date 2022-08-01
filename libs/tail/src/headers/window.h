@@ -9,6 +9,9 @@
 #define REQUEST_VSYNC_ON 1
 #define REQUEST_VSYNC_OFF 0
 
+#define REQUEST_MSAA_ON 1
+#define REQUEST_MSAA_OFF 0
+
 #define REQUEST_FULLSCREEN 1
 #define REQUEST_WINDOWED 0
 
@@ -55,6 +58,7 @@ uint8_t window__create(
   const char *title,
   uint8_t vsync,
   uint8_t fullscreen,
+  uint8_t request_MSAA,
   struct window_api *const window
 );
 

@@ -33,7 +33,7 @@ void connect_gamepad__init(
   gpu->cull_no_faces();
 
   camera__init(&cam);
-  camera__set_position(0, 0, 3, &cam);
+  camera__set_position((struct vec3){ 0, 0, 3 }, &cam);
   camera__set_look_target(ORIGIN, &cam);
   camera__set_horizontal_fov_in_deg(80, &cam);
   camera__set_near_clip_distance(0.1f, &cam);

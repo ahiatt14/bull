@@ -29,8 +29,11 @@ struct gpu_api {
   void (*clear)(struct vec3 const *const color);
   void (*clear_depth_buffer)();
   void (*enable_depth_test)();
+  void (*disable_MSAA)();
+  void (*enable_MSAA)();
+
   void (*cull_back_faces)();
-  void (*cull_no_faces)();
+  void (*cull_no_faces)();  
 
   void (*copy_dynamic_mesh_to_gpu)(struct drawable_mesh *const dm);
   void (*copy_static_mesh_to_gpu)(struct drawable_mesh *const dm);

@@ -76,9 +76,12 @@ int main() {
     "GOOD HAWK",
     REQUEST_VSYNC_ON,
     REQUEST_WINDOWED,
+    REQUEST_MSAA_ON,
     &window
   )) return 1;
   gpu__create_api(&gpu);
+
+  gpu.enable_MSAA();
 
   window.on_focus_and_unfocus(unpause, pause);
   window.on_minimize_and_restore(pause, unpause);

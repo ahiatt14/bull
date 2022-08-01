@@ -31,11 +31,8 @@ const struct m4x4* camera__get_perspective(struct camera const *const c);
 const struct vec3 camera__get_position(struct camera const *const c);
 const struct vec3 camera__get_look_target(struct camera const *const c);
 float camera__get_horizontal_fov_in_deg(struct camera const *const c);
-void camera__set_position(float x, float y, float z, struct camera *const c);
-void camera__set_look_target(
-  struct vec3 t,
-  struct camera *const c
-);
+void camera__set_position(struct vec3 position, struct camera *const c);
+void camera__set_look_target(struct vec3 target, struct camera *const c);
 void camera__set_horizontal_fov_in_deg(float fov, struct camera *const c);
 void camera__set_near_clip_distance(float n, struct camera *const c);
 void camera__set_far_clip_distance(float f, struct camera *const c);

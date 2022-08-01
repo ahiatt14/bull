@@ -24,12 +24,12 @@
 
 // CONSTANTS
 
-#define TURBINE_X_COUNT 3
-#define TURBINE_Z_COUNT 3
+#define TURBINE_X_COUNT 5
+#define TURBINE_Z_COUNT 5
 #define TURBINE_X_OFFSET 3.0f
-#define TURBINE_Z_OFFSET 3.0f
-#define TURBINE_FIELD_KM_WIDE TURBINE_X_COUNT * TURBINE_X_OFFSET
-#define TURBINE_FILE_KM_DEEP TURBINE_Z_COUNT * TURBINE_Z_OFFSET
+#define TURBINE_Z_OFFSET 2.0f
+#define TURBINE_FIELD_KM_WIDE (TURBINE_X_COUNT - 1) * TURBINE_X_OFFSET
+#define TURBINE_FILE_KM_DEEP (TURBINE_Z_COUNT - 1) * TURBINE_Z_OFFSET
 
 static const struct vec2 TURBINE_FIELD_ORIGIN_OFFSET = {
   -TURBINE_FIELD_KM_WIDE * 0.5f,
@@ -72,7 +72,7 @@ void ocean__init(
 ) {
 
   camera__init(&foreground_camera);
-  camera__set_position(-1.4f, 0.1f, 4, &foreground_camera);
+  camera__set_position((struct vec3){ 0, 0.1f, 3 }, &foreground_camera);
   camera__set_look_target((struct vec3){ 0, 0.1f, 0 }, &foreground_camera);
   camera__set_horizontal_fov_in_deg(60, &foreground_camera);
   camera__set_near_clip_distance(0.3f, &foreground_camera);
@@ -86,15 +86,15 @@ void ocean__init(
   turbine__copy_assets_to_gpu(gpu);
   for (int x = 0; x < TURBINE_X_COUNT; x++)
   for (int z = 0; z < TURBINE_Z_COUNT; z++)
-    turbines[x + z] = (struct turbine){
-      {
+    turbines[x + z * TURBINE_X_COUNT] = (struct turbine){
+      .transform = {
         {
           x * TURBINE_X_OFFSET + TURBINE_FIELD_ORIGIN_OFFSET.x,
           0,
           z * TURBINE_Z_OFFSET + TURBINE_FIELD_ORIGIN_OFFSET.y
         },
         { 0, 0, 0 },
-        0.1f
+        0.15f
       }
     };
 }
@@ -162,7 +162,7 @@ void ocean__tick(
   
   // DRAW
 
-  gpu->clear(&COLOR_SKY_BLUE);
+  gpu->clear(&COLOR_EVENING_SUNLIGHT);
 
   gpu->cull_back_faces();
 

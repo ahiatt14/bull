@@ -86,7 +86,7 @@ void action__init(
 ) {
 
   camera__init(&cam);
-  camera__set_position(0, 20, 1, &cam); // TODO: not working if z is 0?
+  camera__set_position((struct vec3){ 0, 20, 1 }, &cam); // TODO: not working if z is 0?
   camera__set_look_target(ORIGIN, &cam);
   camera__set_horizontal_fov_in_deg(50, &cam);
   camera__set_near_clip_distance(1, &cam);
