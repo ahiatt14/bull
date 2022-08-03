@@ -4,7 +4,6 @@
 #include "tail.h"
 
 #define OCEAN_KM_WIDE 20.0f
-#define OCEAN_CCW_ROTATION_IN_DEG 30
 
 void water__init_mesh_data();
 void water__copy_assets_to_gpu(

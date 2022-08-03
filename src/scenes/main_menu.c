@@ -41,26 +41,22 @@ void main_menu__init(
 
   gpu->cull_no_faces();
 
-  camera__init(&foreground_camera);
-  camera__init(&background_camera);
-
-  camera__set_position((struct vec3){ 0, 1.5f, 2 }, &foreground_camera);
-  camera__set_look_target(ORIGIN, &foreground_camera);
-  camera__set_horizontal_fov_in_deg(80, &foreground_camera);
-  camera__set_near_clip_distance(0.1f, &foreground_camera);
-  camera__set_far_clip_distance(100, &foreground_camera);
+  foreground_camera.position = (struct vec3){ 0, 1.5f, 2 };
+  foreground_camera.look_target = ORIGIN;
+  foreground_camera.horizontal_fov_in_deg = 80;
+  foreground_camera.near_clip_distance = 0.1f;
+  foreground_camera.far_clip_distance = 100;
   camera__calculate_lookat(WORLDSPACE.up, &foreground_camera);
   camera__calculate_perspective(vwprt, &foreground_camera);
 
-  camera__set_position((struct vec3){ 0, 1, 1 }, &background_camera);
-  struct vec3 background_cam_look_target = vec3_plus_vec3(
-    camera__get_position(&background_camera),
+  background_camera.position = (struct vec3){ 0, 1, 1 };
+  background_camera.look_target = vec3_plus_vec3(
+    background_camera.position,
     (struct vec3){ 0, 0, -1 }
   );
-  camera__set_look_target(background_cam_look_target, &background_camera);
-  camera__set_horizontal_fov_in_deg(120, &background_camera);
-  camera__set_near_clip_distance(0.2f, &background_camera);
-  camera__set_far_clip_distance(20, &background_camera);
+  background_camera.horizontal_fov_in_deg = 120;
+  background_camera.near_clip_distance = 0.2f;
+  background_camera.far_clip_distance = 20;
   camera__calculate_lookat(WORLDSPACE.up, &background_camera);
   camera__calculate_perspective(vwprt, &background_camera);
 

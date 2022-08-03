@@ -27,8 +27,6 @@ static struct drawable_mesh shared_mesh = {
 
 static struct shader shared_shader;
 
-static struct m4x4 shared_local_to_world;
-
 void quad__copy_assets_to_gpu(
   struct gpu_api const *const gpu,
   struct quad *const qua
@@ -46,24 +44,11 @@ void quad__draw(
   struct gpu_api const *const gpu,
   struct quad const *const qua
 ) {
-  
-
+  static struct m4x4 shared_local_to_world;
   gpu->select_shader(&shared_shader);
   gpu->select_texture(qua->texture);
-  gpu->set_vertex_shader_m4x4(
-    &shared_shader,
-    "model",
-    &shared_local_to_world
-  );
-  gpu->set_vertex_shader_m4x4(
-    &shared_shader,
-    "view",
-    camera__get_lookat(cam)
-  );
-  gpu->set_vertex_shader_m4x4(
-    &shared_shader,
-    "projection",
-    camera__get_perspective(cam)
-  );
+  gpu->set_vertex_shader_m4x4(&shared_shader, "model", &shared_local_to_world);
+  gpu->set_vertex_shader_m4x4(&shared_shader, "view", &cam->lookat);
+  gpu->set_vertex_shader_m4x4(&shared_shader, "projection", &cam->perspective);
   gpu->draw_mesh(&shared_mesh);
 }

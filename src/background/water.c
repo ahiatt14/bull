@@ -21,13 +21,13 @@
 #define FACE_WIDE_KM_LENGTH OCEAN_KM_WIDE / VERTS_PER_SIDE
 #define INDEX_COUNT 9600
 
-#define WAVE_AMPLITUDE 0.04f
-#define WAVE_FREQUENCY 1
+#define WAVE_AMPLITUDE 0.05f
+#define WAVE_FREQUENCY 0.7f
 
 // LOCALS
 
 static struct transform trans = (struct transform){
-  {0, -0.13f, 0},
+  {0, -0.1f, 0},
   {270, 0, 0},
   1
 };

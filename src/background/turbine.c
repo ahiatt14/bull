@@ -16,10 +16,6 @@
 #include "default_vert.h"
 
 static const struct vec3 TURBINE_BLADE_OFFSET = { 0, 2.25f, -0.2f };
-static struct transform shared_blades_transform;
-
-static struct m4x4 shared_local_to_world;
-static struct m3x3 shared_normals_local_to_world;
 
 static struct shader shared_turbine_shader;
 
@@ -40,12 +36,20 @@ void turbine__draw(
   struct vec3 sunlight_color,
   struct turbine const *const turb
 ) {
+  static struct transform shared_blades_transform;
+  static struct m4x4 shared_local_to_world;
+  static struct m3x3 shared_normals_local_to_world;
+
   shared_blades_transform = (struct transform){
     vec3_plus_vec3(
       turb->transform.position,
       scalar_x_vec3(turb->transform.scale, TURBINE_BLADE_OFFSET)
     ),
-    { 0, turb->transform.rotation_in_deg.y, turb->blades_rotation_in_deg },
+    {
+      0,
+      turb->transform.rotation_in_deg.y,
+      turb->blades_rotation_in_deg
+    },
     turb->transform.scale
   };
 

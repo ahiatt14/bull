@@ -5,6 +5,7 @@
 
 struct turbine {
   struct transform transform;
+  float rotation_deg_per_sec;
   float blades_rotation_in_deg;
   float ratio_of_sunlight;
 };

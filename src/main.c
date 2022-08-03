@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 #include "tail.h"
+#include "constants.h"
 #include "scene.h"
 
 #define ASPECT_RATIO (4.0f / 3.0f)
@@ -131,6 +132,8 @@ int main() {
     // while doing no work? seems like we can use
     // glfwWaitEvents & glfwPostEmptyEvent
     if (!paused) {
+
+      gpu.clear(&COLOR_BLACK);
 
       window.get_gamepad_input(&gamepad);
 

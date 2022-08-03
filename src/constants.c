@@ -26,6 +26,11 @@ const struct vec3 COLOR_EVENING_SUNLIGHT = {
   208.0 / 255.0,
   146.0 / 255.0
 };
+const struct vec3 COLOR_AQUA_BLUE = {
+  0.4f,
+  0.56f,
+  0.63f
+};
 
 const struct vec3 ORIGIN = { 0, 0, 0 };
 const struct coordinate_space WORLDSPACE = {

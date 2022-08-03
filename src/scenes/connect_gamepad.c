@@ -32,12 +32,11 @@ void connect_gamepad__init(
 ) {
   gpu->cull_no_faces();
 
-  camera__init(&cam);
-  camera__set_position((struct vec3){ 0, 0, 3 }, &cam);
-  camera__set_look_target(ORIGIN, &cam);
-  camera__set_horizontal_fov_in_deg(80, &cam);
-  camera__set_near_clip_distance(0.1f, &cam);
-  camera__set_far_clip_distance(100, &cam);
+  cam.position = (struct vec3){ 0, 0, 3 };
+  cam.look_target = ORIGIN;
+  cam.horizontal_fov_in_deg = 80;
+  cam.near_clip_distance = 0.1f;
+  cam.far_clip_distance = 100;
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 

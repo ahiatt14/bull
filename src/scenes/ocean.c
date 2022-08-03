@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 #include "tail.h"
@@ -11,16 +12,19 @@
 #include "water.h"
 #include "turbine.h"
 #include "quad.h"
+#include "cage_mesh.h"
 
 #include "clouds_texture.h"
 #include "cloud_cover_texture.h"
 #include "water_texture.h"
 
+#include "arena_cage_frag.h"
 #include "solid_color_frag.h"
 #include "flat_texture_frag.h"
 #include "default_vert.h"
 #include "water_surface_frag.h"
 #include "normal_debug_frag.h"
+#include "sky_frag.h"
 
 // CONSTANTS
 
@@ -49,6 +53,11 @@ static const struct vec3 SUNLIGHT_DIRECTION = {
 
 // LOCALS
 
+static struct shader sky_shader;
+static struct transform sky_transform = {
+  {0, 0, 0}, {0, 0, 0}, 4.5f
+};
+
 static struct camera foreground_camera;
 
 static struct vec2 relative_position_within_ocean(struct vec3 pos) {
@@ -71,30 +80,33 @@ void ocean__init(
   struct gpu_api const *const gpu
 ) {
 
-  camera__init(&foreground_camera);
-  camera__set_position((struct vec3){ 0, 0.1f, 3 }, &foreground_camera);
-  camera__set_look_target((struct vec3){ 0, 0.1f, 0 }, &foreground_camera);
-  camera__set_horizontal_fov_in_deg(60, &foreground_camera);
-  camera__set_near_clip_distance(0.3f, &foreground_camera);
-  camera__set_far_clip_distance(12, &foreground_camera);
-  camera__calculate_lookat(WORLDSPACE.up, &foreground_camera);
-  camera__calculate_perspective(vwprt, &foreground_camera);
+  foreground_camera.position = (struct vec3){ -1.2f, 0.2f, 7 };
+  foreground_camera.look_target = (struct vec3){ 0, 0.1f, 0 };
+  foreground_camera.horizontal_fov_in_deg = 60;
+  foreground_camera.near_clip_distance = 0.3f;
+  foreground_camera.far_clip_distance = 13;
 
   water__init_mesh_data();
   water__copy_assets_to_gpu(gpu);
+
+  sky_shader.frag_shader_src = sky_frag_src;
+  sky_shader.vert_shader_src = default_vert_src;
+  gpu->copy_shader_to_gpu(&sky_shader);
+  gpu->copy_static_mesh_to_gpu(&cage_mesh);
 
   turbine__copy_assets_to_gpu(gpu);
   for (int x = 0; x < TURBINE_X_COUNT; x++)
   for (int z = 0; z < TURBINE_Z_COUNT; z++)
     turbines[x + z * TURBINE_X_COUNT] = (struct turbine){
+      .rotation_deg_per_sec = 40 + (float)(rand() / (float)RAND_MAX) * 70,
       .transform = {
         {
-          x * TURBINE_X_OFFSET + TURBINE_FIELD_ORIGIN_OFFSET.x,
+          x * TURBINE_X_OFFSET + TURBINE_FIELD_ORIGIN_OFFSET.x + x * x,
           0,
           z * TURBINE_Z_OFFSET + TURBINE_FIELD_ORIGIN_OFFSET.y
         },
         { 0, 0, 0 },
-        0.15f
+        0.12f
       }
     };
 }
@@ -118,6 +130,23 @@ void ocean__tick(
 
   // UPDATE
 
+  static struct m4x4 camera_rotation;
+  // TODO: if ur gonna be too lazy to add quaternion rotations,
+  // at least make a fn for rotating a point
+  m4x4__rotation(
+    deg_to_rad(delta_time * 1),
+    WORLDSPACE.up,
+    &camera_rotation
+  );
+  foreground_camera.position = m4x4_x_point(
+    &camera_rotation,
+    foreground_camera.position
+  );
+  foreground_camera.position.y =
+    0.1f * sin(seconds_since_creation * 0.02f) + 0.15f;
+
+  sky_transform.rotation_in_deg.x += 30 * delta_time;
+
   static struct vec2 clouds_offset;
   clouds_offset.x = loop_float(
     clouds_offset.x + WIND_KM_PER_SEC.x * delta_time, 0, 1
@@ -139,7 +168,10 @@ void ocean__tick(
   static int_fast32_t sample_pixel_y = 0;
   static int_fast32_t sample_index = 0;
   for (int i = 0; i < TURBINE_X_COUNT * TURBINE_Z_COUNT; i++) {
-    turbines[i].blades_rotation_in_deg -= 30 * delta_time;
+
+    turbines[i].blades_rotation_in_deg -=
+      turbines[i].rotation_deg_per_sec * delta_time;
+
     relative_turbine_position =
       relative_position_within_ocean(turbines[i].transform.position);
     normalized_sample_xy.x =
@@ -162,9 +194,38 @@ void ocean__tick(
   
   // DRAW
 
-  gpu->clear(&COLOR_EVENING_SUNLIGHT);
+  camera__calculate_lookat(WORLDSPACE.up, &foreground_camera);
+  camera__calculate_perspective(vwprt, &foreground_camera);
 
   gpu->cull_back_faces();
+
+  static struct m4x4 sky_local_to_world;
+  static struct m3x3 sky_normals_local_to_world;
+  gpu->select_shader(&sky_shader);
+  gpu->set_fragment_shader_vec3(
+    &sky_shader,
+    "night_color",
+    COLOR_AQUA_BLUE
+  );
+  space__create_model(
+    &WORLDSPACE,
+    &sky_transform,
+    &sky_local_to_world
+  );
+  space__create_normals_model(
+    &sky_local_to_world,
+    &sky_normals_local_to_world
+  );
+  gpu__set_mvp(
+    &sky_local_to_world,
+    &sky_normals_local_to_world,
+    &foreground_camera,
+    &sky_shader,
+    gpu
+  );
+  gpu->draw_mesh(&cage_mesh);
+
+  gpu->clear_depth_buffer();
 
   water__draw(
     SUNLIGHT_DIRECTION,
