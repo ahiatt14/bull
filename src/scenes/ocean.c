@@ -98,7 +98,7 @@ void ocean__init(
   for (int x = 0; x < TURBINE_X_COUNT; x++)
   for (int z = 0; z < TURBINE_Z_COUNT; z++)
     turbines[x + z * TURBINE_X_COUNT] = (struct turbine){
-      .rotation_deg_per_sec = 40 + (float)(rand() / (float)RAND_MAX) * 70,
+      .rotation_deg_per_sec = 20 + (float)(rand() / (float)RAND_MAX) * 70,
       .transform = {
         {
           x * TURBINE_X_OFFSET + TURBINE_FIELD_ORIGIN_OFFSET.x + x * x,

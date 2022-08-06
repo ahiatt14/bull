@@ -10,6 +10,7 @@
 #include "player.h"
 #include "arena.h"
 #include "core.h"
+#include "bouncers.h"
 
 #include "solid_color_frag.h"
 #include "normal_debug_frag.h"
@@ -33,14 +34,8 @@ struct vec3 slide_along_radius_around_world_origin(
 
 // LOCALS
 
-static double seconds_since_creation;
-static double tick_start_time;
-static double delta_time;
-
 static struct camera cam;
 static struct gamepad_input gamepad;
-
-static uint8_t player_one_is_outside_arena;
 
 static struct arena_state arena = (struct arena_state){
   .transform = {
@@ -57,6 +52,8 @@ static struct core_state core = (struct core_state){
     CORE_RADIUS * 2
   }
 };
+
+static struct bouncer_grid bouncy_grid;
 
 struct player player_one = (struct player){
   .transform = {{3, 0, 0}, {0, 0, 0}, 1},
@@ -93,6 +90,7 @@ void action__init(
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
+  bouncers__copy_assets_to_gpu(gpu);
   core__copy_assets_to_gpu(gpu);
   arena__copy_assets_to_gpu(gpu);
 
@@ -103,6 +101,10 @@ void action__init(
     vwprt,
     gpu
   );
+
+  bouncers__add_to_grid(2, 3, &bouncy_grid);
+  bouncers__add_to_grid(3, 0, &bouncy_grid);
+  bouncers__add_to_grid(3, 15, &bouncy_grid);
 }
 
 void action__tick(
@@ -112,6 +114,9 @@ void action__tick(
   uint8_t previous_scene,
   void switch_scene(uint8_t new_scene)
 ) {
+  static double seconds_since_creation;
+  static double tick_start_time;
+  static double delta_time;
 
   // GAME TIME
 
@@ -132,6 +137,18 @@ void action__tick(
   // GAMEPLAY
 
   arena__update(delta_time, &arena);
+
+  bouncers__rotate_grid_row(
+    3,
+    30,
+    delta_time,
+    &bouncy_grid
+  );
+  bouncers__radiate_grid(
+    0.1f,
+    delta_time,
+    &bouncy_grid
+  );
   
   player__update(
     delta_time,
@@ -140,6 +157,7 @@ void action__tick(
     &player_one
   );
 
+  static uint8_t player_one_is_outside_arena;
   if (player_one_is_outside_arena) {
     player_one.transform.rotation_in_deg.y =
       rad_to_deg(atan(
@@ -184,6 +202,8 @@ void action__tick(
 
   arena__draw(&cam, gpu, &arena);
   core__draw(&cam, gpu, &core);
+  bouncers__draw_grid(&cam, gpu, &bouncy_grid);
+
   player__draw(&cam, gpu, &player_one);
 }
 

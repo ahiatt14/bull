@@ -74,7 +74,7 @@ int main() {
     WINDOW_HEIGHT,
     50,
     50,
-    "GOOD HAWK",
+    "here come the birds",
     REQUEST_VSYNC_ON,
     REQUEST_WINDOWED,
     REQUEST_MSAA_ON,
@@ -115,14 +115,14 @@ int main() {
     &ocean
   };
 
-  // for (int i = 0; i < SCENE_COUNT; i++)
-  //   scenes[i]->init(&window, &vwprt, &gpu);
-  scenes[SCENE__OCEAN]->init(&window, &vwprt, &gpu);
+  for (int i = 0; i < SCENE_COUNT; i++)
+    scenes[i]->init(&window, &vwprt, &gpu);
+  // scenes[SCENE__OCEAN]->init(&window, &vwprt, &gpu);
 
-  // current_scene = SCENE__MAIN_MENU;
-  // previous_scene = SCENE__MAIN_MENU;
-  current_scene = SCENE__OCEAN;
-  previous_scene = SCENE__OCEAN;
+  current_scene = SCENE__MAIN_MENU;
+  previous_scene = SCENE__MAIN_MENU;
+  // current_scene = SCENE__OCEAN;
+  // previous_scene = SCENE__OCEAN;
 
   gpu.enable_depth_test();
 

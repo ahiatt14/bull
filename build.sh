@@ -39,7 +39,7 @@ rm -rf game.exe
 ./${tools}sourcify-obj.exe assets/mesh/capsule_apartment.obj smooth src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/core.obj smooth src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/cage.obj smooth src/headers/ src/ && \
-./${tools}sourcify-obj.exe assets/mesh/sphere.obj flat src/headers/ src/ && \
+./${tools}sourcify-obj.exe assets/mesh/sphere.obj smooth src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/bird.obj flat src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/turbine_base.obj flat src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/turbine_blades.obj flat src/headers/ src/ \
