@@ -8,7 +8,6 @@
 #include "bull_math.h"
 
 #include "player.h"
-#include "arena.h"
 #include "core.h"
 #include "bouncers.h"
 
@@ -19,7 +18,8 @@
 // CONSTANTS
 
 #define CORE_RADIUS 1
-#define ARENA_RADIUS 3
+
+#define PLAYER_START_POS {3, 0, 0}
 
 #define MIN_PLAYER_RADIUS CORE_RADIUS * 2.1f
 
@@ -37,14 +37,6 @@ struct vec3 slide_along_radius_around_world_origin(
 static struct camera cam;
 static struct gamepad_input gamepad;
 
-static struct arena_state arena = (struct arena_state){
-  .transform = {
-    {0,0,0},
-    {0,0,0},
-    ARENA_RADIUS * 2
-  }
-};
-
 static struct core_state core = (struct core_state){
   .transform = {
     {0,0,0},
@@ -56,7 +48,9 @@ static struct core_state core = (struct core_state){
 static struct bouncer_grid bouncy_grid;
 
 struct player player_one = (struct player){
-  .transform = {{3, 0, 0}, {0, 0, 0}, 1},
+  .transform = {PLAYER_START_POS, {0, 0, 0}, 1},
+  .previous_position = PLAYER_START_POS,
+  .projected_position = PLAYER_START_POS,
   .input_state = PLAYER_INPUT_STATE__IDLE,
   .effect_state = PLAYER_EFFECT_STATE__HEALTHY
 };
@@ -82,17 +76,16 @@ void action__init(
   struct gpu_api const *const gpu
 ) {
 
-  cam.position = (struct vec3){ 0, 20, 1 };
+  cam.position = (struct vec3){ 0, 40, 0.01f };
   cam.look_target = ORIGIN;
-  cam.horizontal_fov_in_deg = 50;
+  cam.horizontal_fov_in_deg = 30;
   cam.near_clip_distance = 1;
-  cam.far_clip_distance = 50;
+  cam.far_clip_distance = 100;
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
   bouncers__copy_assets_to_gpu(gpu);
   core__copy_assets_to_gpu(gpu);
-  arena__copy_assets_to_gpu(gpu);
 
   player__copy_assets_to_gpu(gpu);
 
@@ -102,9 +95,10 @@ void action__init(
     gpu
   );
 
-  bouncers__add_to_grid(2, 3, &bouncy_grid);
-  bouncers__add_to_grid(3, 0, &bouncy_grid);
-  bouncers__add_to_grid(3, 15, &bouncy_grid);
+  for (int i = 0; i < 36; i++) {
+    bouncers__add_to_grid(3, i, &bouncy_grid);
+    bouncers__add_to_grid(4, i, &bouncy_grid);
+  }
 }
 
 void action__tick(
@@ -136,11 +130,15 @@ void action__tick(
 
   // GAMEPLAY
 
-  arena__update(delta_time, &arena);
-
   bouncers__rotate_grid_row(
     3,
     30,
+    delta_time,
+    &bouncy_grid
+  );
+  bouncers__rotate_grid_row(
+    4,
+    -40,
     delta_time,
     &bouncy_grid
   );
@@ -149,7 +147,9 @@ void action__tick(
     delta_time,
     &bouncy_grid
   );
-  
+
+  player_one.previous_position = player_one.transform.position;
+
   player__update(
     delta_time,
     gamepad,
@@ -157,37 +157,35 @@ void action__tick(
     &player_one
   );
 
-  static uint8_t player_one_is_outside_arena;
-  if (player_one_is_outside_arena) {
-    player_one.transform.rotation_in_deg.y =
-      rad_to_deg(atan(
-        -player_one.transform.position.z /
-        player_one.transform.position.x
-      )) + 90;
-  } else {
-    player_one.transform.rotation_in_deg.y =
-      find_cw_or_ccw_facing_around_world_up(
-        player_one.projected_position,
-        player_one.transform.position
-      );
-  }
+  // static uint8_t player_one_is_outside_arena;
+  // if (player_one_is_outside_arena) {
+  //   player_one.transform.rotation_in_deg.y =
+  //     rad_to_deg(atan(
+  //       -player_one.transform.position.z /
+  //       player_one.transform.position.x
+  //     )) + 90;
+  // } else {
+
+  player_one.transform.rotation_in_deg.y =
+    find_cw_or_ccw_facing_around_world_up(
+      player_one.transform.position,
+      player_one.previous_position
+    );
+  // }
   
   // TODO: lock player facing when autofiring
   
   if (
     vec3__distance(player_one.projected_position, ORIGIN) <
     MIN_PLAYER_RADIUS
-  ) player_one.projected_position = slide_along_radius_around_world_origin(
-    MIN_PLAYER_RADIUS,
-    player_one.projected_position,
-    player_one.transform.position
-  );
+  ) player_one.projected_position = 
+    slide_along_radius_around_world_origin(
+      MIN_PLAYER_RADIUS,
+      player_one.projected_position,
+      player_one.transform.position
+    );
 
   player_one.transform.position = player_one.projected_position;
-  player_one_is_outside_arena =
-    // TODO: why do we need to be 2x the radius?????
-    vec3__distance(player_one.transform.position, ORIGIN) >
-    (ARENA_RADIUS * 2) ? 1 : 0;
 
   // DRAW
 
@@ -200,7 +198,6 @@ void action__tick(
   );
   gpu->clear_depth_buffer();
 
-  arena__draw(&cam, gpu, &arena);
   core__draw(&cam, gpu, &core);
   bouncers__draw_grid(&cam, gpu, &bouncy_grid);
 

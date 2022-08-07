@@ -34,11 +34,6 @@ static uint8_t project_player_position(
 
 static struct shader shared_healthy_shader;
 
-static struct m4x4 shared_local_to_world;
-static struct m3x3 shared_normals_local_to_world;
-
-static struct vec2 shared_normalized_left_stick_direction;
-
 // STATE STUFF
 
 static void player_idle__update(
@@ -54,7 +49,7 @@ static void player_idle__update(
     playr
   )) playr->input_state = PLAYER_INPUT_STATE__THRUSTING;
 
-  if (gamepad.left_and_right_triggers.y >= TRIGGER_DEADZONE) {
+  if (gamepad.right_trigger >= TRIGGER_DEADZONE) {
     actions->start_auto_fire();
     playr->autofire_start_locked_to_cw = is_moving_cw_around_world_up(
       playr->projected_position,
@@ -75,9 +70,19 @@ static void player_thrusting__update(
     delta_time,
     gamepad.left_stick_direction,
     playr
-  )) playr->input_state = PLAYER_INPUT_STATE__IDLE;
+  )) {
+    playr->input_state = PLAYER_INPUT_STATE__IDLE;
+    printf("leaving thrusting\n");
+    printf(
+      "pos x: %.5f z: %.5f -- prev: x: %.5f z: %.5f\n",
+      playr->transform.position.x,
+      playr->transform.position.z,
+      playr->previous_position.x,
+      playr->previous_position.z
+    );
+  }
 
-  if (gamepad.left_and_right_triggers.y >= TRIGGER_DEADZONE) {
+  if (gamepad.right_trigger >= TRIGGER_DEADZONE) {
     actions->start_auto_fire();
     playr->autofire_start_locked_to_cw = is_moving_cw_around_world_up(
       playr->projected_position,
@@ -100,7 +105,7 @@ static void player_autofiring__update(
     playr
   );
 
-  if (gamepad.left_and_right_triggers.y < TRIGGER_DEADZONE) {
+  if (gamepad.right_trigger < TRIGGER_DEADZONE) {
     actions->stop_auto_fire();
     playr->input_state = PLAYER_INPUT_STATE__IDLE;
   }
@@ -162,14 +167,17 @@ void player__draw(
   struct gpu_api const *const gpu,
   struct player const *const playr
 ) {
+  static struct m4x4 local_to_world;
+  static struct m3x3 normals_local_to_world;
+
   space__create_model(
     &WORLDSPACE,
     &playr->transform,
-    &shared_local_to_world
+    &local_to_world
   );
   space__create_normals_model(
-    &shared_local_to_world,
-    &shared_normals_local_to_world
+    &local_to_world,
+    &normals_local_to_world
   );
   gpu->select_shader(&shared_healthy_shader);
   gpu->set_fragment_shader_vec3(
@@ -178,8 +186,8 @@ void player__draw(
     COLOR_WHITE
   );
   gpu__set_mvp(
-    &shared_local_to_world,
-    &shared_normals_local_to_world,
+    &local_to_world,
+    &normals_local_to_world,
     cam,
     &shared_healthy_shader,
     gpu
@@ -194,18 +202,18 @@ static uint8_t project_player_position(
   struct vec2 direction,
   struct player *const playr
 ) {
-  // TODO: maybe vector library should take vecs by value instead of ptr
-  float mag = vec2__magnitude(direction);
-  if (mag < STICK_DEADZONE) {
-    // playr->projected_position = playr->transform.position;
-    return 0;
-  }
-  shared_normalized_left_stick_direction = vec2__normalize(direction);
+  static float mag;
+  static struct vec2 normalized_left_stick_direction;
+
+  mag = vec2__magnitude(direction);
+  if (mag < STICK_DEADZONE) return 0;
+  
+  normalized_left_stick_direction = vec2__normalize(direction);
   playr->projected_position.x +=
-    shared_normalized_left_stick_direction.x *
+    normalized_left_stick_direction.x *
     PLAYER_SPEED * mag * mag * delta_time;
   playr->projected_position.z +=
-    shared_normalized_left_stick_direction.y *
+    normalized_left_stick_direction.y *
     PLAYER_SPEED * mag * mag * delta_time;
   return 1;
 }

@@ -74,7 +74,7 @@ int main() {
     WINDOW_HEIGHT,
     50,
     50,
-    "here come the birds",
+    "Greathawk",
     REQUEST_VSYNC_ON,
     REQUEST_WINDOWED,
     REQUEST_MSAA_ON,

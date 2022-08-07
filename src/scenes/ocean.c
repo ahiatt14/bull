@@ -205,7 +205,7 @@ void ocean__tick(
   gpu->set_fragment_shader_vec3(
     &sky_shader,
     "night_color",
-    COLOR_AQUA_BLUE
+    COLOR_SKY_BLUE
   );
   space__create_model(
     &WORLDSPACE,

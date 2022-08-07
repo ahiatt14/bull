@@ -8,6 +8,7 @@
 
 #include "sphere_mesh.h"
 
+#include "bouncer_frag.h"
 #include "solid_color_frag.h"
 #include "default_vert.h"
 
@@ -16,7 +17,7 @@ static struct shader shared_bouncer_shader;
 void bouncers__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
-  shared_bouncer_shader.frag_shader_src = solid_color_frag_src;
+  shared_bouncer_shader.frag_shader_src = bouncer_frag_src;
   shared_bouncer_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_bouncer_shader);
   gpu->copy_static_mesh_to_gpu(&sphere_mesh);
@@ -99,8 +100,13 @@ void bouncers__draw_grid(
   gpu->select_shader(&shared_bouncer_shader);
   gpu->set_fragment_shader_vec3(
     &shared_bouncer_shader,
-    "color",
-    COLOR_WHITE
+    "core_color",
+    COLOR_NEON_PURPLE
+  );
+  gpu->set_fragment_shader_vec3(
+    &shared_bouncer_shader,
+    "edge_color",
+    COLOR_GOLDEN_YELLOW
   );
 
   for (int_fast8_t r = 0; r < BOUNCERS_GRID_ROW_COUNT; r++)

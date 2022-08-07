@@ -14,6 +14,7 @@
 
 struct player {
   struct transform transform;
+  struct vec3 previous_position;
   struct vec3 projected_position;
   uint8_t input_state;
   uint8_t effect_state;

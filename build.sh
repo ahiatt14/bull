@@ -17,7 +17,8 @@ rm -rf game.exe
 ./${tools}validate-glsl.exe assets/glsl/water_surface_frag.glsl frag \
 ./${tools}validate-glsl.exe assets/glsl/core_frag.glsl frag && \
 ./${tools}validate-glsl.exe assets/glsl/turbine_frag.glsl frag && \
-./${tools}validate-glsl.exe assets/glsl/sky_frag.glsl frag \
+./${tools}validate-glsl.exe assets/glsl/sky_frag.glsl frag && \
+./${tools}validate-glsl.exe assets/glsl/bouncer_frag.glsl frag \
 && \
 ./${tools}sourcify-glsl.exe assets/glsl/flat_texture_frag.glsl src/headers/ src/ && \
 ./${tools}sourcify-glsl.exe assets/glsl/solid_color_frag.glsl src/headers/ src/ && \
@@ -27,7 +28,8 @@ rm -rf game.exe
 ./${tools}sourcify-glsl.exe assets/glsl/water_surface_frag.glsl src/headers/ src/ && \
 ./${tools}sourcify-glsl.exe assets/glsl/core_frag.glsl src/headers/ src/ && \
 ./${tools}sourcify-glsl.exe assets/glsl/turbine_frag.glsl src/headers/ src/ && \
-./${tools}sourcify-glsl.exe assets/glsl/sky_frag.glsl src/headers/ src/ \
+./${tools}sourcify-glsl.exe assets/glsl/sky_frag.glsl src/headers/ src/ && \
+./${tools}sourcify-glsl.exe assets/glsl/bouncer_frag.glsl src/headers/ src/ \
 && \
 ./${tools}sourcify-png.exe assets/png/clouds.png 3 src/headers/clouds_texture.h src/clouds_texture.c && \
 ./${tools}sourcify-png.exe assets/png/water.png 3 src/headers/water_texture.h src/water_texture.c && \
@@ -95,6 +97,7 @@ rm -f src/headers/core_frag.h
 rm -f src/headers/water_surface_frag.h
 rm -f src/headers/turbine_frag.h
 rm -f src/headers/sky_frag.h
+rm -f src/headers/bouncer_frag.h
 
 rm -f src/solid_color_frag.c
 rm -f src/normal_debug_frag.c
@@ -106,3 +109,4 @@ rm -f src/core_frag.c
 rm -f src/water_surface_frag.c
 rm -f src/turbine_frag.c
 rm -f src/sky_frag.c
+rm -f src/bouncer_frag.c

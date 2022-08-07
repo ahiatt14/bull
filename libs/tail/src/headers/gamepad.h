@@ -23,7 +23,8 @@
 
 struct gamepad_input {
   struct vec2 left_stick_direction;
-  struct vec2 left_and_right_triggers;
+  float left_trigger;
+  float right_trigger;
   uint16_t buttons;
   uint16_t previous_buttons;
 };

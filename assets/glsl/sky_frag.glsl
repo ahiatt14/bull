@@ -20,7 +20,7 @@ uniform vec3 night_color = vec3(
 
 in vec2 TexCoord;
 in vec3 normal;
-in vec3 vec3frag_world_position;
+in vec3 frag_world_position;
 
 out vec4 FragColor;
 

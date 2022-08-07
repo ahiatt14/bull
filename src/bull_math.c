@@ -44,18 +44,18 @@ float find_cw_or_ccw_facing_around_world_up(
   struct vec3 position,
   struct vec3 previous_position
 ) {
-  float ccw_rotation_in_deg = rad_to_deg(atan(
+  float ccw_angle_in_deg = rad_to_deg(atan(
     -position.z /
     position.x
   ));
-  if (position.x < 0) ccw_rotation_in_deg += 180;
+  if (position.x < 0) ccw_angle_in_deg += 180;
   return
     is_moving_cw_around_world_up(
       position,
       previous_position
     ) ?
-    ccw_rotation_in_deg + 180 :
-    ccw_rotation_in_deg;
+    ccw_angle_in_deg + 180 :
+    ccw_angle_in_deg;
 }
 
 float rads_from_arc_len_and_radius(
