@@ -63,6 +63,15 @@ static void print_autofire_stop() {
   printf("autofire stopped\n");
 }
 
+static void bounce_player(
+  uint8_t bouncer_row_index,
+  uint8_t bouncer_column_index,
+  struct vec3 bouncer_to_target,
+  struct vec3 bouncer_velocity
+) {
+
+}
+
 struct player_actions player_one_actions = (struct player_actions){
   print_autofiring,
   print_autofire_stop
@@ -130,15 +139,21 @@ void action__tick(
 
   // GAMEPLAY
 
-  bouncers__rotate_grid_row(3, 30, delta_time, &bouncy_grid);
-  bouncers__rotate_grid_row(4, -40, delta_time, &bouncy_grid);
-  bouncers__radiate_grid(0.1f, delta_time, &bouncy_grid);
-
   player__update(
     delta_time,
     gamepad,
     &player_one_actions,
     &player_one
+  );
+
+  bouncers__rotate_grid_row(3, 30, delta_time, &bouncy_grid);
+  bouncers__rotate_grid_row(4, -40, delta_time, &bouncy_grid);
+  bouncers__radiate_grid(0.1f, delta_time, &bouncy_grid);
+
+  bouncers__check_collision_with_grid(
+    bounce_player,
+    player_one.projected_position,
+    &bouncy_grid
   );
 
   player_one.transform.rotation_in_deg.y =

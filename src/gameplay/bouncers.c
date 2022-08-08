@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "tail.h"
 
 #include "bouncers.h"
@@ -23,39 +25,70 @@ void bouncers__copy_assets_to_gpu(
   gpu->copy_static_mesh_to_gpu(&sphere_mesh);
 }
 
+struct vec3 bouncers__get_pos_of_grid_bouncer(
+  uint8_t row,
+  uint8_t column,
+  struct bouncer_grid const *const grid
+) {
+  return (struct vec3){0};
+}
+
 void bouncers__reset_grid_row(
-  uint8_t row_index,
+  uint8_t row,
   struct bouncer_grid *const grid
 ) {
-  grid->active_bouncers[row_index] = 0;
-  grid->row_deg_offsets[row_index] = 0;
+  grid->active_bouncers[row] = 0;
+  grid->row_deg_offsets[row] = 0;
 }
 
 void bouncers__set_grid_to_defaults(
   struct bouncer_grid *const grid
 ) {
+  grid->row_0_radius_offset = 0;
   for (int i = 0; i < BOUNCERS_GRID_ROW_COUNT; i++)
     bouncers__reset_grid_row(i, grid);
 }
 
 void bouncers__add_to_grid(
-  uint8_t row_index,
-  uint8_t column_index,
+  uint8_t row,
+  uint8_t column,
   struct bouncer_grid *const grid
 ) {
-  grid->active_bouncers[row_index] |= 1 << column_index;
+  grid->active_bouncers[row] |= 1 << column;
 }
 
 void bouncers__check_collision_with_grid(
   void (*on_collide)(
-    uint8_t bouncer_row_index,
-    uint8_t bouncer_column_index,
-    struct vec2 bouncer_velocity
+    uint8_t bouncer_row,
+    uint8_t bouncer_column,
+    struct vec3 bouncer_to_target,
+    struct vec3 bouncer_velocity
   ),
   struct vec3 target,
   struct bouncer_grid const *const grid
 ) {
+  static float target_distance_from_center;
 
+  target_distance_from_center = vec3__distance(target, ORIGIN);
+  if (
+    target_distance_from_center <
+    grid->row_0_radius_offset - BOUNCER_RADIUS
+    // TODO: will need to update since we'll make bouncer radius dynamic
+    // based on distance from center
+  ) return;
+  
+  for (int_fast8_t r = 0; r < BOUNCERS_GRID_ROW_COUNT; r++) {
+    if (
+      abs(
+        target_distance_from_center -
+        grid->row_0_radius_offset + r * BOUNCER_GRID_ROW_RADIUS_OFFSET
+      ) >
+      BOUNCER_RADIUS
+    ) continue;
+    for (int_fast8_t c = 0; c < 360 / BOUNCER_GRID_COLUMN_DEG_OFFSET; c++) {
+
+    }
+  }
 }
 
 void bouncers__radiate_grid(
@@ -67,13 +100,13 @@ void bouncers__radiate_grid(
 }
 
 void bouncers__rotate_grid_row(
-  uint8_t row_index,
+  uint8_t row,
   float deg_per_sec,
   double delta_time,
   struct bouncer_grid *const grid
 ) {
-  grid->row_deg_offsets[row_index] = loop_float(
-    grid->row_deg_offsets[row_index] += deg_per_sec * delta_time,
+  grid->row_deg_offsets[row] = loop_float(
+    grid->row_deg_offsets[row] += deg_per_sec * delta_time,
     0,
     360
   );

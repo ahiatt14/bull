@@ -18,6 +18,12 @@ void bouncers__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 );
 
+struct vec3 bouncers__get_pos_of_grid_bouncer(
+  uint8_t row,
+  uint8_t column,
+  struct bouncer_grid const *const grid
+);
+
 void bouncers__set_grid_to_defaults(
   struct bouncer_grid *const grid
 );
@@ -37,7 +43,8 @@ void bouncers__check_collision_with_grid(
   void (*on_collide)(
     uint8_t bouncer_row_index,
     uint8_t bouncer_column_index,
-    struct vec2 bouncer_velocity
+    struct vec3 bouncer_to_target,
+    struct vec3 bouncer_velocity
   ),
   struct vec3 target,
   struct bouncer_grid const *const grid
