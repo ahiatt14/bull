@@ -72,14 +72,14 @@ static void player_thrusting__update(
     playr
   )) {
     playr->input_state = PLAYER_INPUT_STATE__IDLE;
-    printf("leaving thrusting\n");
-    printf(
-      "pos x: %.5f z: %.5f -- prev: x: %.5f z: %.5f\n",
-      playr->transform.position.x,
-      playr->transform.position.z,
-      playr->previous_position.x,
-      playr->previous_position.z
-    );
+    // printf("leaving thrusting\n");
+    // printf(
+    //   "pos x: %.5f z: %.5f -- prev: x: %.5f z: %.5f\n",
+    //   playr->transform.position.x,
+    //   playr->transform.position.z,
+    //   playr->previous_position.x,
+    //   playr->previous_position.z
+    // );
   }
 
   if (gamepad.right_trigger >= TRIGGER_DEADZONE) {
@@ -207,6 +207,8 @@ static uint8_t project_player_position(
 
   mag = vec2__magnitude(direction);
   if (mag < STICK_DEADZONE) return 0;
+
+  playr->previous_position = playr->transform.position;
   
   normalized_left_stick_direction = vec2__normalize(direction);
   playr->projected_position.x +=

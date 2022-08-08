@@ -21,7 +21,7 @@ void main()
 {
   vec3 material =
     water_color +
-    texture(surface_texture, TexCoord).rgb * 0.2;
+    texture(surface_texture, TexCoord).rgb * 0.1;
   vec3 diffuse =
     light_color *
     texture(cloud_cover, TexCoord).rgb - 0.3;

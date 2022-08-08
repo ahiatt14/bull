@@ -123,10 +123,10 @@ void action__tick(
 
   // HANDLE UNPLUGGED GAMEPAD
   
-  // if (!window->gamepad_is_connected()) {
-  //   switch_scene(SCENE__CONNECT_GAMEPAD);
-  //   return;
-  // }
+  if (!window->gamepad_is_connected()) {
+    switch_scene(SCENE__CONNECT_GAMEPAD);
+    return;
+  }
 
   // GAMEPLAY
 
@@ -134,14 +134,18 @@ void action__tick(
   bouncers__rotate_grid_row(4, -40, delta_time, &bouncy_grid);
   bouncers__radiate_grid(0.1f, delta_time, &bouncy_grid);
 
-  player_one.previous_position = player_one.transform.position;
-
   player__update(
     delta_time,
     gamepad,
     &player_one_actions,
     &player_one
   );
+
+  player_one.transform.rotation_in_deg.y =
+    find_cw_or_ccw_facing_around_world_up(
+      player_one.projected_position,
+      player_one.previous_position
+    );
 
   // static uint8_t player_one_is_outside_arena;
   // if (player_one_is_outside_arena) {
@@ -151,12 +155,6 @@ void action__tick(
   //       player_one.transform.position.x
   //     )) + 90;
   // } else {
-
-  player_one.transform.rotation_in_deg.y =
-    find_cw_or_ccw_facing_around_world_up(
-      player_one.transform.position,
-      player_one.previous_position
-    );
   // }
   
   // TODO: lock player facing when autofiring
