@@ -31,6 +31,11 @@ const struct vec3 COLOR_AQUA_BLUE = {
   0.56f,
   0.63f
 };
+const struct vec3 COLOR_MAGENTA_WHITE = {
+  .95f,
+  .9f,
+  .93f
+};
 
 const struct vec3 ORIGIN = { 0, 0, 0 };
 const struct coordinate_space WORLDSPACE = {

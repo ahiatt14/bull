@@ -45,9 +45,15 @@ static const struct vec2 WIND_KM_PER_SEC = {
   0.01f
 };
 
+// static const struct vec3 SUNLIGHT_DIRECTION = {
+//   0.707f,
+//   -0.707f,
+//   0
+// };
+
 static const struct vec3 SUNLIGHT_DIRECTION = {
-  0.707f,
-  -0.707f,
+  0,
+  -1,
   0
 };
 
@@ -207,6 +213,16 @@ void ocean__tick(
     "night_color",
     COLOR_SKY_BLUE
   );
+  gpu->set_fragment_shader_vec3(
+    &sky_shader,
+    "light_dir",
+    vec3__negate(SUNLIGHT_DIRECTION)
+  );
+  gpu->set_fragment_shader_vec3(
+    &sky_shader,
+    "light_color",
+    COLOR_MAGENTA_WHITE
+  );
   space__create_model(
     &WORLDSPACE,
     &sky_transform,
@@ -229,7 +245,8 @@ void ocean__tick(
 
   water__draw(
     SUNLIGHT_DIRECTION,
-    COLOR_EVENING_SUNLIGHT,
+    // COLOR_EVENING_SUNLIGHT,
+    COLOR_MAGENTA_WHITE,
     &foreground_camera,
     gpu
   );
@@ -239,7 +256,7 @@ void ocean__tick(
       &foreground_camera,
       gpu,
       SUNLIGHT_DIRECTION,
-      COLOR_EVENING_SUNLIGHT,
+      COLOR_MAGENTA_WHITE,
       &turbines[i]
     );
 

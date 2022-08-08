@@ -130,23 +130,9 @@ void action__tick(
 
   // GAMEPLAY
 
-  bouncers__rotate_grid_row(
-    3,
-    30,
-    delta_time,
-    &bouncy_grid
-  );
-  bouncers__rotate_grid_row(
-    4,
-    -40,
-    delta_time,
-    &bouncy_grid
-  );
-  bouncers__radiate_grid(
-    0.1f,
-    delta_time,
-    &bouncy_grid
-  );
+  bouncers__rotate_grid_row(3, 30, delta_time, &bouncy_grid);
+  bouncers__rotate_grid_row(4, -40, delta_time, &bouncy_grid);
+  bouncers__radiate_grid(0.1f, delta_time, &bouncy_grid);
 
   player_one.previous_position = player_one.transform.position;
 

@@ -21,11 +21,11 @@ void main()
 {
   vec3 material =
     water_color +
-    texture(surface_texture, TexCoord).rgb * 0.1;
+    texture(surface_texture, TexCoord).rgb * 0.2;
   vec3 diffuse =
     light_color *
     texture(cloud_cover, TexCoord).rgb - 0.3;
-  float albedo = max(dot(normal, -light_dir), 0);
+  float albedo = max(dot(normal, -light_dir), 0) + 0.1;
   
   FragColor = vec4(material + diffuse * albedo, 1);
 }
