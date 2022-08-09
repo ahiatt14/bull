@@ -21,10 +21,10 @@
 static struct shader shared_bouncer_shader;
 
 static uint8_t bouncer_is_inactive(
-  uint64_t bouncer_row,
-  int_fast8_t index
+  uint64_t row_bouncers,
+  int_fast8_t column
 ) {
-  return (bouncer_row >> index) & 1 ? 0 : 1;
+  return (row_bouncers >> column) & 1 ? 0 : 1;
 }
 
 void bouncers__copy_assets_to_gpu(
@@ -84,14 +84,24 @@ void bouncers__add_to_grid(
   grid->active_bouncers[row] |= 1 << column;
 }
 
+void bouncers__delete_from_grid(
+  uint8_t row,
+  uint8_t column,
+  struct bouncer_grid *const grid
+) {
+  // TODO: bug here. once column is over 30 shit goes nutty up
+  grid->active_bouncers[row] &= ~(1 << column);
+}
+
 void bouncers__check_collision_with_grid(
   void (*on_collide)(
     uint8_t row,
     uint8_t column,
-    struct vec3 bouncer_to_target
+    struct vec3 bouncer_to_target,
+    struct bouncer_grid *const grid
   ),
   struct vec3 target,
-  struct bouncer_grid const *const grid
+  struct bouncer_grid *const grid
 ) {
   static struct vec3 bouncer_position;
   static float target_distance_from_center;
@@ -116,7 +126,7 @@ void bouncers__check_collision_with_grid(
         vec3__distance(target, bouncer_position) > BOUNCER_RADIUS ||
         bouncer_is_inactive(grid->active_bouncers[r], c)
       ) continue;
-      on_collide(r, c, vec3_minus_vec3(target, bouncer_position));
+      on_collide(r, c, vec3_minus_vec3(target, bouncer_position), grid);
       return;
     }
   }
@@ -161,7 +171,7 @@ void bouncers__draw_grid(
   gpu->set_fragment_shader_vec3(
     &shared_bouncer_shader,
     "edge_color",
-    COLOR_GOLDEN_YELLOW
+    COLOR_WHITE
   );
 
   for (int_fast8_t r = 0; r < BOUNCERS_GRID_ROW_COUNT; r++)

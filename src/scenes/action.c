@@ -64,11 +64,13 @@ static void print_autofire_stop() {
 }
 
 static void bounce_player(
-  uint8_t bouncer_row_index,
-  uint8_t bouncer_column_index,
-  struct vec3 bouncer_to_target
+  uint8_t row,
+  uint8_t column,
+  struct vec3 bouncer_to_target,
+  struct bouncer_grid *const grid
 ) {
-  printf("bounced!\n");
+  bouncers__delete_from_grid(row, column, grid);
+  printf("row %u column %u\n", row, column);
 }
 
 struct player_actions player_one_actions = (struct player_actions){
@@ -103,7 +105,12 @@ void action__init(
     gpu
   );
 
-  bouncers__add_to_grid(6, 0, &bouncy_grid);
+  for (int i = 0; i < 360 / BOUNCER_GRID_COLUMN_DEG_OFFSET; i++) {
+    bouncers__add_to_grid(4, i, &bouncy_grid);
+    bouncers__add_to_grid(6, i, &bouncy_grid);
+    bouncers__add_to_grid(8, i, &bouncy_grid);
+    bouncers__add_to_grid(9, i, &bouncy_grid);
+  }
 }
 
 void action__tick(
@@ -142,7 +149,10 @@ void action__tick(
     &player_one
   );
 
-  // bouncers__rotate_grid_row(6, 30, delta_time, &bouncy_grid);
+  // bouncers__rotate_grid_row(4, 30, delta_time, &bouncy_grid);
+  // bouncers__rotate_grid_row(6, 40, delta_time, &bouncy_grid);
+  // bouncers__rotate_grid_row(8, 50, delta_time, &bouncy_grid);
+  // bouncers__rotate_grid_row(9, 60, delta_time, &bouncy_grid);
   // bouncers__radiate_grid(0.1f, delta_time, &bouncy_grid);
 
   bouncers__check_collision_with_grid(

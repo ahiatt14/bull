@@ -29,8 +29,14 @@ void bouncers__set_grid_to_defaults(
 );
 
 void bouncers__add_to_grid(
-  uint8_t row_index,
-  uint8_t column_index,
+  uint8_t row,
+  uint8_t column,
+  struct bouncer_grid *const grid
+);
+
+void bouncers__delete_from_grid(
+  uint8_t row,
+  uint8_t column,
   struct bouncer_grid *const grid
 );
 
@@ -41,16 +47,17 @@ void bouncers__reset_grid_row(
 
 void bouncers__check_collision_with_grid(
   void (*on_collide)(
-    uint8_t bouncer_row_index,
-    uint8_t bouncer_column_index,
-    struct vec3 bouncer_to_target
+    uint8_t row,
+    uint8_t column,
+    struct vec3 bouncer_to_target,
+    struct bouncer_grid *const grid
   ),
   struct vec3 target,
-  struct bouncer_grid const *const grid
+  struct bouncer_grid *const grid
 );
 
 void bouncers__rotate_grid_row(
-  uint8_t row_index,
+  uint8_t row,
   float deg_per_sec,
   double delta_time,
   struct bouncer_grid *const grid
