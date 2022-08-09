@@ -200,6 +200,7 @@ void ocean__tick(
   
   // DRAW
 
+  // TODO: somethin weird goin on here?
   camera__calculate_lookat(WORLDSPACE.up, &foreground_camera);
   camera__calculate_perspective(vwprt, &foreground_camera);
 

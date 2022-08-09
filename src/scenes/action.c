@@ -66,10 +66,9 @@ static void print_autofire_stop() {
 static void bounce_player(
   uint8_t bouncer_row_index,
   uint8_t bouncer_column_index,
-  struct vec3 bouncer_to_target,
-  struct vec3 bouncer_velocity
+  struct vec3 bouncer_to_target
 ) {
-
+  printf("bounced!\n");
 }
 
 struct player_actions player_one_actions = (struct player_actions){
@@ -104,10 +103,7 @@ void action__init(
     gpu
   );
 
-  for (int i = 0; i < 36; i++) {
-    bouncers__add_to_grid(3, i, &bouncy_grid);
-    bouncers__add_to_grid(4, i, &bouncy_grid);
-  }
+  bouncers__add_to_grid(6, 0, &bouncy_grid);
 }
 
 void action__tick(
@@ -146,9 +142,8 @@ void action__tick(
     &player_one
   );
 
-  bouncers__rotate_grid_row(3, 30, delta_time, &bouncy_grid);
-  bouncers__rotate_grid_row(4, -40, delta_time, &bouncy_grid);
-  bouncers__radiate_grid(0.1f, delta_time, &bouncy_grid);
+  // bouncers__rotate_grid_row(6, 30, delta_time, &bouncy_grid);
+  // bouncers__radiate_grid(0.1f, delta_time, &bouncy_grid);
 
   bouncers__check_collision_with_grid(
     bounce_player,

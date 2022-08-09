@@ -43,8 +43,7 @@ void bouncers__check_collision_with_grid(
   void (*on_collide)(
     uint8_t bouncer_row_index,
     uint8_t bouncer_column_index,
-    struct vec3 bouncer_to_target,
-    struct vec3 bouncer_velocity
+    struct vec3 bouncer_to_target
   ),
   struct vec3 target,
   struct bouncer_grid const *const grid

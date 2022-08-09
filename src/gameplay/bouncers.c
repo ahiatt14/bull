@@ -1,3 +1,5 @@
+
+#include <stdio.h>
 #include <math.h>
 
 #include "tail.h"
@@ -14,7 +16,16 @@
 #include "solid_color_frag.h"
 #include "default_vert.h"
 
+// TODO: # of rows per grid should be parameterized!
+
 static struct shader shared_bouncer_shader;
+
+static uint8_t bouncer_is_inactive(
+  uint64_t bouncer_row,
+  int_fast8_t index
+) {
+  return (bouncer_row >> index) & 1 ? 0 : 1;
+}
 
 void bouncers__copy_assets_to_gpu(
   struct gpu_api const *const gpu
@@ -30,7 +41,23 @@ struct vec3 bouncers__get_pos_of_grid_bouncer(
   uint8_t column,
   struct bouncer_grid const *const grid
 ) {
-  return (struct vec3){0};
+  static struct vec3 position;
+  static struct m4x4 rotation;
+
+  position.z = -(
+    grid->row_0_radius_offset +
+    row * BOUNCER_GRID_ROW_RADIUS_OFFSET
+  );
+
+  m4x4__rotation(
+    deg_to_rad(
+      grid->row_deg_offsets[row] +
+      column * BOUNCER_GRID_COLUMN_DEG_OFFSET
+    ),
+    WORLDSPACE.up,
+    &rotation
+  );
+  return m4x4_x_point(&rotation, position);
 }
 
 void bouncers__reset_grid_row(
@@ -59,34 +86,38 @@ void bouncers__add_to_grid(
 
 void bouncers__check_collision_with_grid(
   void (*on_collide)(
-    uint8_t bouncer_row,
-    uint8_t bouncer_column,
-    struct vec3 bouncer_to_target,
-    struct vec3 bouncer_velocity
+    uint8_t row,
+    uint8_t column,
+    struct vec3 bouncer_to_target
   ),
   struct vec3 target,
   struct bouncer_grid const *const grid
 ) {
+  static struct vec3 bouncer_position;
   static float target_distance_from_center;
 
   target_distance_from_center = vec3__distance(target, ORIGIN);
   if (
     target_distance_from_center <
     grid->row_0_radius_offset - BOUNCER_RADIUS
-    // TODO: will need to update since we'll make bouncer radius dynamic
-    // based on distance from center
   ) return;
   
   for (int_fast8_t r = 0; r < BOUNCERS_GRID_ROW_COUNT; r++) {
     if (
-      abs(
+      grid->active_bouncers[r] == 0 ||
+      fabs(
         target_distance_from_center -
-        grid->row_0_radius_offset + r * BOUNCER_GRID_ROW_RADIUS_OFFSET
-      ) >
-      BOUNCER_RADIUS
+        (grid->row_0_radius_offset + r * BOUNCER_GRID_ROW_RADIUS_OFFSET)
+      ) > BOUNCER_RADIUS
     ) continue;
     for (int_fast8_t c = 0; c < 360 / BOUNCER_GRID_COLUMN_DEG_OFFSET; c++) {
-
+      bouncer_position = bouncers__get_pos_of_grid_bouncer(r, c, grid);
+      if (
+        vec3__distance(target, bouncer_position) > BOUNCER_RADIUS ||
+        bouncer_is_inactive(grid->active_bouncers[r], c)
+      ) continue;
+      on_collide(r, c, vec3_minus_vec3(target, bouncer_position));
+      return;
     }
   }
 }
@@ -112,21 +143,12 @@ void bouncers__rotate_grid_row(
   );
 }
 
-static uint8_t bouncer_is_inactive(
-  uint64_t bouncer_row,
-  int_fast8_t index
-) {
-  return (bouncer_row >> index) & 1 ? 0 : 1;
-}
-
 void bouncers__draw_grid(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
   struct bouncer_grid *const grid
 ) {
-  static struct vec3 position;
-  static struct m4x4 rotation;
-  static struct vec3 rotated_position; 
+  static struct vec3 revolved_position;
   static struct m4x4 local_to_world;
   static struct m3x3 normals_local_to_world;
 
@@ -147,22 +169,10 @@ void bouncers__draw_grid(
 
     if (bouncer_is_inactive(grid->active_bouncers[r], c)) continue;
 
-    position.z = -(
-      grid->row_0_radius_offset +
-      r * BOUNCER_GRID_ROW_RADIUS_OFFSET
-    );
+    revolved_position = bouncers__get_pos_of_grid_bouncer(r, c, grid);
 
-    m4x4__rotation(
-      deg_to_rad(
-        grid->row_deg_offsets[r] +
-        c * BOUNCER_GRID_COLUMN_DEG_OFFSET
-      ),
-      WORLDSPACE.up,
-      &rotation
-    );
-    rotated_position = m4x4_x_point(&rotation, position);
     m4x4__translation(
-      &rotated_position,
+      &revolved_position,
       &local_to_world
     );
 
