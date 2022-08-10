@@ -16,15 +16,18 @@
 #include "solid_color_frag.h"
 #include "default_vert.h"
 
-// TODO: # of rows per grid should be parameterized!
-
 static struct shader shared_bouncer_shader;
 
-static uint8_t bouncer_is_inactive(
-  uint64_t row_bouncers,
-  int_fast8_t column
-) {
-  return (row_bouncers >> column) & 1 ? 0 : 1;
+static uint8_t off_at_place(uint8_t place, uint32_t state) {
+  return (state >> place) & 1 ? 0 : 1;
+}
+
+static uint32_t switch_bit_on(uint8_t place, uint32_t state) {
+  return state | 1 << place;
+}
+
+static uint32_t switch_bit_off(uint8_t place, uint32_t state) {
+  return state & ~(1 << place);
 }
 
 void bouncers__copy_assets_to_gpu(
@@ -81,7 +84,8 @@ void bouncers__add_to_grid(
   uint8_t column,
   struct bouncer_grid *const grid
 ) {
-  grid->active_bouncers[row] |= 1 << column;
+  grid->active_bouncers[row] =
+    switch_bit_on(column, grid->active_bouncers[row]);
 }
 
 void bouncers__delete_from_grid(
@@ -89,8 +93,8 @@ void bouncers__delete_from_grid(
   uint8_t column,
   struct bouncer_grid *const grid
 ) {
-  // TODO: bug here. once column is over 30 shit goes nutty up
-  grid->active_bouncers[row] &= ~(1 << column);
+  grid->active_bouncers[row] =
+    switch_bit_off(column, grid->active_bouncers[row]);
 }
 
 void bouncers__check_collision_with_grid(
@@ -120,11 +124,11 @@ void bouncers__check_collision_with_grid(
         (grid->row_0_radius_offset + r * BOUNCER_GRID_ROW_RADIUS_OFFSET)
       ) > BOUNCER_RADIUS
     ) continue;
-    for (int_fast8_t c = 0; c < 360 / BOUNCER_GRID_COLUMN_DEG_OFFSET; c++) {
+    for (int_fast8_t c = 0; c < BOUNCER_GRID_MAX_PER_ROW; c++) {
       bouncer_position = bouncers__get_pos_of_grid_bouncer(r, c, grid);
       if (
         vec3__distance(target, bouncer_position) > BOUNCER_RADIUS ||
-        bouncer_is_inactive(grid->active_bouncers[r], c)
+        off_at_place(c, grid->active_bouncers[r])
       ) continue;
       on_collide(r, c, vec3_minus_vec3(target, bouncer_position), grid);
       return;
@@ -175,9 +179,9 @@ void bouncers__draw_grid(
   );
 
   for (int_fast8_t r = 0; r < BOUNCERS_GRID_ROW_COUNT; r++)
-  for (int_fast8_t c = 0; c < 360 / BOUNCER_GRID_COLUMN_DEG_OFFSET; c++) {
+  for (int_fast8_t c = 0; c < BOUNCER_GRID_MAX_PER_ROW; c++) {
 
-    if (bouncer_is_inactive(grid->active_bouncers[r], c)) continue;
+    if (off_at_place(c, grid->active_bouncers[r])) continue;
 
     revolved_position = bouncers__get_pos_of_grid_bouncer(r, c, grid);
 
