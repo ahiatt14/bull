@@ -86,7 +86,7 @@ void ocean__init(
   struct gpu_api const *const gpu
 ) {
 
-  foreground_camera.position = (struct vec3){ -1.2f, 0.2f, 7 };
+  foreground_camera.position = (struct vec3){ -1.2f, 0.3f, 7 };
   foreground_camera.look_target = (struct vec3){ 0, 0.1f, 0 };
   foreground_camera.horizontal_fov_in_deg = 60;
   foreground_camera.near_clip_distance = 0.3f;
@@ -140,7 +140,7 @@ void ocean__tick(
   // TODO: if ur gonna be too lazy to add quaternion rotations,
   // at least make a fn for rotating a point
   m4x4__rotation(
-    deg_to_rad(delta_time * 1),
+    deg_to_rad(delta_time * 2),
     WORLDSPACE.up,
     &camera_rotation
   );
