@@ -3,6 +3,12 @@
 
 #include "bull_math.h"
 
+// const struct m4x4* camera__calculate_ortho(
+//   struct viewport *const vwprt,
+//   struct camera *const cam
+// ) {
+// }
+
 char array_contains_u_i(
   unsigned int value,
   unsigned int *values,
@@ -70,3 +76,4 @@ float loop_float(float v, float min, float max) {
   if (v > max) return min + v - max;
   return v;
 }
+

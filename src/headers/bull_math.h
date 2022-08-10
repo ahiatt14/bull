@@ -5,6 +5,11 @@
 
 #include "tail.h"
 
+const struct m4x4* camera__calculate_ortho(
+  struct viewport *const vwprt,
+  struct camera *const cam
+);
+
 char array_contains_u_i(
   unsigned int value,
   unsigned int *values,

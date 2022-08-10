@@ -49,8 +49,8 @@ void handle_resize(uint16_t framebuffer_width, uint16_t framebuffer_height) {
     viewport_width,
     viewport_height
   );
-  viewport__set_width(framebuffer_width, &vwprt);
-  viewport__set_height(framebuffer_height, &vwprt);
+  viewport__set_width(viewport_width, &vwprt);
+  viewport__set_height(viewport_height, &vwprt);
 }
 
 void print_gamepad_connected(int slot) {
