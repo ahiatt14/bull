@@ -6,7 +6,10 @@
 #include "tail.h"
 
 const struct m4x4* camera__calculate_ortho(
-  struct viewport *const vwprt,
+  float r,
+  float t,
+  float n,
+  float f,
   struct camera *const cam
 );
 

@@ -202,7 +202,6 @@ void ocean__tick(
 
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
-  // camera__calculate_ortho(vwprt, &cam); // TODO: not working :(
 
   gpu->cull_back_faces();
 

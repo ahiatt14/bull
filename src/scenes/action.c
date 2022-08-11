@@ -85,13 +85,10 @@ void action__init(
   struct gpu_api const *const gpu
 ) {
 
-  cam.position = (struct vec3){ 0, 40, 0.01f };
+  cam.position = (struct vec3){ 0, 1, 0.01f };
   cam.look_target = ORIGIN;
-  cam.horizontal_fov_in_deg = 30;
-  cam.near_clip_distance = 1;
-  cam.far_clip_distance = 100;
   camera__calculate_lookat(WORLDSPACE.up, &cam);
-  camera__calculate_perspective(vwprt, &cam);
+  camera__calculate_ortho(12, 9, -2, 2, &cam);
 
   bouncers__copy_assets_to_gpu(gpu);
   core__copy_assets_to_gpu(gpu);
