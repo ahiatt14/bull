@@ -64,7 +64,7 @@ static struct transform sky_transform = {
   {0, 0, 0}, {0, 0, 0}, 4.5f
 };
 
-static struct camera foreground_camera;
+static struct camera cam;
 
 static struct vec2 relative_position_within_ocean(struct vec3 pos) {
   return (struct vec2){
@@ -86,11 +86,11 @@ void ocean__init(
   struct gpu_api const *const gpu
 ) {
 
-  foreground_camera.position = (struct vec3){ -1.2f, 0.3f, 7 };
-  foreground_camera.look_target = (struct vec3){ 0, 0.1f, 0 };
-  foreground_camera.horizontal_fov_in_deg = 60;
-  foreground_camera.near_clip_distance = 0.3f;
-  foreground_camera.far_clip_distance = 13;
+  cam.position = (struct vec3){ -1.2f, 0.3f, 7 };
+  cam.look_target = (struct vec3){ 0, 0.1f, 0 };
+  cam.horizontal_fov_in_deg = 60;
+  cam.near_clip_distance = 0.3f;
+  cam.far_clip_distance = 13;
 
   water__init_mesh_data();
   water__copy_assets_to_gpu(gpu);
@@ -144,11 +144,11 @@ void ocean__tick(
     WORLDSPACE.up,
     &camera_rotation
   );
-  foreground_camera.position = m4x4_x_point(
+  cam.position = m4x4_x_point(
     &camera_rotation,
-    foreground_camera.position
+    cam.position
   );
-  foreground_camera.position.y =
+  cam.position.y =
     0.1f * sin(seconds_since_creation * 0.02f) + 0.15f;
 
   sky_transform.rotation_in_deg.x += 30 * delta_time;
@@ -200,9 +200,9 @@ void ocean__tick(
   
   // DRAW
 
-  // TODO: somethin weird goin on here?
-  camera__calculate_lookat(WORLDSPACE.up, &foreground_camera);
-  camera__calculate_perspective(vwprt, &foreground_camera);
+  camera__calculate_lookat(WORLDSPACE.up, &cam);
+  camera__calculate_perspective(vwprt, &cam);
+  // camera__calculate_ortho(vwprt, &cam); // TODO: not working :(
 
   gpu->cull_back_faces();
 
@@ -236,7 +236,7 @@ void ocean__tick(
   gpu__set_mvp(
     &sky_local_to_world,
     &sky_normals_local_to_world,
-    &foreground_camera,
+    &cam,
     &sky_shader,
     gpu
   );
@@ -248,13 +248,13 @@ void ocean__tick(
     SUNLIGHT_DIRECTION,
     // COLOR_EVENING_SUNLIGHT,
     COLOR_MAGENTA_WHITE,
-    &foreground_camera,
+    &cam,
     gpu
   );
 
   for (int i = 0; i < TURBINE_X_COUNT * TURBINE_Z_COUNT; i++)
     turbine__draw(
-      &foreground_camera,
+      &cam,
       gpu,
       SUNLIGHT_DIRECTION,
       COLOR_MAGENTA_WHITE,

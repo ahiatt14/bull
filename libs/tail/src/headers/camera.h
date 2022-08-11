@@ -7,7 +7,7 @@
 
 struct camera {
   struct m4x4 lookat;
-  struct m4x4 perspective;
+  struct m4x4 projection;
   struct vec3 position;
   struct vec3 look_target;
   float near_clip_distance;

@@ -3,11 +3,37 @@
 
 #include "bull_math.h"
 
-// const struct m4x4* camera__calculate_ortho(
-//   struct viewport *const vwprt,
-//   struct camera *const cam
-// ) {
-// }
+const struct m4x4* camera__calculate_ortho(
+  struct viewport *const vwprt,
+  struct camera *const cam
+) {
+  static float r, l, t, b;
+  static float m0, m5, m10, m12, m13, m14;
+
+  r = vwprt->_width * 0.5f;
+  l = -r;
+  t = r / viewport__get_aspect_ratio(vwprt);
+  b = -t; 
+
+  m0 = 2.0f / (r - l);
+  m5 = 2.0f / (t - b);
+  m10 = -2.0f / (cam->far_clip_distance - cam->near_clip_distance);
+  m12 = -(r + l) / (r - l);
+  m13 = -(t + b) / (t - b);
+  m14 = 
+    -(cam->far_clip_distance + cam->near_clip_distance) /
+    (cam->far_clip_distance - cam->near_clip_distance);
+
+  m4x4__create(
+    m0, 0, 0, m12,
+    0, m5, 0, m13,
+    0, 0, m10, m14,
+    0, 0, 0, 1,
+    &cam->projection
+  );
+
+  return &cam->projection;
+}
 
 char array_contains_u_i(
   unsigned int value,

@@ -49,6 +49,6 @@ void quad__draw(
   gpu->select_texture(qua->texture);
   gpu->set_vertex_shader_m4x4(&shared_shader, "model", &shared_local_to_world);
   gpu->set_vertex_shader_m4x4(&shared_shader, "view", &cam->lookat);
-  gpu->set_vertex_shader_m4x4(&shared_shader, "projection", &cam->perspective);
+  gpu->set_vertex_shader_m4x4(&shared_shader, "projection", &cam->projection);
   gpu->draw_mesh(&shared_mesh);
 }
