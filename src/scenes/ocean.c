@@ -11,6 +11,7 @@
 
 #include "water.h"
 #include "turbine.h"
+#include "steam.h"
 #include "quad.h"
 #include "cage_mesh.h"
 
@@ -57,14 +58,7 @@ static const struct vec3 SUNLIGHT_DIRECTION = {
   0
 };
 
-// LOCALS
-
-static struct shader sky_shader;
-static struct transform sky_transform = {
-  {0, 0, 0}, {0, 0, 0}, 4.5f
-};
-
-static struct camera cam;
+// FORWARD DECS
 
 static struct vec2 relative_position_within_ocean(struct vec3 pos) {
   return (struct vec2){
@@ -76,9 +70,18 @@ static float brightness(float r, float g, float b) {
   return (r + g + b) / (255.0f * 3.0f);
 }
 
-// TURBINES
+// LOCALS
 
 static struct turbine turbines[TURBINE_X_COUNT * TURBINE_Z_COUNT];
+
+static struct steam_column steam;
+
+static struct shader sky_shader;
+static struct transform sky_transform = {
+  {0, 0, 0}, {0, 0, 0}, 4.5f
+};
+
+static struct camera cam;
 
 void ocean__init(
   struct window_api const *const window,
@@ -94,6 +97,9 @@ void ocean__init(
 
   water__init_mesh_data();
   water__copy_assets_to_gpu(gpu);
+
+  steam__init_mesh_data();
+  steam__copy_assets_to_gpu(gpu);
 
   sky_shader.frag_shader_src = sky_frag_src;
   sky_shader.vert_shader_src = default_vert_src;
@@ -223,6 +229,7 @@ void ocean__tick(
     "light_color",
     COLOR_MAGENTA_WHITE
   );
+  // TODO: don't think I need all these for the sky sphere?
   space__create_model(
     &WORLDSPACE,
     &sky_transform,
@@ -242,6 +249,8 @@ void ocean__tick(
   gpu->draw_mesh(&cage_mesh);
 
   gpu->clear_depth_buffer();
+
+  steam__draw_column(&cam, gpu, &steam);
 
   water__draw(
     SUNLIGHT_DIRECTION,

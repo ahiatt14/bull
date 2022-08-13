@@ -37,13 +37,13 @@ struct vec3 slide_along_radius_around_world_origin(
 static struct camera cam;
 static struct gamepad_input gamepad;
 
-static struct core_state core = (struct core_state){
-  .transform = {
-    {0,0,0},
-    {0,0,0},
-    CORE_RADIUS * 2
-  }
-};
+// static struct core_state core = (struct core_state){
+//   .transform = {
+//     {0,0,0},
+//     {0,0,0},
+//     CORE_RADIUS * 2
+//   }
+// };
 
 static struct bouncer_grid bouncy_grid;
 
@@ -196,7 +196,7 @@ void action__tick(
   );
   gpu->clear_depth_buffer();
 
-  core__draw(&cam, gpu, &core);
+  // core__draw(&cam, gpu, &core);
   bouncers__draw_grid(&cam, gpu, &bouncy_grid);
 
   player__draw(&cam, gpu, &player_one);
