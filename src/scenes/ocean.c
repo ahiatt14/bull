@@ -99,6 +99,7 @@ void ocean__init(
   water__copy_assets_to_gpu(gpu);
 
   steam__init_mesh_data();
+  steam__column_default(&steam);
   steam__copy_assets_to_gpu(gpu);
 
   sky_shader.frag_shader_src = sky_frag_src;
@@ -250,7 +251,9 @@ void ocean__tick(
 
   gpu->clear_depth_buffer();
 
+  gpu->cull_no_faces();
   steam__draw_column(&cam, gpu, &steam);
+  gpu->cull_back_faces();
 
   water__draw(
     SUNLIGHT_DIRECTION,
