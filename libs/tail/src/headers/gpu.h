@@ -19,9 +19,11 @@ struct texture {
 struct shader {
   unsigned int _frag_impl_id;
   unsigned int _vert_impl_id;
+  unsigned int _geo_impl_id;
   unsigned int _impl_id;
   const char *frag_shader_src;
   const char *vert_shader_src;
+  const char *geo_shader_src;
 };
 
 struct gpu_api {
@@ -40,9 +42,12 @@ struct gpu_api {
   void (*update_gpu_mesh_data)(struct drawable_mesh const *const dm);
 
   void (*copy_rgb_texture_to_gpu)(struct texture *const tex);
-  void (*copy_mono_texture_to_gpu)(struct texture *const tex);
 
   void (*copy_shader_to_gpu)(struct shader *const gpup);
+  void (*copy_geo_stage_to_gpu)(
+    const char *geo_shader_src,
+    struct shader *const gpup
+  );
   void (*select_shader)(struct shader const *const gpup);
   void (*select_texture)(struct texture const *const tex);
   void (*select_textures)(

@@ -23,7 +23,7 @@ void space__create_model(
 );
 
 void space__create_normals_model(
-  struct m4x4 const *const mesh_model,
+  struct m4x4 const *const model,
   struct m3x3 *const dest
 );
 
