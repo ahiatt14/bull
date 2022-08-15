@@ -19,7 +19,6 @@
 #include "cloud_cover_texture.h"
 #include "water_texture.h"
 
-#include "arena_cage_frag.h"
 #include "solid_color_frag.h"
 #include "flat_texture_frag.h"
 #include "default_vert.h"

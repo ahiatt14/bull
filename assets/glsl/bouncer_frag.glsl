@@ -18,7 +18,12 @@ uniform vec3 edge_color = vec3(
   0
 );
 
-in vec3 normal;
+in VS_OUT {
+  vec3 mvp_frag_pos;
+  vec3 mv_normal;
+  vec2 tex_uv;
+  mat4 projection;
+} fs_in;
 
 out vec4 FragColor;
 
@@ -28,7 +33,7 @@ void main() {
     mix(
       core_color,
       edge_color,
-      max(dot(normal, -light_dir), 0)
+      max(dot(fs_in.mv_normal, -light_dir), 0)
     );
 
   FragColor = vec4(

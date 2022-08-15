@@ -13,7 +13,6 @@ rm -rf game.exe
 ./${tools}validate-glsl.exe assets/glsl/solid_color_frag.glsl frag && \
 ./${tools}validate-glsl.exe assets/glsl/normal_debug_frag.glsl frag && \
 ./${tools}validate-glsl.exe assets/glsl/flat_texture_frag.glsl frag && \
-./${tools}validate-glsl.exe assets/glsl/arena_cage_frag.glsl frag && \
 ./${tools}validate-glsl.exe assets/glsl/water_surface_frag.glsl frag \
 ./${tools}validate-glsl.exe assets/glsl/core_frag.glsl frag && \
 ./${tools}validate-glsl.exe assets/glsl/turbine_frag.glsl frag && \
@@ -25,7 +24,6 @@ rm -rf game.exe
 ./${tools}sourcify-glsl.exe assets/glsl/solid_color_frag.glsl src/headers/ src/ && \
 ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_frag.glsl src/headers/ src/ && \
 ./${tools}sourcify-glsl.exe assets/glsl/default_vert.glsl src/headers/ src/ && \
-./${tools}sourcify-glsl.exe assets/glsl/arena_cage_frag.glsl src/headers/ src/ && \
 ./${tools}sourcify-glsl.exe assets/glsl/water_surface_frag.glsl src/headers/ src/ && \
 ./${tools}sourcify-glsl.exe assets/glsl/core_frag.glsl src/headers/ src/ && \
 ./${tools}sourcify-glsl.exe assets/glsl/turbine_frag.glsl src/headers/ src/ && \
@@ -94,7 +92,6 @@ rm -f src/headers/normal_debug_frag.h
 rm -f src/headers/default_vert.h
 rm -f src/headers/flat_texture_frag.h
 rm -f src/headers/leaf_frag.h
-rm -f src/headers/arena_cage_frag.h
 rm -f src/headers/core_frag.h
 rm -f src/headers/water_surface_frag.h
 rm -f src/headers/turbine_frag.h
@@ -107,7 +104,6 @@ rm -f src/normal_debug_frag.c
 rm -f src/default_vert.c
 rm -f src/flat_texture_frag.c
 rm -f src/leaf_frag.c
-rm -f src/arena_cage_frag.c
 rm -f src/core_frag.c
 rm -f src/water_surface_frag.c
 rm -f src/turbine_frag.c

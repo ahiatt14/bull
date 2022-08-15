@@ -18,9 +18,12 @@ uniform vec3 light_color = vec3(
   146.0/255.0
 );
 
-in vec2 TexCoord;
-in vec3 normal;
-in vec3 frag_world_position;
+in VS_OUT {
+  vec3 mvp_frag_pos;
+  vec3 mv_normal;
+  vec2 tex_uv;
+  mat4 projection;
+} fs_in;
 
 out vec4 FragColor;
 
@@ -29,7 +32,7 @@ void main()
 
   vec3 diffuse =
     light_color *
-    max(dot(normal, -light_dir), 0);
+    max(dot(fs_in.mv_normal, -light_dir), 0);
 
   FragColor = vec4(
     (color + diffuse) * ratio_of_sunlight + 0.2,
