@@ -63,30 +63,30 @@ void steam__init_mesh_data() {
       acc_vi = lvl_starting_vert + vert_offset;
 
       shared_column_mesh.indices[acc_index_offset++] = acc_vi;
+      shared_column_mesh.indices[acc_index_offset++] = acc_vi + 1;
       shared_column_mesh.indices[acc_index_offset++] =
         acc_vi + VERTS_PER_LVL + 1;
-      shared_column_mesh.indices[acc_index_offset++] = acc_vi + 1;
 
       shared_column_mesh.indices[acc_index_offset++] = acc_vi;
       shared_column_mesh.indices[acc_index_offset++] =
-        acc_vi + VERTS_PER_LVL;
-      shared_column_mesh.indices[acc_index_offset++] =
         acc_vi + VERTS_PER_LVL + 1;
+      shared_column_mesh.indices[acc_index_offset++] =
+        acc_vi + VERTS_PER_LVL;
     }
 
     shared_column_mesh.indices[acc_index_offset++] =
       lvl_starting_vert + VERTS_PER_LVL - 1;
     shared_column_mesh.indices[acc_index_offset++] =
-      lvl_starting_vert + VERTS_PER_LVL;
-    shared_column_mesh.indices[acc_index_offset++] =
       lvl_starting_vert;
+    shared_column_mesh.indices[acc_index_offset++] =
+      lvl_starting_vert + VERTS_PER_LVL;
 
     shared_column_mesh.indices[acc_index_offset++] =
       lvl_starting_vert + VERTS_PER_LVL - 1;
     shared_column_mesh.indices[acc_index_offset++] =
-      lvl_starting_vert + VERTS_PER_LVL * 2 - 1;
-    shared_column_mesh.indices[acc_index_offset++] =
       lvl_starting_vert + VERTS_PER_LVL;
+    shared_column_mesh.indices[acc_index_offset++] =
+      lvl_starting_vert + VERTS_PER_LVL * 2 - 1;
   }
 }
 
@@ -170,6 +170,14 @@ static void calculate_column_normals(
         vec3__normalize(vec3__mean(adjacent_edges, 4));
     }
   }
+
+  // top lvl
+  for (int vert_offset = 0; vert_offset < VERTS_PER_LVL; vert_offset++)
+    shared_column_mesh.vertices[vert_offset].normal =
+      vec3__normalize(vec3_minus_vec3(
+        shared_column_mesh.vertices[vert_offset].position,
+        column->ring_offsets[STEAM__COLUMN_LVL_COUNT - 1]
+      ));
 }
 
 void steam__rise(
