@@ -3,7 +3,7 @@
 tools="libs/tail/tools/"
 options="-O2 -Wall"
 includes="-Ilibs/tail/include -Isrc/headers \
--Isrc/player -Isrc/scenes -Isrc/gameplay -Isrc/background -Isrc/static_assets"
+-Isrc/player -Isrc/scenes -Isrc/gameplay -Isrc/background"
 
 # TODO: this ain't sustainable!
 
@@ -55,7 +55,6 @@ src/scenes/*.c \
 src/player/*.c \
 src/gameplay/*.c \
 src/background/*.c \
-src/static_assets/*.c \
 libs/tail/static/tail.a
 
 rm -f src/headers/core_mesh.h

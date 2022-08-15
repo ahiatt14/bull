@@ -14,5 +14,5 @@ void gpu__set_mvp(
   gpu->set_vertex_shader_m3x3(shad, "normals_model", normals_model);
   gpu->set_vertex_shader_m4x4(shad, "model", model);
   gpu->set_vertex_shader_m4x4(shad, "view", &cam->lookat);
-  gpu->set_vertex_shader_m4x4(shad, "perspective", &cam->projection);
+  gpu->set_vertex_shader_m4x4(shad, "projection", &cam->projection);
 }

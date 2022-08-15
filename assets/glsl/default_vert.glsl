@@ -16,7 +16,7 @@ uniform mat4 view = mat4(
   vec4(0.0, 0.0, 1.0, 0.0),
   vec4(0.0, 0.0, 0.0, 1.0)
 );
-uniform mat4 perspective = mat4(
+uniform mat4 projection = mat4(
   vec4(1.0, 0.0, 0.0, 0.0),
   vec4(0.0, 1.0, 0.0, 0.0),
   vec4(0.0, 0.0, 1.0, 0.0),
@@ -38,9 +38,9 @@ out VS_OUT {
 void main()
 {
   vs_out.tex_uv = uv;
-  vs_out.projection = perspective;
+  vs_out.projection = projection;
   vs_out.mvp_frag_pos = vec3(model * vec4(position, 1.0));
   vs_out.mv_normal = normalize(normals_model * local_normal);
 
-  gl_Position = perspective * view * model * vec4(position, 1.0);
+  gl_Position = projection * view * model * vec4(position, 1.0);
 }

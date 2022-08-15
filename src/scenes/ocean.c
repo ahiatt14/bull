@@ -12,7 +12,6 @@
 #include "water.h"
 #include "turbine.h"
 #include "steam.h"
-#include "quad.h"
 #include "cage_mesh.h"
 
 #include "clouds_texture.h"
