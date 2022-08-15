@@ -6,9 +6,9 @@ uniform vec3 light_dir = vec3(
   0
 );
 
-uniform vec3 core_color = vec3(
+uniform vec3 light_color = vec3(
   1,
-  1,
+  0.93,
   1
 );
 
@@ -19,9 +19,7 @@ out vec4 FragColor;
 void main() {
 
   FragColor = vec4(
-    1,
-    1,
-    1,
+    light_color * max(dot(normal, -light_dir), 0),
     1
   );
 }

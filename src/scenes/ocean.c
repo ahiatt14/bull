@@ -53,8 +53,8 @@ static const struct vec2 WIND_KM_PER_SEC = {
 // };
 
 static const struct vec3 SUNLIGHT_DIRECTION = {
-  0,
-  -1,
+  0.707f,
+  -0.707f,
   0
 };
 
@@ -251,9 +251,7 @@ void ocean__tick(
 
   gpu->clear_depth_buffer();
 
-  gpu->cull_no_faces();
-  steam__draw_column(&cam, gpu, &steam);
-  gpu->cull_back_faces();
+  steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam);
 
   water__draw(
     SUNLIGHT_DIRECTION,

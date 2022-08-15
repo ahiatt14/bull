@@ -1,7 +1,7 @@
 #ifndef __STEAM_COLUMNS__
 #define __STEAM_COLUMNS__
 
-#define STEAM__COLUMN_LVL_COUNT 3
+#define STEAM__COLUMN_LVL_COUNT 6
 
 struct steam_column {
   struct vec3 position;
@@ -28,6 +28,7 @@ void steam__rise(
 void steam__draw_column(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
+  struct vec3 light_direction,
   struct steam_column *const column
 );
 

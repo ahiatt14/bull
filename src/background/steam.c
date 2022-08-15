@@ -11,6 +11,7 @@
 #include "bull_math.h"
 
 #include "default_vert.h"
+#include "normal_debug_frag.h"
 #include "steam_frag.h"
 
 #define VERTS_PER_LVL 6
@@ -31,7 +32,8 @@ static struct drawable_mesh shared_column_mesh = (struct drawable_mesh){
 void steam__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
-  shared_steam_shader.frag_shader_src = steam_frag_src;
+  // shared_steam_shader.frag_shader_src = steam_frag_src;
+  shared_steam_shader.frag_shader_src = normal_debug_frag_src;
   shared_steam_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_steam_shader);
   gpu->copy_dynamic_mesh_to_gpu(&shared_column_mesh);
@@ -41,7 +43,7 @@ void steam__column_default(
   struct steam_column *const column
 ) {
   for (int lvl = 0; lvl < STEAM__COLUMN_LVL_COUNT; lvl++) {
-    column->ring_offsets[lvl] = (struct vec3){0, lvl, 0};
+    column->ring_offsets[lvl] = (struct vec3){0, lvl * 0.5f, 0};
     column->ring_radii[lvl] = 0.5f + lvl * 0.5f;
   }
 }
@@ -114,47 +116,61 @@ static void calculate_ring_vertex_positions(
   }
 }
 
-// static void calculate_column_normals(
-//   struct steam_column const *const column
-// ) {
+static void calculate_column_normals(
+  struct steam_column const *const column
+) {
 
-//   for (int i = 0; i < VERTS_PER_LVL; i++)
-//     shared_column_mesh.vertices[i].normal = vec3__normalize(vec3_minus_vec3(
-//       shared_column_mesh.vertices[i].position,
-//       column->ring_offsets[0]
-//     ));
+  // lvl 0
+  for (int vert_offset = 0; vert_offset < VERTS_PER_LVL; vert_offset++)
+    shared_column_mesh.vertices[vert_offset].normal =
+      vec3__normalize(vec3_minus_vec3(
+        shared_column_mesh.vertices[vert_offset].position,
+        column->ring_offsets[0]
+      ));
 
-//   for (int lvl = 1; lvl < STEAM__COLUMN_LVL_COUNT - 1; lvl++) {
+  for (int lvl = 1; lvl < STEAM__COLUMN_LVL_COUNT - 1; lvl++) {
 
-//     static uint_fast16_t lvl_starting_vert;
-//     lvl_starting_vert = lvl * VERTS_PER_LVL;
+    static uint_fast16_t lvl_starting_vert;
+    lvl_starting_vert = lvl * VERTS_PER_LVL;
 
-//     for (int vert_offset = 0; vert_offset < VERTS_PER_LVL-1; vert_offset++) {
-
-//       static struct vec3
-//         top_edge, bottom_edge,
-//         left_edge, right_edge,
-//         top_left_edge, bottom_right_edge;
-
+    for (int vert_offset = 0; vert_offset < VERTS_PER_LVL-1; vert_offset++) {
       
-//       static uint_fast16_t acc_vi; acc_vi = lvl_starting_vert + vi;
-//       static struct vertex *curr_vert; curr_vert = 
+      static uint_fast16_t acc_vi;
+      acc_vi = lvl_starting_vert + vert_offset;
+      static struct vec3 position;
+      position = shared_column_mesh.vertices[acc_vi].position;
 
-//       top_edge = vec3_minus_vec3(
-//         shared_column_mesh.vertices[acc_vi + VERTS_PER_LVL].position,
-        
-//       );
-//       bottom_edge = vec3_minus_vec(
-//         shared_column_mesh.vertices[acc_vi - VERTS_PER_LVL],
-//         shared_column_mesh.vertices[acc_vi]
-//       );
-//       left_edge = vec3_minus_vec(
-//         shared_column_mesh.vertices[],
-//         shared_column_mesh.vertices[acc_vi]
-//       );
-//     }
-//   }
-// }
+      static struct vec3 adjacent_edges[4];
+
+      adjacent_edges[0] = vec3_minus_vec3(
+        shared_column_mesh.vertices[acc_vi + VERTS_PER_LVL].position,
+        position
+      );
+      adjacent_edges[1] = vec3_minus_vec3(
+        shared_column_mesh.vertices[acc_vi - VERTS_PER_LVL].position,
+        position
+      );
+
+      static int_fast16_t resolved_vi;
+      resolved_vi = acc_vi - 1;
+      if (resolved_vi < 0) resolved_vi = acc_vi + VERTS_PER_LVL - 1;
+      adjacent_edges[2] = vec3_minus_vec3(
+        shared_column_mesh.vertices[resolved_vi].position,
+        position
+      );
+
+      resolved_vi = acc_vi + 1;
+      if (resolved_vi == VERTS_PER_LVL) resolved_vi = lvl_starting_vert;
+      adjacent_edges[3] = vec3_minus_vec3(
+        shared_column_mesh.vertices[resolved_vi].position,
+        position
+      );
+
+      shared_column_mesh.vertices[acc_vi].normal =
+        vec3__normalize(vec3__mean(adjacent_edges, 4));
+    }
+  }
+}
 
 void steam__rise(
   double delta_time,
@@ -167,6 +183,7 @@ void steam__rise(
 void steam__draw_column(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
+  struct vec3 light_direction,
   struct steam_column *const column
 ) {
   static struct m4x4 local_to_world;
@@ -179,9 +196,15 @@ void steam__draw_column(
       column->ring_radii[lvl]
     );
   }
+  calculate_column_normals(column);
   gpu->update_gpu_mesh_data(&shared_column_mesh);
   
   gpu->select_shader(&shared_steam_shader);
+  gpu->set_fragment_shader_vec3(
+    &shared_steam_shader,
+    "light_direction",
+    light_direction
+  );
   m4x4__translation(&column->position, &local_to_world);
   space__create_normals_model(&local_to_world, &normals_local_to_world);
   gpu__set_mvp(
