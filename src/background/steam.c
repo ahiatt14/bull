@@ -11,7 +11,9 @@
 #include "bull_math.h"
 
 #include "default_vert.h"
+#include "solid_color_frag.h"
 #include "normal_debug_frag.h"
+#include "normal_debug_geo.h"
 #include "steam_frag.h"
 
 #define VERTS_PER_LVL 6
@@ -20,6 +22,7 @@
 #define STEAM__INDEX_COUNT VERTS_PER_LVL * 6 * (STEAM__COLUMN_LVL_COUNT - 1)
 
 static struct shader shared_steam_shader;
+static struct shader normal_debug_shader;
 
 static struct drawable_mesh shared_column_mesh = (struct drawable_mesh){
   .vertices = (struct vertex[STEAM__VERT_COUNT]){0},
@@ -32,10 +35,16 @@ static struct drawable_mesh shared_column_mesh = (struct drawable_mesh){
 void steam__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
-  // shared_steam_shader.frag_shader_src = steam_frag_src;
+
   shared_steam_shader.frag_shader_src = normal_debug_frag_src;
   shared_steam_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_steam_shader);
+
+  normal_debug_shader.frag_shader_src = solid_color_frag_src;
+  normal_debug_shader.vert_shader_src = default_vert_src;
+  normal_debug_shader.geo_shader_src = normal_debug_geo_src;
+  gpu->copy_shader_to_gpu(&normal_debug_shader);
+
   gpu->copy_dynamic_mesh_to_gpu(&shared_column_mesh);
 }
 
@@ -206,6 +215,8 @@ void steam__draw_column(
   }
   calculate_column_normals(column);
   gpu->update_gpu_mesh_data(&shared_column_mesh);
+
+  gpu->cull_no_faces();
   
   gpu->select_shader(&shared_steam_shader);
   gpu->set_fragment_shader_vec3(
@@ -222,6 +233,24 @@ void steam__draw_column(
     &shared_steam_shader,
     gpu
   );
-  // gpu->draw_mesh(&shared_column_mesh);
   gpu->draw_wireframe(&shared_column_mesh);
+
+  gpu->select_shader(&normal_debug_shader);
+  gpu->set_fragment_shader_vec3(
+    &shared_steam_shader,
+    "color",
+    COLOR_NEON_PURPLE
+  );
+  m4x4__translation(&column->position, &local_to_world);
+  space__create_normals_model(&local_to_world, &normals_local_to_world);
+  gpu__set_mvp(
+    &local_to_world,
+    &normals_local_to_world,
+    cam,
+    &normal_debug_shader,
+    gpu
+  );
+  gpu->draw_mesh(&shared_column_mesh);
+
+  gpu->cull_back_faces();
 }
