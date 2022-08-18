@@ -17,10 +17,9 @@ uniform vec3 light_color = vec3(
 );
 
 in VS_OUT {
-  vec3 mvp_frag_pos;
-  vec3 mv_normal;
+  vec3 world_frag_pos;
+  vec3 normal;
   vec2 tex_uv;
-  mat4 projection;
 } fs_in;
 
 out vec4 FragColor;
@@ -28,7 +27,7 @@ out vec4 FragColor;
 void main()
 {
   FragColor = vec4(
-    color + light_color * max(dot(fs_in.mv_normal, -light_dir), 0.0) * 0.5,
+    color + light_color * max(dot(fs_in.normal, -light_dir), 0.0) * 0.5,
     1.0
   );
 }

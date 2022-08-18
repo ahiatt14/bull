@@ -19,10 +19,9 @@ uniform vec3 night_color = vec3(
 );
 
 in VS_OUT {
-  vec3 mvp_frag_pos;
-  vec3 mv_normal;
+  vec3 world_frag_pos;
+  vec3 normal;
   vec2 tex_uv;
-  mat4 projection;
 } fs_in;
 
 out vec4 FragColor;
@@ -33,7 +32,7 @@ void main() {
     mix(
       night_color,
       light_color,
-      max(dot(fs_in.mv_normal, -light_dir), 0)
+      max(dot(fs_in.normal, -light_dir), 0)
     );
 
   FragColor = vec4(

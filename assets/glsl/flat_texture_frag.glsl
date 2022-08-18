@@ -3,10 +3,9 @@
 out vec4 FragColor;
 
 in VS_OUT {
-  vec3 mvp_frag_pos;
-  vec3 mv_normal;
+  vec3 world_frag_pos;
+  vec3 normal;
   vec2 tex_uv;
-  mat4 projection;
 } fs_in;
 
 uniform sampler2D tex;

@@ -1,5 +1,5 @@
 #version 330 core
-// TODO: get some better naming in here
+
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 local_normal;
 layout (location = 2) in vec2 uv;
@@ -29,16 +29,13 @@ uniform mat3 normals_model = mat3(
 );
 
 out VS_OUT {
-  vec3 world_frag_pos;
-  vec3 normal;
-  vec2 tex_uv;
+  vec3 rvp_normal;
 } vs_out;
 
-void main()
-{
-  vs_out.tex_uv = uv;
-  vs_out.world_frag_pos = vec3(model * vec4(position, 1.0));
-  vs_out.normal = normalize(normals_model * local_normal);
+void main() {
+
+  vs_out.rvp_normal =
+    vec3(projection * view * vec4(normalize(normals_model * local_normal), 0));
 
   gl_Position = projection * view * model * vec4(position, 1.0);
 }

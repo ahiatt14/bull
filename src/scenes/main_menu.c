@@ -6,10 +6,6 @@
 #include "scene.h"
 #include "constants.h"
 
-// #include "menu_sky.h"
-
-#include "core.h"
-
 #include "clouds_texture.h"
 #include "pyramid_mesh.h"
 #include "smooth_cube_mesh.h"
@@ -17,14 +13,12 @@
 #include "flat_texture_frag.h"
 #include "default_vert.h"
 #include "solid_color_frag.h"
-#include "normal_debug_frag.h"
+
 #include "normal_debug_geo.h"
+#include "normal_debug_vert.h"
+#include "normal_debug_frag.h"
 
-#define SEC_UNTIL_ACTION 3000.0f
-
-// static struct core_state core = (struct core_state){
-//   {{0, 0, 0}, {0, 0, 0}, 1}
-// };
+#define SEC_UNTIL_ACTION 300.0f
 
 static struct camera foreground_camera;
 static struct camera background_camera;
@@ -32,8 +26,8 @@ static struct camera background_camera;
 static struct transform pyramid_transform = {{ 1, 0, 0 }, { 0, 0, 0 }, 1};
 static struct shader normal_debug_shader;
 
-// TODO: just testing normal debugging geometry shader
-static struct shader normal_only_vis_shader;
+static struct shader normal_vis_shader;
+
 static struct transform smooth_cube_transform = {{ 0, 1, 0 }, { 0, 0, 0 }, 1};
 
 void main_menu__init(
@@ -61,17 +55,16 @@ void main_menu__init(
   camera__calculate_lookat(WORLDSPACE.up, &background_camera);
   camera__calculate_perspective(vwprt, &background_camera);
 
-  core__copy_assets_to_gpu(gpu);
+  // core__copy_assets_to_gpu(gpu);
 
   normal_debug_shader.frag_shader_src = normal_debug_frag_src;
   normal_debug_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&normal_debug_shader);
 
-  // TODO: normal debugging
-  normal_only_vis_shader.frag_shader_src = solid_color_frag_src;
-  normal_only_vis_shader.vert_shader_src = default_vert_src;
-  normal_only_vis_shader.geo_shader_src = normal_debug_geo_src;
-  gpu->copy_shader_to_gpu(&normal_only_vis_shader);
+  normal_vis_shader.frag_shader_src = solid_color_frag_src;
+  normal_vis_shader.vert_shader_src = normal_debug_vert_src;
+  normal_vis_shader.geo_shader_src = normal_debug_geo_src;
+  gpu->copy_shader_to_gpu(&normal_vis_shader);
 
   gpu->copy_rgb_texture_to_gpu(&clouds_texture);
   gpu->copy_static_mesh_to_gpu(&pyramid_mesh);
@@ -162,12 +155,12 @@ void main_menu__tick(
   );
   gpu->draw_mesh(&pyramid_mesh);
 
-  gpu->select_shader(&normal_only_vis_shader);
+  gpu->select_shader(&normal_vis_shader);
   gpu__set_mvp(
     &shared_local_to_world,
     &shared_normals_local_to_world,
     &foreground_camera,
-    &normal_only_vis_shader,
+    &normal_vis_shader,
     gpu
   );
   gpu->draw_mesh(&pyramid_mesh);
@@ -191,12 +184,12 @@ void main_menu__tick(
   );
   gpu->draw_mesh(&smooth_cube_mesh);
 
-  gpu->select_shader(&normal_only_vis_shader);
+  gpu->select_shader(&normal_vis_shader);
   gpu__set_mvp(
     &shared_local_to_world,
     &shared_normals_local_to_world,
     &foreground_camera,
-    &normal_only_vis_shader,
+    &normal_vis_shader,
     gpu
   );
   gpu->draw_mesh(&smooth_cube_mesh);

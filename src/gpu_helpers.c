@@ -1,7 +1,13 @@
+#include <stdint.h>
+
 #include "tail.h"
 
 #include "gpu_helpers.h"
 #include "constants.h"
+
+#include "solid_color_frag.h"
+#include "normal_debug_vert.h"
+#include "normal_debug_geo.h"
 
 // TODO: even worth it?
 void gpu__set_mvp(
