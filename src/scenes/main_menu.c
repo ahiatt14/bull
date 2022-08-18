@@ -18,7 +18,7 @@
 #include "normal_debug_vert.h"
 #include "normal_debug_frag.h"
 
-#define SEC_UNTIL_ACTION 300.0f
+#define SEC_UNTIL_ACTION 1.0f
 
 static struct camera foreground_camera;
 static struct camera background_camera;

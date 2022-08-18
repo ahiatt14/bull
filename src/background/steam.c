@@ -12,17 +12,22 @@
 
 #include "default_vert.h"
 #include "solid_color_frag.h"
-#include "normal_debug_frag.h"
-#include "normal_debug_geo.h"
 #include "steam_frag.h"
 
-#define VERTS_PER_LVL 6
+#include "normal_debug_vert.h"
+#include "normal_debug_frag.h"
+#include "normal_debug_geo.h"
+
+#define VERTS_PER_LVL 4
+#define LEVEL_HEIGHT 0.5f
 #define RING_VERT_DEG_OFFSET 360.0f / VERTS_PER_LVL
 #define STEAM__VERT_COUNT VERTS_PER_LVL * STEAM__COLUMN_LVL_COUNT 
 #define STEAM__INDEX_COUNT VERTS_PER_LVL * 6 * (STEAM__COLUMN_LVL_COUNT - 1)
 
 static struct shader shared_steam_shader;
-static struct shader normal_debug_shader;
+
+// TODO: just for debugging
+static struct shader normal_vis_shader;
 
 static struct drawable_mesh shared_column_mesh = (struct drawable_mesh){
   .vertices = (struct vertex[STEAM__VERT_COUNT]){0},
@@ -36,14 +41,14 @@ void steam__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
 
-  shared_steam_shader.frag_shader_src = normal_debug_frag_src;
+  shared_steam_shader.frag_shader_src = steam_frag_src;
   shared_steam_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_steam_shader);
 
-  normal_debug_shader.frag_shader_src = solid_color_frag_src;
-  normal_debug_shader.vert_shader_src = default_vert_src;
-  normal_debug_shader.geo_shader_src = normal_debug_geo_src;
-  gpu->copy_shader_to_gpu(&normal_debug_shader);
+  normal_vis_shader.frag_shader_src = solid_color_frag_src;
+  normal_vis_shader.vert_shader_src = normal_debug_vert_src;
+  normal_vis_shader.geo_shader_src = normal_debug_geo_src;
+  gpu->copy_shader_to_gpu(&normal_vis_shader);
 
   gpu->copy_dynamic_mesh_to_gpu(&shared_column_mesh);
 }
@@ -52,7 +57,7 @@ void steam__column_default(
   struct steam_column *const column
 ) {
   for (int lvl = 0; lvl < STEAM__COLUMN_LVL_COUNT; lvl++) {
-    column->ring_offsets[lvl] = (struct vec3){0, lvl * 0.5f, 0};
+    column->ring_offsets[lvl] = (struct vec3){0, lvl * LEVEL_HEIGHT, 0};
     column->ring_radii[lvl] = 0.5f + lvl * 0.5f;
   }
 }
@@ -72,30 +77,30 @@ void steam__init_mesh_data() {
       acc_vi = lvl_starting_vert + vert_offset;
 
       shared_column_mesh.indices[acc_index_offset++] = acc_vi;
-      shared_column_mesh.indices[acc_index_offset++] = acc_vi + 1;
       shared_column_mesh.indices[acc_index_offset++] =
         acc_vi + VERTS_PER_LVL + 1;
+      shared_column_mesh.indices[acc_index_offset++] = acc_vi + 1;
 
       shared_column_mesh.indices[acc_index_offset++] = acc_vi;
       shared_column_mesh.indices[acc_index_offset++] =
-        acc_vi + VERTS_PER_LVL + 1;
-      shared_column_mesh.indices[acc_index_offset++] =
         acc_vi + VERTS_PER_LVL;
+      shared_column_mesh.indices[acc_index_offset++] =
+        acc_vi + VERTS_PER_LVL + 1;
     }
 
     shared_column_mesh.indices[acc_index_offset++] =
       lvl_starting_vert + VERTS_PER_LVL - 1;
     shared_column_mesh.indices[acc_index_offset++] =
-      lvl_starting_vert;
-    shared_column_mesh.indices[acc_index_offset++] =
       lvl_starting_vert + VERTS_PER_LVL;
+    shared_column_mesh.indices[acc_index_offset++] =
+      lvl_starting_vert;
 
     shared_column_mesh.indices[acc_index_offset++] =
       lvl_starting_vert + VERTS_PER_LVL - 1;
     shared_column_mesh.indices[acc_index_offset++] =
-      lvl_starting_vert + VERTS_PER_LVL;
-    shared_column_mesh.indices[acc_index_offset++] =
       lvl_starting_vert + VERTS_PER_LVL * 2 - 1;
+    shared_column_mesh.indices[acc_index_offset++] =
+      lvl_starting_vert + VERTS_PER_LVL;
   }
 }
 
@@ -142,7 +147,7 @@ static void calculate_column_normals(
     static uint_fast16_t lvl_starting_vert;
     lvl_starting_vert = lvl * VERTS_PER_LVL;
 
-    for (int vert_offset = 0; vert_offset < VERTS_PER_LVL-1; vert_offset++) {
+    for (int vert_offset = 0; vert_offset < VERTS_PER_LVL; vert_offset++) {
       
       static uint_fast16_t acc_vi;
       acc_vi = lvl_starting_vert + vert_offset;
@@ -151,32 +156,32 @@ static void calculate_column_normals(
 
       static struct vec3 adjacent_edges[4];
 
-      adjacent_edges[0] = vec3_minus_vec3(
+      adjacent_edges[0] = vec3__normalize(vec3_minus_vec3(
         shared_column_mesh.vertices[acc_vi + VERTS_PER_LVL].position,
         position
-      );
-      adjacent_edges[1] = vec3_minus_vec3(
+      ));
+      adjacent_edges[1] = vec3__normalize(vec3_minus_vec3(
         shared_column_mesh.vertices[acc_vi - VERTS_PER_LVL].position,
         position
-      );
+      ));
 
-      static int_fast16_t resolved_vi;
-      resolved_vi = acc_vi - 1;
-      if (resolved_vi < 0) resolved_vi = acc_vi + VERTS_PER_LVL - 1;
-      adjacent_edges[2] = vec3_minus_vec3(
-        shared_column_mesh.vertices[resolved_vi].position,
-        position
-      );
+      // static int_fast16_t resolved_vi;
+      // resolved_vi = acc_vi - 1;
+      // if (resolved_vi < 0) resolved_vi = acc_vi + VERTS_PER_LVL - 1;
+      // adjacent_edges[2] = vec3_minus_vec3(
+      //   shared_column_mesh.vertices[resolved_vi].position,
+      //   position
+      // );
 
-      resolved_vi = acc_vi + 1;
-      if (resolved_vi == VERTS_PER_LVL) resolved_vi = lvl_starting_vert;
-      adjacent_edges[3] = vec3_minus_vec3(
-        shared_column_mesh.vertices[resolved_vi].position,
-        position
-      );
+      // resolved_vi = acc_vi + 1;
+      // if (resolved_vi == VERTS_PER_LVL) resolved_vi = lvl_starting_vert;
+      // adjacent_edges[3] = vec3_minus_vec3(
+      //   shared_column_mesh.vertices[resolved_vi].position,
+      //   position
+      // );
 
       shared_column_mesh.vertices[acc_vi].normal =
-        vec3__normalize(vec3__mean(adjacent_edges, 4));
+        vec3__mean(adjacent_edges, 2);
     }
   }
 
@@ -219,10 +224,15 @@ void steam__draw_column(
   gpu->cull_no_faces();
   
   gpu->select_shader(&shared_steam_shader);
-  gpu->set_fragment_shader_vec3(
+  // gpu->set_fragment_shader_vec3(
+  //   &shared_steam_shader,
+  //   "light_direction",
+  //   light_direction
+  // );
+  gpu->set_fragment_shader_float(
     &shared_steam_shader,
-    "light_direction",
-    light_direction
+    "max_altitude",
+    LEVEL_HEIGHT * STEAM__COLUMN_LVL_COUNT
   );
   m4x4__translation(&column->position, &local_to_world);
   space__create_normals_model(&local_to_world, &normals_local_to_world);
@@ -233,21 +243,19 @@ void steam__draw_column(
     &shared_steam_shader,
     gpu
   );
-  gpu->draw_wireframe(&shared_column_mesh);
+  gpu->draw_mesh(&shared_column_mesh);
 
-  gpu->select_shader(&normal_debug_shader);
+  gpu->select_shader(&normal_vis_shader);
   gpu->set_fragment_shader_vec3(
-    &shared_steam_shader,
+    &normal_vis_shader,
     "color",
     COLOR_NEON_PURPLE
   );
-  m4x4__translation(&column->position, &local_to_world);
-  space__create_normals_model(&local_to_world, &normals_local_to_world);
   gpu__set_mvp(
     &local_to_world,
     &normals_local_to_world,
     cam,
-    &normal_debug_shader,
+    &normal_vis_shader,
     gpu
   );
   gpu->draw_mesh(&shared_column_mesh);

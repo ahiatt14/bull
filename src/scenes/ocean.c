@@ -22,7 +22,6 @@
 #include "flat_texture_frag.h"
 #include "default_vert.h"
 #include "water_surface_frag.h"
-#include "normal_debug_frag.h"
 #include "sky_frag.h"
 
 // CONSTANTS
@@ -145,7 +144,7 @@ void ocean__tick(
   // TODO: if ur gonna be too lazy to add quaternion rotations,
   // at least make a fn for rotating a point
   m4x4__rotation(
-    deg_to_rad(delta_time * 2),
+    deg_to_rad(delta_time * 5),
     WORLDSPACE.up,
     &camera_rotation
   );
