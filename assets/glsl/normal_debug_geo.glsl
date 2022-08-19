@@ -3,7 +3,7 @@
 layout (triangles) in;
 layout (line_strip, max_vertices = 6) out;
 
-const float MAGNITUDE = 0.6;
+const float MAGNITUDE = 0.3;
 
 in VS_OUT {
   vec3 rvp_normal;

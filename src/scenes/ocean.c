@@ -87,7 +87,7 @@ void ocean__init(
 ) {
 
   cam.position = (struct vec3){ -1.2f, 0.3f, 7 };
-  cam.look_target = (struct vec3){ 0, 0.1f, 0 };
+  cam.look_target = (struct vec3){ 0, 1, 0 };
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
   cam.far_clip_distance = 13;
@@ -155,7 +155,7 @@ void ocean__tick(
   cam.position.y =
     0.1f * sin(seconds_since_creation * 0.02f) + 0.15f;
 
-  sky_transform.rotation_in_deg.x += 30 * delta_time;
+  // sky_transform.rotation_in_deg.x += 30 * delta_time;
 
   static struct vec2 clouds_offset;
   clouds_offset.x = loop_float(

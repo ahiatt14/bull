@@ -14,12 +14,14 @@
 #include "solid_color_frag.h"
 #include "steam_frag.h"
 
+#include "core_frag.h"
+#include "turbine_frag.h"
 #include "normal_debug_vert.h"
 #include "normal_debug_frag.h"
 #include "normal_debug_geo.h"
 
-#define VERTS_PER_LVL 8
-#define LEVEL_HEIGHT 0.5f
+#define VERTS_PER_LVL 20
+#define LEVEL_HEIGHT 0.2f
 #define RING_VERT_DEG_OFFSET 360.0f / VERTS_PER_LVL
 #define STEAM__VERT_COUNT VERTS_PER_LVL * STEAM__COLUMN_LVL_COUNT 
 #define STEAM__INDEX_COUNT VERTS_PER_LVL * 6 * (STEAM__COLUMN_LVL_COUNT - 1)
@@ -41,8 +43,8 @@ void steam__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
 
+  shared_steam_shader.frag_shader_src = core_frag_src;
   // shared_steam_shader.frag_shader_src = steam_frag_src;
-  shared_steam_shader.frag_shader_src = normal_debug_frag_src;
   shared_steam_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_steam_shader);
 
@@ -59,7 +61,7 @@ void steam__column_default(
 ) {
   for (int lvl = 0; lvl < STEAM__COLUMN_LVL_COUNT; lvl++) {
     column->ring_offsets[lvl] = (struct vec3){0, lvl * LEVEL_HEIGHT, 0};
-    column->ring_radii[lvl] = 0.1f + lvl * 0.1f;
+    column->ring_radii[lvl] = 1 + lvl * 0.1f;
   }
 }
 
@@ -234,11 +236,11 @@ void steam__draw_column(
   gpu->cull_no_faces();
   
   gpu->select_shader(&shared_steam_shader);
-  gpu->set_fragment_shader_vec3(
-    &shared_steam_shader,
-    "light_direction",
-    light_direction
-  );
+  // gpu->set_fragment_shader_vec3(
+  //   &shared_steam_shader,
+  //   "light_dir",
+  //   light_direction
+  // );
   // gpu->set_fragment_shader_float(
   //   &shared_steam_shader,
   //   "max_altitude",
