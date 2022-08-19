@@ -18,7 +18,7 @@
 #include "normal_debug_frag.h"
 #include "normal_debug_geo.h"
 
-#define VERTS_PER_LVL 4
+#define VERTS_PER_LVL 8
 #define LEVEL_HEIGHT 0.5f
 #define RING_VERT_DEG_OFFSET 360.0f / VERTS_PER_LVL
 #define STEAM__VERT_COUNT VERTS_PER_LVL * STEAM__COLUMN_LVL_COUNT 
@@ -41,7 +41,8 @@ void steam__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
 
-  shared_steam_shader.frag_shader_src = steam_frag_src;
+  // shared_steam_shader.frag_shader_src = steam_frag_src;
+  shared_steam_shader.frag_shader_src = normal_debug_frag_src;
   shared_steam_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_steam_shader);
 
@@ -58,7 +59,7 @@ void steam__column_default(
 ) {
   for (int lvl = 0; lvl < STEAM__COLUMN_LVL_COUNT; lvl++) {
     column->ring_offsets[lvl] = (struct vec3){0, lvl * LEVEL_HEIGHT, 0};
-    column->ring_radii[lvl] = 0.5f + lvl * 0.5f;
+    column->ring_radii[lvl] = 0.1f + lvl * 0.1f;
   }
 }
 
@@ -137,6 +138,7 @@ static void calculate_column_normals(
   // lvl 0
   for (int vert_offset = 0; vert_offset < VERTS_PER_LVL; vert_offset++)
     shared_column_mesh.vertices[vert_offset].normal =
+      // TODO: results of this one are wonky?
       vec3__normalize(vec3_minus_vec3(
         shared_column_mesh.vertices[vert_offset].position,
         column->ring_offsets[0]
@@ -151,37 +153,45 @@ static void calculate_column_normals(
       
       static uint_fast16_t acc_vi;
       acc_vi = lvl_starting_vert + vert_offset;
-      static struct vec3 position;
-      position = shared_column_mesh.vertices[acc_vi].position;
 
-      static struct vec3 adjacent_edges[4];
+      static struct vec3 normals[2];
 
-      adjacent_edges[0] = vec3__normalize(vec3_minus_vec3(
-        shared_column_mesh.vertices[acc_vi + VERTS_PER_LVL].position,
-        position
-      ));
-      adjacent_edges[1] = vec3__normalize(vec3_minus_vec3(
-        shared_column_mesh.vertices[acc_vi - VERTS_PER_LVL].position,
-        position
-      ));
+      // TODO: clean these up, gosh
+      normals[0] = vec3__cross(
+        vec3__normalize(vec3_minus_vec3(
+          shared_column_mesh.vertices[acc_vi + VERTS_PER_LVL].position,
+          shared_column_mesh.vertices[
+            acc_vi == lvl_starting_vert ?
+            acc_vi + VERTS_PER_LVL - 1 :
+            acc_vi - 1
+          ].position
+        )),
+        vec3__normalize(vec3_minus_vec3(
+          shared_column_mesh.vertices[
+            acc_vi == lvl_starting_vert ?
+            acc_vi + VERTS_PER_LVL - 1 :
+            acc_vi - 1
+          ].position,
+          shared_column_mesh.vertices[acc_vi].position
+        ))
+      );
 
-      // static int_fast16_t resolved_vi;
-      // resolved_vi = acc_vi - 1;
-      // if (resolved_vi < 0) resolved_vi = acc_vi + VERTS_PER_LVL - 1;
-      // adjacent_edges[2] = vec3_minus_vec3(
-      //   shared_column_mesh.vertices[resolved_vi].position,
-      //   position
-      // );
+      normals[1] = vec3__cross(
+        vec3__normalize(vec3_minus_vec3(
+          shared_column_mesh.vertices[
+            acc_vi + 1 == lvl_starting_vert + VERTS_PER_LVL ?
+            lvl_starting_vert :
+            acc_vi + 1
+          ].position,
+          shared_column_mesh.vertices[acc_vi].position
+        )),
+        vec3__normalize(vec3_minus_vec3(
+          shared_column_mesh.vertices[acc_vi].position,
+          shared_column_mesh.vertices[acc_vi - VERTS_PER_LVL].position
+        ))
+      );
 
-      // resolved_vi = acc_vi + 1;
-      // if (resolved_vi == VERTS_PER_LVL) resolved_vi = lvl_starting_vert;
-      // adjacent_edges[3] = vec3_minus_vec3(
-      //   shared_column_mesh.vertices[resolved_vi].position,
-      //   position
-      // );
-
-      shared_column_mesh.vertices[acc_vi].normal =
-        vec3__mean(adjacent_edges, 2);
+      shared_column_mesh.vertices[acc_vi].normal = vec3__mean(normals, 2);
     }
   }
 
@@ -224,16 +234,16 @@ void steam__draw_column(
   gpu->cull_no_faces();
   
   gpu->select_shader(&shared_steam_shader);
-  // gpu->set_fragment_shader_vec3(
-  //   &shared_steam_shader,
-  //   "light_direction",
-  //   light_direction
-  // );
-  gpu->set_fragment_shader_float(
+  gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
-    "max_altitude",
-    LEVEL_HEIGHT * STEAM__COLUMN_LVL_COUNT
+    "light_direction",
+    light_direction
   );
+  // gpu->set_fragment_shader_float(
+  //   &shared_steam_shader,
+  //   "max_altitude",
+  //   LEVEL_HEIGHT * STEAM__COLUMN_LVL_COUNT
+  // );
   m4x4__translation(&column->position, &local_to_world);
   space__create_normals_model(&local_to_world, &normals_local_to_world);
   gpu__set_mvp(

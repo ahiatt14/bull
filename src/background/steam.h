@@ -1,7 +1,7 @@
 #ifndef __STEAM_COLUMNS__
 #define __STEAM_COLUMNS__
 
-#define STEAM__COLUMN_LVL_COUNT 6
+#define STEAM__COLUMN_LVL_COUNT 9
 
 struct steam_column {
   struct vec3 position;
