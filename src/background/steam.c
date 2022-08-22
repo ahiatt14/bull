@@ -27,7 +27,7 @@
 #define RING_VERT_DEG_OFFSET 360.0f / VERTS_PER_LVL
 #define VERT_COUNT VERTS_PER_LVL * STEAM__COLUMN_LVL_COUNT
 #define INDEX_COUNT VERTS_PER_LVL * 6 * (STEAM__COLUMN_LVL_COUNT - 1)
-#define MAX_COLUMN_HEIGHT STEAM__COLUMN_LVL_COUNT * LVL_HEIGHT + LVL_HEIGHT
+#define MAX_COLUMN_HEIGHT STEAM__COLUMN_LVL_COUNT * LVL_HEIGHT
 
 static struct shader shared_steam_shader;
 
@@ -246,7 +246,9 @@ void steam__rise(
   struct steam_column *const column
 ) {
   static const float column_shape[STEAM__COLUMN_LVL_COUNT] = {
-    1, 2, 2, 3, 3, 4, 4, 5, 6
+    3, 2, 3, 3,
+    4, 3, 4, 5,
+    5, 5, 4, 4
   };
 
   for (int_fast8_t lvl = 0; lvl < STEAM__COLUMN_LVL_COUNT; lvl++) {
