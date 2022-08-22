@@ -72,7 +72,8 @@ static float brightness(float r, float g, float b) {
 static struct turbine turbines[TURBINE_X_COUNT * TURBINE_Z_COUNT];
 
 static struct steam_column steam = (struct steam_column){
-  .position = { 0, 1.2f, 0}
+  .position = { 0, -1, 0},
+  .shape_index_offset = 5
 };
 
 static struct shader sky_shader;
@@ -172,6 +173,12 @@ void ocean__tick(
     delta_time,
     seconds_since_creation,
     gpu
+  );
+
+  steam__rise(
+    delta_time,
+    seconds_since_creation,
+    &steam
   );
 
   static struct vec2 relative_turbine_position;

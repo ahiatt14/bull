@@ -1,12 +1,13 @@
 #ifndef __STEAM_COLUMNS__
 #define __STEAM_COLUMNS__
 
-#define STEAM__COLUMN_LVL_COUNT 9
+#define STEAM__COLUMN_LVL_COUNT 13
 
 struct steam_column {
   struct vec3 position;
   struct vec3 ring_offsets[STEAM__COLUMN_LVL_COUNT];
   float ring_radii[STEAM__COLUMN_LVL_COUNT];
+  uint8_t shape_index_offset;
 };
 
 void steam__init_mesh_data();

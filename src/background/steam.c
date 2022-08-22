@@ -20,11 +20,14 @@
 #include "normal_debug_frag.h"
 #include "normal_debug_geo.h"
 
+#define BOUYANCY 2
 #define VERTS_PER_LVL 20
-#define LEVEL_HEIGHT 0.2f
+#define LVL_HEIGHT 0.4f
+#define MIN_RING_RADII 0.3f
 #define RING_VERT_DEG_OFFSET 360.0f / VERTS_PER_LVL
-#define STEAM__VERT_COUNT VERTS_PER_LVL * STEAM__COLUMN_LVL_COUNT 
-#define STEAM__INDEX_COUNT VERTS_PER_LVL * 6 * (STEAM__COLUMN_LVL_COUNT - 1)
+#define VERT_COUNT VERTS_PER_LVL * STEAM__COLUMN_LVL_COUNT
+#define INDEX_COUNT VERTS_PER_LVL * 6 * (STEAM__COLUMN_LVL_COUNT - 1)
+#define MAX_COLUMN_HEIGHT STEAM__COLUMN_LVL_COUNT * LVL_HEIGHT + LVL_HEIGHT
 
 static struct shader shared_steam_shader;
 
@@ -32,11 +35,11 @@ static struct shader shared_steam_shader;
 static struct shader normal_vis_shader;
 
 static struct drawable_mesh shared_column_mesh = (struct drawable_mesh){
-  .vertices = (struct vertex[STEAM__VERT_COUNT]){0},
-  .indices = (unsigned int[STEAM__INDEX_COUNT]){0},
-  .vertices_size = sizeof(struct vertex) * STEAM__VERT_COUNT,
-  .indices_size = sizeof(unsigned int) * STEAM__INDEX_COUNT,
-  .indices_length = STEAM__INDEX_COUNT
+  .vertices = (struct vertex[VERT_COUNT]){0},
+  .indices = (unsigned int[INDEX_COUNT]){0},
+  .vertices_size = sizeof(struct vertex) * VERT_COUNT,
+  .indices_size = sizeof(unsigned int) * INDEX_COUNT,
+  .indices_length = INDEX_COUNT
 };
 
 void steam__copy_assets_to_gpu(
@@ -60,8 +63,8 @@ void steam__column_default(
   struct steam_column *const column
 ) {
   for (int lvl = 0; lvl < STEAM__COLUMN_LVL_COUNT; lvl++) {
-    column->ring_offsets[lvl] = (struct vec3){0, lvl * LEVEL_HEIGHT, 0};
-    column->ring_radii[lvl] = 1 + lvl * 0.1f;
+    column->ring_offsets[lvl] = (struct vec3){0, lvl * LVL_HEIGHT, 0};
+    column->ring_radii[lvl] = MIN_RING_RADII;
   }
 }
 
@@ -242,7 +245,36 @@ void steam__rise(
   double seconds_since_creation,
   struct steam_column *const column
 ) {
+  static const float column_shape[STEAM__COLUMN_LVL_COUNT] = {
+    1, 2, 2, 3, 3, 4, 4, 5, 6
+  };
 
+  for (int_fast8_t lvl = 0; lvl < STEAM__COLUMN_LVL_COUNT; lvl++) {
+    column->ring_radii[lvl] +=
+      column_shape[
+        (column->shape_index_offset + lvl) %
+        STEAM__COLUMN_LVL_COUNT
+      ] *
+      delta_time * 0.02f;
+
+    column->ring_offsets[lvl].y += BOUYANCY * delta_time * 0.2f;
+  }
+
+  if (
+    column->ring_offsets[STEAM__COLUMN_LVL_COUNT - 1].y >
+    MAX_COLUMN_HEIGHT
+  ) {
+    for (int_fast8_t lvl = STEAM__COLUMN_LVL_COUNT - 1; lvl > 0; lvl--) {
+      column->ring_offsets[lvl] = column->ring_offsets[lvl - 1];
+      column->ring_radii[lvl] = column->ring_radii[lvl - 1];  
+    }
+    column->ring_radii[0] = MIN_RING_RADII;
+    column->ring_offsets[0] = (struct vec3){0};
+    column->shape_index_offset =
+      column->shape_index_offset - 1 < 0 ?
+      STEAM__COLUMN_LVL_COUNT :
+      column->shape_index_offset - 1;
+  }
 }
 
 void steam__draw_column(
@@ -273,7 +305,7 @@ void steam__draw_column(
   // gpu->set_fragment_shader_float(
   //   &shared_steam_shader,
   //   "max_altitude",
-  //   LEVEL_HEIGHT * STEAM__COLUMN_LVL_COUNT
+  //   LVL_HEIGHT * STEAM__COLUMN_LVL_COUNT
   // );
   m4x4__translation(&column->position, &local_to_world);
   space__create_normals_model(&local_to_world, &normals_local_to_world);
