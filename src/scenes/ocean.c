@@ -72,7 +72,7 @@ static float brightness(float r, float g, float b) {
 static struct turbine turbines[TURBINE_X_COUNT * TURBINE_Z_COUNT];
 
 static struct steam_column steam = (struct steam_column){
-  .position = { 0, -1, 0},
+  .position = { -3, -1, -8 },
   .shape_index_offset = 5
 };
 
@@ -89,16 +89,16 @@ void ocean__init(
   struct gpu_api const *const gpu
 ) {
 
-  cam.position = (struct vec3){ -1.2f, 0.3f, 7 };
-  cam.look_target = (struct vec3){ 0, 1, 0 };
+  cam.position = (struct vec3){ -1.2f, 0.15f, 7 };
+  cam.look_target = (struct vec3){ 0, 0.2f, 0 };
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
-  cam.far_clip_distance = 13;
+  cam.far_clip_distance = 18;
 
   water__init_mesh_data();
   water__copy_assets_to_gpu(gpu);
 
-  steam__init_mesh_data();
+  steam__shared_init_mesh_data();
   steam__column_default(&steam);
   steam__copy_assets_to_gpu(gpu);
 
@@ -144,8 +144,6 @@ void ocean__tick(
   // UPDATE
 
   static struct m4x4 camera_rotation;
-  // TODO: if ur gonna be too lazy to add quaternion rotations,
-  // at least make a fn for rotating a point
   m4x4__rotation(
     deg_to_rad(delta_time * 5),
     WORLDSPACE.up,
@@ -157,8 +155,6 @@ void ocean__tick(
   );
   cam.position.y =
     0.1f * sin(seconds_since_creation * 0.02f) + 0.15f;
-
-  // sky_transform.rotation_in_deg.x += 30 * delta_time;
 
   static struct vec2 clouds_offset;
   clouds_offset.x = loop_float(
@@ -175,11 +171,7 @@ void ocean__tick(
     gpu
   );
 
-  steam__rise(
-    delta_time,
-    seconds_since_creation,
-    &steam
-  );
+  steam__rise(delta_time, &steam);
 
   static struct vec2 relative_turbine_position;
   static struct vec2 normalized_sample_xy;

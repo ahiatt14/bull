@@ -1,16 +1,16 @@
 #ifndef __STEAM_COLUMNS__
 #define __STEAM_COLUMNS__
 
-#define STEAM__COLUMN_LVL_COUNT 12
+#define STEAM__LVL_COUNT 20
 
 struct steam_column {
   struct vec3 position;
-  struct vec3 ring_offsets[STEAM__COLUMN_LVL_COUNT];
-  float ring_radii[STEAM__COLUMN_LVL_COUNT];
+  struct vec3 ring_offsets[STEAM__LVL_COUNT];
+  float ring_radii[STEAM__LVL_COUNT];
   uint8_t shape_index_offset;
 };
 
-void steam__init_mesh_data();
+void steam__shared_init_mesh_data();
 
 void steam__copy_assets_to_gpu(
   struct gpu_api const *const gpu
@@ -22,7 +22,6 @@ void steam__column_default(
 
 void steam__rise(
   double delta_time,
-  double seconds_since_creation,
   struct steam_column *const column
 );
 
