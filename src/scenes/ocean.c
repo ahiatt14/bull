@@ -72,7 +72,7 @@ static float brightness(float r, float g, float b) {
 static struct turbine turbines[TURBINE_X_COUNT * TURBINE_Z_COUNT];
 
 static struct steam_column steam = (struct steam_column){
-  .position = { -3, -1, -8 },
+  .position = { 0, -1, -2 },
   .shape_index_offset = 5
 };
 
@@ -143,18 +143,18 @@ void ocean__tick(
 
   // UPDATE
 
-  static struct m4x4 camera_rotation;
-  m4x4__rotation(
-    deg_to_rad(delta_time * 5),
-    WORLDSPACE.up,
-    &camera_rotation
-  );
-  cam.position = m4x4_x_point(
-    &camera_rotation,
-    cam.position
-  );
-  cam.position.y =
-    0.1f * sin(seconds_since_creation * 0.02f) + 0.15f;
+  // static struct m4x4 camera_rotation;
+  // m4x4__rotation(
+  //   deg_to_rad(delta_time * 5),
+  //   WORLDSPACE.up,
+  //   &camera_rotation
+  // );
+  // cam.position = m4x4_x_point(
+  //   &camera_rotation,
+  //   cam.position
+  // );
+  // cam.position.y =
+  //   0.1f * sin(seconds_since_creation * 0.02f) + 0.15f;
 
   static struct vec2 clouds_offset;
   clouds_offset.x = loop_float(

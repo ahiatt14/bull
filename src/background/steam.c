@@ -20,6 +20,8 @@
 #include "normal_debug_frag.h"
 #include "normal_debug_geo.h"
 
+#define VERT_I_TO_FACE_I(vi) vi * 2
+
 #define BOUYANCY 2
 #define VERTS_PER_LVL 6
 #define LVL_HEIGHT 0.4f
@@ -140,109 +142,173 @@ static void calculate_ring_vertex_positions(
   }
 }
 
+static struct vec3 calculate_face_normal(
+  uint_fast16_t face_start_index
+) {
+  return vec3__cross(
+    vec3__normalize(vec3_minus_vec3(
+      shared_column_mesh.vertices[
+        shared_column_mesh.indices[face_start_index]
+      ].position,
+      shared_column_mesh.vertices[
+        shared_column_mesh.indices[face_start_index + 1]
+      ].position
+    )),
+    vec3__normalize(vec3_minus_vec3(
+      shared_column_mesh.vertices[
+        shared_column_mesh.indices[face_start_index + 1]
+      ].position,
+      shared_column_mesh.vertices[
+        shared_column_mesh.indices[face_start_index + 2]
+      ].position
+    ))
+  );
+}
+
+static inline uint_fast16_t vert_i_to_face_i(
+  uint_fast16_t vi
+) { return vi * 6; }
+
+static inline uint_fast16_t wrap_lvl_vi_ccw(
+  uint_fast16_t lvl,
+  uint_fast16_t vi 
+) {
+  return
+    vi == (lvl + 1) * VERTS_PER_LVL ?
+    lvl * VERTS_PER_LVL :
+    vi;
+}
+
 static void calculate_column_normals(
   struct steam_column const *const column
 ) {
+  for (uint_fast8_t lvl = 0; lvl < STEAM__LVL_COUNT - 1; lvl++) {
 
-  // TODO: clean up in here or meh
+    static uint_fast16_t lvl_starting_vi;
+    lvl_starting_vi = lvl * VERTS_PER_LVL;
 
-  // lvl 0
-  for (int vert_offset = 0; vert_offset < VERTS_PER_LVL; vert_offset++) {
-    shared_column_mesh.vertices[vert_offset].normal = vec3__cross(
-      vec3__normalize(vec3_minus_vec3(
-        shared_column_mesh.vertices[vert_offset + VERTS_PER_LVL].position,
-        shared_column_mesh.vertices[
-          vert_offset == 0 ?
-          vert_offset + VERTS_PER_LVL - 1 :
-          vert_offset - 1
-        ].position
-      )),
-      vec3__normalize(vec3_minus_vec3(
-        shared_column_mesh.vertices[
-          vert_offset == 0 ?
-          vert_offset + VERTS_PER_LVL - 1 :
-          vert_offset - 1
-        ].position,
-        shared_column_mesh.vertices[vert_offset].position
-      ))
-    );
-  }
+    for (uint_fast8_t vi = 0; vi < VERTS_PER_LVL; vi++) {
 
-  static uint_fast16_t lvl_starting_vert;
-  static uint_fast16_t acc_vi;
+      static uint_fast16_t acc_vi;
+      acc_vi = lvl_starting_vi + vi;
 
-  for (int lvl = 1; lvl < STEAM__LVL_COUNT - 1; lvl++) {
+      // static struct vec3 normals[4];
 
-    lvl_starting_vert = lvl * VERTS_PER_LVL;
-
-    for (int vert_offset = 0; vert_offset < VERTS_PER_LVL; vert_offset++) {
+      // normals[0] = calculate_face_normal(VERT_I_TO_FACE_I(acc_vi));
+      // normals[1] = calculate_face_normal(VERT_I_TO_FACE_I(
+      //   wrap_lvl_vi_ccw(lvl, acc_vi + 1)
+      // ));
       
-      acc_vi = lvl_starting_vert + vert_offset;
-
-      static struct vec3 normals[2];
-
-      // TODO: triangle above
-      normals[0] = vec3__cross(
-        vec3__normalize(vec3_minus_vec3(
-          shared_column_mesh.vertices[acc_vi + VERTS_PER_LVL].position,
-          shared_column_mesh.vertices[
-            acc_vi == lvl_starting_vert ?
-            acc_vi + VERTS_PER_LVL - 1 :
-            acc_vi - 1
-          ].position
-        )),
-        vec3__normalize(vec3_minus_vec3(
-          shared_column_mesh.vertices[
-            acc_vi == lvl_starting_vert ?
-            acc_vi + VERTS_PER_LVL - 1 :
-            acc_vi - 1
-          ].position,
-          shared_column_mesh.vertices[acc_vi].position
-        ))
-      );
-
-      // TODO: triangle below
-      shared_column_mesh.vertices[vert_offset].normal =
-        vec3__cross(
-          vec3__normalize(vec3_minus_vec3(
-            shared_column_mesh.vertices[
-              acc_vi + 1 == lvl_starting_vert + VERTS_PER_LVL ?
-              lvl_starting_vert :
-              acc_vi + 1
-            ].position,
-            shared_column_mesh.vertices[acc_vi].position
-          )),
-          vec3__normalize(vec3_minus_vec3(
-            shared_column_mesh.vertices[acc_vi].position,
-            shared_column_mesh.vertices[acc_vi - VERTS_PER_LVL].position
-          ))
-        );
-
-      shared_column_mesh.vertices[acc_vi].normal = vec3__mean(normals, 2);
+      // shared_column_mesh.vertices[acc_vi].normal = vec3__mean(normals, 2);
+      shared_column_mesh.vertices[acc_vi].normal =
+        calculate_face_normal(vert_i_to_face_i(acc_vi));
     }
   }
-
-  // top lvl
-  for (int vert_offset = 0; vert_offset < VERTS_PER_LVL; vert_offset++) {
-    lvl_starting_vert = (STEAM__LVL_COUNT - 1) * VERTS_PER_LVL;
-    acc_vi = lvl_starting_vert + vert_offset;
-    shared_column_mesh.vertices[acc_vi].normal =
-      vec3__cross(
-        vec3__normalize(vec3_minus_vec3(
-          shared_column_mesh.vertices[
-            acc_vi + 1 == lvl_starting_vert + VERTS_PER_LVL ?
-            lvl_starting_vert :
-            acc_vi + 1
-          ].position,
-          shared_column_mesh.vertices[acc_vi].position
-        )),
-        vec3__normalize(vec3_minus_vec3(
-          shared_column_mesh.vertices[acc_vi].position,
-          shared_column_mesh.vertices[acc_vi - VERTS_PER_LVL].position
-        ))
-      );
-  }
 }
+
+// static void calculate_column_normals(
+//   struct steam_column const *const column
+// ) {
+
+//   // TODO: clean up in here or meh
+
+//   // lvl 0
+//   for (int vert_offset = 0; vert_offset < VERTS_PER_LVL; vert_offset++) {
+//     shared_column_mesh.vertices[vert_offset].normal = vec3__cross(
+//       vec3__normalize(vec3_minus_vec3(
+//         shared_column_mesh.vertices[vert_offset + VERTS_PER_LVL].position,
+//         shared_column_mesh.vertices[
+//           vert_offset == 0 ?
+//           vert_offset + VERTS_PER_LVL - 1 :
+//           vert_offset - 1
+//         ].position
+//       )),
+//       vec3__normalize(vec3_minus_vec3(
+//         shared_column_mesh.vertices[
+//           vert_offset == 0 ?
+//           vert_offset + VERTS_PER_LVL - 1 :
+//           vert_offset - 1
+//         ].position,
+//         shared_column_mesh.vertices[vert_offset].position
+//       ))
+//     );
+//   }
+
+//   static uint_fast16_t lvl_starting_vert;
+//   static uint_fast16_t acc_vi;
+
+//   for (int lvl = 1; lvl < STEAM__LVL_COUNT - 1; lvl++) {
+
+//     lvl_starting_vert = lvl * VERTS_PER_LVL;
+
+//     for (int vert_offset = 0; vert_offset < VERTS_PER_LVL; vert_offset++) {
+      
+//       acc_vi = lvl_starting_vert + vert_offset;
+
+//       static struct vec3 normals[2];
+
+//       // TODO: triangle above
+//       normals[0] = vec3__cross(
+//         vec3__normalize(vec3_minus_vec3(
+//           shared_column_mesh.vertices[acc_vi + VERTS_PER_LVL].position,
+//           shared_column_mesh.vertices[
+//             acc_vi == lvl_starting_vert ?
+//             acc_vi + VERTS_PER_LVL - 1 :
+//             acc_vi - 1
+//           ].position
+//         )),
+//         vec3__normalize(vec3_minus_vec3(
+//           shared_column_mesh.vertices[
+//             acc_vi == lvl_starting_vert ?
+//             acc_vi + VERTS_PER_LVL - 1 :
+//             acc_vi - 1
+//           ].position,
+//           shared_column_mesh.vertices[acc_vi].position
+//         ))
+//       );
+
+//       // TODO: triangle below
+//       shared_column_mesh.vertices[vert_offset].normal =
+//         vec3__cross(
+//           vec3__normalize(vec3_minus_vec3(
+//             shared_column_mesh.vertices[
+//               acc_vi + 1 == lvl_starting_vert + VERTS_PER_LVL ?
+//               lvl_starting_vert :
+//               acc_vi + 1
+//             ].position,
+//             shared_column_mesh.vertices[acc_vi].position
+//           )),
+//           vec3__normalize(vec3_minus_vec3(
+//             shared_column_mesh.vertices[acc_vi].position,
+//             shared_column_mesh.vertices[acc_vi - VERTS_PER_LVL].position
+//           ))
+//         );
+
+//       shared_column_mesh.vertices[acc_vi].normal = vec3__mean(normals, 2);
+//     }
+//   }
+
+//   // top lvl
+//   for (int vert_offset = 0; vert_offset < VERTS_PER_LVL; vert_offset++) {
+//     lvl_starting_vert = (STEAM__LVL_COUNT - 1) * VERTS_PER_LVL;
+//     acc_vi = lvl_starting_vert + vert_offset;
+//     shared_column_mesh.vertices[acc_vi].normal =
+//       vec3__cross(
+//         vec3__normalize(vec3_minus_vec3(
+//           shared_column_mesh.vertices[
+//             acc_vi + 1 == lvl_starting_vert + VERTS_PER_LVL ?
+//             lvl_starting_vert :
+//             acc_vi + 1
+//           ].position,
+//           shared_column_mesh.vertices[acc_vi].position
+//         )),
+//         vec3__normalize(vec3_minus_vec3(
+//           shared_column_mesh.vertices[acc_vi].position,
+//           shared_column_mesh.vertices[acc_vi - VERTS_PER_LVL].position
+//         ))
+//       );
+//   }
+// }
 
 void steam__rise(
   double delta_time,
