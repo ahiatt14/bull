@@ -3,7 +3,7 @@
 
 #include "tail.h"
 
-#define OCEAN_KM_WIDE 20.0f
+#define OCEAN_KM_WIDE 100.0f
 
 void water__init_mesh_data();
 void water__copy_assets_to_gpu(

@@ -22,7 +22,7 @@
 #define INDEX_COUNT 9600
 
 #define WAVE_AMPLITUDE 0.05f
-#define WAVE_FREQUENCY 0.7f
+#define WAVE_FREQUENCY 4.0f
 
 // LOCALS
 

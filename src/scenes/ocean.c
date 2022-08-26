@@ -72,7 +72,7 @@ static float brightness(float r, float g, float b) {
 static struct turbine turbines[TURBINE_X_COUNT * TURBINE_Z_COUNT];
 
 static struct steam_column steam = (struct steam_column){
-  .position = { 0, -1, -2 },
+  .position = { -5, -1, -10 },
   .shape_index_offset = 5
 };
 
