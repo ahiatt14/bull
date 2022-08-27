@@ -49,7 +49,8 @@ rm -rf game.exe
 ./${tools}sourcify-obj.exe assets/mesh/bird.obj flat src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/turbine_base.obj flat src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/turbine_blades.obj flat src/headers/ src/ && \
-./${tools}sourcify-obj.exe assets/mesh/smooth_cube.obj flat src/headers/ src/ \
+./${tools}sourcify-obj.exe assets/mesh/smooth_cube.obj flat src/headers/ src/ && \
+./${tools}sourcify-obj.exe assets/mesh/mountain.obj smooth src/headers/ src/ \
 && \
 i686-w64-mingw32-gcc \
 ${includes} \
@@ -73,6 +74,7 @@ rm -f src/headers/bird_mesh.h
 rm -f src/headers/turbine_blades_mesh.h
 rm -f src/headers/turbine_base_mesh.h
 rm -f src/headers/smooth_cube_mesh.h
+rm -f src/headers/mountain_mesh.h
 
 rm -f src/core_mesh.c
 rm -f src/burdock_mesh.c
@@ -85,6 +87,7 @@ rm -f src/bird_mesh.c
 rm -f src/turbine_blades_mesh.c
 rm -f src/turbine_base_mesh.c
 rm -f src/smooth_cube_mesh.c
+rm -f src/mountain_mesh.c
 
 rm -f src/headers/water_texture.h
 rm -f src/water_texture.c

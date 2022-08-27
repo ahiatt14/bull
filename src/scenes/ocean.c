@@ -13,15 +13,18 @@
 #include "turbine.h"
 #include "steam.h"
 #include "cage_mesh.h"
+#include "mountain_mesh.h"
 
 #include "clouds_texture.h"
 #include "cloud_cover_texture.h"
 #include "water_texture.h"
 
+#include "turbine_frag.h"
 #include "solid_color_frag.h"
 #include "flat_texture_frag.h"
 #include "default_vert.h"
 #include "water_surface_frag.h"
+#include "normal_debug_frag.h"
 #include "sky_frag.h"
 
 // CONSTANTS
@@ -39,7 +42,7 @@ static const struct vec2 TURBINE_FIELD_ORIGIN_OFFSET = {
 };
 
 static const struct vec2 WIND_KM_PER_SEC = {
-  0,
+  0.02f,
   0.01f
 };
 
@@ -71,8 +74,17 @@ static float brightness(float r, float g, float b) {
 
 static struct turbine turbines[TURBINE_X_COUNT * TURBINE_Z_COUNT];
 
+static struct shader mountain_shader;
+static struct m4x4 mountain_local_to_world;
+static struct m3x3 mountain_normals_local_to_world;
+static struct transform mountain_transform = (struct transform){
+  .position = { 8, -0.1f, -15},
+  .rotation_in_deg = { 0, -90, 0 },
+  .scale = 3
+};
+
 static struct steam_column steam = (struct steam_column){
-  .position = { -5, -1, -10 },
+  .position = { 2, -1, -12 },
   .shape_index_offset = 5
 };
 
@@ -93,19 +105,35 @@ void ocean__init(
   cam.look_target = (struct vec3){ 0, 0.2f, 0 };
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
-  cam.far_clip_distance = 18;
+  cam.far_clip_distance = 30;
+  camera__calculate_lookat(WORLDSPACE.up, &cam);
+  camera__calculate_perspective(vwprt, &cam);
 
   water__init_mesh_data();
   water__copy_assets_to_gpu(gpu);
 
   steam__shared_init_mesh_data();
-  steam__column_default(&steam);
+  steam__column_default(WIND_KM_PER_SEC, &steam);
   steam__copy_assets_to_gpu(gpu);
 
   sky_shader.frag_shader_src = sky_frag_src;
   sky_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&sky_shader);
   gpu->copy_static_mesh_to_gpu(&cage_mesh);
+
+  mountain_shader.frag_shader_src = turbine_frag_src;
+  mountain_shader.vert_shader_src = default_vert_src;
+  gpu->copy_shader_to_gpu(&mountain_shader);
+  gpu->copy_static_mesh_to_gpu(&mountain_mesh);
+  space__create_model(
+    &WORLDSPACE,
+    &mountain_transform,
+    &mountain_local_to_world
+  );
+  space__create_normals_model(
+    &mountain_local_to_world,
+    &mountain_normals_local_to_world
+  );
 
   turbine__copy_assets_to_gpu(gpu);
   for (int x = 0; x < TURBINE_X_COUNT; x++)
@@ -171,7 +199,11 @@ void ocean__tick(
     gpu
   );
 
-  steam__rise(delta_time, &steam);
+  steam__rise(
+    delta_time,
+    WIND_KM_PER_SEC,
+    &steam
+  );
 
   static struct vec2 relative_turbine_position;
   static struct vec2 normalized_sample_xy;
@@ -205,8 +237,8 @@ void ocean__tick(
   
   // DRAW
 
-  camera__calculate_lookat(WORLDSPACE.up, &cam);
-  camera__calculate_perspective(vwprt, &cam);
+  // camera__calculate_lookat(WORLDSPACE.up, &cam);
+  // camera__calculate_perspective(vwprt, &cam);
 
   gpu->cull_back_faces();
 
@@ -248,6 +280,26 @@ void ocean__tick(
   gpu->draw_mesh(&cage_mesh);
 
   gpu->clear_depth_buffer();
+
+  gpu->select_shader(&mountain_shader);
+  gpu->set_fragment_shader_vec3(
+    &mountain_shader,
+    "light_dir",
+    SUNLIGHT_DIRECTION
+  );
+  gpu->set_fragment_shader_vec3(
+    &mountain_shader,
+    "color",
+    COLOR_BLACK
+  );
+  gpu__set_mvp(
+    &mountain_local_to_world,
+    &mountain_normals_local_to_world,
+    &cam,
+    &mountain_shader,
+    gpu
+  );
+  gpu->draw_mesh(&mountain_mesh);
 
   steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam);
 

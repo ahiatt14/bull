@@ -1,7 +1,7 @@
 #ifndef __STEAM_COLUMNS__
 #define __STEAM_COLUMNS__
 
-#define STEAM__LVL_COUNT 20
+#define STEAM__LVL_COUNT 15
 
 struct steam_column {
   struct vec3 position;
@@ -17,11 +17,13 @@ void steam__copy_assets_to_gpu(
 );
 
 void steam__column_default(
+  struct vec2 wind_km_per_sec,
   struct steam_column *const column
 );
 
 void steam__rise(
   double delta_time,
+  struct vec2 wind_km_per_sec,
   struct steam_column *const column
 );
 

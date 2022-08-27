@@ -24,7 +24,7 @@
 
 #define BOUYANCY 2
 #define VERTS_PER_LVL 6
-#define LVL_HEIGHT 0.3f
+#define LVL_HEIGHT 0.7f
 #define MIN_RING_RADII 0.1f
 #define RING_VERT_DEG_OFFSET 360.0f / VERTS_PER_LVL
 #define VERT_COUNT VERTS_PER_LVL * STEAM__LVL_COUNT
@@ -61,15 +61,17 @@ void steam__copy_assets_to_gpu(
 }
 
 void steam__column_default(
+  struct vec2 wind_km_per_sec,
   struct steam_column *const column
 ) {
   for (int lvl = 0; lvl < STEAM__LVL_COUNT; lvl++) {
     column->ring_offsets[lvl] = (struct vec3){0, lvl * LVL_HEIGHT, 0};
     column->ring_radii[lvl] = MIN_RING_RADII;
   }
-  for (int i = 0; i < 50; i++)
+  for (int i = 0; i < 200; i++)
     steam__rise(
-      0.4f, // fake delta time,
+      0.0167f, // fake delta time,
+      wind_km_per_sec,
       column
     );
 }
@@ -208,25 +210,28 @@ static void calculate_column_normals(
 
 void steam__rise(
   double delta_time,
+  struct vec2 wind_km_per_sec,
   struct steam_column *const column
 ) {
-  static const float column_shape[STEAM__LVL_COUNT] = {
-    1, 1.2f, 1.3f, 1.35f, 1.35f,
-    1.3f, 1.3f, 1.4f, 1.6f, 1.8f,
-    1.95f, 1.95f, 1.9f, 1.8f, 1.6f,
-    1.3f, 1.3f, 1.25f, 1.2f, 1.1f,
+
+  static float shape[STEAM__LVL_COUNT] = {
+    1, 1.1f, 1.2f, 1.2f, 1.1f,
+    1.2f, 1.3f, 1.3f, 1.2f, 1.2f,
+    1.1f, 1.1f, 1.2f, 1.2f, 1.1f
   };
 
   for (int_fast8_t lvl = 0; lvl < STEAM__LVL_COUNT; lvl++) {
     column->ring_radii[lvl] +=
-      column_shape[
+      shape[
         (column->shape_index_offset + lvl) %
         STEAM__LVL_COUNT
       ] *
-      lvl * delta_time * 0.01f;
+      lvl * lvl * delta_time * 0.005f;
+
 
     column->ring_offsets[lvl].y += BOUYANCY * delta_time * 0.2f;
-    column->ring_offsets[lvl].x += lvl * 0.02f * delta_time;
+    column->ring_offsets[lvl].x += lvl * wind_km_per_sec.x * delta_time;
+    column->ring_offsets[lvl].z += lvl * wind_km_per_sec.y * delta_time;
   }
 
   if (
@@ -238,7 +243,12 @@ void steam__rise(
       column->ring_radii[lvl] = column->ring_radii[lvl - 1];  
     }
     column->ring_radii[0] = MIN_RING_RADII;
-    column->ring_offsets[0] = (struct vec3){0};
+    column->ring_offsets[0] = (struct vec3){
+      0,
+      // LVL_HEIGHT,
+      0,
+      0
+    };
     column->shape_index_offset =
       column->shape_index_offset - 1 < 0 ?
       STEAM__LVL_COUNT :
