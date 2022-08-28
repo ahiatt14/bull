@@ -12,7 +12,6 @@
 
 #include "turbine_frag.h"
 #include "solid_color_frag.h"
-#include "normal_debug_frag.h"
 #include "default_vert.h"
 
 static const struct vec3 TURBINE_BLADE_OFFSET = { 0, 2.25f, -0.2f };

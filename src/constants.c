@@ -2,6 +2,11 @@
 
 #include "constants.h"
 
+struct shader FLAT_TEXTURE_SHADER;
+struct shader SOLID_COLOR_SHADER;
+struct shader NORMALS_COLOR_SHADER;
+struct shader NORMALS_VIS_SHADER;
+
 const struct vec3 COLOR_WHITE = { 1, 1, 1 };
 const struct vec3 COLOR_LIGHT_GREY = { 0.86f, 0.86f, 0.86f };
 const struct vec3 COLOR_BLACK = { 0, 0, 0 };

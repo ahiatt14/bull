@@ -5,6 +5,13 @@
 #include "constants.h"
 #include "scene.h"
 
+#include "normal_debug_geo.h"
+#include "normal_debug_frag.h"
+#include "normal_debug_vert.h"
+#include "flat_texture_frag.h"
+#include "solid_color_frag.h"
+#include "default_vert.h"
+
 #define ASPECT_RATIO (4.0f / 3.0f)
 #define WINDOW_HEIGHT 900
 
@@ -84,6 +91,23 @@ int main() {
 
   gpu.enable_MSAA();
 
+  FLAT_TEXTURE_SHADER.frag_shader_src = flat_texture_frag_src;
+  FLAT_TEXTURE_SHADER.vert_shader_src = default_vert_src;
+  gpu.copy_shader_to_gpu(&FLAT_TEXTURE_SHADER);
+
+  SOLID_COLOR_SHADER.frag_shader_src = solid_color_frag_src;
+  SOLID_COLOR_SHADER.vert_shader_src = default_vert_src;
+  gpu.copy_shader_to_gpu(&SOLID_COLOR_SHADER);
+
+  NORMALS_COLOR_SHADER.frag_shader_src = normal_debug_frag_src;
+  NORMALS_COLOR_SHADER.vert_shader_src = default_vert_src;
+  gpu.copy_shader_to_gpu(&NORMALS_COLOR_SHADER);
+
+  NORMALS_VIS_SHADER.frag_shader_src = solid_color_frag_src;
+  NORMALS_VIS_SHADER.geo_shader_src = normal_debug_geo_src;
+  NORMALS_VIS_SHADER.vert_shader_src = normal_debug_vert_src;
+  gpu.copy_shader_to_gpu(&NORMALS_VIS_SHADER);
+
   window.on_focus_and_unfocus(unpause, pause);
   window.on_minimize_and_restore(pause, unpause);
   window.on_framebuffer_resize(handle_resize);
@@ -115,14 +139,14 @@ int main() {
     &ocean
   };
 
-  // for (int i = 0; i < SCENE_COUNT; i++)
-  //   scenes[i]->init(&window, &vwprt, &gpu);
-  scenes[SCENE__OCEAN]->init(&window, &vwprt, &gpu);
+  for (int i = 0; i < SCENE_COUNT; i++)
+    scenes[i]->init(&window, &vwprt, &gpu);
+  // scenes[SCENE__OCEAN]->init(&window, &vwprt, &gpu);
 
-  // current_scene = SCENE__MAIN_MENU;
-  // previous_scene = SCENE__MAIN_MENU;
-  current_scene = SCENE__OCEAN;
-  previous_scene = SCENE__OCEAN;
+  current_scene = SCENE__MAIN_MENU;
+  previous_scene = SCENE__MAIN_MENU;
+  // current_scene = SCENE__OCEAN;
+  // previous_scene = SCENE__OCEAN;
 
   gpu.enable_depth_test();
 

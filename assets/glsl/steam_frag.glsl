@@ -1,9 +1,9 @@
 #version 330 core
 
 uniform vec3 color = vec3(
-  0.5,
-  0.5,
-  0.5
+  0.9,
+  0.9,
+  0.9
 );
 
 uniform vec3 light_dir = vec3(
@@ -15,6 +15,12 @@ uniform vec3 light_dir = vec3(
 uniform vec3 light_color = vec3(
   1,
   0.93,
+  1
+);
+
+uniform vec3 top_color = vec3(
+  1,
+  1,
   1
 );
 
@@ -37,8 +43,11 @@ void main() {
     light_color *
     max(dot(fs_in.normal, -light_dir), 0);
 
+  vec3 mixed =
+    mix(color + diffuse, top_color, normalized_altitude);
+
   FragColor = vec4(
-    color + diffuse,
+    mixed,
     1
   );
 }

@@ -13,7 +13,6 @@
 
 #include "default_vert.h"
 #include "water_surface_frag.h"
-#include "normal_debug_frag.h"
 
 // CONSTANTS
 
@@ -194,6 +193,11 @@ void water__draw(
     &surface_shader,
     "light_color",
     sunlight_color
+  );
+  gpu->set_fragment_shader_vec3(
+    &surface_shader,
+    "water_color",
+    COLOR_AQUA_BLUE
   );
   space__create_model(
     &WORLDSPACE,

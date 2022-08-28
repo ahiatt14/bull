@@ -11,7 +11,6 @@
 #include "bird_mesh.h"
 #include "default_vert.h"
 #include "solid_color_frag.h"
-#include "normal_debug_frag.h"
 
 // CONSTANTS
 

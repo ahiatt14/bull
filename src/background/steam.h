@@ -23,7 +23,6 @@ void steam__column_default(
 
 void steam__rise(
   double delta_time,
-  struct vec2 wind_km_per_sec,
   struct steam_column *const column
 );
 

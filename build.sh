@@ -37,7 +37,8 @@ rm -rf game.exe
 && \
 ./${tools}sourcify-png.exe assets/png/clouds.png 3 src/headers/clouds_texture.h src/clouds_texture.c && \
 ./${tools}sourcify-png.exe assets/png/water.png 3 src/headers/water_texture.h src/water_texture.c && \
-./${tools}sourcify-png.exe assets/png/cloud_cover.png 3 src/headers/cloud_cover_texture.h src/cloud_cover_texture.c \
+./${tools}sourcify-png.exe assets/png/cloud_cover.png 3 src/headers/cloud_cover_texture.h src/cloud_cover_texture.c && \
+./${tools}sourcify-png.exe assets/png/stars.png 4 src/headers/stars_texture.h src/stars_texture.c \
 && \
 ./${tools}sourcify-obj.exe assets/mesh/burdock.obj smooth src/headers/ src/ && \
 ./${tools}sourcify-obj.exe assets/mesh/pyramid.obj flat src/headers/ src/ && \
@@ -63,6 +64,7 @@ src/gameplay/*.c \
 src/background/*.c \
 libs/tail/static/tail.a
 
+# MESHES
 rm -f src/headers/core_mesh.h
 rm -f src/headers/burdock_mesh.h
 rm -f src/headers/pyramid_mesh.h
@@ -89,13 +91,18 @@ rm -f src/turbine_base_mesh.c
 rm -f src/smooth_cube_mesh.c
 rm -f src/mountain_mesh.c
 
+# TEXTURES
 rm -f src/headers/water_texture.h
-rm -f src/water_texture.c
-rm -f src/clouds_texture.c
 rm -f src/headers/clouds_texture.h
 rm -f src/headers/cloud_cover_texture.h
-rm -f src/cloud_cover_texture.c
+rm -f src/headers/stars_texture.h
 
+rm -f src/water_texture.c
+rm -f src/clouds_texture.c
+rm -f src/cloud_cover_texture.c
+rm -f src/stars_texture.c
+
+# SHADERS
 rm -f src/headers/solid_color_frag.h
 rm -f src/headers/normal_debug_frag.h
 rm -f src/headers/default_vert.h

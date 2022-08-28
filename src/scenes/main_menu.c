@@ -14,19 +14,12 @@
 #include "default_vert.h"
 #include "solid_color_frag.h"
 
-#include "normal_debug_geo.h"
-#include "normal_debug_vert.h"
-#include "normal_debug_frag.h"
-
 #define SEC_UNTIL_ACTION 1.0f
 
 static struct camera foreground_camera;
 static struct camera background_camera;
 
 static struct transform pyramid_transform = {{ 1, 0, 0 }, { 0, 0, 0 }, 1};
-static struct shader normal_debug_shader;
-
-static struct shader normal_vis_shader;
 
 static struct transform smooth_cube_transform = {{ 0, 1, 0 }, { 0, 0, 0 }, 1};
 
@@ -54,17 +47,6 @@ void main_menu__init(
   background_camera.far_clip_distance = 20;
   camera__calculate_lookat(WORLDSPACE.up, &background_camera);
   camera__calculate_perspective(vwprt, &background_camera);
-
-  // core__copy_assets_to_gpu(gpu);
-
-  normal_debug_shader.frag_shader_src = normal_debug_frag_src;
-  normal_debug_shader.vert_shader_src = default_vert_src;
-  gpu->copy_shader_to_gpu(&normal_debug_shader);
-
-  normal_vis_shader.frag_shader_src = solid_color_frag_src;
-  normal_vis_shader.vert_shader_src = normal_debug_vert_src;
-  normal_vis_shader.geo_shader_src = normal_debug_geo_src;
-  gpu->copy_shader_to_gpu(&normal_vis_shader);
 
   gpu->copy_rgb_texture_to_gpu(&clouds_texture);
   gpu->copy_static_mesh_to_gpu(&pyramid_mesh);
@@ -122,7 +104,7 @@ void main_menu__tick(
     return;
   }
 
-  // menu_sky__tick(delta_time, sec onds_since_creation, gpu);
+  // menu_sky__tick(delta_time, seconds_since_creation, gpu);
 
   // DRAW
   gpu->clear(&COLOR_LIGHT_GREY);
@@ -136,7 +118,8 @@ void main_menu__tick(
   static struct m4x4 shared_local_to_world;
   static struct m3x3 shared_normals_local_to_world;
 
-  gpu->select_shader(&normal_debug_shader);
+  gpu->select_shader(&FLAT_TEXTURE_SHADER);
+  gpu->select_texture(&clouds_texture);
   space__create_model(
     &WORLDSPACE,
     &pyramid_transform,
@@ -150,22 +133,12 @@ void main_menu__tick(
     &shared_local_to_world,
     &shared_normals_local_to_world,
     &foreground_camera,
-    &normal_debug_shader,
+    &FLAT_TEXTURE_SHADER,
     gpu
   );
   gpu->draw_mesh(&pyramid_mesh);
 
-  gpu->select_shader(&normal_vis_shader);
-  gpu__set_mvp(
-    &shared_local_to_world,
-    &shared_normals_local_to_world,
-    &foreground_camera,
-    &normal_vis_shader,
-    gpu
-  );
-  gpu->draw_mesh(&pyramid_mesh);
-
-  gpu->select_shader(&normal_debug_shader);
+  gpu->select_shader(&NORMALS_COLOR_SHADER);
   space__create_model(
     &WORLDSPACE,
     &smooth_cube_transform,
@@ -179,24 +152,8 @@ void main_menu__tick(
     &shared_local_to_world,
     &shared_normals_local_to_world,
     &foreground_camera,
-    &normal_debug_shader,
+    &NORMALS_COLOR_SHADER,
     gpu
   );
   gpu->draw_mesh(&smooth_cube_mesh);
-
-  gpu->select_shader(&normal_vis_shader);
-  gpu__set_mvp(
-    &shared_local_to_world,
-    &shared_normals_local_to_world,
-    &foreground_camera,
-    &normal_vis_shader,
-    gpu
-  );
-  gpu->draw_mesh(&smooth_cube_mesh);
-
-  // core__draw(
-  //   &foreground_camera,
-  //   gpu,
-  //   &core
-  // );
 }

@@ -16,25 +16,17 @@
 
 #include "core_frag.h"
 #include "turbine_frag.h"
-#include "normal_debug_vert.h"
-#include "normal_debug_frag.h"
-#include "normal_debug_geo.h"
 
-#define VERT_I_TO_FACE_I(vi) vi * 2
-
-#define BOUYANCY 2
+#define BOUYANCY 0.7f
 #define VERTS_PER_LVL 6
 #define LVL_HEIGHT 0.7f
-#define MIN_RING_RADII 0.1f
+#define MIN_RING_RADII 0.05f
 #define RING_VERT_DEG_OFFSET 360.0f / VERTS_PER_LVL
 #define VERT_COUNT VERTS_PER_LVL * STEAM__LVL_COUNT
 #define INDEX_COUNT VERTS_PER_LVL * 6 * (STEAM__LVL_COUNT - 1)
 #define MAX_COLUMN_HEIGHT STEAM__LVL_COUNT * LVL_HEIGHT
 
 static struct shader shared_steam_shader;
-
-// TODO: just for debugging
-static struct shader normal_vis_shader;
 
 static struct drawable_mesh shared_column_mesh = (struct drawable_mesh){
   .vertices = (struct vertex[VERT_COUNT]){0},
@@ -52,11 +44,6 @@ void steam__copy_assets_to_gpu(
   shared_steam_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_steam_shader);
 
-  normal_vis_shader.frag_shader_src = solid_color_frag_src;
-  normal_vis_shader.vert_shader_src = normal_debug_vert_src;
-  normal_vis_shader.geo_shader_src = normal_debug_geo_src;
-  gpu->copy_shader_to_gpu(&normal_vis_shader);
-
   gpu->copy_dynamic_mesh_to_gpu(&shared_column_mesh);
 }
 
@@ -68,10 +55,9 @@ void steam__column_default(
     column->ring_offsets[lvl] = (struct vec3){0, lvl * LVL_HEIGHT, 0};
     column->ring_radii[lvl] = MIN_RING_RADII;
   }
-  for (int i = 0; i < 200; i++)
+  for (int i = 0; i < 300; i++)
     steam__rise(
-      0.0167f, // fake delta time,
-      wind_km_per_sec,
+      0.1f, // fake delta time,
       column
     );
 }
@@ -181,6 +167,16 @@ static inline uint_fast16_t wrap_lvl_vi_ccw(
     vi;
 }
 
+static inline uint_fast16_t wrap_lvl_vi_cw(
+  uint_fast16_t lvl,
+  uint_fast16_t vi
+) {
+  return
+    (vi == -1 || lvl * VERTS_PER_LVL - 1) ?
+    (lvl + 1) * VERTS_PER_LVL - 1 :
+    vi;
+}
+
 static void calculate_column_normals(
   struct steam_column const *const column
 ) {
@@ -194,14 +190,14 @@ static void calculate_column_normals(
       static uint_fast16_t acc_vi;
       acc_vi = lvl_starting_vi + vi;
 
-      // static struct vec3 normals[4];
+      // static struct vec3 normals[2];
 
-      // normals[0] = calculate_face_normal(VERT_I_TO_FACE_I(acc_vi));
-      // normals[1] = calculate_face_normal(VERT_I_TO_FACE_I(
-      //   wrap_lvl_vi_ccw(lvl, acc_vi + 1)
+      // TODO: fix meee :'(
+      // normals[0] = calculate_face_normal(vert_i_to_face_i(acc_vi));
+      // normals[1] = calculate_face_normal(vert_i_to_face_i(
+      //   wrap_lvl_vi_cw(lvl, acc_vi - 1)
       // ));
       
-      // shared_column_mesh.vertices[acc_vi].normal = vec3__mean(normals, 2);
       shared_column_mesh.vertices[acc_vi].normal =
         calculate_face_normal(vert_i_to_face_i(acc_vi));
     }
@@ -210,7 +206,6 @@ static void calculate_column_normals(
 
 void steam__rise(
   double delta_time,
-  struct vec2 wind_km_per_sec,
   struct steam_column *const column
 ) {
 
@@ -226,12 +221,11 @@ void steam__rise(
         (column->shape_index_offset + lvl) %
         STEAM__LVL_COUNT
       ] *
-      lvl * lvl * delta_time * 0.005f;
+      lvl * delta_time * 0.04f;
 
 
     column->ring_offsets[lvl].y += BOUYANCY * delta_time * 0.2f;
-    column->ring_offsets[lvl].x += lvl * wind_km_per_sec.x * delta_time;
-    column->ring_offsets[lvl].z += lvl * wind_km_per_sec.y * delta_time;
+    column->ring_offsets[lvl].x += lvl * 0.05f * delta_time;
   }
 
   if (
@@ -243,12 +237,7 @@ void steam__rise(
       column->ring_radii[lvl] = column->ring_radii[lvl - 1];  
     }
     column->ring_radii[0] = MIN_RING_RADII;
-    column->ring_offsets[0] = (struct vec3){
-      0,
-      // LVL_HEIGHT,
-      0,
-      0
-    };
+    column->ring_offsets[0] = (struct vec3){0};
     column->shape_index_offset =
       column->shape_index_offset - 1 < 0 ?
       STEAM__LVL_COUNT :
@@ -281,11 +270,16 @@ void steam__draw_column(
     "light_dir",
     light_direction
   );
-  // gpu->set_fragment_shader_float(
-  //   &shared_steam_shader,
-  //   "max_altitude",
-  //   LVL_HEIGHT * STEAM__LVL_COUNT
-  // );
+  gpu->set_fragment_shader_vec3(
+    &shared_steam_shader,
+    "top_color",
+    COLOR_NEON_PURPLE
+  );
+  gpu->set_fragment_shader_float(
+    &shared_steam_shader,
+    "max_altitude",
+    (LVL_HEIGHT * STEAM__LVL_COUNT) / 2.0f
+  );
   m4x4__translation(&column->position, &local_to_world);
   space__create_normals_model(&local_to_world, &normals_local_to_world);
   gpu__set_mvp(
@@ -293,21 +287,6 @@ void steam__draw_column(
     &normals_local_to_world,
     cam,
     &shared_steam_shader,
-    gpu
-  );
-  gpu->draw_mesh(&shared_column_mesh);
-
-  gpu->select_shader(&normal_vis_shader);
-  gpu->set_fragment_shader_vec3(
-    &normal_vis_shader,
-    "color",
-    COLOR_NEON_PURPLE
-  );
-  gpu__set_mvp(
-    &local_to_world,
-    &normals_local_to_world,
-    cam,
-    &normal_vis_shader,
     gpu
   );
   gpu->draw_mesh(&shared_column_mesh);

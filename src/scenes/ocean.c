@@ -18,13 +18,13 @@
 #include "clouds_texture.h"
 #include "cloud_cover_texture.h"
 #include "water_texture.h"
+#include "stars_texture.h"
 
 #include "turbine_frag.h"
 #include "solid_color_frag.h"
 #include "flat_texture_frag.h"
 #include "default_vert.h"
 #include "water_surface_frag.h"
-#include "normal_debug_frag.h"
 #include "sky_frag.h"
 
 // CONSTANTS
@@ -42,15 +42,9 @@ static const struct vec2 TURBINE_FIELD_ORIGIN_OFFSET = {
 };
 
 static const struct vec2 WIND_KM_PER_SEC = {
-  0.02f,
-  0.01f
+  -0.0075f,
+  -0.005f
 };
-
-// static const struct vec3 SUNLIGHT_DIRECTION = {
-//   0.707f,
-//   -0.707f,
-//   0
-// };
 
 static const struct vec3 SUNLIGHT_DIRECTION = {
   0.707f,
@@ -72,25 +66,52 @@ static float brightness(float r, float g, float b) {
 
 // LOCALS
 
+static struct drawable_mesh stars_quad_mesh = (struct drawable_mesh){
+  .vertices = (struct vertex[4]){
+    {{ 0, 0, 0 }, { 0, 1, 0 }, { 0, 0 }},
+    {{ 1, 0, 0 }, { 0, 1, 0 }, { 1, 0 }},
+    {{ 1, 1, 0 }, { 0, 1, 0 }, { 1, 1 }},
+    {{ 0, 1, 0 }, { 0, 1, 0 }, { 0, 1 }}
+  },
+  .indices = (unsigned int[6]){
+    0, 2, 1,
+    0, 3, 2
+  },
+  .vertices_size = sizeof(struct vertex) * 4,
+  .indices_size = sizeof(unsigned int) * 6,
+  .indices_length = 6
+};
+static struct transform stars_quad_transform = {
+  { 0, 0, 0 }, { 0, 20, 20 }, 100
+};
+static struct m4x4 stars_local_to_world;
+static struct m3x3 stars_normals_local_to_world;
+
+static struct shader sky_shader;
+static struct m4x4 sky_local_to_world;
+static struct m3x3 sky_normals_local_to_world;
+static struct transform sky_transform = {
+  { 0, 0, 0 }, { 0, 0, 0 }, 4.5f
+};
+
 static struct turbine turbines[TURBINE_X_COUNT * TURBINE_Z_COUNT];
 
 static struct shader mountain_shader;
 static struct m4x4 mountain_local_to_world;
 static struct m3x3 mountain_normals_local_to_world;
 static struct transform mountain_transform = (struct transform){
-  .position = { 8, -0.1f, -15},
-  .rotation_in_deg = { 0, -90, 0 },
-  .scale = 3
+  .position = { 14, -0.12f, -20 },
+  .rotation_in_deg = { 0, 330, 0 },
+  .scale = 5
 };
 
-static struct steam_column steam = (struct steam_column){
-  .position = { 2, -1, -12 },
+static struct steam_column steam0 = (struct steam_column){
+  .position = { 6, -1, -18 },
   .shape_index_offset = 5
 };
-
-static struct shader sky_shader;
-static struct transform sky_transform = {
-  {0, 0, 0}, {0, 0, 0}, 4.5f
+static struct steam_column steam1 = (struct steam_column){
+  .position = { -6, -1, -13 },
+  .shape_index_offset = 1
 };
 
 static struct camera cam;
@@ -105,7 +126,7 @@ void ocean__init(
   cam.look_target = (struct vec3){ 0, 0.2f, 0 };
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
-  cam.far_clip_distance = 30;
+  cam.far_clip_distance = 60;
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
@@ -113,13 +134,34 @@ void ocean__init(
   water__copy_assets_to_gpu(gpu);
 
   steam__shared_init_mesh_data();
-  steam__column_default(WIND_KM_PER_SEC, &steam);
+  steam__column_default(WIND_KM_PER_SEC, &steam0);
+  steam__column_default(WIND_KM_PER_SEC, &steam1);
   steam__copy_assets_to_gpu(gpu);
 
   sky_shader.frag_shader_src = sky_frag_src;
   sky_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&sky_shader);
   gpu->copy_static_mesh_to_gpu(&cage_mesh);
+  space__create_model(
+    &WORLDSPACE,
+    &sky_transform,
+    &sky_local_to_world
+  );
+  space__create_normals_model(
+    &sky_local_to_world,
+    &sky_normals_local_to_world
+  );
+
+  gpu->copy_static_mesh_to_gpu(&stars_quad_mesh);
+  space__create_model(
+    &WORLDSPACE,
+    &stars_quad_transform,
+    &stars_local_to_world
+  );
+  space__create_normals_model(
+    &stars_local_to_world,
+    &stars_normals_local_to_world
+  );
 
   mountain_shader.frag_shader_src = turbine_frag_src;
   mountain_shader.vert_shader_src = default_vert_src;
@@ -173,7 +215,7 @@ void ocean__tick(
 
   // static struct m4x4 camera_rotation;
   // m4x4__rotation(
-  //   deg_to_rad(delta_time * 5),
+  //   deg_to_rad(delta_time * 3),
   //   WORLDSPACE.up,
   //   &camera_rotation
   // );
@@ -183,6 +225,8 @@ void ocean__tick(
   // );
   // cam.position.y =
   //   0.1f * sin(seconds_since_creation * 0.02f) + 0.15f;
+  // camera__calculate_lookat(WORLDSPACE.up, &cam);
+  // camera__calculate_perspective(vwprt, &cam);
 
   static struct vec2 clouds_offset;
   clouds_offset.x = loop_float(
@@ -199,11 +243,8 @@ void ocean__tick(
     gpu
   );
 
-  steam__rise(
-    delta_time,
-    WIND_KM_PER_SEC,
-    &steam
-  );
+  steam__rise(delta_time, &steam0);
+  steam__rise(delta_time, &steam1);
 
   static struct vec2 relative_turbine_position;
   static struct vec2 normalized_sample_xy;
@@ -242,33 +283,22 @@ void ocean__tick(
 
   gpu->cull_back_faces();
 
-  static struct m4x4 sky_local_to_world;
-  static struct m3x3 sky_normals_local_to_world;
   gpu->select_shader(&sky_shader);
+  gpu->select_texture(&stars_texture);
   gpu->set_fragment_shader_vec3(
     &sky_shader,
     "night_color",
-    COLOR_SKY_BLUE
+    COLOR_EVENING_SUNLIGHT
   );
   gpu->set_fragment_shader_vec3(
     &sky_shader,
     "light_dir",
-    vec3__negate(SUNLIGHT_DIRECTION)
+    SUNLIGHT_DIRECTION
   );
   gpu->set_fragment_shader_vec3(
     &sky_shader,
     "light_color",
-    COLOR_MAGENTA_WHITE
-  );
-  // TODO: don't think I need all these for the sky sphere?
-  space__create_model(
-    &WORLDSPACE,
-    &sky_transform,
-    &sky_local_to_world
-  );
-  space__create_normals_model(
-    &sky_local_to_world,
-    &sky_normals_local_to_world
+    COLOR_SKY_BLUE
   );
   gpu__set_mvp(
     &sky_local_to_world,
@@ -277,15 +307,38 @@ void ocean__tick(
     &sky_shader,
     gpu
   );
-  gpu->draw_mesh(&cage_mesh);
+  // gpu->draw_mesh(&cage_mesh);
 
   gpu->clear_depth_buffer();
 
+  // gpu->select_shader(&FLAT_TEXTURE_SHADER);
+  gpu->select_shader(&SOLID_COLOR_SHADER);
+  // gpu->select_texture(&stars_texture);
+  gpu->set_fragment_shader_vec3(
+    &mountain_shader,
+    "color",
+    COLOR_NEON_PURPLE
+  );
+  gpu__set_mvp(
+    &stars_local_to_world,
+    &stars_normals_local_to_world,
+    &cam,
+    &FLAT_TEXTURE_SHADER,
+    gpu
+  );
+  gpu->draw_mesh(&stars_quad_mesh);
+
   gpu->select_shader(&mountain_shader);
+  gpu->select_texture(&clouds_texture);
   gpu->set_fragment_shader_vec3(
     &mountain_shader,
     "light_dir",
-    SUNLIGHT_DIRECTION
+    (struct vec3){ 1, 0, 0 }
+  );
+  gpu->set_fragment_shader_vec3(
+    &mountain_shader,
+    "light_color",
+    COLOR_GOLDEN_YELLOW
   );
   gpu->set_fragment_shader_vec3(
     &mountain_shader,
@@ -301,12 +354,12 @@ void ocean__tick(
   );
   gpu->draw_mesh(&mountain_mesh);
 
-  steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam);
+  // steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam0);
+  // steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam1);
 
   water__draw(
     SUNLIGHT_DIRECTION,
-    // COLOR_EVENING_SUNLIGHT,
-    COLOR_MAGENTA_WHITE,
+    COLOR_EVENING_SUNLIGHT,
     &cam,
     gpu
   );
@@ -316,7 +369,7 @@ void ocean__tick(
       &cam,
       gpu,
       SUNLIGHT_DIRECTION,
-      COLOR_MAGENTA_WHITE,
+      COLOR_EVENING_SUNLIGHT,
       &turbines[i]
     );
 
