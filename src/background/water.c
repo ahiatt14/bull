@@ -109,9 +109,8 @@ void water__update_waves(
 
   // UPDATE WAVE VERTEX DATA
 
-  // TODO: cache these?
-  int vert_index = 0;
-  float z_position = 0;
+  static int vert_index; vert_index = 0;
+  static float z_position; z_position = 0;
   for (int y = 0; y < VERTS_PER_SIDE; y++) {
     z_position = WAVE_AMPLITUDE * sin(
       seconds_since_creation + WAVE_FREQUENCY * y
@@ -125,12 +124,11 @@ void water__update_waves(
 
   // UPDATE WAVE NORMALS
 
-  // TODO: cache these?
   vert_index = 0;
-  struct vec3 x_edge = { 1, 0, 0 };
-  struct vec3 y_edges[2] = {0};
-  struct vec3 final_y_edge = {0};
-  struct vec3 normal = {0};
+  static struct vec3 x_edge;
+  static struct vec3 y_edges[2];
+  static struct vec3 final_y_edge;
+  static struct vec3 normal;
 
   for (int y = 0; y < VERTS_PER_SIDE; y++) {
 
