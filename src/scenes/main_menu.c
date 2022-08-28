@@ -10,9 +10,7 @@
 #include "pyramid_mesh.h"
 #include "smooth_cube_mesh.h"
 
-#include "flat_texture_frag.h"
 #include "default_vert.h"
-#include "solid_color_frag.h"
 
 #define SEC_UNTIL_ACTION 1.0f
 

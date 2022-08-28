@@ -10,7 +10,6 @@
 
 #include "bird_mesh.h"
 #include "default_vert.h"
-#include "solid_color_frag.h"
 
 // CONSTANTS
 
@@ -31,7 +30,7 @@ static uint8_t project_player_position(
 
 // LOCALS
 
-static struct shader shared_healthy_shader;
+// static struct shader shared_healthy_shader;
 
 // STATE STUFF
 
@@ -140,9 +139,6 @@ void (*player_effect_state_updates[PLAYER_EFFECT_STATE_COUNT])(
 void player__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
-  shared_healthy_shader.frag_shader_src = solid_color_frag_src;
-  shared_healthy_shader.vert_shader_src = default_vert_src;
-  gpu->copy_shader_to_gpu(&shared_healthy_shader);
   gpu->copy_static_mesh_to_gpu(&bird_mesh);
 }
 
@@ -178,9 +174,9 @@ void player__draw(
     &local_to_world,
     &normals_local_to_world
   );
-  gpu->select_shader(&shared_healthy_shader);
+  gpu->select_shader(&SOLID_COLOR_SHADER);
   gpu->set_fragment_shader_vec3(
-    &shared_healthy_shader,
+    &SOLID_COLOR_SHADER,
     "color",
     COLOR_WHITE
   );
@@ -188,7 +184,7 @@ void player__draw(
     &local_to_world,
     &normals_local_to_world,
     cam,
-    &shared_healthy_shader,
+    &SOLID_COLOR_SHADER,
     gpu
   );
   gpu->draw_mesh(&bird_mesh);

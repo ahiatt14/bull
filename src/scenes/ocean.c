@@ -21,8 +21,6 @@
 #include "stars_texture.h"
 
 #include "turbine_frag.h"
-#include "solid_color_frag.h"
-#include "flat_texture_frag.h"
 #include "default_vert.h"
 #include "water_surface_frag.h"
 #include "sky_frag.h"

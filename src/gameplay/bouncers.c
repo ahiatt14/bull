@@ -13,7 +13,6 @@
 #include "sphere_mesh.h"
 
 #include "bouncer_frag.h"
-#include "solid_color_frag.h"
 #include "default_vert.h"
 
 static struct shader shared_bouncer_shader;

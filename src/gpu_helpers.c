@@ -5,8 +5,6 @@
 #include "gpu_helpers.h"
 #include "constants.h"
 
-#include "solid_color_frag.h"
-
 // TODO: even worth it?
 void gpu__set_mvp(
   struct m4x4 const *const model,

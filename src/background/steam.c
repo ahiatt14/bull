@@ -11,7 +11,6 @@
 #include "bull_math.h"
 
 #include "default_vert.h"
-#include "solid_color_frag.h"
 #include "steam_frag.h"
 
 #include "core_frag.h"

@@ -11,9 +11,6 @@
 #include "core.h"
 #include "bouncers.h"
 
-#include "solid_color_frag.h"
-#include "default_vert.h"
-
 // CONSTANTS
 
 #define CORE_RADIUS 1
