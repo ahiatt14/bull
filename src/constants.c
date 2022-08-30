@@ -7,6 +7,22 @@ struct shader SOLID_COLOR_SHADER;
 struct shader NORMALS_COLOR_SHADER;
 struct shader NORMALS_VIS_SHADER;
 
+struct drawable_mesh QUAD = (struct drawable_mesh){
+  .vertices = (struct vertex[4]){
+    {{ 0, 0, 0 }, { 0, 1, 0 }, { 0, 0 }},
+    {{ 1, 0, 0 }, { 0, 1, 0 }, { 1, 0 }},
+    {{ 1, 1, 0 }, { 0, 1, 0 }, { 1, 1 }},
+    {{ 0, 1, 0 }, { 0, 1, 0 }, { 0, 1 }}
+  },
+  .indices = (unsigned int[6]){
+    0, 2, 1,
+    0, 3, 2
+  },
+  .vertices_size = sizeof(struct vertex) * 4,
+  .indices_size = sizeof(unsigned int) * 6,
+  .indices_length = 6
+};
+
 const struct vec3 COLOR_WHITE = { 1, 1, 1 };
 const struct vec3 COLOR_LIGHT_GREY = { 0.86f, 0.86f, 0.86f };
 const struct vec3 COLOR_BLACK = { 0, 0, 0 };
@@ -38,7 +54,7 @@ const struct vec3 COLOR_AQUA_BLUE = {
 };
 const struct vec3 COLOR_MAGENTA_WHITE = {
   .95f,
-  .9f,
+  .9f, 
   .93f
 };
 

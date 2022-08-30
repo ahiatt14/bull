@@ -64,21 +64,6 @@ static float brightness(float r, float g, float b) {
 
 // LOCALS
 
-static struct drawable_mesh stars_quad_mesh = (struct drawable_mesh){
-  .vertices = (struct vertex[4]){
-    {{ 0, 0, 0 }, { 0, 1, 0 }, { 0, 0 }},
-    {{ 1, 0, 0 }, { 0, 1, 0 }, { 1, 0 }},
-    {{ 1, 1, 0 }, { 0, 1, 0 }, { 1, 1 }},
-    {{ 0, 1, 0 }, { 0, 1, 0 }, { 0, 1 }}
-  },
-  .indices = (unsigned int[6]){
-    0, 2, 1,
-    0, 3, 2
-  },
-  .vertices_size = sizeof(struct vertex) * 4,
-  .indices_size = sizeof(unsigned int) * 6,
-  .indices_length = 6
-};
 static struct transform stars_quad_transform = {
   { 0, 0, 0 }, { 0, 20, 20 }, 100
 };
@@ -150,7 +135,6 @@ void ocean__init(
     &sky_normals_local_to_world
   );
 
-  gpu->copy_static_mesh_to_gpu(&stars_quad_mesh);
   space__create_model(
     &WORLDSPACE,
     &stars_quad_transform,
@@ -324,7 +308,7 @@ void ocean__tick(
     &FLAT_TEXTURE_SHADER,
     gpu
   );
-  gpu->draw_mesh(&stars_quad_mesh);
+  gpu->draw_mesh(&QUAD);
 
   gpu->select_shader(&mountain_shader);
   gpu->select_texture(&clouds_texture);

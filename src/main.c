@@ -13,7 +13,7 @@
 #include "default_vert.h"
 
 #define ASPECT_RATIO (4.0f / 3.0f)
-#define WINDOW_HEIGHT 900
+#define WINDOW_HEIGHT_IN_SCREEN_COORD 900
 
 #define SCENE_COUNT 4
 
@@ -26,6 +26,8 @@ static struct gamepad_input gamepad;
 static uint8_t paused = 0;
 void pause() { paused = 1; }
 void unpause() { paused = 0; }
+
+void copy_shared_assets_to_gpu();
 
 void handle_resize(uint16_t framebuffer_width, uint16_t framebuffer_height) {
   // TODO: I think there's a converstion out there for going from
@@ -77,8 +79,8 @@ void switch_scene(uint8_t new_scene) {
 int main() {
 
   if (!window__create(
-    WINDOW_HEIGHT * ASPECT_RATIO,
-    WINDOW_HEIGHT,
+    WINDOW_HEIGHT_IN_SCREEN_COORD * ASPECT_RATIO,
+    WINDOW_HEIGHT_IN_SCREEN_COORD,
     50,
     50,
     "Greathawk",
@@ -91,22 +93,7 @@ int main() {
 
   gpu.enable_MSAA();
 
-  FLAT_TEXTURE_SHADER.frag_shader_src = flat_texture_frag_src;
-  FLAT_TEXTURE_SHADER.vert_shader_src = default_vert_src;
-  gpu.copy_shader_to_gpu(&FLAT_TEXTURE_SHADER);
-
-  SOLID_COLOR_SHADER.frag_shader_src = solid_color_frag_src;
-  SOLID_COLOR_SHADER.vert_shader_src = default_vert_src;
-  gpu.copy_shader_to_gpu(&SOLID_COLOR_SHADER);
-
-  NORMALS_COLOR_SHADER.frag_shader_src = normal_debug_frag_src;
-  NORMALS_COLOR_SHADER.vert_shader_src = default_vert_src;
-  gpu.copy_shader_to_gpu(&NORMALS_COLOR_SHADER);
-
-  NORMALS_VIS_SHADER.frag_shader_src = solid_color_frag_src;
-  NORMALS_VIS_SHADER.geo_shader_src = normal_debug_geo_src;
-  NORMALS_VIS_SHADER.vert_shader_src = normal_debug_vert_src;
-  gpu.copy_shader_to_gpu(&NORMALS_VIS_SHADER);
+  copy_shared_assets_to_gpu();
 
   window.on_focus_and_unfocus(unpause, pause);
   window.on_minimize_and_restore(pause, unpause);
@@ -141,10 +128,14 @@ int main() {
 
   for (int i = 0; i < SCENE_COUNT; i++)
     scenes[i]->init(&window, &vwprt, &gpu);
+
+  // TODO: temp for testing
   // scenes[SCENE__OCEAN]->init(&window, &vwprt, &gpu);
 
   current_scene = SCENE__MAIN_MENU;
   previous_scene = SCENE__MAIN_MENU;
+
+  // TODO: temp for testing
   // current_scene = SCENE__OCEAN;
   // previous_scene = SCENE__OCEAN;
 
@@ -162,7 +153,7 @@ int main() {
       window.get_gamepad_input(&gamepad);
 
       // TODO: ultimately don't like this fn's API.
-      // should be passing in the gamepad struct smh
+      // should be passing in the gamepad struct
       if (button_was_released(
         BUTTON_SELECT,
         gamepad.buttons,
@@ -192,4 +183,26 @@ int main() {
   
   window.end();
   return 0;
+}
+
+void copy_shared_assets_to_gpu() {
+
+  FLAT_TEXTURE_SHADER.frag_shader_src = flat_texture_frag_src;
+  FLAT_TEXTURE_SHADER.vert_shader_src = default_vert_src;
+  gpu.copy_shader_to_gpu(&FLAT_TEXTURE_SHADER);
+
+  SOLID_COLOR_SHADER.frag_shader_src = solid_color_frag_src;
+  SOLID_COLOR_SHADER.vert_shader_src = default_vert_src;
+  gpu.copy_shader_to_gpu(&SOLID_COLOR_SHADER);
+
+  NORMALS_COLOR_SHADER.frag_shader_src = normal_debug_frag_src;
+  NORMALS_COLOR_SHADER.vert_shader_src = default_vert_src;
+  gpu.copy_shader_to_gpu(&NORMALS_COLOR_SHADER);
+
+  NORMALS_VIS_SHADER.frag_shader_src = solid_color_frag_src;
+  NORMALS_VIS_SHADER.geo_shader_src = normal_debug_geo_src;
+  NORMALS_VIS_SHADER.vert_shader_src = normal_debug_vert_src;
+  gpu.copy_shader_to_gpu(&NORMALS_VIS_SHADER);
+
+  gpu.copy_static_mesh_to_gpu(&QUAD);
 }
