@@ -105,7 +105,6 @@ void main_menu__tick(
   // menu_sky__tick(delta_time, seconds_since_creation, gpu);
 
   // DRAW
-  gpu->clear(&COLOR_LIGHT_GREY);
 
   // menu_sky__draw(
   //   gpu,
@@ -113,45 +112,51 @@ void main_menu__tick(
   // );
   // gpu->clear_depth_buffer();
 
-  static struct m4x4 shared_local_to_world;
-  static struct m3x3 shared_normals_local_to_world;
+  // static struct m4x4 shared_local_to_world;
+  // static struct m3x3 shared_normals_local_to_world;
 
+  // gpu->select_shader(&FLAT_TEXTURE_SHADER);
+  // gpu->select_texture(&clouds_texture);
+  // space__create_model(
+  //   &WORLDSPACE,
+  //   &pyramid_transform,
+  //   &shared_local_to_world
+  // );
+  // space__create_normals_model(
+  //   &shared_local_to_world,
+  //   &shared_normals_local_to_world
+  // );
+  // gpu__set_mvp(
+  //   &shared_local_to_world,
+  //   &shared_normals_local_to_world,
+  //   &foreground_camera,
+  //   &FLAT_TEXTURE_SHADER,
+  //   gpu
+  // );
+  // gpu->draw_mesh(&pyramid_mesh);
+
+  gpu->cull_back_faces();
   gpu->select_shader(&FLAT_TEXTURE_SHADER);
   gpu->select_texture(&clouds_texture);
-  space__create_model(
-    &WORLDSPACE,
-    &pyramid_transform,
-    &shared_local_to_world
-  );
-  space__create_normals_model(
-    &shared_local_to_world,
-    &shared_normals_local_to_world
-  );
-  gpu__set_mvp(
-    &shared_local_to_world,
-    &shared_normals_local_to_world,
-    &foreground_camera,
-    &FLAT_TEXTURE_SHADER,
-    gpu
-  );
-  gpu->draw_mesh(&pyramid_mesh);
+  gpu->draw_mesh(&QUAD);
+  gpu->cull_back_faces();
 
-  gpu->select_shader(&NORMALS_COLOR_SHADER);
-  space__create_model(
-    &WORLDSPACE,
-    &smooth_cube_transform,
-    &shared_local_to_world
-  );
-  space__create_normals_model(
-    &shared_local_to_world,
-    &shared_normals_local_to_world
-  );
-  gpu__set_mvp(
-    &shared_local_to_world,
-    &shared_normals_local_to_world,
-    &foreground_camera,
-    &NORMALS_COLOR_SHADER,
-    gpu
-  );
-  gpu->draw_mesh(&smooth_cube_mesh);
+  // gpu->select_shader(&NORMALS_COLOR_SHADER);
+  // space__create_model(
+  //   &WORLDSPACE,
+  //   &smooth_cube_transform,
+  //   &shared_local_to_world
+  // );
+  // space__create_normals_model(
+  //   &shared_local_to_world,
+  //   &shared_normals_local_to_world
+  // );
+  // gpu__set_mvp(
+  //   &shared_local_to_world,
+  //   &shared_normals_local_to_world,
+  //   &foreground_camera,
+  //   &NORMALS_COLOR_SHADER,
+  //   gpu
+  // );
+  // gpu->draw_mesh(&smooth_cube_mesh);
 }

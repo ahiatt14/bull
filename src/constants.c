@@ -9,14 +9,14 @@ struct shader NORMALS_VIS_SHADER;
 
 struct drawable_mesh QUAD = (struct drawable_mesh){
   .vertices = (struct vertex[4]){
-    {{ 0, 0, 0 }, { 0, 1, 0 }, { 0, 0 }},
-    {{ 1, 0, 0 }, { 0, 1, 0 }, { 1, 0 }},
+    {{ -1, -1, 0 }, { 0, 1, 0 }, { 0, 0 }},
+    {{ 1, -1, 0 }, { 0, 1, 0 }, { 1, 0 }},
     {{ 1, 1, 0 }, { 0, 1, 0 }, { 1, 1 }},
-    {{ 0, 1, 0 }, { 0, 1, 0 }, { 0, 1 }}
+    {{ -1, 1, 0 }, { 0, 1, 0 }, { 0, 1 }}
   },
   .indices = (unsigned int[6]){
-    0, 2, 1,
-    0, 3, 2
+    0, 1, 2,
+    0, 2, 3
   },
   .vertices_size = sizeof(struct vertex) * 4,
   .indices_size = sizeof(unsigned int) * 6,
