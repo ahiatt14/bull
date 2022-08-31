@@ -7,6 +7,8 @@
 #include "constants.h"
 
 #include "clouds_texture.h"
+#include "stars_texture.h"
+
 #include "pyramid_mesh.h"
 #include "smooth_cube_mesh.h"
 
@@ -46,7 +48,9 @@ void main_menu__init(
   camera__calculate_lookat(WORLDSPACE.up, &background_camera);
   camera__calculate_perspective(vwprt, &background_camera);
 
-  gpu->copy_rgb_texture_to_gpu(&clouds_texture);
+  gpu->copy_texture_to_gpu(&clouds_texture);
+  gpu->copy_texture_to_gpu(&stars_texture);
+
   gpu->copy_static_mesh_to_gpu(&pyramid_mesh);
 
   gpu->copy_static_mesh_to_gpu(&smooth_cube_mesh);
@@ -137,7 +141,8 @@ void main_menu__tick(
 
   gpu->cull_back_faces();
   gpu->select_shader(&FLAT_TEXTURE_SHADER);
-  gpu->select_texture(&clouds_texture);
+  gpu->select_texture(&stars_texture);
+  // gpu->select_texture(&clouds_texture);
   gpu->draw_mesh(&QUAD);
   gpu->cull_back_faces();
 

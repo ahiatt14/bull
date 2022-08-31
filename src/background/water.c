@@ -96,8 +96,8 @@ void water__copy_assets_to_gpu(
   surface_shader.frag_shader_src = water_surface_frag_src;
   gpu->copy_dynamic_mesh_to_gpu(&mesh);
   gpu->copy_shader_to_gpu(&surface_shader);
-  gpu->copy_rgb_texture_to_gpu(&water_texture);
-  gpu->copy_rgb_texture_to_gpu(&cloud_cover_texture);
+  gpu->copy_texture_to_gpu(&water_texture);
+  gpu->copy_texture_to_gpu(&cloud_cover_texture);
 }
 
 void water__update_waves(
