@@ -9,6 +9,7 @@
 #include "normal_debug_frag.h"
 #include "normal_debug_vert.h"
 #include "flat_texture_frag.h"
+#include "alpha_texture_frag.h"
 #include "solid_color_frag.h"
 #include "default_vert.h"
 
@@ -92,6 +93,7 @@ int main() {
   gpu__create_api(&gpu);
 
   gpu.enable_MSAA();
+  gpu.enable_blending();
 
   copy_shared_assets_to_gpu();
 
@@ -190,6 +192,10 @@ void copy_shared_assets_to_gpu() {
   FLAT_TEXTURE_SHADER.frag_shader_src = flat_texture_frag_src;
   FLAT_TEXTURE_SHADER.vert_shader_src = default_vert_src;
   gpu.copy_shader_to_gpu(&FLAT_TEXTURE_SHADER);
+
+  ALPHA_TEXTURE_SHADER.frag_shader_src = alpha_texture_frag_src;
+  ALPHA_TEXTURE_SHADER.vert_shader_src = default_vert_src;
+  gpu.copy_shader_to_gpu(&ALPHA_TEXTURE_SHADER);
 
   SOLID_COLOR_SHADER.frag_shader_src = solid_color_frag_src;
   SOLID_COLOR_SHADER.vert_shader_src = default_vert_src;

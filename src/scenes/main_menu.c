@@ -14,7 +14,7 @@
 
 #include "default_vert.h"
 
-#define SEC_UNTIL_ACTION 1.0f
+#define SEC_UNTIL_ACTION 10.0f
 
 static struct camera foreground_camera;
 static struct camera background_camera;
@@ -110,6 +110,8 @@ void main_menu__tick(
 
   // DRAW
 
+  gpu->cull_back_faces();
+
   // menu_sky__draw(
   //   gpu,
   //   &background_camera
@@ -139,12 +141,13 @@ void main_menu__tick(
   // );
   // gpu->draw_mesh(&pyramid_mesh);
 
-  gpu->cull_back_faces();
-  gpu->select_shader(&FLAT_TEXTURE_SHADER);
+  gpu->select_shader(&ALPHA_TEXTURE_SHADER);
   gpu->select_texture(&stars_texture);
-  // gpu->select_texture(&clouds_texture);
   gpu->draw_mesh(&QUAD);
-  gpu->cull_back_faces();
+
+  gpu->select_shader(&FLAT_TEXTURE_SHADER);
+  gpu->select_texture(&clouds_texture);
+  gpu->draw_mesh(&QUAD);
 
   // gpu->select_shader(&NORMALS_COLOR_SHADER);
   // space__create_model(

@@ -20,7 +20,8 @@ rm -rf game.exe
 ./${tools}validate-glsl.exe assets/glsl/steam_frag.glsl frag && \
 ./${tools}validate-glsl.exe assets/glsl/normal_debug_frag.glsl frag && \
 ./${tools}validate-glsl.exe assets/glsl/normal_debug_vert.glsl vert && \
-./${tools}validate-glsl.exe assets/glsl/normal_debug_geo.glsl geo \
+./${tools}validate-glsl.exe assets/glsl/normal_debug_geo.glsl geo && \
+./${tools}validate-glsl.exe assets/glsl/alpha_texture_frag.glsl frag \
 && \
 ./${tools}sourcify-glsl.exe assets/glsl/flat_texture_frag.glsl src/headers/ src/ && \
 ./${tools}sourcify-glsl.exe assets/glsl/solid_color_frag.glsl src/headers/ src/ && \
@@ -33,7 +34,8 @@ rm -rf game.exe
 ./${tools}sourcify-glsl.exe assets/glsl/steam_frag.glsl src/headers/ src/ && \
 ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_frag.glsl src/headers/ src/ && \
 ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_vert.glsl src/headers/ src/ && \
-./${tools}sourcify-glsl.exe assets/glsl/normal_debug_geo.glsl src/headers/ src/ \
+./${tools}sourcify-glsl.exe assets/glsl/normal_debug_geo.glsl src/headers/ src/ && \
+./${tools}sourcify-glsl.exe assets/glsl/alpha_texture_frag.glsl src/headers/ src/ \
 && \
 ./${tools}sourcify-png.exe assets/png/clouds.png 3 src/headers/clouds_texture.h src/clouds_texture.c && \
 ./${tools}sourcify-png.exe assets/png/water.png 3 src/headers/water_texture.h src/water_texture.c && \
@@ -116,6 +118,7 @@ rm -f src/headers/bouncer_frag.h
 rm -f src/headers/steam_frag.h
 rm -f src/headers/normal_debug_geo.h
 rm -f src/headers/normal_debug_vert.h
+rm -f src/headers/alpha_texture_frag.h
 
 rm -f src/solid_color_frag.c
 rm -f src/normal_debug_frag.c
@@ -130,3 +133,4 @@ rm -f src/bouncer_frag.c
 rm -f src/steam_frag.c
 rm -f src/normal_debug_geo.c
 rm -f src/normal_debug_vert.c
+rm -f src/alpha_texture_frag.c
