@@ -14,7 +14,7 @@
 
 #include "default_vert.h"
 
-#define SEC_UNTIL_ACTION 10.0f
+#define SEC_UNTIL_ACTION 2.0f
 
 static struct camera foreground_camera;
 static struct camera background_camera;

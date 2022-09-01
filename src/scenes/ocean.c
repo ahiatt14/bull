@@ -65,7 +65,7 @@ static float brightness(float r, float g, float b) {
 // LOCALS
 
 static struct transform stars_quad_transform = {
-  { 0, 0, 0 }, { 0, 20, 20 }, 100
+  { -2, 2, 0 }, { 0, 0, 0 }, 1
 };
 static struct m4x4 stars_local_to_world;
 static struct m3x3 stars_normals_local_to_world;
@@ -270,17 +270,17 @@ void ocean__tick(
   gpu->set_fragment_shader_vec3(
     &sky_shader,
     "night_color",
-    COLOR_EVENING_SUNLIGHT
+    COLOR_LIGHT_GREY
   );
   gpu->set_fragment_shader_vec3(
     &sky_shader,
     "light_dir",
-    SUNLIGHT_DIRECTION
+    vec3__negate(SUNLIGHT_DIRECTION)
   );
   gpu->set_fragment_shader_vec3(
     &sky_shader,
     "light_color",
-    COLOR_SKY_BLUE
+    COLOR_WHITE
   );
   gpu__set_mvp(
     &sky_local_to_world,
@@ -289,26 +289,20 @@ void ocean__tick(
     &sky_shader,
     gpu
   );
-  // gpu->draw_mesh(&cage_mesh);
+  gpu->draw_mesh(&cage_mesh);
 
-  gpu->clear_depth_buffer();
-
-  // gpu->select_shader(&FLAT_TEXTURE_SHADER);
-  gpu->select_shader(&SOLID_COLOR_SHADER);
-  // gpu->select_texture(&stars_texture);
-  gpu->set_fragment_shader_vec3(
-    &mountain_shader,
-    "color",
-    COLOR_NEON_PURPLE
-  );
+  gpu->select_shader(&ALPHA_TEXTURE_SHADER);
+  gpu->select_texture(&stars_texture);
   gpu__set_mvp(
     &stars_local_to_world,
     &stars_normals_local_to_world,
     &cam,
-    &FLAT_TEXTURE_SHADER,
+    &ALPHA_TEXTURE_SHADER,
     gpu
   );
   gpu->draw_mesh(&QUAD);
+
+  gpu->clear_depth_buffer();
 
   gpu->select_shader(&mountain_shader);
   gpu->select_texture(&clouds_texture);
@@ -325,7 +319,7 @@ void ocean__tick(
   gpu->set_fragment_shader_vec3(
     &mountain_shader,
     "color",
-    COLOR_BLACK
+    COLOR_DEEP_FOREST_GREEN
   );
   gpu__set_mvp(
     &mountain_local_to_world,
@@ -336,8 +330,8 @@ void ocean__tick(
   );
   gpu->draw_mesh(&mountain_mesh);
 
-  // steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam0);
-  // steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam1);
+  steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam0);
+  steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam1);
 
   water__draw(
     SUNLIGHT_DIRECTION,

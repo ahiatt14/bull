@@ -32,6 +32,7 @@ struct gpu_api {
   void (*clear_depth_buffer)();
   void (*enable_depth_test)();
   void (*enable_blending)();
+  void (*set_default_blending)();
   void (*disable_MSAA)();
   void (*enable_MSAA)();
 

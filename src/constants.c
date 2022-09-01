@@ -58,6 +58,11 @@ const struct vec3 COLOR_MAGENTA_WHITE = {
   .9f, 
   .93f
 };
+const struct vec3 COLOR_DEEP_FOREST_GREEN = {
+  31.0f / 255.0f,
+  61.0f / 255.0f,
+  12.0f / 255.0f
+};
 
 const struct vec3 ORIGIN = { 0, 0, 0 };
 const struct coordinate_space WORLDSPACE = {

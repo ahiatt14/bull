@@ -272,7 +272,7 @@ void steam__draw_column(
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
     "top_color",
-    COLOR_NEON_PURPLE
+    COLOR_WHITE
   );
   gpu->set_fragment_shader_float(
     &shared_steam_shader,

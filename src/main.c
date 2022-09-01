@@ -94,6 +94,7 @@ int main() {
 
   gpu.enable_MSAA();
   gpu.enable_blending();
+  gpu.set_default_blending();
 
   copy_shared_assets_to_gpu();
 
