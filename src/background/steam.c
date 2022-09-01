@@ -272,13 +272,18 @@ void steam__draw_column(
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
     "top_color",
-    COLOR_WHITE
+    COLOR_EVENING_SUNLIGHT
   );
   gpu->set_fragment_shader_float(
     &shared_steam_shader,
     "max_altitude",
     (LVL_HEIGHT * STEAM__LVL_COUNT) / 2.0f
   );
+  // gpu->set_fragment_shader_vec3(
+  //   &sky_shader,
+  //   "water_reflect_color",
+  //   COLOR_AQUA_BLUE
+  // );
   m4x4__translation(&column->position, &local_to_world);
   space__create_normals_model(&local_to_world, &normals_local_to_world);
   gpu__set_mvp(

@@ -145,6 +145,8 @@ void ocean__init(
     &stars_normals_local_to_world
   );
 
+  gpu->copy_texture_to_gpu(&stars_texture);
+
   mountain_shader.frag_shader_src = turbine_frag_src;
   mountain_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&mountain_shader);
@@ -266,11 +268,10 @@ void ocean__tick(
   gpu->cull_back_faces();
 
   gpu->select_shader(&sky_shader);
-  gpu->select_texture(&stars_texture);
   gpu->set_fragment_shader_vec3(
     &sky_shader,
     "night_color",
-    COLOR_LIGHT_GREY
+    COLOR_AQUA_BLUE
   );
   gpu->set_fragment_shader_vec3(
     &sky_shader,
@@ -280,7 +281,7 @@ void ocean__tick(
   gpu->set_fragment_shader_vec3(
     &sky_shader,
     "light_color",
-    COLOR_WHITE
+    COLOR_EVENING_SUNLIGHT
   );
   gpu__set_mvp(
     &sky_local_to_world,
