@@ -83,17 +83,17 @@ static struct shader mountain_shader;
 static struct m4x4 mountain_local_to_world;
 static struct m3x3 mountain_normals_local_to_world;
 static struct transform mountain_transform = (struct transform){
-  .position = { 14, -0.12f, -20 },
+  .position = { 13, -0.12f, -18 },
   .rotation_in_deg = { 0, 330, 0 },
   .scale = 5
 };
 
 static struct steam_column steam0 = (struct steam_column){
-  .position = { 6, -1, -18 },
+  .position = { 3, -1, -18 },
   .shape_index_offset = 5
 };
 static struct steam_column steam1 = (struct steam_column){
-  .position = { -6, -1, -13 },
+  .position = { -7, -1, -11 },
   .shape_index_offset = 1
 };
 
@@ -276,7 +276,7 @@ void ocean__tick(
   gpu->set_fragment_shader_vec3(
     &sky_shader,
     "light_dir",
-    vec3__negate(SUNLIGHT_DIRECTION)
+    SUNLIGHT_DIRECTION
   );
   gpu->set_fragment_shader_vec3(
     &sky_shader,
@@ -336,7 +336,7 @@ void ocean__tick(
 
   water__draw(
     SUNLIGHT_DIRECTION,
-    COLOR_EVENING_SUNLIGHT,
+    COLOR_AQUA_BLUE,
     &cam,
     gpu
   );
