@@ -27,16 +27,14 @@ build_src() {
   src/gameplay/*.c \
   src/background/*.c \
   libs/tail/static/tail.a
-
-  rm -rf ${artifact_dir}
 }
 
 build_assets() {
 
   rm -rf ${artifact_dir}
   mkdir ${artifact_dir}
-  rm -rf obj
-  mkdir obj
+  # rm -rf obj
+  # mkdir obj
 
   # TODO: this ain't sustainable!
   ./${tools}validate-glsl.exe assets/glsl/default_vert.glsl vert && \
