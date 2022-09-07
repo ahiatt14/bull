@@ -65,10 +65,10 @@ void water__init_mesh_data() {
         ORIGIN_OFFSET.y + y * FACE_WIDE_KM_LENGTH;
       mesh.vertices[vert_index].uv.x = x *
         FACE_WIDE_KM_LENGTH / (FACE_WIDE_KM_LENGTH *
-        VERTS_PER_SIDE);
+        VERTS_PER_SIDE * 0.1f);
       mesh.vertices[vert_index].uv.y = y *
         FACE_WIDE_KM_LENGTH / (FACE_WIDE_KM_LENGTH *
-        VERTS_PER_SIDE);
+        VERTS_PER_SIDE * 0.1f);
       vert_index++;
     }
   }
