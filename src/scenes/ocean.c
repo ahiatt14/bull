@@ -41,7 +41,7 @@ static const struct vec2 TURBINE_FIELD_ORIGIN_OFFSET = {
 
 static const struct vec2 WIND_KM_PER_SEC = {
   -0.0075f,
-  -0.005f
+  -0.01f
 };
 
 static const struct vec3 SUNLIGHT_DIRECTION = {
@@ -93,11 +93,7 @@ static struct steam_column steam0 = (struct steam_column){
   .shape_index_offset = 5
 };
 static struct steam_column steam1 = (struct steam_column){
-  .position = { -10, -1, -15 },
-  .shape_index_offset = 1
-};
-static struct steam_column steam2 = (struct steam_column){
-  .position = { -4, -1, -20 },
+  .position = { -4, -1, -28 },
   .shape_index_offset = 10
 };
 
@@ -121,9 +117,8 @@ void ocean__init(
   water__copy_assets_to_gpu(gpu);
 
   steam__shared_init_mesh_data();
-  steam__column_default(WIND_KM_PER_SEC, &steam0);
-  steam__column_default(WIND_KM_PER_SEC, &steam1);
-  steam__column_default(WIND_KM_PER_SEC, &steam2);
+  steam__column_default(&steam0);
+  steam__column_default(&steam1);
   steam__copy_assets_to_gpu(gpu);
 
   sky_shader.frag_shader_src = sky_frag_src;
@@ -234,7 +229,6 @@ void ocean__tick(
 
   steam__rise(delta_time, &steam0);
   steam__rise(delta_time, &steam1);
-  steam__rise(delta_time, &steam2);
 
   static struct vec2 relative_turbine_position;
   static struct vec2 normalized_sample_xy;
@@ -326,7 +320,7 @@ void ocean__tick(
   gpu->set_fragment_shader_vec3(
     &mountain_shader,
     "color",
-    COLOR_DEEP_FOREST_GREEN
+    COLOR_BLACK
   );
   gpu__set_mvp(
     &mountain_local_to_world,
@@ -337,25 +331,24 @@ void ocean__tick(
   );
   gpu->draw_mesh(&mountain_mesh);
 
-  steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam0);
-  steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam1);
-  steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam2);
+  steam__draw_column(&cam, gpu, &steam0);
+  steam__draw_column(&cam, gpu, &steam1);
 
   water__draw(
     SUNLIGHT_DIRECTION,
-    COLOR_AQUA_BLUE,
+    COLOR_GOLDEN_YELLOW,
     &cam,
     gpu
   );
 
-  for (int i = 0; i < TURBINE_X_COUNT * TURBINE_Z_COUNT; i++)
-    turbine__draw(
-      &cam,
-      gpu,
-      SUNLIGHT_DIRECTION,
-      COLOR_EVENING_SUNLIGHT,
-      &turbines[i]
-    );
+  // for (int i = 0; i < TURBINE_X_COUNT * TURBINE_Z_COUNT; i++)
+  //   turbine__draw(
+  //     &cam,
+  //     gpu,
+  //     SUNLIGHT_DIRECTION,
+  //     COLOR_EVENING_SUNLIGHT,
+  //     &turbines[i]
+  //   );
 
   gpu->cull_back_faces();
 }

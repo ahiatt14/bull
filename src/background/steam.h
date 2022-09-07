@@ -17,7 +17,6 @@ void steam__copy_assets_to_gpu(
 );
 
 void steam__column_default(
-  struct vec2 wind_km_per_sec,
   struct steam_column *const column
 );
 
@@ -29,7 +28,6 @@ void steam__rise(
 void steam__draw_column(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
-  struct vec3 light_direction,
   struct steam_column *const column
 );
 

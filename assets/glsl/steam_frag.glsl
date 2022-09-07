@@ -18,24 +18,6 @@ uniform vec3 light_color = vec3(
   1
 );
 
-uniform vec3 top_color = vec3(
-  1,
-  1,
-  1
-);
-
-uniform vec3 water_reflect_color = vec3(
-  1,
-  0,
-  0
-);
-
-const vec3 water_reflect_direction = vec3(
-  0,
-  -1,
-  0
-);
-
 uniform float max_altitude = 1;
 float normalized_altitude;
 
@@ -53,15 +35,14 @@ void main() {
 
   vec3 diffuse =
     light_color *
-    max(dot(fs_in.normal, -light_dir), 0) +
-    water_reflect_color *
-    max(dot(fs_in.normal, water_reflect_direction), 0) * 0.2f;
+    max(dot(fs_in.normal, -light_dir), 0);
 
-  vec3 mixed =
-    mix(color + diffuse, top_color, normalized_altitude);
+  vec3 mixed = color + diffuse;
+  
+  float surface_alpha = 1 - normalized_altitude;
 
   FragColor = vec4(
     mixed,
-    1
+    surface_alpha
   );
 }

@@ -16,7 +16,7 @@
 #include "core_frag.h"
 #include "turbine_frag.h"
 
-#define BOUYANCY 0.7f
+#define BOUYANCY 2
 #define VERTS_PER_LVL 12
 #define LVL_HEIGHT 0.7f
 #define MIN_RING_RADII 0.01f
@@ -47,7 +47,6 @@ void steam__copy_assets_to_gpu(
 }
 
 void steam__column_default(
-  struct vec2 wind_km_per_sec,
   struct steam_column *const column
 ) {
   for (int lvl = 0; lvl < STEAM__LVL_COUNT; lvl++) {
@@ -188,17 +187,11 @@ static void calculate_column_normals(
 
       static uint_fast16_t acc_vi;
       acc_vi = lvl_starting_vi + vi;
-
-      // static struct vec3 normals[2];
-
-      // TODO: fix meee :'(
-      // normals[0] = calculate_face_normal(vert_i_to_face_i(acc_vi));
-      // normals[1] = calculate_face_normal(vert_i_to_face_i(
-      //   wrap_lvl_vi_cw(lvl, acc_vi - 1)
-      // ));
       
       shared_column_mesh.vertices[acc_vi].normal =
         calculate_face_normal(vert_i_to_face_i(acc_vi));
+        // TODO: defo the most expensive thing we're doing for the background
+        // may want to profile
     }
   }
 }
@@ -220,8 +213,7 @@ void steam__rise(
         (column->shape_index_offset + lvl) %
         STEAM__LVL_COUNT
       ] *
-      lvl * delta_time * 0.04;
-
+      lvl * lvl * delta_time * 0.01f;
 
     column->ring_offsets[lvl].y += BOUYANCY * delta_time * 0.2f;
     column->ring_offsets[lvl].x += lvl * 0.05f * delta_time;
@@ -247,7 +239,6 @@ void steam__rise(
 void steam__draw_column(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
-  struct vec3 sunlight_direction,
   struct steam_column *const column
 ) {
   static struct m4x4 local_to_world;
@@ -266,8 +257,8 @@ void steam__draw_column(
   gpu->select_shader(&shared_steam_shader);
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
-    "lighdt_dir",
-    sunlight_direction
+    "light_dir",
+    vec3__normalize((struct vec3){ 1.0f, 0, -0.5f })
   );
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
@@ -279,11 +270,6 @@ void steam__draw_column(
     "max_altitude",
     (LVL_HEIGHT * STEAM__LVL_COUNT) / 2.0f
   );
-  gpu->set_fragment_shader_vec3(
-    &shared_steam_shader,
-    "water_reflect_color",
-    COLOR_AQUA_BLUE
-  );
   m4x4__translation(&column->position, &local_to_world);
   space__create_normals_model(&local_to_world, &normals_local_to_world);
   gpu__set_mvp(
@@ -294,19 +280,4 @@ void steam__draw_column(
     gpu
   );
   gpu->draw_mesh(&shared_column_mesh);
-
-  // gpu->select_shader(&NORMALS_VIS_SHADER);
-  // gpu->set_fragment_shader_vec3(
-  //   &NORMALS_VIS_SHADER,
-  //   "color",
-  //   COLOR_NEON_PURPLE
-  // );
-  // gpu__set_mvp(
-  //   &local_to_world,
-  //   &normals_local_to_world,
-  //   cam,
-  //   &NORMALS_VIS_SHADER,
-  //   gpu
-  // );
-  // gpu->draw_mesh(&shared_column_mesh);
 }
