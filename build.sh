@@ -67,10 +67,10 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/alpha_texture_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/mountain_frag.glsl ${artifact_dir} \
   && \
-  ./${tools}sourcify-png.exe assets/png/clouds.png 3 ${artifact_dir} && \
   ./${tools}sourcify-png.exe assets/png/water.png 4 ${artifact_dir} && \
   ./${tools}sourcify-png.exe assets/png/cloud_cover.png 3 ${artifact_dir} && \
-  ./${tools}sourcify-png.exe assets/png/stars.png 4 ${artifact_dir} \
+  ./${tools}sourcify-png.exe assets/png/stars.png 4 ${artifact_dir} && \
+  ./${tools}sourcify-png.exe assets/png/steam.png 4 ${artifact_dir} \
   && \
   ./${tools}sourcify-obj.exe assets/mesh/burdock.obj smooth ${artifact_dir} && \
   ./${tools}sourcify-obj.exe assets/mesh/pyramid.obj flat ${artifact_dir} && \

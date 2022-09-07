@@ -29,5 +29,8 @@ void main()
     texture(cloud_cover, fs_in.tex_uv).rgb;
   float albedo = max(dot(fs_in.normal, -light_dir), 0) + 0.1;
   
-  FragColor = vec4(material * (1 - diffuse), 1);
+  FragColor = vec4(
+    material * (1 - diffuse),
+    1
+  );
 }

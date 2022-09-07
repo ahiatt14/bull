@@ -15,7 +15,6 @@
 #include "cage_mesh.h"
 #include "mountain_mesh.h"
 
-#include "clouds_texture.h"
 #include "cloud_cover_texture.h"
 #include "water_texture.h"
 #include "stars_texture.h"
@@ -306,7 +305,6 @@ void ocean__tick(
   gpu->clear_depth_buffer();
 
   gpu->select_shader(&mountain_shader);
-  gpu->select_texture(&clouds_texture);
   gpu->set_fragment_shader_vec3(
     &mountain_shader,
     "light_dir",

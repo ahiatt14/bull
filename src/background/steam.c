@@ -10,13 +10,15 @@
 #include "constants.h"
 #include "bull_math.h"
 
+#include "steam_texture.h"
+
 #include "default_vert.h"
 #include "steam_frag.h"
 
 #include "core_frag.h"
 #include "turbine_frag.h"
 
-#define BOUYANCY 2
+#define BOUYANCY 1.5f
 #define VERTS_PER_LVL 12
 #define LVL_HEIGHT 0.7f
 #define MIN_RING_RADII 0.01f
@@ -42,6 +44,8 @@ void steam__copy_assets_to_gpu(
   shared_steam_shader.frag_shader_src = steam_frag_src;
   shared_steam_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_steam_shader);
+
+  gpu->copy_texture_to_gpu(&steam_texture);
 
   gpu->copy_dynamic_mesh_to_gpu(&shared_column_mesh);
 }
@@ -100,6 +104,8 @@ void steam__shared_init_mesh_data() {
     shared_column_mesh.indices[acc_index_offset++] =
       lvl_starting_vert + VERTS_PER_LVL * 2 - 1;
   }
+  
+  // TODO: add uv!!!!!!!
 }
 
 static void calculate_ring_vertex_positions(
@@ -255,16 +261,13 @@ void steam__draw_column(
   gpu->update_gpu_mesh_data(&shared_column_mesh);
   
   gpu->select_shader(&shared_steam_shader);
+  gpu->select_texture(&steam_texture);
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
     "light_dir",
     vec3__normalize((struct vec3){ 1.0f, 0, -0.5f })
   );
-  gpu->set_fragment_shader_vec3(
-    &shared_steam_shader,
-    "top_color",
-    COLOR_EVENING_SUNLIGHT
-  );
+  // TODO: add light color
   gpu->set_fragment_shader_float(
     &shared_steam_shader,
     "max_altitude",

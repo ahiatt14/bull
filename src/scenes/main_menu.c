@@ -6,7 +6,6 @@
 #include "scene.h"
 #include "constants.h"
 
-#include "clouds_texture.h"
 #include "stars_texture.h"
 
 #include "pyramid_mesh.h"
@@ -48,7 +47,6 @@ void main_menu__init(
   camera__calculate_lookat(WORLDSPACE.up, &background_camera);
   camera__calculate_perspective(vwprt, &background_camera);
 
-  gpu->copy_texture_to_gpu(&clouds_texture);
   gpu->copy_texture_to_gpu(&stars_texture);
 
   gpu->copy_static_mesh_to_gpu(&pyramid_mesh);
@@ -121,32 +119,8 @@ void main_menu__tick(
   // static struct m4x4 shared_local_to_world;
   // static struct m3x3 shared_normals_local_to_world;
 
-  // gpu->select_shader(&FLAT_TEXTURE_SHADER);
-  // gpu->select_texture(&clouds_texture);
-  // space__create_model(
-  //   &WORLDSPACE,
-  //   &pyramid_transform,
-  //   &shared_local_to_world
-  // );
-  // space__create_normals_model(
-  //   &shared_local_to_world,
-  //   &shared_normals_local_to_world
-  // );
-  // gpu__set_mvp(
-  //   &shared_local_to_world,
-  //   &shared_normals_local_to_world,
-  //   &foreground_camera,
-  //   &FLAT_TEXTURE_SHADER,
-  //   gpu
-  // );
-  // gpu->draw_mesh(&pyramid_mesh);
-
   gpu->select_shader(&ALPHA_TEXTURE_SHADER);
   gpu->select_texture(&stars_texture);
-  gpu->draw_mesh(&QUAD);
-
-  gpu->select_shader(&FLAT_TEXTURE_SHADER);
-  gpu->select_texture(&clouds_texture);
   gpu->draw_mesh(&QUAD);
 
   // gpu->select_shader(&NORMALS_COLOR_SHADER);

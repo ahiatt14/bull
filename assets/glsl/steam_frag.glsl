@@ -1,5 +1,7 @@
 #version 330 core
 
+uniform sampler2D surface_texture;
+
 uniform vec3 color = vec3(
   0.9,
   0.9,
@@ -33,16 +35,18 @@ void main() {
 
   normalized_altitude = fs_in.world_frag_pos.y / max_altitude;
 
+  vec3 material = texture(surface_texture, fs_in.tex_uv).rgb;
+
   vec3 diffuse =
     light_color *
     max(dot(fs_in.normal, -light_dir), 0);
 
-  vec3 mixed = color + diffuse;
+  vec3 mixed = material + diffuse;
   
   float surface_alpha = 1 - normalized_altitude;
 
   FragColor = vec4(
-    mixed,
-    surface_alpha
+    material,
+    1
   );
 }
