@@ -27,15 +27,15 @@
 
 // CONSTANTS
 
-#define TURBINE_X_COUNT 5
-#define TURBINE_Z_COUNT 5
+#define TURBINE_X_COUNT 2
+#define TURBINE_Z_COUNT 4
 #define TURBINE_X_OFFSET 3.0f
 #define TURBINE_Z_OFFSET 2.0f
 #define TURBINE_FIELD_KM_WIDE (TURBINE_X_COUNT - 1) * TURBINE_X_OFFSET
 #define TURBINE_FILE_KM_DEEP (TURBINE_Z_COUNT - 1) * TURBINE_Z_OFFSET
 
 static const struct vec2 TURBINE_FIELD_ORIGIN_OFFSET = {
-  -TURBINE_FIELD_KM_WIDE * 0.5f,
+  -TURBINE_FIELD_KM_WIDE * 0.5f - 0.5f,
   -TURBINE_FILE_KM_DEEP * 0.5f
 };
 
@@ -83,18 +83,22 @@ static struct shader mountain_shader;
 static struct m4x4 mountain_local_to_world;
 static struct m3x3 mountain_normals_local_to_world;
 static struct transform mountain_transform = (struct transform){
-  .position = { 13, -0.12f, -18 },
+  .position = { 13, -0.14f, -18 },
   .rotation_in_deg = { 0, 330, 0 },
   .scale = 5
 };
 
 static struct steam_column steam0 = (struct steam_column){
-  .position = { 3, -1, -18 },
+  .position = { 8, -1, -10 },
   .shape_index_offset = 5
 };
 static struct steam_column steam1 = (struct steam_column){
-  .position = { -7, -1, -11 },
+  .position = { -10, -1, -15 },
   .shape_index_offset = 1
+};
+static struct steam_column steam2 = (struct steam_column){
+  .position = { -4, -1, -20 },
+  .shape_index_offset = 10
 };
 
 static struct camera cam;
@@ -105,7 +109,7 @@ void ocean__init(
   struct gpu_api const *const gpu
 ) {
 
-  cam.position = (struct vec3){ -1.2f, 0.15f, 7 };
+  cam.position = (struct vec3){ 0, 0.15f, 7 };
   cam.look_target = (struct vec3){ 0, 0.2f, 0 };
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
@@ -119,6 +123,7 @@ void ocean__init(
   steam__shared_init_mesh_data();
   steam__column_default(WIND_KM_PER_SEC, &steam0);
   steam__column_default(WIND_KM_PER_SEC, &steam1);
+  steam__column_default(WIND_KM_PER_SEC, &steam2);
   steam__copy_assets_to_gpu(gpu);
 
   sky_shader.frag_shader_src = sky_frag_src;
@@ -229,6 +234,7 @@ void ocean__tick(
 
   steam__rise(delta_time, &steam0);
   steam__rise(delta_time, &steam1);
+  steam__rise(delta_time, &steam2);
 
   static struct vec2 relative_turbine_position;
   static struct vec2 normalized_sample_xy;
@@ -333,6 +339,7 @@ void ocean__tick(
 
   steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam0);
   steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam1);
+  steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam2);
 
   water__draw(
     SUNLIGHT_DIRECTION,

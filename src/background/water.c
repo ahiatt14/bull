@@ -20,8 +20,8 @@
 #define FACE_WIDE_KM_LENGTH OCEAN_KM_WIDE / VERTS_PER_SIDE
 #define INDEX_COUNT 9600
 
-#define WAVE_AMPLITUDE 0.05f
-#define WAVE_FREQUENCY 4.0f
+#define WAVE_AMPLITUDE 0.03f
+#define WAVE_FREQUENCY 1.0f
 
 // LOCALS
 
@@ -113,7 +113,7 @@ void water__update_waves(
   static float z_position; z_position = 0;
   for (int y = 0; y < VERTS_PER_SIDE; y++) {
     z_position = WAVE_AMPLITUDE * sin(
-      seconds_since_creation + WAVE_FREQUENCY * y
+      seconds_since_creation * 0.5f + WAVE_FREQUENCY * y
     );
     for (int x = 0; x < VERTS_PER_SIDE; x++) {
       mesh.vertices[vert_index].uv.x += wind_km_per_sec.x * delta_time;

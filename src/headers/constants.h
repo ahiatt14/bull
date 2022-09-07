@@ -3,7 +3,7 @@
 
 #include "tail.h"
 
-#define BULL_MAX_TEXTURE_COUNT 100
+#define BULL_MAX_TEXTURE_COUNT 100 // TODO: ?
 #define DELTA_TIME_CAP 1.0f / 30.0f
 
 extern struct shader FLAT_TEXTURE_SHADER;

@@ -24,6 +24,18 @@ uniform vec3 top_color = vec3(
   1
 );
 
+uniform vec3 water_reflect_color = vec3(
+  1,
+  0,
+  0
+);
+
+const vec3 water_reflect_direction = vec3(
+  0,
+  -1,
+  0
+);
+
 uniform float max_altitude = 1;
 float normalized_altitude;
 
@@ -41,7 +53,9 @@ void main() {
 
   vec3 diffuse =
     light_color *
-    max(dot(fs_in.normal, -light_dir), 0);
+    max(dot(fs_in.normal, -light_dir), 0) +
+    water_reflect_color *
+    max(dot(fs_in.normal, water_reflect_direction), 0) * 0.2f;
 
   vec3 mixed =
     mix(color + diffuse, top_color, normalized_altitude);

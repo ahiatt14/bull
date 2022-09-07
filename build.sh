@@ -49,7 +49,8 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/normal_debug_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/normal_debug_vert.glsl vert && \
   ./${tools}validate-glsl.exe assets/glsl/normal_debug_geo.glsl geo && \
-  ./${tools}validate-glsl.exe assets/glsl/alpha_texture_frag.glsl frag \
+  ./${tools}validate-glsl.exe assets/glsl/alpha_texture_frag.glsl frag && \
+  ./${tools}validate-glsl.exe assets/glsl/mountain_frag.glsl frag \
   && \
   ./${tools}sourcify-glsl.exe assets/glsl/flat_texture_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/solid_color_frag.glsl ${artifact_dir} && \
@@ -63,10 +64,11 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_vert.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_geo.glsl ${artifact_dir} && \
-  ./${tools}sourcify-glsl.exe assets/glsl/alpha_texture_frag.glsl ${artifact_dir} \
+  ./${tools}sourcify-glsl.exe assets/glsl/alpha_texture_frag.glsl ${artifact_dir} && \
+  ./${tools}sourcify-glsl.exe assets/glsl/mountain_frag.glsl ${artifact_dir} \
   && \
   ./${tools}sourcify-png.exe assets/png/clouds.png 3 ${artifact_dir} && \
-  ./${tools}sourcify-png.exe assets/png/water.png 3 ${artifact_dir} && \
+  ./${tools}sourcify-png.exe assets/png/water.png 4 ${artifact_dir} && \
   ./${tools}sourcify-png.exe assets/png/cloud_cover.png 3 ${artifact_dir} && \
   ./${tools}sourcify-png.exe assets/png/stars.png 4 ${artifact_dir} \
   && \
@@ -101,6 +103,8 @@ elif [ "$ARG1" == "build-src" ]; then
   build_src
 elif [ "$ARG1" == "build-assets" ]; then
   build_assets
+elif [ "$ARG1" == "build-all" ]; then
+  build_assets && build_src
 else
   echo "You must specify build-assets or build-src"
 fi

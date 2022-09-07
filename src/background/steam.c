@@ -17,9 +17,9 @@
 #include "turbine_frag.h"
 
 #define BOUYANCY 0.7f
-#define VERTS_PER_LVL 6
+#define VERTS_PER_LVL 12
 #define LVL_HEIGHT 0.7f
-#define MIN_RING_RADII 0.05f
+#define MIN_RING_RADII 0.01f
 #define RING_VERT_DEG_OFFSET 360.0f / VERTS_PER_LVL
 #define VERT_COUNT VERTS_PER_LVL * STEAM__LVL_COUNT
 #define INDEX_COUNT VERTS_PER_LVL * 6 * (STEAM__LVL_COUNT - 1)
@@ -220,7 +220,7 @@ void steam__rise(
         (column->shape_index_offset + lvl) %
         STEAM__LVL_COUNT
       ] *
-      lvl * delta_time * 0.04f;
+      lvl * delta_time * 0.04;
 
 
     column->ring_offsets[lvl].y += BOUYANCY * delta_time * 0.2f;
@@ -247,7 +247,7 @@ void steam__rise(
 void steam__draw_column(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
-  struct vec3 light_direction,
+  struct vec3 sunlight_direction,
   struct steam_column *const column
 ) {
   static struct m4x4 local_to_world;
@@ -266,8 +266,8 @@ void steam__draw_column(
   gpu->select_shader(&shared_steam_shader);
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
-    "light_dir",
-    light_direction
+    "lighdt_dir",
+    sunlight_direction
   );
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
@@ -279,11 +279,11 @@ void steam__draw_column(
     "max_altitude",
     (LVL_HEIGHT * STEAM__LVL_COUNT) / 2.0f
   );
-  // gpu->set_fragment_shader_vec3(
-  //   &sky_shader,
-  //   "water_reflect_color",
-  //   COLOR_AQUA_BLUE
-  // );
+  gpu->set_fragment_shader_vec3(
+    &shared_steam_shader,
+    "water_reflect_color",
+    COLOR_AQUA_BLUE
+  );
   m4x4__translation(&column->position, &local_to_world);
   space__create_normals_model(&local_to_world, &normals_local_to_world);
   gpu__set_mvp(
@@ -294,4 +294,19 @@ void steam__draw_column(
     gpu
   );
   gpu->draw_mesh(&shared_column_mesh);
+
+  // gpu->select_shader(&NORMALS_VIS_SHADER);
+  // gpu->set_fragment_shader_vec3(
+  //   &NORMALS_VIS_SHADER,
+  //   "color",
+  //   COLOR_NEON_PURPLE
+  // );
+  // gpu__set_mvp(
+  //   &local_to_world,
+  //   &normals_local_to_world,
+  //   cam,
+  //   &NORMALS_VIS_SHADER,
+  //   gpu
+  // );
+  // gpu->draw_mesh(&shared_column_mesh);
 }
