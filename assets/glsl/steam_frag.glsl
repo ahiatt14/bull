@@ -46,7 +46,7 @@ void main() {
   vec3 faded = mix(
     material,
     top_color,
-    2.5 * normalized_altitude - 0.5
+    2 * normalized_altitude - 0.3
   );
 
   vec3 diffuse =

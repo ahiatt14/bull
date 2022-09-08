@@ -21,7 +21,7 @@
 #define BOUYANCY 0.4f
 #define VERTS_PER_LVL 10
 #define LVL_HEIGHT 0.7f
-#define MIN_RING_RADII 0.02f
+#define MIN_RING_RADII 0.05f
 #define RING_VERT_DEG_OFFSET 360.0f / VERTS_PER_LVL
 #define VERT_COUNT VERTS_PER_LVL * STEAM__LVL_COUNT
 #define INDEX_COUNT VERTS_PER_LVL * 6 * (STEAM__LVL_COUNT - 1)
@@ -277,17 +277,17 @@ void steam__draw_column(
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
     "light_dir",
-    vec3__normalize((struct vec3){ 1.0f, 0, -0.5f })
+    vec3__normalize((struct vec3){ 1.0f, 0, -0.2f })
   );
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
     "top_color",
-    COLOR_AQUA_BLUE
+    COLOR_DARK_SLATE_GREY
   );
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
     "light_color",
-    COLOR_EVENING_SUNLIGHT
+    COLOR_RED
   );
   gpu->set_fragment_shader_float(
     &shared_steam_shader,

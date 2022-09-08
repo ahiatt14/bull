@@ -44,9 +44,9 @@ static const struct vec2 WIND_KM_PER_SEC = {
 };
 
 static const struct vec3 SUNLIGHT_DIRECTION = {
-  0.707f,
-  -0.707f,
-  0
+  0,
+  -0.94868,
+  -0.31622
 };
 
 // FORWARD DECS
@@ -270,7 +270,7 @@ void ocean__tick(
   gpu->set_fragment_shader_vec3(
     &sky_shader,
     "night_color",
-    COLOR_AQUA_BLUE
+    COLOR_DARK_SLATE_GREY
   );
   gpu->set_fragment_shader_vec3(
     &sky_shader,
@@ -280,7 +280,7 @@ void ocean__tick(
   gpu->set_fragment_shader_vec3(
     &sky_shader,
     "light_color",
-    COLOR_EVENING_SUNLIGHT
+    COLOR_AQUA_BLUE
   );
   gpu__set_mvp(
     &sky_local_to_world,
@@ -291,16 +291,16 @@ void ocean__tick(
   );
   gpu->draw_mesh(&cage_mesh);
 
-  gpu->select_shader(&ALPHA_TEXTURE_SHADER);
-  gpu->select_texture(&stars_texture);
-  gpu__set_mvp(
-    &stars_local_to_world,
-    &stars_normals_local_to_world,
-    &cam,
-    &ALPHA_TEXTURE_SHADER,
-    gpu
-  );
-  gpu->draw_mesh(&QUAD);
+  // gpu->select_shader(&ALPHA_TEXTURE_SHADER);
+  // gpu->select_texture(&stars_texture);
+  // gpu__set_mvp(
+  //   &stars_local_to_world,
+  //   &stars_normals_local_to_world,
+  //   &cam,
+  //   &ALPHA_TEXTURE_SHADER,
+  //   gpu
+  // );
+  // gpu->draw_mesh(&QUAD);
 
   gpu->clear_depth_buffer();
 
@@ -313,7 +313,7 @@ void ocean__tick(
   gpu->set_fragment_shader_vec3(
     &mountain_shader,
     "light_color",
-    COLOR_GOLDEN_YELLOW
+    COLOR_RED
   );
   gpu->set_fragment_shader_vec3(
     &mountain_shader,
@@ -334,7 +334,7 @@ void ocean__tick(
 
   water__draw(
     SUNLIGHT_DIRECTION,
-    COLOR_GOLDEN_YELLOW,
+    COLOR_RED,
     &cam,
     gpu
   );

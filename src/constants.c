@@ -68,6 +68,11 @@ const struct vec3 COLOR_DARK_GREY_BLUE = {
   73.0f / 255.0f,
   82.0f / 255.0f
 };
+const struct vec3 COLOR_DARK_SLATE_GREY = {
+  61.0f / 255.0f,
+  72.0f / 255.0f,
+  73.0f / 255.0f
+};
 
 const struct vec3 ORIGIN = { 0, 0, 0 };
 const struct coordinate_space WORLDSPACE = {
