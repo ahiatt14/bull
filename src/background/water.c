@@ -164,34 +164,11 @@ void water__update_waves(
 }
 
 void water__draw(
-  struct vec3 sunlight_direction,
-  struct vec3 sunlight_color,
   struct camera const *const cam,
   struct gpu_api const *const gpu
 ) {
   gpu->select_shader(&surface_shader);
-  gpu->select_textures(
-    &surface_shader,
-    2,
-    (char const *const[]){
-      "surface_texture",
-      "cloud_cover"
-    },
-    (struct texture const *const[]){
-      &water_texture,
-      &cloud_cover_texture
-    }
-  );
-  gpu->set_fragment_shader_vec3(
-    &surface_shader,
-    "light_dir",
-    sunlight_direction
-  );
-  gpu->set_fragment_shader_vec3(
-    &surface_shader,
-    "light_color",
-    sunlight_color
-  );
+  gpu->select_texture(&water_texture);
   gpu->set_fragment_shader_vec3(
     &surface_shader,
     "water_color",

@@ -1,13 +1,7 @@
 #version 330 core
 
-uniform sampler2D cloud_cover;
 uniform sampler2D surface_texture;
 
-uniform vec3 water_color = vec3(
-  65.0/255.0,
-  95.0/255.0,
-  124.0/255.0
-);
 uniform vec3 light_dir = vec3(0, -1, 0);
 uniform vec3 light_color = vec3(1, 1, 1);
 
@@ -21,13 +15,10 @@ out vec4 FragColor;
 
 void main()
 {
-  vec3 material =
-    water_color +
-    texture(surface_texture, fs_in.tex_uv).rgb * 0.1;
+  vec3 material = texture(surface_texture, fs_in.tex_uv).rgb * 0.4;
   vec3 diffuse =
     light_color *
-    texture(cloud_cover, fs_in.tex_uv).rgb - 0.3;
-  float albedo = max(dot(fs_in.normal, -light_dir), 0) + 0.1;
+    max(dot(fs_in.normal, -light_dir), 0);
   
-  FragColor = vec4(water_color + diffuse, 1);
+  FragColor = vec4(material + diffuse, 1);
 }

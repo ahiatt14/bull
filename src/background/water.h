@@ -17,8 +17,6 @@ void water__update_waves(
   struct gpu_api const *const gpu
 );
 void water__draw(
-  struct vec3 sunlight_direction,
-  struct vec3 sunlight_color,
   struct camera const *const cam,
   struct gpu_api const *const gpu
 );
