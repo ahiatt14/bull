@@ -91,10 +91,10 @@ void steam__init_shared_mesh_data() {
 
       shared_column_mesh.vertices[acc_vi].uv.x =
         ((float)vert_offset / (float)VERTS_PER_LVL) *
-        2;
+        4;
       shared_column_mesh.vertices[acc_vi].uv.y =
         ((float)lvl / (float)STEAM__LVL_COUNT) *
-        6;
+        8;
     }
 
     shared_column_mesh.indices[acc_index_offset++] =
@@ -284,7 +284,11 @@ void steam__draw_column(
     "top_color",
     COLOR_AQUA_BLUE
   );
-  // TODO: add light color
+  gpu->set_fragment_shader_vec3(
+    &shared_steam_shader,
+    "light_color",
+    COLOR_EVENING_SUNLIGHT
+  );
   gpu->set_fragment_shader_float(
     &shared_steam_shader,
     "max_altitude",

@@ -46,21 +46,16 @@ void main() {
   vec3 faded = mix(
     material,
     top_color,
-    normalized_altitude
+    2.5 * normalized_altitude - 0.5
   );
 
   vec3 diffuse =
     light_color *
-    max(dot(fs_in.normal, -light_dir), 0) * 0.2;
+    max(dot(fs_in.normal, -light_dir), 0) * 0.7;
 
   vec3 mixed = faded + diffuse;
   
-  float surface_alpha = 1 - (
-    normalized_altitude *
-    normalized_altitude *
-    normalized_altitude -
-    0.1
-  );
+  float surface_alpha = 1 - (1.7 * normalized_altitude - 0.4);
 
   FragColor = vec4(
     mixed,
