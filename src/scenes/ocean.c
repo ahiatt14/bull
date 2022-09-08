@@ -196,20 +196,20 @@ void ocean__tick(
 
   // UPDATE
 
-  // static struct m4x4 camera_rotation;
-  // m4x4__rotation(
-  //   deg_to_rad(delta_time * 3),
-  //   WORLDSPACE.up,
-  //   &camera_rotation
-  // );
-  // cam.position = m4x4_x_point(
-  //   &camera_rotation,
-  //   cam.position
-  // );
+  static struct m4x4 camera_rotation;
+  m4x4__rotation(
+    deg_to_rad(delta_time * 3),
+    WORLDSPACE.up,
+    &camera_rotation
+  );
+  cam.position = m4x4_x_point(
+    &camera_rotation,
+    cam.position
+  );
   // cam.position.y =
   //   0.1f * sin(seconds_since_creation * 0.02f) + 0.15f;
-  // camera__calculate_lookat(WORLDSPACE.up, &cam);
-  // camera__calculate_perspective(vwprt, &cam);
+  camera__calculate_lookat(WORLDSPACE.up, &cam);
+  camera__calculate_perspective(vwprt, &cam);
 
   static struct vec2 clouds_offset;
   clouds_offset.x = loop_float(
@@ -313,7 +313,7 @@ void ocean__tick(
   gpu->set_fragment_shader_vec3(
     &mountain_shader,
     "light_color",
-    COLOR_RED
+    COLOR_NEON_PURPLE
   );
   gpu->set_fragment_shader_vec3(
     &mountain_shader,

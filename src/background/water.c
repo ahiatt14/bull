@@ -195,7 +195,7 @@ void water__draw(
   gpu->set_fragment_shader_vec3(
     &surface_shader,
     "water_color",
-    COLOR_DARK_SLATE_GREY
+    COLOR_AQUA_BLUE
   );
   space__create_model(
     &WORLDSPACE,

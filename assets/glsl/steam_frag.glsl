@@ -44,8 +44,8 @@ void main() {
   vec3 material = texture(surface_texture, fs_in.tex_uv).rgb;
 
   vec3 faded = mix(
-    material,
     top_color,
+    material,
     2 * normalized_altitude - 0.3
   );
 

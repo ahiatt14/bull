@@ -30,7 +30,7 @@ void main()
   float albedo = max(dot(fs_in.normal, -light_dir), 0) + 0.8;
   
   FragColor = vec4(
-    material * (1 - diffuse),
+    material,
     1
   );
 }
