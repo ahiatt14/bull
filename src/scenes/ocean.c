@@ -32,9 +32,9 @@ static const struct vec2 WIND_KM_PER_SEC = {
 };
 
 static const struct vec3 SUNLIGHT_DIRECTION = {
-  0,
-  -0.94868,
-  -0.31622
+  0.92998f,
+  0.11624f,
+  -0.34874f
 };
 
 // FORWARD DECS
@@ -230,12 +230,12 @@ void ocean__tick(
   gpu->set_fragment_shader_vec3(
     &mountain_shader,
     "light_dir",
-    (struct vec3){ 1, 0, 0 }
+    SUNLIGHT_DIRECTION
   );
   gpu->set_fragment_shader_vec3(
     &mountain_shader,
     "light_color",
-    COLOR_RED
+    COLOR_NEON_PURPLE
   );
   gpu__set_mvp(
     &mountain_local_to_world,
@@ -246,8 +246,8 @@ void ocean__tick(
   );
   gpu->draw_mesh(&mountain_mesh);
 
-  steam__draw_column(&cam, gpu, &steam0);
-  steam__draw_column(&cam, gpu, &steam1);
+  steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam0);
+  steam__draw_column(&cam, gpu, SUNLIGHT_DIRECTION, &steam1);
 
   water__draw(&cam, gpu);
 

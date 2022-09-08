@@ -215,7 +215,7 @@ void steam__rise(
   static float shape[STEAM__LVL_COUNT] = {
     1, 1.1f, 1.2f, 1.2f, 1.1f,
     1.2f, 1.3f, 1.3f, 1.2f, 1.2f,
-    // 1.1f, 1.1f, 1.2f, 1.2f, 1.1f
+    1.1f, 1.1f, 1.2f, 1.2f, 1.1f
   };
 
   for (int_fast8_t lvl = 0; lvl < STEAM__LVL_COUNT; lvl++) {
@@ -257,6 +257,7 @@ void steam__rise(
 void steam__draw_column(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
+  struct vec3 light_direction,
   struct steam_column *const column
 ) {
   static struct m4x4 local_to_world;
@@ -277,7 +278,7 @@ void steam__draw_column(
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
     "light_dir",
-    vec3__normalize((struct vec3){ 1.0f, 0, -0.2f })
+    light_direction
   );
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
@@ -287,7 +288,7 @@ void steam__draw_column(
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
     "light_color",
-    COLOR_RED
+    COLOR_NEON_PURPLE
   );
   gpu->set_fragment_shader_float(
     &shared_steam_shader,
