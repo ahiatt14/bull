@@ -18,10 +18,10 @@
 #include "core_frag.h"
 #include "turbine_frag.h"
 
-#define BOUYANCY 1.5f
-#define VERTS_PER_LVL 12
+#define BOUYANCY 0.4f
+#define VERTS_PER_LVL 10
 #define LVL_HEIGHT 0.7f
-#define MIN_RING_RADII 0.01f
+#define MIN_RING_RADII 0.02f
 #define RING_VERT_DEG_OFFSET 360.0f / VERTS_PER_LVL
 #define VERT_COUNT VERTS_PER_LVL * STEAM__LVL_COUNT
 #define INDEX_COUNT VERTS_PER_LVL * 6 * (STEAM__LVL_COUNT - 1)
@@ -64,7 +64,7 @@ void steam__column_default(
     );
 }
 
-void steam__shared_init_mesh_data() {
+void steam__init_shared_mesh_data() {
 
   static uint_fast16_t acc_index_offset; acc_index_offset = 0;
 
@@ -88,6 +88,13 @@ void steam__shared_init_mesh_data() {
         acc_vi + VERTS_PER_LVL + 1;
       shared_column_mesh.indices[acc_index_offset++] =
         acc_vi + VERTS_PER_LVL;
+
+      shared_column_mesh.vertices[acc_vi].uv.x =
+        ((float)vert_offset / (float)VERTS_PER_LVL) *
+        2;
+      shared_column_mesh.vertices[acc_vi].uv.y =
+        ((float)lvl / (float)STEAM__LVL_COUNT) *
+        6;
     }
 
     shared_column_mesh.indices[acc_index_offset++] =
@@ -104,8 +111,6 @@ void steam__shared_init_mesh_data() {
     shared_column_mesh.indices[acc_index_offset++] =
       lvl_starting_vert + VERTS_PER_LVL * 2 - 1;
   }
-  
-  // TODO: add uv!!!!!!!
 }
 
 static void calculate_ring_vertex_positions(
@@ -210,7 +215,7 @@ void steam__rise(
   static float shape[STEAM__LVL_COUNT] = {
     1, 1.1f, 1.2f, 1.2f, 1.1f,
     1.2f, 1.3f, 1.3f, 1.2f, 1.2f,
-    1.1f, 1.1f, 1.2f, 1.2f, 1.1f
+    // 1.1f, 1.1f, 1.2f, 1.2f, 1.1f
   };
 
   for (int_fast8_t lvl = 0; lvl < STEAM__LVL_COUNT; lvl++) {
@@ -219,10 +224,10 @@ void steam__rise(
         (column->shape_index_offset + lvl) %
         STEAM__LVL_COUNT
       ] *
-      lvl * lvl * delta_time * 0.01f;
+      lvl * lvl * delta_time * 0.005f;
 
     column->ring_offsets[lvl].y += BOUYANCY * delta_time * 0.2f;
-    column->ring_offsets[lvl].x += lvl * 0.05f * delta_time;
+    column->ring_offsets[lvl].x += lvl * 0.015f * delta_time;
   }
 
   if (
@@ -230,8 +235,14 @@ void steam__rise(
     MAX_COLUMN_HEIGHT
   ) {
     for (int_fast8_t lvl = STEAM__LVL_COUNT - 1; lvl > 0; lvl--) {
+
       column->ring_offsets[lvl] = column->ring_offsets[lvl - 1];
-      column->ring_radii[lvl] = column->ring_radii[lvl - 1];  
+      column->ring_radii[lvl] = column->ring_radii[lvl - 1];
+
+      // for (int_fast8_t vi = 0; vi < VERTS_PER_LVL; vi++) {        
+      //   shared_column_mesh.vertices[vi + lvl * VERTS_PER_LVL].uv.y =
+      //     shared_column_mesh.vertices[vi + (lvl - 1) * VERTS_PER_LVL].uv.y;
+      // }
     }
     column->ring_radii[0] = MIN_RING_RADII;
     column->ring_offsets[0] = (struct vec3){0};
@@ -239,6 +250,7 @@ void steam__rise(
       column->shape_index_offset - 1 < 0 ?
       STEAM__LVL_COUNT :
       column->shape_index_offset - 1;
+    
   }
 }
 
@@ -266,6 +278,11 @@ void steam__draw_column(
     &shared_steam_shader,
     "light_dir",
     vec3__normalize((struct vec3){ 1.0f, 0, -0.5f })
+  );
+  gpu->set_fragment_shader_vec3(
+    &shared_steam_shader,
+    "top_color",
+    COLOR_AQUA_BLUE
   );
   // TODO: add light color
   gpu->set_fragment_shader_float(

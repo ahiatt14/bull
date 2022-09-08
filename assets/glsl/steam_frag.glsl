@@ -20,6 +20,12 @@ uniform vec3 light_color = vec3(
   1
 );
 
+uniform vec3 top_color = vec3(
+  1,
+  1,
+  1
+);
+
 uniform float max_altitude = 1;
 float normalized_altitude;
 
@@ -37,16 +43,27 @@ void main() {
 
   vec3 material = texture(surface_texture, fs_in.tex_uv).rgb;
 
+  vec3 faded = mix(
+    material,
+    top_color,
+    normalized_altitude
+  );
+
   vec3 diffuse =
     light_color *
-    max(dot(fs_in.normal, -light_dir), 0);
+    max(dot(fs_in.normal, -light_dir), 0) * 0.2;
 
-  vec3 mixed = material + diffuse;
+  vec3 mixed = faded + diffuse;
   
-  float surface_alpha = 1 - normalized_altitude;
+  float surface_alpha = 1 - (
+    normalized_altitude *
+    normalized_altitude *
+    normalized_altitude -
+    0.1
+  );
 
   FragColor = vec4(
-    material,
-    1
+    mixed,
+    surface_alpha
   );
 }

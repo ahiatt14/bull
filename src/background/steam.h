@@ -1,7 +1,7 @@
 #ifndef __STEAM_COLUMNS__
 #define __STEAM_COLUMNS__
 
-#define STEAM__LVL_COUNT 15
+#define STEAM__LVL_COUNT 10
 
 struct steam_column {
   struct vec3 position;
@@ -10,7 +10,7 @@ struct steam_column {
   uint8_t shape_index_offset;
 };
 
-void steam__shared_init_mesh_data();
+void steam__init_shared_mesh_data();
 
 void steam__copy_assets_to_gpu(
   struct gpu_api const *const gpu

@@ -88,11 +88,11 @@ static struct transform mountain_transform = (struct transform){
 };
 
 static struct steam_column steam0 = (struct steam_column){
-  .position = { 8, -1, -10 },
+  .position = { 4, -1, -15 },
   .shape_index_offset = 5
 };
 static struct steam_column steam1 = (struct steam_column){
-  .position = { -4, -1, -28 },
+  .position = { -3, -1, -2 },
   .shape_index_offset = 10
 };
 
@@ -115,7 +115,7 @@ void ocean__init(
   water__init_mesh_data();
   water__copy_assets_to_gpu(gpu);
 
-  steam__shared_init_mesh_data();
+  steam__init_shared_mesh_data();
   steam__column_default(&steam0);
   steam__column_default(&steam1);
   steam__copy_assets_to_gpu(gpu);
