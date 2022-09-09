@@ -1,21 +1,23 @@
 #version 330 core
 
-uniform vec3 light_dir = vec3(
-  -1,
-  0,
-  0
-);
+// uniform vec3 light_dir = vec3(
+//   -1,
+//   0,
+//   0
+// );
 
-uniform vec3 light_color = vec3(
+float max_altitude = 4;
+
+uniform sampler2D sky_texture;
+
+uniform vec3 horizon_color = vec3(
   .95,
   .9,
   .93
 );
 
 uniform vec3 night_color = vec3(
-  0.4,
-  0.56,
-  0.63
+  0, 0, 0
 );
 
 in VS_OUT {
@@ -28,15 +30,19 @@ out vec4 FragColor;
 
 void main() {
 
-  vec3 diffuse =
+  float normalized_altitude = fs_in.world_frag_pos.y / max_altitude;
+
+  vec3 material = texture(sky_texture, fs_in.tex_uv).rgb;
+
+  vec3 mixed =
     mix(
-      night_color,
-      light_color,
-      max(dot(fs_in.normal, -light_dir), 0)
+      horizon_color,
+      material,
+      normalized_altitude - 0.6
     );
 
   FragColor = vec4(
-    diffuse,
+    mixed,
     1
   );
 }

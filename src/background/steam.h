@@ -10,7 +10,7 @@ struct steam_column {
   uint8_t shape_index_offset;
 };
 
-void steam__init_shared_mesh_data();
+void steam__create_shared_mesh_data();
 
 void steam__copy_assets_to_gpu(
   struct gpu_api const *const gpu

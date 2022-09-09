@@ -17,10 +17,10 @@
 
 #include "core_frag.h"
 
-#define BOUYANCY 0.4f
+#define BOUYANCY 0.45f
 #define VERTS_PER_LVL 10
-#define LVL_HEIGHT 0.7f
-#define MIN_RING_RADII 0.05f
+#define LVL_HEIGHT 0.6f
+#define MIN_RING_RADII 0.04f
 #define RING_VERT_DEG_OFFSET 360.0f / VERTS_PER_LVL
 #define VERT_COUNT VERTS_PER_LVL * STEAM__LVL_COUNT
 #define INDEX_COUNT VERTS_PER_LVL * 6 * (STEAM__LVL_COUNT - 1)
@@ -63,19 +63,21 @@ void steam__column_default(
     );
 }
 
-void steam__init_shared_mesh_data() {
+void steam__create_shared_mesh_data() {
 
   static uint_fast16_t acc_index_offset; acc_index_offset = 0;
+
+  // TODO: clean up in here
 
   for (int lvl = 0; lvl < STEAM__LVL_COUNT; lvl++) {
 
     static uint_fast16_t lvl_starting_vert;
     lvl_starting_vert = lvl * VERTS_PER_LVL;
 
-    for (int vert_offset = 0; vert_offset < VERTS_PER_LVL-1; vert_offset++) {
+    for (int vi = 0; vi < VERTS_PER_LVL-1; vi++) {
 
       static uint_fast16_t acc_vi;
-      acc_vi = lvl_starting_vert + vert_offset;
+      acc_vi = lvl_starting_vert + vi;
 
       shared_column_mesh.indices[acc_index_offset++] = acc_vi;
       shared_column_mesh.indices[acc_index_offset++] = acc_vi + 1;
@@ -87,10 +89,17 @@ void steam__init_shared_mesh_data() {
         acc_vi + VERTS_PER_LVL + 1;
       shared_column_mesh.indices[acc_index_offset++] =
         acc_vi + VERTS_PER_LVL;
+    }
 
+    for (int vi = 0; vi < VERTS_PER_LVL; vi++) {
+
+      static uint_fast16_t acc_vi;
+      acc_vi = lvl_starting_vert + vi;
+
+      // TODO: still got dang bug with uvs on plume!
       shared_column_mesh.vertices[acc_vi].uv.x =
-        ((float)vert_offset / (float)VERTS_PER_LVL) *
-        4;
+        ((float)vi / (float)VERTS_PER_LVL) *
+        6;
       shared_column_mesh.vertices[acc_vi].uv.y =
         ((float)lvl / (float)STEAM__LVL_COUNT) *
         8;
@@ -120,20 +129,20 @@ static void calculate_ring_vertex_positions(
   
   static struct m4x4 rotation;
 
-  for (int vert_offset = 0; vert_offset < VERTS_PER_LVL; vert_offset++) {
+  for (int vi = 0; vi < VERTS_PER_LVL; vi++) {
 
     static struct vec3 position; position = (struct vec3){0};
     position.z = -ring_radius;
 
     m4x4__rotation(
-      deg_to_rad(vert_offset * RING_VERT_DEG_OFFSET),
+      deg_to_rad(vi * RING_VERT_DEG_OFFSET),
       WORLDSPACE.up,
       &rotation
     );
     position = m4x4_x_point(&rotation, position);
 
     shared_column_mesh.vertices[
-      lvl * VERTS_PER_LVL + vert_offset
+      lvl * VERTS_PER_LVL + vi
     ].position = vec3_plus_vec3(position, ring_offset);
   }
 }
@@ -223,7 +232,7 @@ void steam__rise(
         (column->shape_index_offset + lvl) %
         STEAM__LVL_COUNT
       ] *
-      lvl * lvl * delta_time * 0.005f;
+      lvl * lvl * delta_time * 0.004f;
 
     column->ring_offsets[lvl].y += BOUYANCY * delta_time * 0.2f;
     column->ring_offsets[lvl].x += lvl * 0.015f * delta_time;
@@ -287,7 +296,7 @@ void steam__draw_column(
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
     "light_color",
-    COLOR_GOLDEN_YELLOW
+    COLOR_MAGENTA_WHITE
   );
   gpu->set_fragment_shader_float(
     &shared_steam_shader,

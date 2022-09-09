@@ -8,7 +8,6 @@
 #include "bull_math.h"
 #include "gpu_helpers.h"
 
-#include "cloud_cover_texture.h"
 #include "water_texture.h"
 
 #include "default_vert.h"
@@ -97,7 +96,6 @@ void water__copy_assets_to_gpu(
   gpu->copy_dynamic_mesh_to_gpu(&mesh);
   gpu->copy_shader_to_gpu(&surface_shader);
   gpu->copy_texture_to_gpu(&water_texture);
-  gpu->copy_texture_to_gpu(&cloud_cover_texture);
 }
 
 void water__update_waves(

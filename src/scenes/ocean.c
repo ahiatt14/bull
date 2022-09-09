@@ -11,10 +11,10 @@
 
 #include "water.h"
 #include "steam.h"
-#include "sphere_mesh.h"
+#include "sky_cylinder_mesh.h"
 #include "mountain_mesh.h"
 
-// #include "cloud_cover_texture.h"
+#include "steam_texture.h"
 #include "mountain_texture.h"
 #include "water_texture.h"
 // #include "stars_texture.h"
@@ -36,9 +36,9 @@ static const struct vec2 WIND_KM_PER_SEC = {
 // LOCALS
 
 static struct vec3 sunlight_direction = {
+  -5,
   1,
-  0,
-  0
+  -1
 };
 
 // static struct transform stars_quad_transform = {
@@ -51,7 +51,7 @@ static struct shader sky_shader;
 static struct m4x4 sky_local_to_world;
 static struct m3x3 sky_normals_local_to_world;
 static struct transform sky_transform = {
-  { 0, 0, 0 }, { 0, 0, 0 }, 4.5f
+  { 0, 2, 0 }, { 0, 0, 0 }, 30
 };
 
 static struct shader mountain_shader;
@@ -66,17 +66,25 @@ static struct m4x4 mountain2_local_to_world;
 static struct m3x3 mountain2_normals_local_to_world;
 static struct transform mountain2_transform = (struct transform){
   .position = { -13, -0.1f, 9 },
-  .rotation_in_deg = { 0, 100, 0 },
+  .rotation_in_deg = { 0, 300, 0 },
   .scale = 4
 };
 
 static struct steam_column steam0 = (struct steam_column){
   .position = { 4, -1.5, -15 },
-  .shape_index_offset = 5
+  .shape_index_offset = 2
 };
 static struct steam_column steam1 = (struct steam_column){
-  .position = { -3, -1.5, -2 },
-  .shape_index_offset = 10
+  .position = { -10, -1.5, -6},
+  .shape_index_offset = 7
+};
+static struct steam_column steam2 = (struct steam_column){
+  .position = { 7, -1.5, 4 },
+  .shape_index_offset = 14
+};
+static struct steam_column steam3 = (struct steam_column){
+  .position = { 1, -1.5, 3 },
+  .shape_index_offset = 4
 };
 
 static struct camera cam;
@@ -96,15 +104,18 @@ void ocean__init(
   water__init_mesh_data();
   water__copy_assets_to_gpu(gpu);
 
-  steam__init_shared_mesh_data();
+  steam__create_shared_mesh_data();
   steam__column_default(&steam0);
   steam__column_default(&steam1);
+  steam__column_default(&steam2);
+  steam__column_default(&steam3);
   steam__copy_assets_to_gpu(gpu);
 
   sky_shader.frag_shader_src = sky_frag_src;
   sky_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&sky_shader);
-  gpu->copy_static_mesh_to_gpu(&sphere_mesh);
+  gpu->copy_static_mesh_to_gpu(&sky_cylinder_mesh);
+  gpu->copy_texture_to_gpu(&steam_texture); // TODO: redundant w/ steam file
   space__create_model(
     &WORLDSPACE,
     &sky_transform,
@@ -201,6 +212,8 @@ void ocean__tick(
 
   steam__rise(delta_time, &steam0);
   steam__rise(delta_time, &steam1);
+  steam__rise(delta_time, &steam2);
+  steam__rise(delta_time, &steam3);
   
   // DRAW
 
@@ -210,20 +223,16 @@ void ocean__tick(
   gpu->cull_back_faces();
 
   gpu->select_shader(&sky_shader);
+  gpu->select_texture(&steam_texture);
+  // gpu->set_fragment_shader_vec3(
+  //   &sky_shader,
+  //   "night_color",
+  //   COLOR_DARK_SLATE_GREY
+  // );
   gpu->set_fragment_shader_vec3(
     &sky_shader,
-    "night_color",
+    "horizon_color",
     COLOR_DARK_SLATE_GREY
-  );
-  gpu->set_fragment_shader_vec3(
-    &sky_shader,
-    "light_dir",
-    normalized_sunlight_direction
-  );
-  gpu->set_fragment_shader_vec3(
-    &sky_shader,
-    "light_color",
-    COLOR_AQUA_BLUE
   );
   gpu__set_mvp(
     &sky_local_to_world,
@@ -232,7 +241,7 @@ void ocean__tick(
     &sky_shader,
     gpu
   );
-  gpu->draw_wireframe(&sphere_mesh);
+  gpu->draw_mesh(&sky_cylinder_mesh);
 
   // gpu->select_shader(&ALPHA_TEXTURE_SHADER);
   // gpu->select_texture(&stars_texture);
@@ -245,7 +254,7 @@ void ocean__tick(
   // );
   // gpu->draw_mesh(&QUAD);
 
-  gpu->clear_depth_buffer();
+  // gpu->clear_depth_buffer();
 
   gpu->select_shader(&mountain_shader);
   gpu->select_texture(&mountain_texture);
@@ -257,7 +266,7 @@ void ocean__tick(
   gpu->set_fragment_shader_vec3(
     &mountain_shader,
     "light_color",
-    COLOR_GOLDEN_YELLOW
+    COLOR_MAGENTA_WHITE
   );
   gpu__set_mvp(
     &mountain_local_to_world,
@@ -278,6 +287,8 @@ void ocean__tick(
 
   steam__draw_column(&cam, gpu, normalized_sunlight_direction, &steam0);
   steam__draw_column(&cam, gpu, normalized_sunlight_direction, &steam1);
+  steam__draw_column(&cam, gpu, normalized_sunlight_direction, &steam2);
+  steam__draw_column(&cam, gpu, normalized_sunlight_direction, &steam3);
 
   water__draw(&cam, gpu);
 
