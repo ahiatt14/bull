@@ -15,15 +15,15 @@ out vec4 FragColor;
 
 void main()
 {
-  vec3 material = texture(surface_texture, fs_in.tex_uv).rgb * 0.4;
+  vec3 material = texture(surface_texture, fs_in.tex_uv).rgb * 0.5;
 
   float incidence = max(dot(fs_in.normal, -light_dir), 0);
 
   vec3 diffuse;
-  if (incidence > 0.25) {
-    diffuse = light_color * 0.4;
-  } else if (incidence > 0.22) {
-    diffuse = light_color * 0.3;
+  if (incidence > 0.33) {
+    diffuse = light_color * 0.25;
+  } else if (incidence > 0.25) {
+    diffuse = light_color * 0.12;
   } else {
     diffuse = vec3(0, 0, 0);
   }

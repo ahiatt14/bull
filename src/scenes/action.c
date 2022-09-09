@@ -84,7 +84,7 @@ void action__init(
   cam.position = (struct vec3){ 0, 1, 0.01f };
   cam.look_target = ORIGIN;
   camera__calculate_lookat(WORLDSPACE.up, &cam);
-  camera__calculate_ortho(12, 9, -2, 2, &cam);
+  camera__calculate_ortho(12, 9, -4, 4, &cam);
 
   bouncers__copy_assets_to_gpu(gpu);
   core__copy_assets_to_gpu(gpu);
@@ -126,10 +126,10 @@ void action__tick(
 
   // HANDLE UNPLUGGED GAMEPAD
   
-  if (!window->gamepad_is_connected()) {
-    switch_scene(SCENE__CONNECT_GAMEPAD);
-    return;
-  }
+  // if (!window->gamepad_is_connected()) {
+  //   switch_scene(SCENE__CONNECT_GAMEPAD);
+  //   return;
+  // }
 
   // GAMEPLAY
 

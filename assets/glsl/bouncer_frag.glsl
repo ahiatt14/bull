@@ -30,8 +30,8 @@ void main() {
 
   vec3 color =
     mix(
-      core_color,
       edge_color,
+      core_color,
       max(dot(fs_in.normal, -light_dir), 0)
     );
 

@@ -10,7 +10,7 @@
 #include "bull_math.h"
 #include "gpu_helpers.h"
 
-#include "sphere_mesh.h"
+#include "lowpoly_sphere_mesh.h"
 
 #include "bouncer_frag.h"
 #include "default_vert.h"
@@ -35,7 +35,7 @@ void bouncers__copy_assets_to_gpu(
   shared_bouncer_shader.frag_shader_src = bouncer_frag_src;
   shared_bouncer_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_bouncer_shader);
-  gpu->copy_static_mesh_to_gpu(&sphere_mesh);
+  gpu->copy_static_mesh_to_gpu(&lowpoly_sphere_mesh);
 }
 
 struct vec3 bouncers__get_pos_of_grid_bouncer(
@@ -169,12 +169,12 @@ void bouncers__draw_grid(
   gpu->set_fragment_shader_vec3(
     &shared_bouncer_shader,
     "core_color",
-    COLOR_NEON_PURPLE
+    COLOR_DARK_SLATE_GREY
   );
   gpu->set_fragment_shader_vec3(
     &shared_bouncer_shader,
     "edge_color",
-    COLOR_WHITE
+    COLOR_EVENING_SUNLIGHT
   );
 
   for (int_fast8_t r = 0; r < BOUNCERS_GRID_ROW_COUNT; r++)
@@ -200,6 +200,6 @@ void bouncers__draw_grid(
       &shared_bouncer_shader,
       gpu
     );
-    gpu->draw_mesh(&sphere_mesh);
+    gpu->draw_mesh(&lowpoly_sphere_mesh);
   }
 }

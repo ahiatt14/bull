@@ -27,6 +27,7 @@ extern const struct vec3 COLOR_MAGENTA_WHITE;
 extern const struct vec3 COLOR_DEEP_FOREST_GREEN;
 extern const struct vec3 COLOR_DARK_GREY_BLUE;
 extern const struct vec3 COLOR_DARK_SLATE_GREY;
+extern const struct vec3 COLOR_BLOOD_RED;
 
 extern const struct vec3 ORIGIN;
 extern const struct coordinate_space WORLDSPACE;

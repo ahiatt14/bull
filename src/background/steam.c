@@ -16,7 +16,6 @@
 #include "steam_frag.h"
 
 #include "core_frag.h"
-#include "turbine_frag.h"
 
 #define BOUYANCY 0.4f
 #define VERTS_PER_LVL 10
@@ -288,7 +287,7 @@ void steam__draw_column(
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
     "light_color",
-    COLOR_NEON_PURPLE
+    COLOR_GOLDEN_YELLOW
   );
   gpu->set_fragment_shader_float(
     &shared_steam_shader,

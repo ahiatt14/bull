@@ -4,7 +4,7 @@
 #include "gpu_helpers.h"
 #include "constants.h"
 
-#include "core_mesh.h"
+#include "sphere_mesh.h"
 
 #include "core_frag.h"
 #include "default_vert.h"
@@ -21,7 +21,7 @@ void core__copy_assets_to_gpu(
   shared_core_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_core_shader);
 
-  gpu->copy_static_mesh_to_gpu(&core_mesh);
+  gpu->copy_static_mesh_to_gpu(&sphere_mesh);
 }
 
 void core__update(
@@ -53,5 +53,5 @@ void core__draw(
     &shared_core_shader,
     gpu
   );
-  gpu->draw_mesh(&core_mesh);
+  gpu->draw_mesh(&sphere_mesh);
 }

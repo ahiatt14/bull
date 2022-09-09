@@ -72,10 +72,10 @@ void main_menu__tick(
   delta_time = seconds_since_creation - tick_start_time;
   if (delta_time > DELTA_TIME_CAP) delta_time = DELTA_TIME_CAP;
 
-  if (!window->gamepad_is_connected()) {
-    switch_scene(SCENE__CONNECT_GAMEPAD);
-    return;
-  }
+  // if (!window->gamepad_is_connected()) {
+  //   switch_scene(SCENE__CONNECT_GAMEPAD);
+  //   return;
+  // }
 
   // UPDATE
 
