@@ -28,6 +28,6 @@ void main()
 {
   FragColor = vec4(
     color + light_color * max(dot(fs_in.normal, -light_dir), 0.0) * 0.5,
-    1.0
+    0.3
   );
 }

@@ -2,7 +2,7 @@
 
 #include "tail.h"
 
-#include "gpu_helpers.h"
+#include "tail_helpers.h"
 #include "scene.h"
 #include "constants.h"
 
@@ -27,8 +27,6 @@ void main_menu__init(
   struct viewport *const vwprt,
   struct gpu_api const *const gpu
 ) {
-
-  gpu->cull_no_faces();
 
   foreground_camera.position = (struct vec3){ 0, 2, 3 };
   foreground_camera.look_target = ORIGIN;

@@ -16,6 +16,7 @@ struct drawable_mesh {
   unsigned int *indices;
   size_t vertices_size;
   size_t indices_size;
+  int vertices_length;
   int indices_length;
   unsigned int _impl_vbo_id;
   unsigned int _impl_ibo_id;

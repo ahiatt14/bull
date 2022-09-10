@@ -129,18 +129,18 @@ int main() {
     &ocean
   };
 
-  for (int i = 0; i < SCENE_COUNT; i++)
-    scenes[i]->init(&window, &vwprt, &gpu);
+  // for (int i = 0; i < SCENE_COUNT; i++)
+  //   scenes[i]->init(&window, &vwprt, &gpu);
+
+  // current_scene = SCENE__MAIN_MENU;
+  // previous_scene = SCENE__MAIN_MENU;
 
   // TODO: temp for testing
-  // scenes[SCENE__OCEAN]->init(&window, &vwprt, &gpu);
-
-  current_scene = SCENE__MAIN_MENU;
-  previous_scene = SCENE__MAIN_MENU;
+  scenes[SCENE__ACTION]->init(&window, &vwprt, &gpu);
 
   // TODO: temp for testing
-  // current_scene = SCENE__OCEAN;
-  // previous_scene = SCENE__OCEAN;
+  current_scene = SCENE__ACTION;
+  previous_scene = SCENE__ACTION;
 
   gpu.enable_depth_test();
 

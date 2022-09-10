@@ -11,4 +11,10 @@ void gpu__set_mvp(
   struct gpu_api const *const gpu
 );
 
+void mesh__tile_uvs(
+  float x_multiplier,
+  float y_multiplier,
+  struct drawable_mesh *const mesh
+);
+
 #endif

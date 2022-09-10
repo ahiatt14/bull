@@ -6,7 +6,7 @@
 #include "player.h"
 #include "bull_math.h"
 #include "constants.h"
-#include "gpu_helpers.h"
+#include "tail_helpers.h"
 
 #include "bird_mesh.h"
 #include "default_vert.h"

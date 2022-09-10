@@ -68,6 +68,7 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/water.png 4 ${artifact_dir} && \
   ./${tools}sourcify-png.exe assets/png/stars.png 4 ${artifact_dir} && \
   ./${tools}sourcify-png.exe assets/png/mountain.png 4 ${artifact_dir} && \
+  ./${tools}sourcify-png.exe assets/png/clouds.png 4 ${artifact_dir} && \
   ./${tools}sourcify-png.exe assets/png/steam.png 4 ${artifact_dir} \
   && \
   ./${tools}sourcify-obj.exe assets/mesh/pyramid.obj flat ${artifact_dir} && \

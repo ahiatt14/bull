@@ -4,7 +4,7 @@
 
 #include "scene.h"
 #include "constants.h"
-#include "gpu_helpers.h"
+#include "tail_helpers.h"
 
 #include "exclamation_mesh.h"
 

@@ -8,7 +8,7 @@
 
 #include "constants.h"
 #include "bull_math.h"
-#include "gpu_helpers.h"
+#include "tail_helpers.h"
 
 #include "lowpoly_sphere_mesh.h"
 

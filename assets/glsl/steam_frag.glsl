@@ -2,12 +2,6 @@
 
 uniform sampler2D surface_texture;
 
-uniform vec3 color = vec3(
-  0.9,
-  0.9,
-  0.9
-);
-
 uniform vec3 light_dir = vec3(
   0,
   -1,
@@ -20,7 +14,7 @@ uniform vec3 light_color = vec3(
   1
 );
 
-uniform vec3 top_color = vec3(
+uniform vec3 bottom_color = vec3(
   1,
   1,
   1
@@ -44,9 +38,9 @@ void main() {
   vec3 material = texture(surface_texture, fs_in.tex_uv).rgb;
 
   vec3 faded = mix(
-    top_color,
+    bottom_color,
     material,
-    2 * normalized_altitude - 0.3
+    2 * normalized_altitude - 0.5
   );
 
   vec3 diffuse =

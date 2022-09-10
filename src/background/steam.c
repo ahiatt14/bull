@@ -6,7 +6,7 @@
 #include "tail.h"
 #include "steam.h"
 
-#include "gpu_helpers.h"
+#include "tail_helpers.h"
 #include "constants.h"
 #include "bull_math.h"
 
@@ -290,13 +290,13 @@ void steam__draw_column(
   );
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
-    "top_color",
+    "bottom_color",
     COLOR_AQUA_BLUE
   );
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
     "light_color",
-    COLOR_MAGENTA_WHITE
+    COLOR_EVENING_SUNLIGHT
   );
   gpu->set_fragment_shader_float(
     &shared_steam_shader,

@@ -1,7 +1,7 @@
 #include "tail.h"
 #include "core.h"
 
-#include "gpu_helpers.h"
+#include "tail_helpers.h"
 #include "constants.h"
 
 #include "sphere_mesh.h"

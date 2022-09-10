@@ -6,7 +6,7 @@
 //   0
 // );
 
-float max_altitude = 4;
+float max_altitude = 15;
 
 uniform sampler2D sky_texture;
 
@@ -38,11 +38,11 @@ void main() {
     mix(
       horizon_color,
       material,
-      normalized_altitude - 0.6
-    );
+      2 * normalized_altitude - 0.6
+    ) * 0.8;
 
   FragColor = vec4(
-    mixed,
+    horizon_color,
     1
   );
 }
