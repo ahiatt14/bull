@@ -296,7 +296,7 @@ void steam__draw_column(
   gpu->set_fragment_shader_vec3(
     &shared_steam_shader,
     "light_color",
-    COLOR_EVENING_SUNLIGHT
+    COLOR_GOLDEN_YELLOW
   );
   gpu->set_fragment_shader_float(
     &shared_steam_shader,

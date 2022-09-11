@@ -40,12 +40,12 @@ void main() {
   vec3 faded = mix(
     bottom_color,
     material,
-    2 * normalized_altitude - 0.5
+    2 * normalized_altitude - 0.3
   );
 
   vec3 diffuse =
     light_color *
-    max(dot(fs_in.normal, -light_dir), 0) * 0.7;
+    max(dot(fs_in.normal, -light_dir), 0) * 0.55;
 
   vec3 mixed = faded + diffuse;
   

@@ -3,7 +3,6 @@
 #include "constants.h"
 
 struct shader FLAT_TEXTURE_SHADER;
-struct shader ALPHA_TEXTURE_SHADER;
 struct shader SOLID_COLOR_SHADER;
 struct shader NORMALS_COLOR_SHADER;
 struct shader NORMALS_VIS_SHADER;

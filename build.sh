@@ -37,6 +37,9 @@ build_assets() {
   # mkdir obj
 
   # TODO: this ain't sustainable!
+  ./${tools}validate-glsl.exe assets/glsl/normal_debug_frag.glsl frag && \
+  ./${tools}validate-glsl.exe assets/glsl/normal_debug_vert.glsl vert && \
+  ./${tools}validate-glsl.exe assets/glsl/normal_debug_geo.glsl geo && \
   ./${tools}validate-glsl.exe assets/glsl/default_vert.glsl vert && \
   ./${tools}validate-glsl.exe assets/glsl/solid_color_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/flat_texture_frag.glsl frag && \
@@ -45,12 +48,13 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/sky_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/bouncer_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/steam_frag.glsl frag && \
-  ./${tools}validate-glsl.exe assets/glsl/normal_debug_frag.glsl frag && \
-  ./${tools}validate-glsl.exe assets/glsl/normal_debug_vert.glsl vert && \
-  ./${tools}validate-glsl.exe assets/glsl/normal_debug_geo.glsl geo && \
-  ./${tools}validate-glsl.exe assets/glsl/alpha_texture_frag.glsl frag && \
+  ./${tools}validate-glsl.exe assets/glsl/firing_guide_frag.glsl frag && \
+  ./${tools}validate-glsl.exe assets/glsl/statue_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/mountain_frag.glsl frag \
   && \
+  ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_frag.glsl ${artifact_dir} && \
+  ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_vert.glsl ${artifact_dir} && \
+  ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_geo.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/flat_texture_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/solid_color_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/default_vert.glsl ${artifact_dir} && \
@@ -59,17 +63,16 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/sky_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/bouncer_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/steam_frag.glsl ${artifact_dir} && \
-  ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_frag.glsl ${artifact_dir} && \
-  ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_vert.glsl ${artifact_dir} && \
-  ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_geo.glsl ${artifact_dir} && \
-  ./${tools}sourcify-glsl.exe assets/glsl/alpha_texture_frag.glsl ${artifact_dir} && \
+  ./${tools}sourcify-glsl.exe assets/glsl/firing_guide_frag.glsl ${artifact_dir} && \
+  ./${tools}sourcify-glsl.exe assets/glsl/statue_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/mountain_frag.glsl ${artifact_dir} \
   && \
-  ./${tools}sourcify-png.exe assets/png/water.png 4 ${artifact_dir} && \
-  ./${tools}sourcify-png.exe assets/png/stars.png 4 ${artifact_dir} && \
-  ./${tools}sourcify-png.exe assets/png/mountain.png 4 ${artifact_dir} && \
-  ./${tools}sourcify-png.exe assets/png/clouds.png 4 ${artifact_dir} && \
-  ./${tools}sourcify-png.exe assets/png/steam.png 4 ${artifact_dir} \
+  ./${tools}sourcify-png.exe assets/png/water.png 3 ${artifact_dir} && \
+  ./${tools}sourcify-png.exe assets/png/mountain.png 3 ${artifact_dir} && \
+  ./${tools}sourcify-png.exe assets/png/clouds.png 3 ${artifact_dir} && \
+  ./${tools}sourcify-png.exe assets/png/fireball.png 3 ${artifact_dir} && \
+  ./${tools}sourcify-png.exe assets/png/statue.png 3 ${artifact_dir} && \
+  ./${tools}sourcify-png.exe assets/png/steam.png 3 ${artifact_dir} \
   && \
   ./${tools}sourcify-obj.exe assets/mesh/pyramid.obj flat ${artifact_dir} && \
   ./${tools}sourcify-obj.exe assets/mesh/exclamation.obj flat ${artifact_dir} && \
@@ -78,6 +81,7 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere.obj flat ${artifact_dir} && \
   ./${tools}sourcify-obj.exe assets/mesh/smooth_cube.obj flat ${artifact_dir} && \
   ./${tools}sourcify-obj.exe assets/mesh/sky_cylinder.obj smooth ${artifact_dir} && \
+  ./${tools}sourcify-obj.exe assets/mesh/angel.obj smooth ${artifact_dir} && \
   ./${tools}sourcify-obj.exe assets/mesh/mountain.obj smooth ${artifact_dir}
   # TODO: would be nice to get obj files outta these when building assets,
   # gotta figure out way to send obj files to obj dir in this step?

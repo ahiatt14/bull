@@ -2,13 +2,7 @@
 
 uniform sampler2D surface_texture;
 
-uniform vec3 water_color = vec3(
-  65.0/255.0,
-  95.0/255.0,
-  124.0/255.0
-);
-uniform vec3 light_dir = vec3(0, -1, 0);
-uniform vec3 light_color = vec3(1, 1, 1);
+uniform vec3 fade_color = vec3(0,0,0);
 
 in VS_OUT {
   vec3 world_frag_pos;
@@ -21,15 +15,19 @@ out vec4 FragColor;
 void main()
 {
   vec3 material =
-    water_color *
     texture(surface_texture, fs_in.tex_uv).rgb;
-    
-  vec3 diffuse = light_color;
-
-  // float albedo = max(dot(fs_in.normal, -light_dir), 0) + 0.8;
+  
+  vec3 mixed =
+    mix(
+      material,
+      fade_color,
+      gl_FragCoord.z / 1.0 - 0.5
+      // TODO: changing the camera's far clip distance
+      // will affect this! figure out a param here
+    );
   
   FragColor = vec4(
-    material,
+    mixed,
     1
   );
 }

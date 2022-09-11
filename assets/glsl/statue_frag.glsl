@@ -1,9 +1,8 @@
 #version 330 core
 
-uniform sampler2D surface_texture;
-
-uniform vec3 light_dir = vec3(0, -1, 0);
-uniform vec3 light_color = vec3(1, 1, 1);
+uniform vec3 color = vec3(0,1,0);
+uniform vec3 light_dir = vec3(1,0,0);
+uniform vec3 light_color = vec3(1,1,1);
 
 in VS_OUT {
   vec3 world_frag_pos;
@@ -15,8 +14,6 @@ out vec4 FragColor;
 
 void main()
 {
-  vec3 material = texture(surface_texture, fs_in.tex_uv).rgb * 0.5;
-
   float incidence = max(dot(fs_in.normal, -light_dir), 0);
 
   vec3 diffuse;
@@ -25,8 +22,8 @@ void main()
   } else if (incidence > 0.25) {
     diffuse = light_color * 0.15;
   } else {
-    diffuse = vec3(0, 0, 0);
+    diffuse = color * incidence;
   }
   
-  FragColor = vec4(material + diffuse, 1);
+  FragColor = vec4(color + diffuse, 1);
 }

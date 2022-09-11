@@ -169,12 +169,12 @@ void bouncers__draw_grid(
   gpu->set_fragment_shader_vec3(
     &shared_bouncer_shader,
     "core_color",
-    COLOR_DARK_SLATE_GREY
+    COLOR_NEON_PURPLE
   );
   gpu->set_fragment_shader_vec3(
     &shared_bouncer_shader,
     "edge_color",
-    COLOR_EVENING_SUNLIGHT
+    COLOR_MAGENTA_WHITE
   );
 
   for (int_fast8_t r = 0; r < BOUNCERS_GRID_ROW_COUNT; r++)

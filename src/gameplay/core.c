@@ -37,6 +37,17 @@ void core__draw(
   struct core_state const *const core
 ) {
   gpu->select_shader(&shared_core_shader);
+  gpu->set_fragment_shader_vec3(
+    &shared_core_shader,
+    "light_dir",
+    vec3__normalize((struct vec3){ 1, -10, 2 })
+  );
+  gpu->set_fragment_shader_vec3(
+    &shared_core_shader,
+    "light_color",
+    COLOR_MAGENTA_WHITE
+  );
+  
   space__create_model(
     &WORLDSPACE,
     &core->transform,

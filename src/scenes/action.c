@@ -11,6 +11,9 @@
 #include "core.h"
 #include "bouncers.h"
 
+#include "firing_guide_frag.h"
+#include "default_vert.h"
+
 // CONSTANTS
 
 #define CORE_RADIUS 1
@@ -32,6 +35,10 @@ struct vec3 slide_along_radius_around_world_origin(
 
 static struct camera cam;
 static struct gamepad_input gamepad;
+
+// static struct m4x4 firing_guide_local_to_world;
+// static struct m3x3 firing_guide_normals_local_to_world;
+static struct shader firing_guide_shader;
 
 static struct core_state core = (struct core_state){
   .transform = {
@@ -91,6 +98,10 @@ void action__init(
 
   player__copy_assets_to_gpu(gpu);
 
+  firing_guide_shader.frag_shader_src = firing_guide_frag_src;
+  firing_guide_shader.vert_shader_src = default_vert_src;
+  gpu->copy_shader_to_gpu(&firing_guide_shader);
+
   ocean__init(
     window,
     vwprt,
@@ -98,7 +109,7 @@ void action__init(
   );
 
   for (int i = 0; i < BOUNCER_GRID_MAX_PER_ROW; i++) {
-    bouncers__add_to_grid(4, i, &bouncy_grid);
+    // bouncers__add_to_grid(4, i, &bouncy_grid);
     bouncers__add_to_grid(6, i, &bouncy_grid);
     bouncers__add_to_grid(8, i, &bouncy_grid);
   }
@@ -191,6 +202,9 @@ void action__tick(
     noop
   );
   gpu->clear_depth_buffer();
+
+  // gpu->select_shader(&firing_guide_shader);
+  // gpu->draw_mesh(&QUAD);
 
   core__draw(&cam, gpu, &core);
   bouncers__draw_grid(&cam, gpu, &bouncy_grid);

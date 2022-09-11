@@ -64,10 +64,10 @@ void water__init_mesh_data() {
         ORIGIN_OFFSET.y + y * FACE_WIDE_KM_LENGTH;
       mesh.vertices[vert_index].uv.x = x *
         FACE_WIDE_KM_LENGTH / (FACE_WIDE_KM_LENGTH *
-        VERTS_PER_SIDE * 0.1f);
+        VERTS_PER_SIDE * 0.05f);
       mesh.vertices[vert_index].uv.y = y *
         FACE_WIDE_KM_LENGTH / (FACE_WIDE_KM_LENGTH *
-        VERTS_PER_SIDE * 0.1f);
+        VERTS_PER_SIDE * 0.05f);
       vert_index++;
     }
   }
@@ -169,8 +169,8 @@ void water__draw(
   gpu->select_texture(&water_texture);
   gpu->set_fragment_shader_vec3(
     &surface_shader,
-    "water_color",
-    COLOR_AQUA_BLUE
+    "fade_color",
+    COLOR_DARK_SLATE_GREY
   );
   space__create_model(
     &WORLDSPACE,
