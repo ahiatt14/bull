@@ -206,7 +206,7 @@ void action__tick(
   // gpu->select_shader(&firing_guide_shader);
   // gpu->draw_mesh(&QUAD);
 
-  core__draw(&cam, gpu, &core);
+  // core__draw(&cam, gpu, &core);
   bouncers__draw_grid(&cam, gpu, &bouncy_grid);
 
   player__draw(&cam, gpu, &player_one);

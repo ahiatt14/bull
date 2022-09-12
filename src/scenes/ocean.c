@@ -51,7 +51,7 @@ static struct shader sky_shader;
 static struct m4x4 sky_local_to_world;
 static struct m3x3 sky_normals_local_to_world;
 static struct transform sky_transform = {
-  { 0, -1, 0 }, { 0, 0, 0 }, 30
+  { 0, -1, 0 }, { 0, 180, 0 }, 32
 };
 
 // MOUNTAINS
@@ -103,6 +103,7 @@ static struct steam_column steam2 = (struct steam_column){
 // };
 
 static struct camera cam;
+static struct camera sky_cam;
 
 void ocean__init(
   struct window_api const *const window,
@@ -111,10 +112,16 @@ void ocean__init(
 ) {
 
   cam.position = (struct vec3){ 0, 0.05, 7 };
-  cam.look_target = (struct vec3){ 0, 1, 0 };
+  cam.look_target = (struct vec3){ 0, 1.05, 0 };
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
   cam.far_clip_distance = 100;
+
+  sky_cam.position = (struct vec3){ 0, 0, 0 };
+  sky_cam.look_target = (struct vec3){ 0, 0, -1 };
+  sky_cam.horizontal_fov_in_deg = 60;
+  sky_cam.near_clip_distance = 0.3f;
+  sky_cam.far_clip_distance = 100;
 
   // WATER
 
@@ -135,6 +142,7 @@ void ocean__init(
   sky_shader.frag_shader_src = sky_frag_src;
   sky_shader.vert_shader_src = default_vert_src;
   gpu->copy_shader_to_gpu(&sky_shader);
+  mesh__tile_uvs(3, 3, &sky_cylinder_mesh);
   gpu->copy_static_mesh_to_gpu(&sky_cylinder_mesh);
   gpu->copy_texture_to_gpu(&clouds_texture);
   space__create_model(
@@ -246,7 +254,9 @@ void ocean__tick(
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
-  gpu->cull_back_faces();
+  // SKY
+
+  gpu->cull_no_faces();
 
   gpu->select_shader(&sky_shader);
   gpu->select_texture(&clouds_texture);
@@ -266,6 +276,8 @@ void ocean__tick(
 
   // STATUE
 
+  gpu->cull_back_faces();
+
   gpu->select_shader(&statue_shader);
   gpu->set_fragment_shader_vec3(
     &statue_shader,
@@ -280,7 +292,7 @@ void ocean__tick(
   gpu->set_fragment_shader_vec3(
     &statue_shader,
     "light_color",
-    COLOR_BLOOD_RED
+    COLOR_GOLDEN_YELLOW
   );
   gpu__set_mvp(
     &statue_local_to_world,

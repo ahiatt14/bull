@@ -38,11 +38,11 @@ void main() {
     mix(
       horizon_color,
       material,
-      2 * normalized_altitude - 0.6
-    ) * 0.8;
+      1.2 * normalized_altitude - 0.2
+    );
 
   FragColor = vec4(
-    horizon_color,
+    mixed,
     1
   );
 }

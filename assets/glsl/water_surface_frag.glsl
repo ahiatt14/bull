@@ -21,7 +21,7 @@ void main()
     mix(
       material,
       fade_color,
-      gl_FragCoord.z / 1.0 - 0.5
+      1.3 * gl_FragCoord.z / 1.0 - 0.5
       // TODO: changing the camera's far clip distance
       // will affect this! figure out a param here
     );
