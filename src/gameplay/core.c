@@ -17,8 +17,8 @@ static struct m3x3 shared_normals_local_to_world;
 void core__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
-  shared_core_shader.frag_shader_src = core_frag_src;
-  shared_core_shader.vert_shader_src = default_vert_src;
+  shared_core_shader.frag_src = core_frag_src;
+  shared_core_shader.vert_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_core_shader);
 
   gpu->copy_static_mesh_to_gpu(&sphere_mesh);
@@ -37,12 +37,12 @@ void core__draw(
   struct core_state const *const core
 ) {
   gpu->select_shader(&shared_core_shader);
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &shared_core_shader,
     "light_dir",
     vec3__normalize((struct vec3){ 1, -10, 2 })
   );
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &shared_core_shader,
     "light_color",
     COLOR_MAGENTA_WHITE

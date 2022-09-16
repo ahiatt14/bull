@@ -175,7 +175,7 @@ void player__draw(
     &normals_local_to_world
   );
   gpu->select_shader(&SOLID_COLOR_SHADER);
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &SOLID_COLOR_SHADER,
     "color",
     COLOR_WHITE

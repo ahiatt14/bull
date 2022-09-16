@@ -79,7 +79,7 @@ void connect_gamepad__tick(
     &SOLID_COLOR_SHADER,
     gpu
   );
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &SOLID_COLOR_SHADER,
     "color",
     COLOR_RED

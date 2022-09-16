@@ -139,8 +139,8 @@ void ocean__init(
 
   // SKY
 
-  sky_shader.frag_shader_src = sky_frag_src;
-  sky_shader.vert_shader_src = default_vert_src;
+  sky_shader.frag_src = sky_frag_src;
+  sky_shader.vert_src = default_vert_src;
   gpu->copy_shader_to_gpu(&sky_shader);
   mesh__tile_uvs(3, 3, &sky_cylinder_mesh);
   gpu->copy_static_mesh_to_gpu(&sky_cylinder_mesh);
@@ -158,8 +158,8 @@ void ocean__init(
   // STATUE
 
   gpu->copy_static_mesh_to_gpu(&angel_mesh);
-  statue_shader.frag_shader_src = statue_frag_src;
-  statue_shader.vert_shader_src = default_vert_src;
+  statue_shader.frag_src = statue_frag_src;
+  statue_shader.vert_src = default_vert_src;
   gpu->copy_shader_to_gpu(&statue_shader);
   space__create_model(
     &WORLDSPACE,
@@ -173,8 +173,8 @@ void ocean__init(
 
   // MOUNTAINS
 
-  mountain_shader.frag_shader_src = mountain_frag_src;
-  mountain_shader.vert_shader_src = default_vert_src;
+  mountain_shader.frag_src = mountain_frag_src;
+  mountain_shader.vert_src = default_vert_src;
   gpu->copy_shader_to_gpu(&mountain_shader);
   mesh__tile_uvs(2, 2, &mountain_mesh);
   gpu->copy_static_mesh_to_gpu(&mountain_mesh);
@@ -260,7 +260,7 @@ void ocean__tick(
 
   gpu->select_shader(&sky_shader);
   gpu->select_texture(&clouds_texture);
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &sky_shader,
     "horizon_color",
     COLOR_DARK_SLATE_GREY
@@ -279,17 +279,17 @@ void ocean__tick(
   gpu->cull_back_faces();
 
   gpu->select_shader(&statue_shader);
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &statue_shader,
     "light_dir",
-    vec3__normalize((struct vec3){ 10, 0, 1 })
+    vec3__normalize((struct vec3){ -1, -4, 2 })
   );
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &statue_shader,
     "color",
     COLOR_DARK_SLATE_GREY
   );
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &statue_shader,
     "light_color",
     COLOR_GOLDEN_YELLOW
@@ -307,12 +307,12 @@ void ocean__tick(
 
   gpu->select_shader(&mountain_shader);
   gpu->select_texture(&mountain_texture);
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &mountain_shader,
     "light_dir",
     vec3__normalize((struct vec3){ 10, 0, 1 })
   );
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &mountain_shader,
     "light_color",
     COLOR_GOLDEN_YELLOW
@@ -325,10 +325,10 @@ void ocean__tick(
     gpu
   );
   gpu->draw_mesh(&mountain_mesh);
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &mountain_shader,
     "light_dir",
-    vec3__normalize((struct vec3){ -2, 0, 1 })
+    vec3__normalize((struct vec3){ -1, 0, 1 })
   );
   gpu__set_mvp(
     &mountain2_local_to_world,

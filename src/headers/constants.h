@@ -6,6 +6,9 @@
 #define BULL_MAX_TEXTURE_COUNT 100 // TODO: ?
 #define DELTA_TIME_CAP 1.0f / 30.0f
 
+extern struct m3x3 M3X3_IDENTITY;
+extern struct m4x4 M4X4_IDENTITY;
+
 extern struct shader FLAT_TEXTURE_SHADER;
 extern struct shader SOLID_COLOR_SHADER;
 extern struct shader NORMALS_COLOR_SHADER;

@@ -86,8 +86,8 @@ static void move_player(
 
 
 
-  background_shader.frag_shader_src = flat_texture_frag_src;
-  background_shader.vert_shader_src = default_vert_src;
+  background_shader.frag_src = flat_texture_frag_src;
+  background_shader.vert_src = default_vert_src;
   gpu->copy_shader_to_gpu(&background_shader);
   gpu->copy_static_mesh_to_gpu(&background_mesh);
   gpu->copy_texture_to_gpu(&clouds_texture);

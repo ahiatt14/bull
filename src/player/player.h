@@ -29,7 +29,7 @@ struct player_actions {
 
 // PUBLIC API
 
-void player__set_default_state(
+void player__reset_state(
   struct player *const playr
 );
 

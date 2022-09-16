@@ -17,4 +17,14 @@ void mesh__tile_uvs(
   struct drawable_mesh *const mesh
 );
 
+struct vec3 space__transform_space(
+  struct coordinate_space const *const space,
+  struct transform const *const trans
+);
+
+struct vec3 space__world_to_ndc(
+  struct camera const *const cam,
+  struct vec3 pos
+);
+
 #endif

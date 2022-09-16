@@ -13,7 +13,7 @@ struct texture {
   unsigned char *data;
   int width;
   int height;
-  int channels_count;
+  int channel_count;
 };
 
 struct shader {
@@ -21,9 +21,9 @@ struct shader {
   unsigned int _vert_impl_id;
   unsigned int _geo_impl_id;
   unsigned int _impl_id;
-  const char *frag_shader_src;
-  const char *vert_shader_src;
-  const char *geo_shader_src;
+  const char *frag_src;
+  const char *vert_src;
+  const char *geo_src;
 };
 
 struct gpu_api {
@@ -47,7 +47,7 @@ struct gpu_api {
 
   void (*copy_shader_to_gpu)(struct shader *const gpup);
   void (*copy_geo_stage_to_gpu)(
-    const char *geo_shader_src,
+    const char *geo_src,
     struct shader *const gpup
   );
   void (*select_shader)(struct shader const *const gpup);
@@ -63,27 +63,27 @@ struct gpu_api {
   int (*get_viewport_height)();
   int (*get_viewport_width)();
 
-  void (*set_vertex_shader_m3x3)(
+  void (*set_shader_m3x3)(
     struct shader const *const gpup,
     char const *name,
     struct m3x3 const *const value
   );
-  void (*set_vertex_shader_m4x4)(
+  void (*set_shader_m4x4)(
     struct shader const *const gpup,
     char const *name,
     struct m4x4 const *const value
   );
-  void (*set_fragment_shader_vec2)(
+  void (*set_shader_vec2)(
     struct shader const *const gpup,
     char const *name,
     struct vec2 value
   );  
-  void (*set_fragment_shader_vec3)(
+  void (*set_shader_vec3)(
     struct shader const *const gpup,
     char const *name,
     struct vec3 value
   );
-  void (*set_fragment_shader_float)(
+  void (*set_shader_float)(
     struct shader const *const gpup,
     char const *name,
     float value

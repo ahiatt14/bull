@@ -19,7 +19,7 @@
 
 #define BOUYANCY 0.45f
 #define VERTS_PER_LVL 10
-#define LVL_HEIGHT 0.7f
+#define LVL_HEIGHT 1.2f
 #define MIN_RING_RADII 0.04f
 #define RING_VERT_DEG_OFFSET 360.0f / VERTS_PER_LVL
 #define VERT_COUNT VERTS_PER_LVL * STEAM__LVL_COUNT
@@ -40,8 +40,8 @@ void steam__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
 
-  shared_steam_shader.frag_shader_src = steam_frag_src;
-  shared_steam_shader.vert_shader_src = default_vert_src;
+  shared_steam_shader.frag_src = steam_frag_src;
+  shared_steam_shader.vert_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_steam_shader);
 
   gpu->copy_texture_to_gpu(&steam_texture);
@@ -283,22 +283,22 @@ void steam__draw_column(
   
   gpu->select_shader(&shared_steam_shader);
   gpu->select_texture(&steam_texture);
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &shared_steam_shader,
     "light_dir",
     light_direction
   );
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &shared_steam_shader,
     "bottom_color",
     COLOR_AQUA_BLUE
   );
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &shared_steam_shader,
     "light_color",
     COLOR_GOLDEN_YELLOW
   );
-  gpu->set_fragment_shader_float(
+  gpu->set_shader_float(
     &shared_steam_shader,
     "max_altitude",
     (LVL_HEIGHT * STEAM__LVL_COUNT) / 2.0f

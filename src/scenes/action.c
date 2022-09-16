@@ -6,6 +6,7 @@
 #include "constants.h"
 #include "scene.h"
 #include "bull_math.h"
+#include "tail_helpers.h"
 
 #include "player.h"
 #include "core.h"
@@ -36,17 +37,22 @@ struct vec3 slide_along_radius_around_world_origin(
 static struct camera cam;
 static struct gamepad_input gamepad;
 
-// static struct m4x4 firing_guide_local_to_world;
-// static struct m3x3 firing_guide_normals_local_to_world;
-static struct shader firing_guide_shader;
-
-static struct core_state core = (struct core_state){
-  .transform = {
-    {0,0,0},
-    {0,0,0},
-    CORE_RADIUS * 2
-  }
+static struct shader guide_shader;
+static struct m4x4 guide_local_to_world;
+static struct m3x3 guide_normals_local_to_world;
+static struct transform guide_transform = (struct transform){
+  .position = {0,-0.1f,0},
+  .rotation_in_deg = {-90,0,0},
+  .scale = 11
 };
+
+// static struct core_state core = (struct core_state){
+//   .transform = {
+//     {0,0,0},
+//     {0,0,0},
+//     CORE_RADIUS * 2
+//   }
+// };
 
 static struct bouncer_grid bouncy_grid;
 
@@ -88,8 +94,9 @@ void action__init(
   struct gpu_api const *const gpu
 ) {
 
-  cam.position = (struct vec3){ 0, 1, 0.01f };
+  cam.position = (struct vec3){ 0, 1, 0.1f };
   cam.look_target = ORIGIN;
+
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_ortho(12, 9, -4, 4, &cam);
 
@@ -98,15 +105,16 @@ void action__init(
 
   player__copy_assets_to_gpu(gpu);
 
-  firing_guide_shader.frag_shader_src = firing_guide_frag_src;
-  firing_guide_shader.vert_shader_src = default_vert_src;
-  gpu->copy_shader_to_gpu(&firing_guide_shader);
-
-  ocean__init(
-    window,
-    vwprt,
-    gpu
+  guide_shader.frag_src = firing_guide_frag_src;
+  guide_shader.vert_src = default_vert_src;
+  gpu->copy_shader_to_gpu(&guide_shader);
+  space__create_model(&WORLDSPACE, &guide_transform, &guide_local_to_world);
+  space__create_normals_model(
+    &guide_local_to_world,
+    &guide_normals_local_to_world
   );
+
+  ocean__init(window, vwprt, gpu);
 
   for (int i = 0; i < BOUNCER_GRID_MAX_PER_ROW; i++) {
     // bouncers__add_to_grid(4, i, &bouncy_grid);
@@ -203,13 +211,33 @@ void action__tick(
   );
   gpu->clear_depth_buffer();
 
-  // gpu->select_shader(&firing_guide_shader);
-  // gpu->draw_mesh(&QUAD);
-
   // core__draw(&cam, gpu, &core);
   bouncers__draw_grid(&cam, gpu, &bouncy_grid);
 
   player__draw(&cam, gpu, &player_one);
+
+  gpu->select_shader(&guide_shader);
+  gpu__set_mvp(
+    &guide_local_to_world,
+    &M3X3_IDENTITY,
+    &cam,
+    &guide_shader,
+    gpu
+  );
+  gpu->set_shader_vec3(
+    &guide_shader,
+    "color",
+    COLOR_RED
+  );
+  gpu->set_shader_float(
+    &guide_shader,
+    "player_radius_world",
+    vec3__distance(
+      player_one.transform.position,
+      ORIGIN
+    )
+  );
+  gpu->draw_mesh(&QUAD);
 }
 
 // HELPERS

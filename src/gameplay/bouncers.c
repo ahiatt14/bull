@@ -32,8 +32,8 @@ static uint32_t switch_bit_off(uint8_t place, uint32_t state) {
 void bouncers__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
-  shared_bouncer_shader.frag_shader_src = bouncer_frag_src;
-  shared_bouncer_shader.vert_shader_src = default_vert_src;
+  shared_bouncer_shader.frag_src = bouncer_frag_src;
+  shared_bouncer_shader.vert_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_bouncer_shader);
   gpu->copy_static_mesh_to_gpu(&lowpoly_sphere_mesh);
 }
@@ -166,12 +166,12 @@ void bouncers__draw_grid(
   static struct m3x3 normals_local_to_world;
 
   gpu->select_shader(&shared_bouncer_shader);
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &shared_bouncer_shader,
     "core_color",
     COLOR_NEON_PURPLE
   );
-  gpu->set_fragment_shader_vec3(
+  gpu->set_shader_vec3(
     &shared_bouncer_shader,
     "edge_color",
     COLOR_MAGENTA_WHITE

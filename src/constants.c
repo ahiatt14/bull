@@ -2,6 +2,18 @@
 
 #include "constants.h"
 
+struct m3x3 M3X3_IDENTITY = (struct m3x3){{
+  1, 0, 0,
+  0, 1, 0,
+  0, 0, 1
+}};
+struct m4x4 M4X4_IDENTITY = (struct m4x4){{
+  1, 0, 0, 0,
+  0, 1, 0, 0,
+  0, 0, 1, 0,
+  0, 0, 0, 1
+}};
+
 struct shader FLAT_TEXTURE_SHADER;
 struct shader SOLID_COLOR_SHADER;
 struct shader NORMALS_COLOR_SHADER;
