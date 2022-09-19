@@ -169,7 +169,7 @@ void bouncers__draw_grid(
   gpu->set_shader_vec3(
     &shared_bouncer_shader,
     "core_color",
-    COLOR_NEON_PURPLE
+    COLOR_HOT_PINK
   );
   gpu->set_shader_vec3(
     &shared_bouncer_shader,

@@ -95,6 +95,12 @@ const struct vec3 COLOR_BLOOD_RED = {
   30.0f / 255.0f
 };
 
+const struct vec3 COLOR_HOT_PINK = {
+  255.0f / 255.0f,
+  56.0f / 255.0f,
+  146.0f / 255.0f
+};
+
 const struct vec3 ORIGIN = { 0, 0, 0 };
 const struct coordinate_space WORLDSPACE = {
   .up = { 0, 1, 0 },
