@@ -8,6 +8,7 @@
 #include "constants.h"
 #include "bull_math.h"
 #include "tail_helpers.h"
+#include "debugging.h"
 
 #include "water.h"
 #include "steam.h"
@@ -28,11 +29,6 @@
 #include "water_surface_frag.h"
 #include "sky_frag.h"
 
-// debug
-#include "barebones_vert.h"
-#include "coord_gizmo_geo.h"
-#include "coord_gizmo_frag.h"
-
 // READ ONLY
 
 static const struct vec2 WIND_KM_PER_SEC = {
@@ -45,20 +41,7 @@ static const struct vec2 WIND_KM_PER_SEC = {
 // LOCALS
 
 // TODO: debugging
-static struct shader world_coord_gizmo_shader;
-static struct drawable_mesh world_coord_gizmo_mesh = (struct drawable_mesh){
-  .vertices = (struct vertex[3]){
-    {{ 0, 0, 0 }, { 0, 1, 0 }, { 0, 0 }},
-    {{ 0, 0, 0 }, { 0, 1, 0 }, { 0, 0 }},
-    {{ 0, 0, 0 }, { 0, 1, 0 }, { 0, 0 }}
-  },
-  .indices = (unsigned int[3]){
-    0, 1, 2
-  },
-  .vertices_size = sizeof(struct vertex) * 3,
-  .indices_size = sizeof(unsigned int) * 3,
-  .indices_length = 3
-};
+static struct coord_gizmo world_coord_gizmo;
 
 static struct vec3 steam_light_direction = {
   1,
@@ -144,12 +127,13 @@ void ocean__init(
   sky_cam.near_clip_distance = 0.3f;
   sky_cam.far_clip_distance = 100;
 
-  // DEBUG
-  world_coord_gizmo_shader.vert_src = barebones_vert_src;
-  world_coord_gizmo_shader.geo_src = coord_gizmo_geo_src;
-  world_coord_gizmo_shader.frag_src = coord_gizmo_frag_src;
-  gpu->copy_shader_to_gpu(&world_coord_gizmo_shader);
-  gpu->copy_static_mesh_to_gpu(&world_coord_gizmo_mesh);
+  // DEBUGGING
+  // TODO: my kingdom for constexpr in C
+  world_coord_gizmo = (struct coord_gizmo){
+    .position = ORIGIN,
+    .space = WORLDSPACE
+  };
+  coord_gizmo__copy_assets_to_gpu(gpu);
 
   // WATER
 
@@ -282,35 +266,14 @@ void ocean__tick(
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
-  // DEBUG
-
-  gpu->select_shader(&world_coord_gizmo_shader);
-  gpu->set_shader_m4x4(
-    &world_coord_gizmo_shader,
-    "view",
-    &cam.lookat
-  );
-  gpu->set_shader_vec3(
-    &world_coord_gizmo_shader,
-    "up",
-    WORLDSPACE.up
-  );
-  gpu->set_shader_vec3(
-    &world_coord_gizmo_shader,
-    "right",
-    WORLDSPACE.right
-  );
-  gpu->set_shader_vec3(
-    &world_coord_gizmo_shader,
-    "forward",
-    WORLDSPACE.forward
-  );
-  gpu->draw_mesh(&world_coord_gizmo_mesh);
+  coord_gizmo__draw(&cam, gpu, &world_coord_gizmo);
 
   // SKY
   
   // TODO: go invert the sky cylinder normals in blender ya shmole
   gpu->cull_no_faces();
+
+  // TODO: draw wireframe to help debug
 
   gpu->select_shader(&sky_shader);
   gpu->select_texture(&clouds_texture);

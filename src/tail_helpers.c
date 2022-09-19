@@ -30,22 +30,6 @@ void mesh__tile_uvs(
   }
 }
 
-struct vec3 space__transform_space(
-  struct coordinate_space const *const space,
-  struct transform const *const trans
-) {
-  static struct m4x4 model;
-  space__create_model(
-    space,
-    trans,
-    &model
-  );
-  return m4x4_x_point(
-    &model,
-    trans->position
-  );
-}
-
 // TODO: need a deep dive on this, not sure we're ending up where we want
 struct vec3 space__world_to_ndc(
   struct camera const *const cam,

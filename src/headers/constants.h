@@ -20,6 +20,8 @@ extern const struct vec3 COLOR_WHITE;
 extern const struct vec3 COLOR_LIGHT_GREY;
 extern const struct vec3 COLOR_BLACK;
 extern const struct vec3 COLOR_RED;
+extern const struct vec3 COLOR_GREEN;
+extern const struct vec3 COLOR_BLUE;
 extern const struct vec3 COLOR_SKY_BLUE;
 extern const struct vec3 COLOR_GOLDEN_YELLOW;
 extern const struct vec3 COLOR_EVENING_SUNLIGHT;
