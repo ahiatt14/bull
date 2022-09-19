@@ -227,7 +227,7 @@ void action__tick(
   gpu->set_shader_vec3(
     &guide_shader,
     "color",
-    COLOR_RED
+    COLOR_MAGENTA_WHITE
   );
   gpu->set_shader_float(
     &guide_shader,
