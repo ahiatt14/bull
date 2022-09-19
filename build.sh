@@ -39,6 +39,8 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/normal_debug_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/normal_debug_vert.glsl vert && \
   ./${tools}validate-glsl.exe assets/glsl/normal_debug_geo.glsl geo && \
+  ./${tools}validate-glsl.exe assets/glsl/coord_gizmo_geo.glsl geo && \
+  ./${tools}validate-glsl.exe assets/glsl/coord_gizmo_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/barebones_vert.glsl vert && \
   ./${tools}validate-glsl.exe assets/glsl/default_vert.glsl vert && \
   ./${tools}validate-glsl.exe assets/glsl/solid_color_frag.glsl frag && \
@@ -55,6 +57,8 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_vert.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_geo.glsl ${artifact_dir} && \
+  ./${tools}sourcify-glsl.exe assets/glsl/coord_gizmo_geo.glsl ${artifact_dir} && \
+  ./${tools}sourcify-glsl.exe assets/glsl/coord_gizmo_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/flat_texture_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/solid_color_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/default_vert.glsl ${artifact_dir} && \
