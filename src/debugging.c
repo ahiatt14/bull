@@ -5,7 +5,7 @@
 #include "tail_helpers.h"
 #include "constants.h"
 
-#include "barebones_vert.h"
+#include "coord_gizmo_vert.h"
 #include "coord_gizmo_geo.h"
 #include "coord_gizmo_frag.h"
 
@@ -28,7 +28,7 @@ static struct drawable_mesh coord_gizmo_mesh = (struct drawable_mesh){
 void coord_gizmo__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
-  coord_gizmo_shader.vert_src = barebones_vert_src;
+  coord_gizmo_shader.vert_src = coord_gizmo_vert_src;
   coord_gizmo_shader.geo_src = coord_gizmo_geo_src;
   coord_gizmo_shader.frag_src = coord_gizmo_frag_src;
   gpu->copy_shader_to_gpu(&coord_gizmo_shader);

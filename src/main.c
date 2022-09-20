@@ -5,6 +5,8 @@
 #include "constants.h"
 #include "scene.h"
 
+#include "debugging.h"
+
 #include "normal_debug_geo.h"
 #include "normal_debug_frag.h"
 #include "normal_debug_vert.h"
@@ -83,7 +85,7 @@ int main() {
     WINDOW_HEIGHT_IN_SCREEN_COORD,
     50,
     50,
-    "Greathawk",
+    "twister",
     REQUEST_VSYNC_ON,
     REQUEST_WINDOWED,
     REQUEST_MSAA_ON,
@@ -188,6 +190,8 @@ int main() {
 }
 
 void copy_shared_assets_to_gpu() {
+
+  coord_gizmo__copy_assets_to_gpu(&gpu);
 
   FLAT_TEXTURE_SHADER.frag_src = flat_texture_frag_src;
   FLAT_TEXTURE_SHADER.vert_src = default_vert_src;

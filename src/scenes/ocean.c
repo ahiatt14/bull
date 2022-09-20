@@ -29,6 +29,10 @@
 #include "water_surface_frag.h"
 #include "sky_frag.h"
 
+// CONSTANTS
+
+#define CAMERA_ROTATE_SPEED 4
+
 // READ ONLY
 
 static const struct vec2 WIND_KM_PER_SEC = {
@@ -107,7 +111,6 @@ static struct steam_column steam2 = (struct steam_column){
 // };
 
 static struct camera cam;
-static struct camera sky_cam;
 
 void ocean__init(
   struct window_api const *const window,
@@ -121,19 +124,12 @@ void ocean__init(
   cam.near_clip_distance = 0.3f;
   cam.far_clip_distance = 100;
 
-  sky_cam.position = (struct vec3){ 0, 0, 0 };
-  sky_cam.look_target = (struct vec3){ 0, 0, -1 };
-  sky_cam.horizontal_fov_in_deg = 60;
-  sky_cam.near_clip_distance = 0.3f;
-  sky_cam.far_clip_distance = 100;
-
   // DEBUGGING
   // TODO: my kingdom for constexpr in C
   world_coord_gizmo = (struct coord_gizmo){
-    .position = ORIGIN,
+    .position = { 0, 1, 0 },
     .space = WORLDSPACE
   };
-  coord_gizmo__copy_assets_to_gpu(gpu);
 
   // WATER
 
@@ -233,7 +229,7 @@ void ocean__tick(
 
   static struct m4x4 camera_rotation;
   m4x4__rotation(
-    deg_to_rad(delta_time * 2),
+    deg_to_rad(delta_time * CAMERA_ROTATE_SPEED),
     WORLDSPACE.up,
     &camera_rotation
   );
