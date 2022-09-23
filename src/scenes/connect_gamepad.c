@@ -16,10 +16,6 @@
 
 static struct camera cam;
 
-static double seconds_since_creation;
-static double tick_start_time;
-static double delta_time;
-
 static struct transform exclamation_transform = {{0,0,0},{90,0,0},1};
 static struct m4x4 exclamation_local_to_world;
 
@@ -46,16 +42,13 @@ void connect_gamepad__init(
 }
 
 void connect_gamepad__tick(
+  struct gametime time,
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu,
   uint8_t previous_scene,
   void (*switch_scene)(uint8_t new_scene)
 ) {
-  tick_start_time = seconds_since_creation;
-  seconds_since_creation = window->get_seconds_since_creation();
-  delta_time = seconds_since_creation - tick_start_time;
-  if (delta_time > DELTA_TIME_CAP) delta_time = DELTA_TIME_CAP;
 
   // UPDATE
   if (window->gamepad_is_connected()) {
@@ -74,7 +67,7 @@ void connect_gamepad__tick(
   );
   gpu__set_mvp(
     &exclamation_local_to_world,
-    &(struct m3x3){{1,0,0,0,1,0,0,0,1}},
+    &M3X3_IDENTITY,
     &cam,
     &SOLID_COLOR_SHADER,
     gpu

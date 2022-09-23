@@ -152,6 +152,14 @@ int main() {
     // glfwWaitEvents & glfwPostEmptyEvent
     if (!paused) {
 
+      static double tick_start_time;
+      static struct gametime time;
+
+      tick_start_time = time.sec_since_game_launch;
+      time.sec_since_game_launch = window.get_sec_since_game_launch();
+      time.delta = time.sec_since_game_launch - tick_start_time;
+      if (time.delta > DELTA_CAP) time.delta = DELTA_CAP;
+
       gpu.clear(&COLOR_BLACK);
 
       window.get_gamepad_input(&gamepad);
@@ -171,6 +179,7 @@ int main() {
       }
 
       scenes[current_scene]->tick(
+        time,
         &window,
         &vwprt,
         &gpu,

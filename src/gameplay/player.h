@@ -3,6 +3,8 @@
 
 #include "tail.h"
 
+#include "tail_helpers.h"
+
 #define PLAYER_INPUT_STATE__IDLE 0
 #define PLAYER_INPUT_STATE__THRUSTING 1
 #define PLAYER_INPUT_STATE__AUTOFIRING 2
@@ -22,8 +24,14 @@ struct player {
 };
 
 struct player_actions {
-  void (*start_auto_fire)();
-  void (*stop_auto_fire)();
+  void (*start_autofire)(
+    struct gametime time,
+    struct player const *const playr
+  );
+  void (*stop_autofire)(
+    struct gametime time,
+    struct player const *const playr
+  );
   // void (*fire_special)();
 };
 
@@ -38,7 +46,7 @@ void player__copy_assets_to_gpu(
 );
 
 void player__update(
-  double delta_time,
+  struct gametime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr

@@ -10,7 +10,7 @@ void core__copy_assets_to_gpu(
 );
 
 void core__update(
-  double delta_time,
+  double delta,
   struct core_state *const core
 );
 

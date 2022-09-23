@@ -100,8 +100,7 @@ void water__copy_assets_to_gpu(
 
 void water__update_waves(
   struct vec2 wind_km_per_sec,
-  double delta_time,
-  double seconds_since_creation,
+  struct gametime time,
   struct gpu_api const *const gpu
 ) {
 
@@ -111,11 +110,11 @@ void water__update_waves(
   static float z_position; z_position = 0;
   for (int y = 0; y < VERTS_PER_SIDE; y++) {
     z_position = WAVE_AMPLITUDE * sin(
-      seconds_since_creation * 0.5f + WAVE_FREQUENCY * y
+      time.sec_since_game_launch * 0.5f + WAVE_FREQUENCY * y
     );
     for (int x = 0; x < VERTS_PER_SIDE; x++) {
-      mesh.vertices[vert_index].uv.x += wind_km_per_sec.x * delta_time;
-      mesh.vertices[vert_index].uv.y += wind_km_per_sec.y * delta_time;
+      mesh.vertices[vert_index].uv.x += wind_km_per_sec.x * time.delta;
+      mesh.vertices[vert_index].uv.y += wind_km_per_sec.y * time.delta;
       mesh.vertices[vert_index++].position.z = z_position;
     }
   }

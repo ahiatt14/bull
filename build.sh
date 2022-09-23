@@ -23,7 +23,6 @@ build_src() {
   src/*.c \
   ${artifact_dir}*.c \
   src/scenes/*.c \
-  src/player/*.c \
   src/gameplay/*.c \
   src/background/*.c \
   libs/tail/static/tail.a

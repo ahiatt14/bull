@@ -3,17 +3,17 @@
 
 #include "tail.h"
 
+#include "tail_helpers.h"
+
 #define OCEAN_KM_WIDE 40.0f
 
 void water__init_mesh_data();
 void water__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 );
-// TODO: we'll want uv scroll accumulator
 void water__update_waves(
   struct vec2 wind_speed,
-  double delta_time,
-  double seconds_since_creation,
+  struct gametime time,
   struct gpu_api const *const gpu
 );
 void water__draw(

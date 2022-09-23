@@ -3,6 +3,7 @@
 #include "bouncer_sequence.h"
 
 #include "constants.h"
+#include "tail_helpers.h"
 
 void two_swingy_arms__default(
   struct bouncer_grid *const *const grids
@@ -11,8 +12,7 @@ void two_swingy_arms__default(
 }
 
 void two_swingy_arms__update_grids(
-  double delta_time,
-  double seconds_since_creation,
+  struct gametime time,
   struct bouncer_grid *const *const grids
 ) {
   

@@ -40,7 +40,7 @@ struct window_api {
 
   uint8_t (*is_fullscreen)();
   struct vec2 (*get_window_dimensions)();
-  double (*get_seconds_since_creation)();  
+  double (*get_sec_since_game_launch)();  
   void (*switch_to_fullscreen)();
   void (*switch_to_windowed)();
 

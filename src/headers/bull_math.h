@@ -41,4 +41,10 @@ float rads_from_arc_len_and_radius(
 
 float loop_float(float v, float min, float max);
 
+struct vec3 slide_along_radius_around_world_origin(
+  float radius,
+  struct vec3 projected_pos,
+  struct vec3 pos
+);
+
 #endif

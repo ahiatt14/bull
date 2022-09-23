@@ -22,20 +22,13 @@ void main_menu__init(
 }
 
 void main_menu__tick(
+  struct gametime time,
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu,
   uint8_t previous_scene,
   void (*switch_scene)(uint8_t new_scene)
 ) {
-  static double seconds_since_creation;
-  static double tick_start_time;
-  static double delta_time;
-
-  tick_start_time = seconds_since_creation;
-  seconds_since_creation = window->get_seconds_since_creation();
-  delta_time = seconds_since_creation - tick_start_time;
-  if (delta_time > DELTA_TIME_CAP) delta_time = DELTA_TIME_CAP;
 
   // if (!window->gamepad_is_connected()) {
   //   switch_scene(SCENE__CONNECT_GAMEPAD);
@@ -45,7 +38,7 @@ void main_menu__tick(
   // UPDATE
 
   static double sec_until_action = SEC_UNTIL_ACTION;
-  sec_until_action -= delta_time;
+  sec_until_action -= time.delta;
   if (sec_until_action <= 0) {
     sec_until_action = SEC_UNTIL_ACTION;
     switch_scene(SCENE__ACTION);
@@ -57,10 +50,6 @@ void main_menu__tick(
   gpu->cull_back_faces();
 
   gpu->select_shader(&SOLID_COLOR_SHADER);
-  gpu->set_shader_vec3(
-    &SOLID_COLOR_SHADER,
-    "color",
-    COLOR_DARK_GREY_BLUE
-  );
+  gpu->set_shader_vec3(&SOLID_COLOR_SHADER, "color", COLOR_DARK_GREY_BLUE);
   gpu->draw_mesh(&QUAD);
 }

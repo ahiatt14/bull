@@ -3,6 +3,9 @@
 
 #include "tail.h"
 
+#include "constants.h"
+#include "tail_helpers.h"
+
 #define SCENE__MAIN_MENU 0
 #define SCENE__ACTION 1
 #define SCENE__CONNECT_GAMEPAD 2
@@ -18,6 +21,7 @@ struct scene {
     struct gpu_api const *const gpu
   );
   void (*tick)(
+    struct gametime time,
     struct window_api const *const window,
     struct viewport *const vwprt,
     struct gpu_api const *const gpu,
@@ -33,6 +37,7 @@ void main_menu__init(
   struct gpu_api const *const gpu
 );
 void main_menu__tick(
+  struct gametime time,
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu,
@@ -46,6 +51,7 @@ void action__init(
   struct gpu_api const *const gpu
 );
 void action__tick(
+  struct gametime time,
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu,
@@ -59,6 +65,7 @@ void connect_gamepad__init(
   struct gpu_api const *const gpu
 );
 void connect_gamepad__tick(
+  struct gametime time,
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu,
@@ -72,6 +79,7 @@ void ocean__init(
   struct gpu_api const *const gpu
 );
 void ocean__tick(
+  struct gametime time,
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu,

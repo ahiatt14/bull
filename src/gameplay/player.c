@@ -35,20 +35,20 @@ static uint8_t project_player_position(
 // STATE STUFF
 
 static void player_idle__update(
-  double delta_time,
+  struct gametime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr
 ) {
 
   if (project_player_position(
-    delta_time,
+    time.delta,
     gamepad.left_stick_direction,
     playr
   )) playr->input_state = PLAYER_INPUT_STATE__THRUSTING;
 
   if (gamepad.right_trigger >= TRIGGER_DEADZONE) {
-    actions->start_auto_fire();
+    actions->start_autofire(time, playr);
     playr->autofire_start_locked_to_cw = is_moving_cw_around_world_up(
       playr->projected_position,
       playr->transform.position
@@ -58,30 +58,22 @@ static void player_idle__update(
 }
 
 static void player_thrusting__update(
-  double delta_time,
+  struct gametime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr
 ) {
 
   if (!project_player_position(
-    delta_time,
+    time.delta,
     gamepad.left_stick_direction,
     playr
   )) {
     playr->input_state = PLAYER_INPUT_STATE__IDLE;
-    // printf("leaving thrusting\n");
-    // printf(
-    //   "pos x: %.5f z: %.5f -- prev: x: %.5f z: %.5f\n",
-    //   playr->transform.position.x,
-    //   playr->transform.position.z,
-    //   playr->previous_position.x,
-    //   playr->previous_position.z
-    // );
   }
 
   if (gamepad.right_trigger >= TRIGGER_DEADZONE) {
-    actions->start_auto_fire();
+    actions->start_autofire(time, playr);
     playr->autofire_start_locked_to_cw = is_moving_cw_around_world_up(
       playr->projected_position,
       playr->transform.position
@@ -91,33 +83,33 @@ static void player_thrusting__update(
 }
 
 static void player_autofiring__update(
-  double delta_time,
+  struct gametime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr
 ) {
 
   project_player_position(
-    delta_time,
+    time.delta,
     gamepad.left_stick_direction,
     playr
   );
 
   if (gamepad.right_trigger < TRIGGER_DEADZONE) {
-    actions->stop_auto_fire();
+    actions->stop_autofire(time, playr);
     playr->input_state = PLAYER_INPUT_STATE__IDLE;
   }
 }
 
 static void player_healthy__update(
-  double delta_time,
+  struct gametime time,
   struct player *const playr
 ) {
   return;
 }
 
 void (*player_input_state_updates[PLAYER_INPUT_STATE_COUNT])(
-  double delta_time,
+  struct gametime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr
@@ -128,7 +120,7 @@ void (*player_input_state_updates[PLAYER_INPUT_STATE_COUNT])(
 };
 
 void (*player_effect_state_updates[PLAYER_EFFECT_STATE_COUNT])(
-  double delta_time,
+  struct gametime time,
   struct player *const playr
 ) = {
   player_healthy__update
@@ -143,13 +135,13 @@ void player__copy_assets_to_gpu(
 }
 
 void player__update(
-  double delta_time,
+  struct gametime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr
 ) {
   player_input_state_updates[playr->input_state](
-    delta_time,
+    time,
     gamepad,
     actions,
     playr
@@ -193,7 +185,7 @@ void player__draw(
 // HELPERS
 
 static uint8_t project_player_position(
-  double delta_time,
+  double delta,
   struct vec2 direction,
   struct player *const playr
 ) {
@@ -208,9 +200,9 @@ static uint8_t project_player_position(
   normalized_left_stick_direction = vec2__normalize(direction);
   playr->projected_position.x +=
     normalized_left_stick_direction.x *
-    PLAYER_SPEED * mag * mag * delta_time;
+    PLAYER_SPEED * mag * mag * delta;
   playr->projected_position.z +=
     normalized_left_stick_direction.y *
-    PLAYER_SPEED * mag * mag * delta_time;
+    PLAYER_SPEED * mag * mag * delta;
   return 1;
 }

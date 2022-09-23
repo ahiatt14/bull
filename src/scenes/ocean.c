@@ -208,6 +208,7 @@ void ocean__init(
 }
 
 void ocean__tick(
+  struct gametime time, 
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu,
@@ -215,47 +216,26 @@ void ocean__tick(
   void (*switch_scene)(uint8_t new_scene)
 ) {
 
-  // GAME TIME
-
-  static double seconds_since_creation;
-  static double tick_start_time;
-  static double delta_time;
-  tick_start_time = seconds_since_creation;
-  seconds_since_creation = window->get_seconds_since_creation();
-  delta_time = seconds_since_creation - tick_start_time;
-  if (delta_time > DELTA_TIME_CAP) delta_time = DELTA_TIME_CAP;
-
   // UPDATE
 
   static struct m4x4 camera_rotation;
   m4x4__rotation(
-    deg_to_rad(delta_time * CAMERA_ROTATE_SPEED),
+    deg_to_rad(time.delta * CAMERA_ROTATE_SPEED),
     WORLDSPACE.up,
     &camera_rotation
   );
-  cam.position = m4x4_x_point(
-    &camera_rotation,
-    cam.position
-  );
-  steam_light_direction = m4x4_x_point(
-    &camera_rotation,
-    steam_light_direction
-  );
+  cam.position = m4x4_x_point(&camera_rotation, cam.position);
+  steam_light_direction = m4x4_x_point(&camera_rotation, steam_light_direction);
 
   static struct vec3 norm_steam_light_direction;
   norm_steam_light_direction = vec3__normalize(steam_light_direction);
 
-  water__update_waves(
-    WIND_KM_PER_SEC,
-    delta_time,
-    seconds_since_creation,
-    gpu
-  );
+  water__update_waves(WIND_KM_PER_SEC, time, gpu);
 
-  steam__rise(delta_time, &steam0);
-  steam__rise(delta_time, &steam1);
-  steam__rise(delta_time, &steam2);
-  // steam__rise(delta_time, &steam3);
+  steam__rise(time.delta, &steam0);
+  steam__rise(time.delta, &steam1);
+  steam__rise(time.delta, &steam2);
+  // steam__rise(time.delta, &steam3);
   
   // DRAW
 
@@ -273,11 +253,7 @@ void ocean__tick(
 
   gpu->select_shader(&sky_shader);
   gpu->select_texture(&clouds_texture);
-  gpu->set_shader_vec3(
-    &sky_shader,
-    "horizon_color",
-    COLOR_DARK_SLATE_GREY
-  );
+  gpu->set_shader_vec3(&sky_shader, "horizon_color", COLOR_DARK_SLATE_GREY);
   gpu__set_mvp(
     &sky_local_to_world,
     &sky_normals_local_to_world,

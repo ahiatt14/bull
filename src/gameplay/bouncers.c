@@ -137,20 +137,20 @@ void bouncers__check_collision_with_grid(
 
 void bouncers__radiate_grid(
   float meters_per_second,
-  double delta_time,
+  struct gametime time,
   struct bouncer_grid *const grid
 ) {
-  grid->row_0_radius_offset += meters_per_second * delta_time;
+  grid->row_0_radius_offset += meters_per_second * time.delta;
 }
 
 void bouncers__rotate_grid_row(
   uint8_t row,
   float deg_per_sec,
-  double delta_time,
+  struct gametime time,
   struct bouncer_grid *const grid
 ) {
   grid->row_deg_offsets[row] = loop_float(
-    grid->row_deg_offsets[row] += deg_per_sec * delta_time,
+    grid->row_deg_offsets[row] += deg_per_sec * time.delta,
     0,
     360
   );

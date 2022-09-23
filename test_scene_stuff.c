@@ -71,14 +71,14 @@ struct player_arena_callbacks {
 };
 
 static void move_player(
-  double delta_time,
+  double delta,
   struct gamepad_input const *const gamepad,
   struct player_arena_callbacks const *const callbacks,
   struct *const player,
   struct *const arena
 ) {
   player_states[player->current_state]->update(
-    delta_time,
+    delta,
     gamepad
   );
 }

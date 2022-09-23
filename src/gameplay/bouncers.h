@@ -1,6 +1,8 @@
 #ifndef __BULL_BOUNCERS__
 #define __BULL_BOUNCERS__
 
+#include "tail_helpers.h"
+
 #define BOUNCER_RADIUS 0.4f
 
 #define BOUNCER_GRID_MAX_PER_ROW 30
@@ -60,13 +62,13 @@ void bouncers__check_collision_with_grid(
 void bouncers__rotate_grid_row(
   uint8_t row,
   float deg_per_sec,
-  double delta_time,
+  struct gametime time,
   struct bouncer_grid *const grid
 );
 
 void bouncers__radiate_grid(
   float meters_per_sec,
-  double delta_time,
+  struct gametime time,
   struct bouncer_grid *const grid
 );
 
