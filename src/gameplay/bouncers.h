@@ -73,6 +73,7 @@ void bouncers__radiate_grid(
 );
 
 void bouncers__draw_grid(
+  struct gametime time,
   struct camera const *const cam,
   struct gpu_api const *const gpu,
   struct bouncer_grid *const grid

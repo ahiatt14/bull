@@ -188,7 +188,7 @@ void action__tick(
   gpu->clear_depth_buffer();
 
   // core__draw(&cam, gpu, &core);
-  bouncers__draw_grid(&cam, gpu, &bouncy_grid);
+  bouncers__draw_grid(time, &cam, gpu, &bouncy_grid);
 
   player__draw(&cam, gpu, &player_one);
   firing_guide__draw(&cam, gpu, player_one.transform.position);

@@ -15,6 +15,16 @@
 #include "bouncer_frag.h"
 #include "default_vert.h"
 
+static struct vec3 light1_direction = (struct vec3){
+  0.707f,
+  -0.707f,
+  0
+};
+static struct vec3 light2_direction = (struct vec3){
+  -0.707f,
+  -0.707f,
+  0
+};
 static struct shader shared_bouncer_shader;
 
 static uint8_t off_at_place(uint8_t place, uint32_t state) {
@@ -157,6 +167,7 @@ void bouncers__rotate_grid_row(
 }
 
 void bouncers__draw_grid(
+  struct gametime time,
   struct camera const *const cam,
   struct gpu_api const *const gpu,
   struct bouncer_grid *const grid
@@ -165,18 +176,50 @@ void bouncers__draw_grid(
   static struct m4x4 local_to_world;
   static struct m3x3 normals_local_to_world;
 
-  gpu->select_shader(&shared_bouncer_shader);
-  gpu->set_shader_vec3(
-    &shared_bouncer_shader,
-    "core_color",
-    COLOR_HOT_PINK
+  static struct m4x4 light_rotation;
+  m4x4__rotation(
+    deg_to_rad(time.delta * 100),
+    WORLDSPACE.up,
+    &light_rotation
   );
-  gpu->set_shader_vec3(
-    &shared_bouncer_shader,
-    "edge_color",
-    COLOR_MAGENTA_WHITE
+  light1_direction = m4x4_x_point(
+    &light_rotation,
+    light1_direction
+  );
+  light2_direction = m4x4_x_point(
+    &light_rotation,
+    light2_direction
   );
 
+  gpu->select_shader(&shared_bouncer_shader);
+  // TODO: look into uniform buffers!
+  gpu->set_shader_vec3(
+    &shared_bouncer_shader,
+    "color",
+    COLOR_GOLDEN_YELLOW
+  );
+  gpu->set_shader_vec3(
+    &shared_bouncer_shader,
+    "light1_dir",
+    light1_direction
+  );
+  gpu->set_shader_vec3(
+    &shared_bouncer_shader,
+    "light2_dir",
+    light2_direction
+  );
+  gpu->set_shader_vec3(
+    &shared_bouncer_shader,
+    "light1_color",
+    COLOR_BLOOD_RED
+  );
+  gpu->set_shader_vec3(
+    &shared_bouncer_shader,
+    "light2_color",
+    COLOR_BLOOD_RED
+  );
+
+  // TODO: think about how we'd get to make a single draw call here
   for (int_fast8_t r = 0; r < BOUNCERS_GRID_ROW_COUNT; r++)
   for (int_fast8_t c = 0; c < BOUNCER_GRID_MAX_PER_ROW; c++) {
 

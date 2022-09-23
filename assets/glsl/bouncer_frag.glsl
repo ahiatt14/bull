@@ -1,22 +1,10 @@
 #version 330 core
 
-uniform vec3 light_dir = vec3(
-  0,
-  -1,
-  0
-);
-
-uniform vec3 core_color = vec3(
-  1,
-  1,
-  1
-);
-
-uniform vec3 edge_color = vec3(
-  0,
-  0,
-  0
-);
+uniform vec3 light1_dir = vec3(1,0,0);
+uniform vec3 light2_dir = vec3(-1,0,0);
+uniform vec3 light1_color = vec3(1,0,0);
+uniform vec3 light2_color = vec3(0,0,1);
+uniform vec3 color = vec3(0,0,0);
 
 in VS_OUT {
   vec3 world_frag_pos;
@@ -28,15 +16,13 @@ out vec4 FragColor;
 
 void main() {
 
-  vec3 color =
-    mix(
-      edge_color,
-      core_color,
-      max(dot(fs_in.normal, -light_dir), 0)
-    );
+  vec3 diffuse =
+    (color * 0.2) +
+    light1_color * max(dot(fs_in.normal, -light1_dir), 0) +
+    light2_color * max(dot(fs_in.normal, -light2_dir), 0);
 
   FragColor = vec4(
-    color,
+    diffuse,
     1
   );
 }
