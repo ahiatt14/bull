@@ -27,7 +27,7 @@
 
 typedef void (*player_one_autofire_ptr)(
   struct gametime time,
-  struct vec3 source
+  struct player const *const playr
 );
 
 /*
@@ -46,7 +46,12 @@ static void stop_autofiring(
   struct player const *const playr
 );
 
-static void begin_lvl1_fireball_autofire(
+static void begin_lvl0_fireball_autofire(
+  struct gametime time,
+  struct player const *const playr
+);
+
+static void autofire_lvl0_fireballs(
   struct gametime time,
   struct player const *const playr
 );
@@ -78,7 +83,7 @@ struct player player_one = (struct player){
 player_one_autofire_ptr player_one_autofire = NULL;
 
 static struct player_actions player_one_actions = (struct player_actions){
-  .start_autofire = begin_lvl1_fireball_autofire,
+  .start_autofire = begin_lvl0_fireball_autofire,
   .stop_autofire = stop_autofiring
 };
 
@@ -138,7 +143,7 @@ void action__tick(
 
   if (player_one_autofire) player_one_autofire(
     time,
-    player_one.transform.position
+    &player_one
   );
 
   bouncers__rotate_grid_row(4, 10, time, &bouncy_grid);
@@ -207,12 +212,12 @@ static void bounce_player(
   bouncers__delete_from_grid(row, column, grid);
 }
 
-static void begin_lvl1_fireball_autofire(
+static void begin_lvl0_fireball_autofire(
   struct gametime time,
   struct player const *const playr
 ) {
-  player_one_autofire = autofire_lvl1_fireballs;
-  autofire_lvl1_fireballs(time, playr->transform.position);
+  player_one_autofire = autofire_lvl0_fireballs;
+  player_one_autofire(time, playr);
 }
 
 static void stop_autofiring(
@@ -220,4 +225,11 @@ static void stop_autofiring(
   struct player const *const playr
 ) {
   player_one_autofire = NULL;
+}
+
+static void autofire_lvl0_fireballs(
+  struct gametime time,
+  struct player const *const playr
+) {
+
 }

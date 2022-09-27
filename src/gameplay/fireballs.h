@@ -4,34 +4,38 @@
 #include "tail.h"
 
 #include "tail_helpers.h"
-
-// #define MAX_FIREBALL_COUNT 69
-
-// fireballs.c or action.c?
-// static struct fireball fireballs[MAX_FIREBALL_COUNT];
+#include "bull_math.h"
 
 struct fireball {
-  float cw_deg;
-  float starting_cw_deg;
-  float origin_radius;
-  double seconds_since_activation;
-  int8_t cw_coef; // 1 for ccw, -1 for cw (?)
+  struct battlefield_pos position;
+  float starting_battlefield_deg;
+  float seconds_since_activation;
+  int8_t ccw_coefficient; // 1 for ccw, -1 for cw (?)
 };
 
-void autofire_lvl1_fireballs(
-  struct gametime time,
-  struct vec3 source
+void fireballs__copy_assets_to_gpu(
+  struct gpu_api const *const gpu
 );
 
-void autofire_lvl2_fireballs(
-  struct gametime time,
-  struct vec3 source
-);
+void fireballs__reset_state();
 
 void fireballs__revolve(
   struct gametime time,
-  float deg_per_sec,
-  struct fireball *const fireballs
+  float deg_per_sec
+);
+
+void fireballs__activate_fireball(
+  struct vec3 position,
+  int_fast8_t ccw_coefficient
+);
+
+void fireballs__deactivate(
+  int_fast16_t index_to_deactivate
+);
+
+void fireballs__draw(
+  struct camera const *const cam,
+  struct gpu_api const *const gpu
 );
 
 #endif

@@ -156,7 +156,7 @@ int main() {
       static struct gametime time;
 
       tick_start_time = time.sec_since_game_launch;
-      time.sec_since_game_launch = window.get_sec_since_game_launch();
+      time.sec_since_game_launch = window.get_seconds_since_creation();
       time.delta = time.sec_since_game_launch - tick_start_time;
       if (time.delta > DELTA_CAP) time.delta = DELTA_CAP;
 

@@ -44,7 +44,7 @@ void coord_gizmo__draw(
   gpu->select_shader(&coord_gizmo_shader);
 
   static struct m4x4 translation;
-  m4x4__translation(&gizmo->position, &translation);
+  m4x4__translation(gizmo->position, &translation);
   gpu__set_mvp(&translation, &M3X3_IDENTITY, cam, &coord_gizmo_shader, gpu);
 
   gpu->set_shader_vec3(&coord_gizmo_shader, "up", gizmo->space.up);

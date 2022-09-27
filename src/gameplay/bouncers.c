@@ -53,23 +53,12 @@ struct vec3 bouncers__get_pos_of_grid_bouncer(
   uint8_t column,
   struct bouncer_grid const *const grid
 ) {
-  static struct vec3 position;
-  static struct m4x4 rotation;
-
-  position.z = -(
-    grid->row_0_radius_offset +
-    row * BOUNCER_GRID_ROW_RADIUS_OFFSET
+  return battlefield_to_world_pos(
+    (struct battlefield_pos){
+      grid->row_0_radius_offset + row * BOUNCER_GRID_ROW_RADIUS_OFFSET,
+      grid->row_deg_offsets[row] + column * BOUNCER_GRID_COLUMN_DEG_OFFSET
+    }
   );
-
-  m4x4__rotation(
-    deg_to_rad(
-      grid->row_deg_offsets[row] +
-      column * BOUNCER_GRID_COLUMN_DEG_OFFSET
-    ),
-    WORLDSPACE.up,
-    &rotation
-  );
-  return m4x4_x_point(&rotation, position);
 }
 
 void bouncers__reset_grid_row(
@@ -228,7 +217,7 @@ void bouncers__draw_grid(
     revolved_position = bouncers__get_pos_of_grid_bouncer(r, c, grid);
 
     m4x4__translation(
-      &revolved_position,
+      revolved_position,
       &local_to_world
     );
 

@@ -20,19 +20,28 @@ void m4x4_x_m4x4(
   struct m4x4 const *const m1,
   struct m4x4 *const dest
 );
-void m4x4__sub3x3_from00(struct m4x4 const *const src, struct m3x3 *const dest);
+void m4x4__sub3x3_from00(
+  struct m4x4 const *const src,
+  struct m3x3 *const dest
+);
 void m4x4__transpose(struct m4x4 *const m);
 void m4x4__identity(struct m4x4 *const m);
 struct vec3 m4x4_x_point(
   struct m4x4 const *const m,
   struct vec3 t
 );
-void m4x4__translation(struct vec3 const *const t, struct m4x4 *const m);
-void m4x4__inverted_translation(
-  struct vec3 const *const t,
+void m4x4__translation(
+  struct vec3 t,
   struct m4x4 *const m
 );
-void m4x4__scaling(float s, struct m4x4 *const m);
+void m4x4__inverted_translation(
+  struct vec3 t,
+  struct m4x4 *const m
+);
+void m4x4__scaling(
+  float s,
+  struct m4x4 *const m
+);
 void m4x4__rotation(
   float rads,
   struct vec3 axis,

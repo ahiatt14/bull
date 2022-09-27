@@ -5,6 +5,16 @@
 
 #include "tail.h"
 
+// NOTE: degrees are assumed to move ccw from -Z around WORLDSPACE.up
+struct battlefield_pos {
+  float radius;
+  float degrees;
+};
+
+struct vec3 battlefield_to_world_pos(
+  struct battlefield_pos batpos
+);
+
 const struct m4x4* camera__calculate_ortho(
   float r,
   float t,

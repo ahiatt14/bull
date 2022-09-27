@@ -303,7 +303,7 @@ void steam__draw_column(
     "max_altitude",
     (LVL_HEIGHT * STEAM__LVL_COUNT) / 2.0f
   );
-  m4x4__translation(&column->position, &local_to_world);
+  m4x4__translation(column->position, &local_to_world);
   space__create_normals_model(&local_to_world, &normals_local_to_world);
   gpu__set_mvp(
     &local_to_world,

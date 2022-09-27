@@ -106,3 +106,12 @@ struct vec3 slide_along_radius_around_world_origin(
   m4x4__rotation(rads, WORLDSPACE.up, &rotation);
   return m4x4_x_point(&rotation, pos_at_radius);
 }
+
+struct vec3 battlefield_to_world_pos(
+  struct battlefield_pos batpos
+) {
+  struct vec3 position = (struct vec3){ 0, 0, -batpos.radius };
+  struct m4x4 rotation = M4X4_IDENTITY;
+  m4x4__rotation(deg_to_rad(batpos.degrees), WORLDSPACE.up, &rotation);
+  return m4x4_x_point(&rotation, position);
+}
