@@ -8,10 +8,16 @@
 
 #include "lowpoly_sphere_mesh.h"
 
-#define MAX_FIREBALLS_COUNT 50
+#define MAX_FIREBALL_COUNT 100
 
-static struct fireball fireballs[MAX_FIREBALLS_COUNT];
+struct fireball {
+  struct battlefield_pos position;
+  float starting_battlefield_deg;
+  double sec_since_activation;
+  int8_t ccw_coefficient; // 1 for ccw, -1 for cw (?)
+};
 
+static struct fireball fireballs[MAX_FIREBALL_COUNT];
 static uint_fast16_t highest_active_index;
 
 void fireballs__copy_assets_to_gpu(
@@ -20,22 +26,36 @@ void fireballs__copy_assets_to_gpu(
   gpu->copy_static_mesh_to_gpu(&lowpoly_sphere_mesh);
 }
 
-void fireballs__reset_state() {
+void fireballs__deactivate_all() {
   highest_active_index = 0;
 }
 
 void fireballs__revolve(
   struct gametime time,
-  float deg_per_sec
+  double sec_per_revolution
 ) {
-
+  for (int i = 0; i < highest_active_index; i++) {
+    fireballs[i].sec_since_activation += time.delta;
+    fireballs[i].position.degrees +=
+    360 *
+    (fireballs[i].sec_since_activation / sec_per_revolution) *
+    fireballs[i].ccw_coefficient;
+  }
 }
 
 void fireballs__activate_fireball(
   struct vec3 position,
   int_fast8_t ccw_coefficient
 ) {
-
+  // NOTE: should never happen
+  if (highest_active_index == MAX_FIREBALL_COUNT - 1) return;
+  highest_active_index++;
+  struct battlefield_pos bfpos = world_to_battlefield_pos(position);
+  fireballs[highest_active_index] = (struct fireball){
+    .position = bfpos,
+    .starting_battlefield_deg = bfpos.degrees,
+    .ccw_coefficient = ccw_coefficient
+  };
 }
 
 void fireballs__deactivate_fireball(
@@ -53,12 +73,9 @@ void fireballs__draw(
   static struct m4x4 translation;
 
   gpu->select_shader(&SOLID_COLOR_SHADER);
-  gpu->set_shader_vec3(
-    &SOLID_COLOR_SHADER,
-    "color",
-    COLOR_GOLDEN_YELLOW
-  );
+  gpu->set_shader_vec3(&SOLID_COLOR_SHADER, "color", COLOR_BLOOD_RED);
   for (int i = 0; i < highest_active_index; i++) {
+    // TODO: implement batch meshes to reduce draw calls!
     m4x4__translation(
       battlefield_to_world_pos(fireballs[i].position),
       &translation

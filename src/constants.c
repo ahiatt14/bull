@@ -78,6 +78,11 @@ const struct vec3 COLOR_DEEP_FOREST_GREEN = {
   61.0f / 255.0f,
   12.0f / 255.0f
 };
+const struct vec3 COLOR_ROYAL_GREEN = {
+  0.0745f,
+  0.3843f,
+  0.0275f
+};
 const struct vec3 COLOR_DARK_GREY_BLUE = {
   66.0f / 255.0f,
   73.0f / 255.0f,

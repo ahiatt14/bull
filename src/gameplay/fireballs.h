@@ -6,22 +6,15 @@
 #include "tail_helpers.h"
 #include "bull_math.h"
 
-struct fireball {
-  struct battlefield_pos position;
-  float starting_battlefield_deg;
-  float seconds_since_activation;
-  int8_t ccw_coefficient; // 1 for ccw, -1 for cw (?)
-};
-
 void fireballs__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 );
 
-void fireballs__reset_state();
+void fireballs__deactivate_all();
 
 void fireballs__revolve(
   struct gametime time,
-  float deg_per_sec
+  double sec_per_revolution
 );
 
 void fireballs__activate_fireball(

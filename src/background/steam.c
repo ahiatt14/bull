@@ -291,7 +291,7 @@ void steam__draw_column(
   gpu->set_shader_vec3(
     &shared_steam_shader,
     "bottom_color",
-    COLOR_AQUA_BLUE
+    COLOR_WHITE
   );
   gpu->set_shader_vec3(
     &shared_steam_shader,

@@ -231,5 +231,6 @@ static void autofire_lvl0_fireballs(
   struct gametime time,
   struct player const *const playr
 ) {
-
+  // static double seconds_since_last_autofire_shot;
+  
 }

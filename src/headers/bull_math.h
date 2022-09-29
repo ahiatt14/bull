@@ -11,8 +11,16 @@ struct battlefield_pos {
   float degrees;
 };
 
+float battlefield_deg_from_world_pos(
+  struct vec3 position
+);
+
 struct vec3 battlefield_to_world_pos(
-  struct battlefield_pos batpos
+  struct battlefield_pos position
+);
+
+struct battlefield_pos world_to_battlefield_pos(
+  struct vec3 position
 );
 
 const struct m4x4* camera__calculate_ortho(
@@ -23,11 +31,11 @@ const struct m4x4* camera__calculate_ortho(
   struct camera *const cam
 );
 
-char array_contains_u_i(
-  unsigned int value,
-  unsigned int *values,
-  int count
-);
+// char array_contains_u_i(
+//   unsigned int value,
+//   unsigned int *values,
+//   int count
+// );
 
 struct vec2 vec2__turn_90_deg(
   uint8_t left,

@@ -18,9 +18,9 @@ void main()
 
   vec3 diffuse;
   if (incidence > 0.3) {
-    diffuse = light_color * 0.4;
+    diffuse = light_color * 0.6;
   } else if (incidence > 0.25) {
-    diffuse = light_color * 0.15;
+    diffuse = light_color * 0.4;
   } else {
     diffuse = color * incidence;
   }

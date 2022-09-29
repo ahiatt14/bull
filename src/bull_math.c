@@ -22,14 +22,15 @@ const struct m4x4* camera__calculate_ortho(
   return &cam->projection;
 }
 
-char array_contains_u_i(
-  unsigned int value,
-  unsigned int *values,
-  int count
-) {
-  for (int i = 0; i < count; i++) if (values[i] == value) return 1;
-  return 0;
-}
+// TODO: wtf is this?
+// char array_contains_u_i(
+//   unsigned int value,
+//   unsigned int *values,
+//   int count
+// ) {
+//   for (int i = 0; i < count; i++) if (values[i] == value) return 1;
+//   return 0;
+// }
 
 struct vec2 vec2__turn_90_deg(
   uint8_t left,
@@ -63,11 +64,7 @@ float find_cw_or_ccw_facing_around_world_up(
   struct vec3 position,
   struct vec3 previous_position
 ) {
-  float ccw_angle_in_deg = rad_to_deg(atan(
-    -position.z /
-    position.x
-  ));
-  if (position.x < 0) ccw_angle_in_deg += 180;
+  float ccw_angle_in_deg = battlefield_deg_from_world_pos(position);
   return
     is_moving_cw_around_world_up(
       position,
@@ -107,11 +104,31 @@ struct vec3 slide_along_radius_around_world_origin(
   return m4x4_x_point(&rotation, pos_at_radius);
 }
 
-struct vec3 battlefield_to_world_pos(
-  struct battlefield_pos batpos
+float battlefield_deg_from_world_pos(
+  struct vec3 position
 ) {
-  struct vec3 position = (struct vec3){ 0, 0, -batpos.radius };
+  float degrees;
+  degrees = rad_to_deg(atan(-position.z / position.x));
+  if (position.x < 0) degrees += 180;
+  return degrees;
+}
+
+struct vec3 battlefield_to_world_pos(
+  struct battlefield_pos position
+) {
   struct m4x4 rotation = M4X4_IDENTITY;
-  m4x4__rotation(deg_to_rad(batpos.degrees), WORLDSPACE.up, &rotation);
-  return m4x4_x_point(&rotation, position);
+  m4x4__rotation(deg_to_rad(position.degrees), WORLDSPACE.up, &rotation);
+  return m4x4_x_point(
+    &rotation,
+    (struct vec3){ 0, 0, -position.radius }
+  );
+}
+
+struct battlefield_pos world_to_battlefield_pos(
+  struct vec3 position
+) {
+  return (struct battlefield_pos){
+    .radius = vec3__distance(position, ORIGIN),
+    .degrees = battlefield_deg_from_world_pos(position)
+  };
 }
