@@ -10,7 +10,7 @@
 #include "bull_math.h"
 #include "tail_helpers.h"
 
-#include "lowpoly_sphere_mesh.h"
+#include "lowpoly_sphere_flat_mesh.h"
 
 #include "bouncer_frag.h"
 #include "default_vert.h"
@@ -45,7 +45,7 @@ void bouncers__copy_assets_to_gpu(
   shared_bouncer_shader.frag_src = bouncer_frag_src;
   shared_bouncer_shader.vert_src = default_vert_src;
   gpu->copy_shader_to_gpu(&shared_bouncer_shader);
-  gpu->copy_static_mesh_to_gpu(&lowpoly_sphere_mesh);
+  gpu->copy_static_mesh_to_gpu(&lowpoly_sphere_flat_mesh);
 }
 
 struct vec3 bouncers__get_pos_of_grid_bouncer(
@@ -183,7 +183,7 @@ void bouncers__draw_grid(
 
   gpu->select_shader(&shared_bouncer_shader);
   // TODO: implement uniform buffers!
-  gpu->set_shader_vec3(&shared_bouncer_shader, "color", COLOR_GOLDEN_YELLOW);
+  gpu->set_shader_vec3(&shared_bouncer_shader, "color", COLOR_BLACK);
   gpu->set_shader_vec3(&shared_bouncer_shader, "light1_dir", light1_direction);
   gpu->set_shader_vec3(&shared_bouncer_shader, "light2_dir", light2_direction);
   gpu->set_shader_vec3(
@@ -194,7 +194,7 @@ void bouncers__draw_grid(
   gpu->set_shader_vec3(
     &shared_bouncer_shader,
     "light2_color",
-    COLOR_ROYAL_GREEN
+    COLOR_GOLDEN_YELLOW
   );
 
   // TODO: think about how we'd get to make a single draw call here
@@ -222,6 +222,6 @@ void bouncers__draw_grid(
       &shared_bouncer_shader,
       gpu
     );
-    gpu->draw_mesh(&lowpoly_sphere_mesh);
+    gpu->draw_mesh(&lowpoly_sphere_flat_mesh);
   }
 }

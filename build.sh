@@ -84,7 +84,8 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/exclamation.obj flat ${artifact_dir} && \
   ./${tools}sourcify-obj.exe assets/mesh/sphere.obj smooth ${artifact_dir} && \
   ./${tools}sourcify-obj.exe assets/mesh/bird.obj flat ${artifact_dir} && \
-  ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere.obj flat ${artifact_dir} && \
+  ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_flat.obj flat ${artifact_dir} && \
+  ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_smooth.obj smooth ${artifact_dir} && \
   ./${tools}sourcify-obj.exe assets/mesh/smooth_cube.obj flat ${artifact_dir} && \
   ./${tools}sourcify-obj.exe assets/mesh/sky_cylinder.obj smooth ${artifact_dir} && \
   ./${tools}sourcify-obj.exe assets/mesh/angel.obj smooth ${artifact_dir} && \

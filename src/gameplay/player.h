@@ -21,6 +21,7 @@ struct player {
   uint8_t input_state;
   uint8_t effect_state;
   uint8_t autofire_start_locked_to_cw;
+  uint8_t level;
 };
 
 struct player_actions {

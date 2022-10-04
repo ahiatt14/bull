@@ -11,6 +11,16 @@ struct battlefield_pos {
   float degrees;
 };
 
+struct revolution {
+  float starting_deg;
+  double sec_elapsed_when_activated;
+};
+
+float radians_between_vec2s(
+  struct vec2 t0,
+  struct vec2 t1
+);
+
 float battlefield_deg_from_world_pos(
   struct vec3 position
 );
@@ -30,12 +40,6 @@ const struct m4x4* camera__calculate_ortho(
   float f,
   struct camera *const cam
 );
-
-// char array_contains_u_i(
-//   unsigned int value,
-//   unsigned int *values,
-//   int count
-// );
 
 struct vec2 vec2__turn_90_deg(
   uint8_t left,

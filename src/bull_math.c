@@ -22,15 +22,15 @@ const struct m4x4* camera__calculate_ortho(
   return &cam->projection;
 }
 
-// TODO: wtf is this?
-// char array_contains_u_i(
-//   unsigned int value,
-//   unsigned int *values,
-//   int count
-// ) {
-//   for (int i = 0; i < count; i++) if (values[i] == value) return 1;
-//   return 0;
-// }
+float radians_between_vec2s(
+  struct vec2 t0,
+  struct vec2 t1
+) {
+  return acos(
+    vec2__dot(t0, t1) /
+    (vec2__magnitude(t0) * vec2__magnitude(t1))
+  );
+}
 
 struct vec2 vec2__turn_90_deg(
   uint8_t left,
@@ -41,7 +41,6 @@ struct vec2 vec2__turn_90_deg(
     ((struct vec2){ src.y, -src.x });
 }
 
-// TODO: make this work for arbitrary origins
 uint8_t is_moving_cw_around_world_up(
   struct vec3 position,
   struct vec3 previous_position
@@ -57,9 +56,24 @@ uint8_t is_moving_cw_around_world_up(
   return cross.y <= 0 ? 1 : 0;
 }
 
-// TODO: bug here. we get correct cw/ccw facing
-// when the player is moving, but when the player stops it always faces
-// back one direction
+// TODO: figure this out re: player facing & world_pos_to_battlefield_post
+float battlefield_deg_from_world_pos(
+  struct vec3 position
+) {
+  float degrees;
+  degrees = rad_to_deg(atan(-position.z / position.x));
+  if (position.x < 0) degrees += 180;
+  return degrees;
+}
+
+float lerp_around_battlefield(
+  double delta_time,
+  struct revolution rev,
+  float deg,
+) {
+  
+}
+
 float find_cw_or_ccw_facing_around_world_up(
   struct vec3 position,
   struct vec3 previous_position
@@ -102,15 +116,6 @@ struct vec3 slide_along_radius_around_world_origin(
   struct m4x4 rotation = {0};
   m4x4__rotation(rads, WORLDSPACE.up, &rotation);
   return m4x4_x_point(&rotation, pos_at_radius);
-}
-
-float battlefield_deg_from_world_pos(
-  struct vec3 position
-) {
-  float degrees;
-  degrees = rad_to_deg(atan(-position.z / position.x));
-  if (position.x < 0) degrees += 180;
-  return degrees;
 }
 
 struct vec3 battlefield_to_world_pos(

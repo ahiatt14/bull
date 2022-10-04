@@ -22,7 +22,7 @@ void fireballs__activate_fireball(
   int_fast8_t ccw_coefficient
 );
 
-void fireballs__deactivate(
+void fireballs__deactivate_fireball(
   int_fast16_t index_to_deactivate
 );
 

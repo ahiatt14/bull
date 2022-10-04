@@ -6,7 +6,7 @@
 #include "constants.h"
 #include "bull_math.h"
 
-#include "lowpoly_sphere_mesh.h"
+#include "lowpoly_sphere_smooth_mesh.h"
 
 #define MAX_FIREBALL_COUNT 100
 
@@ -23,7 +23,7 @@ static uint_fast16_t highest_active_index;
 void fireballs__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
-  gpu->copy_static_mesh_to_gpu(&lowpoly_sphere_mesh);
+  gpu->copy_static_mesh_to_gpu(&lowpoly_sphere_smooth_mesh);
 }
 
 void fireballs__deactivate_all() {
@@ -32,14 +32,14 @@ void fireballs__deactivate_all() {
 
 void fireballs__revolve(
   struct gametime time,
-  double sec_per_revolution
+  double revolutions_per_sec
 ) {
   for (int i = 0; i < highest_active_index; i++) {
     fireballs[i].sec_since_activation += time.delta;
     fireballs[i].position.degrees +=
-    360 *
-    (fireballs[i].sec_since_activation / sec_per_revolution) *
-    fireballs[i].ccw_coefficient;
+      revolutions_per_sec * 360.0f *
+      time.delta *
+      fireballs[i].ccw_coefficient;
   }
 }
 
@@ -87,6 +87,6 @@ void fireballs__draw(
       &SOLID_COLOR_SHADER,
       gpu
     );
-    gpu->draw_mesh(&lowpoly_sphere_mesh);
+    gpu->draw_mesh(&lowpoly_sphere_smooth_mesh);
   }
 }

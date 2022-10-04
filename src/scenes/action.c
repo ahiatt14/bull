@@ -21,6 +21,7 @@
 
 #define CORE_RADIUS 1
 
+#define PLAYER_LVL_COUNT 3
 #define PLAYER_START_POS {3, 0, 0}
 
 #define MIN_PLAYER_RADIUS CORE_RADIUS * 2.1f
@@ -29,6 +30,14 @@ typedef void (*player_one_autofire_ptr)(
   struct gametime time,
   struct player const *const playr
 );
+
+static double seconds_until_next_autofire_shot;
+static const float fireball_revolution_per_sec_by_lvl[PLAYER_LVL_COUNT] =
+  { 0.33f, 0.66f, 1.0f }; 
+static const float fireball_scale_by_lvl[PLAYER_LVL_COUNT] =
+  { 1.0f, 1.5f, 2.0f };
+static const float fireball_shot_sec_interval_by_lvl[PLAYER_LVL_COUNT] =
+  { 2.0f, 3.0f, 4.0f };
 
 /*
   ~~~~~~~~~FORWARD DECS~~~~~~~~~~
@@ -59,6 +68,12 @@ static void autofire_lvl0_fireballs(
 /*
   ~~~~~~~~~LOCAL STATE~~~~~~~~~~
 */
+
+// THOUGHTS: it can be difficult to know whether it is "best"
+// to put the state structs for e.g. bullets in here
+// or in their respective files. Not so much an architectural choice
+// as an organizational one. Simple guiding principle: act as if
+// their may be more than one player: what would be required?
 
 static struct camera cam;
 static struct gamepad_input gamepad;
@@ -109,6 +124,8 @@ void action__init(
 
   player__copy_assets_to_gpu(gpu);
   firing_guide__copy_assets_to_gpu(gpu);
+
+  fireballs__copy_assets_to_gpu(gpu);
 
   ocean__init(window, vwprt, gpu);
 
@@ -187,6 +204,11 @@ void action__tick(
 
   player_one.transform.position = player_one.projected_position;
 
+  fireballs__revolve(
+    time,
+    fireball_revolution_per_sec_by_lvl[player_one.level]
+  );
+
   // DRAW
 
   ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
@@ -197,6 +219,8 @@ void action__tick(
 
   player__draw(&cam, gpu, &player_one);
   firing_guide__draw(&cam, gpu, player_one.transform.position);
+
+  fireballs__draw(&cam, gpu);
 }
 
 /*
@@ -224,6 +248,7 @@ static void stop_autofiring(
   struct gametime time,
   struct player const *const playr
 ) {
+  seconds_until_next_autofire_shot = 0;
   player_one_autofire = NULL;
 }
 
@@ -231,6 +256,17 @@ static void autofire_lvl0_fireballs(
   struct gametime time,
   struct player const *const playr
 ) {
-  // static double seconds_since_last_autofire_shot;
-  
+
+  seconds_until_next_autofire_shot -= time.delta;
+  if (seconds_until_next_autofire_shot > 0) return;
+  seconds_until_next_autofire_shot =
+    fireball_shot_sec_interval_by_lvl[playr->level];
+
+  fireballs__activate_fireball(
+    playr->transform.position,
+    is_moving_cw_around_world_up(
+      playr->transform.position,
+      playr->previous_position
+    ) ? -1 : 1
+  );
 }
