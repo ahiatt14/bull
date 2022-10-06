@@ -22,20 +22,12 @@ const struct m4x4* camera__calculate_ortho(
   return &cam->projection;
 }
 
-float radians_between_vec2s(
-  struct vec2 t0,
-  struct vec2 t1
-) {
-  return acos(
-    vec2__dot(t0, t1) /
-    (vec2__magnitude(t0) * vec2__magnitude(t1))
-  );
-}
-
 struct vec2 vec2__turn_90_deg(
   uint8_t left,
   struct vec2 src
 ) {
+  // TODO: we can use the left param to arithmetically
+  // flip these vec2 components, avoid conditional
   return left ?
     ((struct vec2){ -src.y, src.x }) : 
     ((struct vec2){ src.y, -src.x });
@@ -45,34 +37,34 @@ uint8_t is_moving_cw_around_world_up(
   struct vec3 position,
   struct vec3 previous_position
 ) {
-  struct vec3 previous_to_current_position = vec3_minus_vec3(
-    position,
-    previous_position
-  );
   struct vec3 cross = vec3__cross(
     position,
-    previous_to_current_position
+    vec3_minus_vec3(position, previous_position)
   );
   return cross.y <= 0 ? 1 : 0;
 }
 
-// TODO: figure this out re: player facing & world_pos_to_battlefield_post
 float battlefield_deg_from_world_pos(
-  struct vec3 position
+  struct vec3 t
 ) {
-  float degrees;
-  degrees = rad_to_deg(atan(-position.z / position.x));
-  if (position.x < 0) degrees += 180;
-  return degrees;
+  float deg = rad_to_deg(atan(-t.x / -t.z));
+  if (t.x < 0 && t.z >= 0) {
+    deg += 180;
+  } else if (t.x >= 0 && t.z >= 0) {
+    deg += 180;
+  } else if (t.x >= 0 && t.z < 0) {
+    deg += 360;
+  }
+  return deg;
 }
 
-float lerp_around_battlefield(
-  double delta_time,
-  struct revolution rev,
-  float deg,
-) {
+// float lerp_around_battlefield(
+//   double delta_time,
+//   struct revolution rev,
+//   float deg,
+// ) {
   
-}
+// }
 
 float find_cw_or_ccw_facing_around_world_up(
   struct vec3 position,
@@ -84,8 +76,8 @@ float find_cw_or_ccw_facing_around_world_up(
       position,
       previous_position
     ) ?
-    ccw_angle_in_deg + 180 :
-    ccw_angle_in_deg;
+    ccw_angle_in_deg + 270 :
+    ccw_angle_in_deg + 90;
 }
 
 float rads_from_arc_len_and_radius(

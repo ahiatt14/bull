@@ -16,11 +16,6 @@ struct revolution {
   double sec_elapsed_when_activated;
 };
 
-float radians_between_vec2s(
-  struct vec2 t0,
-  struct vec2 t1
-);
-
 float battlefield_deg_from_world_pos(
   struct vec3 position
 );
