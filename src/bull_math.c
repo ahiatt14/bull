@@ -47,6 +47,7 @@ uint8_t is_moving_cw_around_world_up(
 float battlefield_deg_from_world_pos(
   struct vec3 t
 ) {
+  // TODO: yikes, clean up / optimize
   float deg = rad_to_deg(atan(-t.x / -t.z));
   if (t.x < 0 && t.z >= 0) {
     deg += 180;

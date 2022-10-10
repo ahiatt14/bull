@@ -44,26 +44,23 @@ void fireballs__revolve(
 }
 
 void fireballs__activate_fireball(
-  struct vec3 position,
+  struct battlefield_pos bfpos,
   int_fast8_t ccw_coefficient
 ) {
   // NOTE: should never happen
   if (highest_active_index == MAX_FIREBALL_COUNT - 1) return;
-  highest_active_index++;
-  struct battlefield_pos bfpos = world_to_battlefield_pos(position);
   fireballs[highest_active_index] = (struct fireball){
     .position = bfpos,
     .starting_battlefield_deg = bfpos.degrees,
     .ccw_coefficient = ccw_coefficient
   };
+  highest_active_index++;
 }
 
 void fireballs__deactivate_fireball(
   int_fast16_t index_to_deactivate
 ) {
-  struct fireball temp = fireballs[highest_active_index];
-  highest_active_index--;
-  fireballs[index_to_deactivate] = temp;
+  fireballs[index_to_deactivate] = fireballs[highest_active_index--];
 }
 
 void fireballs__draw(

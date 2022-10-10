@@ -18,7 +18,7 @@ void fireballs__revolve(
 );
 
 void fireballs__activate_fireball(
-  struct vec3 position,
+  struct battlefield_pos bfpos,
   int_fast8_t ccw_coefficient
 );
 
