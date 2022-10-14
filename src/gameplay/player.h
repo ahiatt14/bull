@@ -9,18 +9,25 @@
 #define PLAYER_INPUT_STATE__THRUSTING 1
 #define PLAYER_INPUT_STATE__AUTOFIRING 2
 #define PLAYER_INPUT_STATE__REELING 3
+typedef uint8_t player_input_state;
 
 #define PLAYER_EFFECT_STATE__HEALTHY 0
 #define PLAYER_EFFECT_STATE__REELING 1
-#define PLAYER_EFFECT_STATE__BURNING 2
+typedef uint8_t player_effect_state;
+
+#define PLAYER_FACING_COEF__CCW 0
+#define PLAYER_FACING_COEF__CW 1
+#define PLAYER_FACING_COEF__IN 2
+typedef uint8_t player_facing_coef;
 
 struct player {
   struct transform transform;
   struct vec3 previous_position;
   struct vec3 projected_position;
-  uint8_t input_state;
-  uint8_t effect_state;
-  uint8_t autofire_start_locked_to_cw;
+  player_input_state input_state;
+  player_effect_state effect_state;
+  player_facing_coef facing_coef;
+  uint8_t facing_locked;
   uint8_t level;
 };
 

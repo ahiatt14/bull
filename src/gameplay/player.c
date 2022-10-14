@@ -49,10 +49,6 @@ static void player_idle__update(
 
   if (gamepad.right_trigger >= TRIGGER_DEADZONE) {
     actions->start_autofire(time, playr);
-    playr->autofire_start_locked_to_cw = is_moving_cw_around_world_up(
-      playr->projected_position,
-      playr->transform.position
-    );
     playr->input_state = PLAYER_INPUT_STATE__AUTOFIRING;
   }
 }
@@ -74,10 +70,6 @@ static void player_thrusting__update(
 
   if (gamepad.right_trigger >= TRIGGER_DEADZONE) {
     actions->start_autofire(time, playr);
-    playr->autofire_start_locked_to_cw = is_moving_cw_around_world_up(
-      playr->projected_position,
-      playr->transform.position
-    );
     playr->input_state = PLAYER_INPUT_STATE__AUTOFIRING;
   }
 }

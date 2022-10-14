@@ -32,11 +32,11 @@ typedef void (*player_one_autofire_ptr)(
 );
 
 static double seconds_until_next_autofire_shot;
-static const float fireball_revolution_per_sec_by_lvl[PLAYER_LVL_COUNT] =
+static const float FIREBALL_REV_PER_SEC_BY_LVL[PLAYER_LVL_COUNT] =
   { 0.25f, 0.33f, 0.5f }; 
-static const float fireball_scale_by_lvl[PLAYER_LVL_COUNT] =
+static const float FIREBALL_SCALE_BY_LVL[PLAYER_LVL_COUNT] =
   { 1.0f, 1.5f, 2.0f };
-static const float fireball_shot_sec_interval_by_lvl[PLAYER_LVL_COUNT] =
+static const float FIREBALL_SHOT_SEC_INTERVAL_BY_LVL[PLAYER_LVL_COUNT] =
   { 0.25f, 0.18f, 0.1f };
 // static const float 
 
@@ -207,7 +207,7 @@ void action__tick(
 
   fireballs__revolve(
     time,
-    fireball_revolution_per_sec_by_lvl[player_one.level]
+    FIREBALL_REV_PER_SEC_BY_LVL[player_one.level]
   );
 
   // DRAW
@@ -261,7 +261,7 @@ static void autofire_lvl0_fireballs(
   seconds_until_next_autofire_shot -= time.delta;
   if (seconds_until_next_autofire_shot > 0) return;
   seconds_until_next_autofire_shot =
-    fireball_shot_sec_interval_by_lvl[playr->level];
+    FIREBALL_SHOT_SEC_INTERVAL_BY_LVL[playr->level];
 
   fireballs__activate_fireball(
     world_to_battlefield_pos(playr->transform.position),
