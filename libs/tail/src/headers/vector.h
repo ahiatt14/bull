@@ -17,6 +17,10 @@ float vec2__dot(
   struct vec2 t0,
   struct vec2 t1
 );
+float vec2__fewest_rads_btw_vec2s(
+  struct vec2 t0,
+  struct vec2 t1
+);
 
 struct vec3 {
   float x, y, z;

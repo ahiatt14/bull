@@ -21,20 +21,28 @@
 #define BUTTON_DPAD_DOWN 13
 #define BUTTON_DPAD_LEFT 14
 
+typedef uint16_t gamepad_button_id;
+typedef uint16_t gamepad_button_state;
+
 struct gamepad_input {
   struct vec2 left_stick_direction;
   float left_trigger;
   float right_trigger;
-  uint16_t buttons;
-  uint16_t previous_buttons;
+  gamepad_button_state buttons;
+  gamepad_button_state previous_buttons;
 };
 
-uint8_t button_is_down(uint16_t button, uint16_t state);
-uint8_t button_is_up(uint16_t button, uint16_t state);
+uint8_t button_is_down(
+  gamepad_button_id button,
+  struct gamepad_input const *const gamepad
+);
+uint8_t button_is_up(
+  gamepad_button_id button,
+  struct gamepad_input const *const gamepad
+);
 uint8_t button_was_released(
-  uint16_t button,
-  uint16_t state,
-  uint16_t previous_state
+  gamepad_button_id button,
+  struct gamepad_input const *const gamepad
 );
 
 #endif

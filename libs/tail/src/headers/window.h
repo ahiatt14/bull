@@ -15,8 +15,6 @@
 #define REQUEST_FULLSCREEN 1
 #define REQUEST_WINDOWED 0
 
-// TODO: should we segregate the gamepad api from the window/platform stuff?
-
 struct window_api {
   
   void (*on_minimize_and_restore)(

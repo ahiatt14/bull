@@ -80,16 +80,16 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/statue.png 3 ${artifact_dir} && \
   ./${tools}sourcify-png.exe assets/png/steam.png 3 ${artifact_dir} \
   && \
-  ./${tools}sourcify-obj.exe assets/mesh/pyramid.obj flat ${artifact_dir} && \
-  ./${tools}sourcify-obj.exe assets/mesh/exclamation.obj flat ${artifact_dir} && \
-  ./${tools}sourcify-obj.exe assets/mesh/sphere.obj smooth ${artifact_dir} && \
-  ./${tools}sourcify-obj.exe assets/mesh/bird.obj flat ${artifact_dir} && \
-  ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_flat.obj flat ${artifact_dir} && \
-  ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_smooth.obj smooth ${artifact_dir} && \
-  ./${tools}sourcify-obj.exe assets/mesh/smooth_cube.obj flat ${artifact_dir} && \
-  ./${tools}sourcify-obj.exe assets/mesh/sky_cylinder.obj smooth ${artifact_dir} && \
-  ./${tools}sourcify-obj.exe assets/mesh/angel.obj smooth ${artifact_dir} && \
-  ./${tools}sourcify-obj.exe assets/mesh/mountain.obj smooth ${artifact_dir}
+  ./${tools}sourcify-obj.exe assets/mesh/pyramid.obj ${artifact_dir} && \
+  ./${tools}sourcify-obj.exe assets/mesh/exclamation.obj ${artifact_dir} && \
+  ./${tools}sourcify-obj.exe assets/mesh/sphere.obj ${artifact_dir} && \
+  ./${tools}sourcify-obj.exe assets/mesh/bird.obj ${artifact_dir} && \
+  ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_flat.obj ${artifact_dir} && \
+  ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_smooth.obj ${artifact_dir} && \
+  ./${tools}sourcify-obj.exe assets/mesh/smooth_cube.obj ${artifact_dir} && \
+  ./${tools}sourcify-obj.exe assets/mesh/sky_cylinder.obj ${artifact_dir} && \
+  ./${tools}sourcify-obj.exe assets/mesh/angel.obj ${artifact_dir} && \
+  ./${tools}sourcify-obj.exe assets/mesh/mountain.obj ${artifact_dir}
   # TODO: would be nice to get obj files outta these when building assets,
   # gotta figure out way to send obj files to obj dir in this step?
   # &&
