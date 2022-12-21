@@ -166,11 +166,7 @@ int main() {
 
       // TODO: ultimately don't like this fn's API.
       // should be passing in the gamepad struct
-      if (button_was_released(
-        BUTTON_SELECT,
-        gamepad.buttons,
-        gamepad.previous_buttons
-      )) {
+      if (button_was_released(BUTTON_SELECT, &gamepad)) {
         if (window.is_fullscreen()) {
           window.switch_to_windowed();
         } else {
