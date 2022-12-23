@@ -43,6 +43,7 @@ struct window_api {
   void (*switch_to_windowed)();
 
   void (*poll_events)();
+  void (*wait_on_events)();
   void (*request_buffer_swap)();
   uint8_t (*received_closed_event)();
   void (*end)();

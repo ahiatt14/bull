@@ -146,10 +146,13 @@ int main() {
   gpu.enable_depth_test();
 
   while (!window.received_closed_event()) {
-    window.poll_events();
-    // TODO: maybe we can sleep on pause instead of just zooming this loop
-    // while doing no work? seems like we can use
-    // glfwWaitEvents & glfwPostEmptyEvent
+
+    if (paused) {
+      window.wait_on_events();
+    } else {
+      window.poll_events();
+    }
+
     if (!paused) {
 
       static double tick_start_time;
