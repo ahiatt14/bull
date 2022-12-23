@@ -184,13 +184,10 @@ int main() {
         &gpu,
         previous_scene,
         switch_scene
-      );         
+      );
+
+      window.request_buffer_swap();
     }
-    // TODO: we put this out here because if there's no
-    // buffer swapping while the game is paused, opengl
-    // doesn't sync with the cpu and this window loop runs loose,
-    // eating up cpu
-    window.request_buffer_swap();
   }
   
   window.end();
