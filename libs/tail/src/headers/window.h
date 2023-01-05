@@ -45,6 +45,7 @@ struct window_api {
 
   uint8_t (*is_fullscreen)();
   struct vec2 (*get_window_dim_in_screen_units)();
+  struct vec2 (*get_framebuffer_size)();
   double (*get_seconds_since_creation)();
   void (*switch_to_fullscreen)();
   void (*switch_to_windowed)(

@@ -5,8 +5,6 @@
 #include "constants.h"
 #include "scene.h"
 
-#include "debugging.h"
-
 #include "normal_debug_geo.h"
 #include "normal_debug_frag.h"
 #include "normal_debug_vert.h"
@@ -101,6 +99,11 @@ int main() {
     print_gamepad_connected,
     print_gamepad_disconnected
   );
+
+  handle_resize(
+    window.get_framebuffer_size().x,
+    window.get_framebuffer_size().y
+  );
   
   viewport__set_width(gpu.get_viewport_width(), &vwprt);
   viewport__set_height(gpu.get_viewport_height(), &vwprt);
@@ -194,7 +197,7 @@ int main() {
 
 void copy_shared_assets_to_gpu() {
 
-  coord_gizmo__copy_assets_to_gpu(&gpu);
+  debugging__copy_gizmo_assets_to_gpu(&gpu);
 
   FLAT_TEXTURE_SHADER.frag_src = flat_texture_frag_src;
   FLAT_TEXTURE_SHADER.vert_src = default_vert_src;

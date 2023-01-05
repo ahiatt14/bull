@@ -110,5 +110,5 @@ const struct vec3 ORIGIN = { 0, 0, 0 };
 const struct coordinate_space WORLDSPACE = {
   .up = { 0, 1, 0 },
   .right = { 1, 0, 0 },
-  .forward = { 0, 0, 1 },
+  .forward = { 0, 0, -1 },
 };

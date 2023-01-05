@@ -8,8 +8,6 @@
 #include "constants.h"
 #include "bull_math.h"
 #include "tail_helpers.h"
-#include "debugging.h"
-
 #include "water.h"
 #include "steam.h"
 #include "sky_cylinder_mesh.h"
@@ -43,9 +41,6 @@ static const struct vec2 WIND_KM_PER_SEC = {
 // FORWARD DECS
 
 // LOCALS
-
-// TODO: debugging
-static struct coord_gizmo world_coord_gizmo;
 
 static struct vec3 steam_light_direction = {
   1,
@@ -123,13 +118,6 @@ void ocean__init(
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
   cam.far_clip_distance = 100;
-
-  // DEBUGGING
-  // TODO: my kingdom for constexpr in C
-  world_coord_gizmo = (struct coord_gizmo){
-    .position = { 0, 1, 0 },
-    .space = WORLDSPACE
-  };
 
   // WATER
 
@@ -242,8 +230,6 @@ void ocean__tick(
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
-  coord_gizmo__draw(&cam, gpu, &world_coord_gizmo);
-
   // SKY
   
   // TODO: go invert the sky cylinder normals in blender ya shmole
@@ -334,6 +320,13 @@ void ocean__tick(
   // steam__draw_column(&cam, gpu, norm_steam_light_direction, &steam3);
 
   water__draw(&cam, gpu);
+
+  debugging__draw_space_gizmo(
+    gpu,
+    &cam,
+    &WORLDSPACE,
+    ORIGIN
+  );
 
   gpu->cull_back_faces();
 }
