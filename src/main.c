@@ -42,7 +42,7 @@ void handle_resize(uint16_t framebuffer_width, uint16_t framebuffer_height) {
   uint16_t viewport_width = framebuffer_width;
   uint16_t viewport_height = framebuffer_height;
 
-  struct vec2 window_dimensions = window.get_window_dimensions();
+  struct vec2 window_dimensions = window.get_window_dim_in_screen_units();
   uint8_t window_aspect_is_wider_than_ours =
     window_dimensions.x / window_dimensions.y > ASPECT_RATIO ? 1 : 0;
 
@@ -80,15 +80,10 @@ void switch_scene(uint8_t new_scene) {
 
 int main() {
 
-  if (!window__create(
-    WINDOW_HEIGHT_IN_SCREEN_COORD * ASPECT_RATIO,
-    WINDOW_HEIGHT_IN_SCREEN_COORD,
-    50,
-    50,
+  if (!window__create_fullscreen_game(
     "twister",
     REQUEST_VSYNC_ON,
-    REQUEST_WINDOWED,
-    REQUEST_MSAA_ON,
+    MSAA_SAMPLES_8,
     &window
   )) return 1;
   gpu__create_api(&gpu);
@@ -167,11 +162,14 @@ int main() {
 
       window.get_gamepad_input(&gamepad);
 
-      // TODO: ultimately don't like this fn's API.
-      // should be passing in the gamepad struct
       if (button_was_released(BUTTON_SELECT, &gamepad)) {
         if (window.is_fullscreen()) {
-          window.switch_to_windowed();
+          window.switch_to_windowed(
+            50,
+            50,
+            500,
+            500
+          );
         } else {
           window.switch_to_fullscreen();
         }

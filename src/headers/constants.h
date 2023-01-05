@@ -3,7 +3,6 @@
 
 #include "tail.h"
 
-#define BULL_MAX_TEXTURE_COUNT 100 // TODO: ?
 #define DELTA_CAP 1.0f / 30.0f
 
 extern struct m3x3 M3X3_IDENTITY;

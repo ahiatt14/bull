@@ -14,6 +14,7 @@
 #include "../src/headers/camera.h"
 #include "../src/headers/space.h"
 #include "../src/headers/precision.h"
+#include "../src/headers/debugging.h"
 #include "../src/headers/viewport.h"
 
 #endif
