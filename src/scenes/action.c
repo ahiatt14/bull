@@ -19,7 +19,7 @@
 #define PLAYER_LVL_COUNT 3
 #define PLAYER_START_POS {3, 0, 0}
 
-#define MAX_PLAYER_RADIUS 10.0f
+#define ARENA_EDGE_RADIUS 8.0f
 
 typedef void (*player_one_autofire_ptr)(
   struct gametime time,
@@ -27,7 +27,6 @@ typedef void (*player_one_autofire_ptr)(
 );
 
 static double seconds_until_next_autofire_shot;
-// static const float 
 
 /*
   ~~~~~~~~~FORWARD DECS~~~~~~~~~~
@@ -152,10 +151,10 @@ void action__tick(
   
   if (
     vec3__distance(player_one.projected_position, ORIGIN) >=
-    MAX_PLAYER_RADIUS
+    ARENA_EDGE_RADIUS
   ) player_one.projected_position =
     slide_along_radius_around_world_origin(
-      MAX_PLAYER_RADIUS,
+      ARENA_EDGE_RADIUS,
       player_one.projected_position,
       player_one.transform.position
     );
@@ -170,7 +169,12 @@ void action__tick(
   bouncers__draw_grid(time, &cam, gpu, &bouncy_grid);
 
   player__draw(&cam, gpu, &player_one);
-  firing_guide__draw(&cam, gpu, player_one.transform.position);
+  firing_guide__draw(
+    &cam,
+    gpu,
+    ARENA_EDGE_RADIUS,
+    player_one.transform.position
+  );
 
 }
 

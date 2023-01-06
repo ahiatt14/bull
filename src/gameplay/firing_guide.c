@@ -28,6 +28,7 @@ void firing_guide__copy_assets_to_gpu(
 void firing_guide__draw(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
+  float arena_radius_worldspace,
   struct vec3 player_position
 ) {
   gpu->select_shader(&guide_shader);
@@ -45,7 +46,12 @@ void firing_guide__draw(
   );
   gpu->set_shader_float(
     &guide_shader,
-    "player_radius_world",
+    "arena_radius_worldspace",
+    arena_radius_worldspace
+  );
+  gpu->set_shader_float(
+    &guide_shader,
+    "player_radius_worldspace",
     vec3__distance(
       player_position,
       ORIGIN
