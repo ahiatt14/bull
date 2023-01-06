@@ -22,7 +22,6 @@
 
 #include "statue_frag.h"
 #include "mountain_frag.h"
-#include "core_frag.h"
 #include "default_vert.h"
 #include "water_surface_frag.h"
 #include "sky_frag.h"

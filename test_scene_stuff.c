@@ -65,7 +65,6 @@ struct player_action_callbacks {
   void (*fire_special)();
 };
 struct player_arena_callbacks {
-  void (*player_entered_core)();
   void (*player_left_arena)();
   void (*player_entered_arena)();
 };

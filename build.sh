@@ -46,7 +46,6 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/solid_color_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/flat_texture_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/water_surface_frag.glsl frag \
-  ./${tools}validate-glsl.exe assets/glsl/core_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/sky_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/bouncer_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/steam_frag.glsl frag && \
@@ -65,7 +64,6 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/default_vert.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/barebones_vert.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/water_surface_frag.glsl ${artifact_dir} && \
-  ./${tools}sourcify-glsl.exe assets/glsl/core_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/sky_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/bouncer_frag.glsl ${artifact_dir} && \
   ./${tools}sourcify-glsl.exe assets/glsl/steam_frag.glsl ${artifact_dir} && \
