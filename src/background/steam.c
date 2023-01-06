@@ -15,8 +15,6 @@
 #include "default_vert.h"
 #include "steam_frag.h"
 
-#include "core_frag.h"
-
 #define BOUYANCY 0.45f
 #define VERTS_PER_LVL 10
 #define LVL_HEIGHT 0.8f
