@@ -96,9 +96,8 @@ void action__init(
   ocean__init(window, vwprt, gpu);
 
   for (int i = 0; i < BOUNCER_GRID_MAX_PER_ROW; i++) {
-    // bouncers__add_to_grid(4, i, &bouncy_grid);
+    bouncers__add_to_grid(4, i, &bouncy_grid);
     bouncers__add_to_grid(6, i, &bouncy_grid);
-    bouncers__add_to_grid(8, i, &bouncy_grid);
   }
 }
 
@@ -131,7 +130,6 @@ void action__tick(
 
   bouncers__rotate_grid_row(4, 10, time, &bouncy_grid);
   bouncers__rotate_grid_row(6, -15, time, &bouncy_grid);
-  bouncers__rotate_grid_row(8, 20, time, &bouncy_grid);
   bouncers__radiate_grid(0.1f, time, &bouncy_grid);
 
   bouncers__check_collision_with_grid(

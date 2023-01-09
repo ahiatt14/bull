@@ -42,20 +42,17 @@ void firing_guide__draw(
   gpu->set_shader_vec3(
     &guide_shader,
     "color",
-    COLOR_MAGENTA_WHITE
+    COLOR_MALACHITE
   );
   gpu->set_shader_float(
     &guide_shader,
     "arena_radius_worldspace",
     arena_radius_worldspace
   );
-  gpu->set_shader_float(
+  gpu->set_shader_vec3(
     &guide_shader,
-    "player_radius_worldspace",
-    vec3__distance(
-      player_position,
-      ORIGIN
-    )
+    "player_pos_worldspace",
+    player_position
   );
   gpu->draw_mesh(&QUAD);
 }

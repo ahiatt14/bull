@@ -320,12 +320,12 @@ void ocean__tick(
 
   water__draw(&cam, gpu);
 
-  debugging__draw_space_gizmo(
-    gpu,
-    &cam,
-    &WORLDSPACE,
-    ORIGIN
-  );
+  // debugging__draw_space_gizmo(
+  //   gpu,
+  //   &cam,
+  //   &WORLDSPACE,
+  //   ORIGIN
+  // );
 
   gpu->cull_back_faces();
 }

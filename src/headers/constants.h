@@ -15,6 +15,7 @@ extern struct shader NORMALS_VIS_SHADER;
 
 extern struct drawable_mesh QUAD;
 
+extern const struct vec3 COLOR_MALACHITE;
 extern const struct vec3 COLOR_WHITE;
 extern const struct vec3 COLOR_LIGHT_GREY;
 extern const struct vec3 COLOR_BLACK;

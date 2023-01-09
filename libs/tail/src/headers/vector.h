@@ -21,6 +21,11 @@ float vec2__fewest_rads_btw_vec2s(
   struct vec2 t0,
   struct vec2 t1
 );
+float vec2__dist_from_point_to_line(
+  struct vec2 p0,
+  struct vec2 p1,
+  struct vec2 test_position
+);
 
 struct vec3 {
   float x, y, z;

@@ -43,6 +43,11 @@ const struct vec3 COLOR_RED = { 1, 0, 0 };
 const struct vec3 COLOR_GREEN = { 0, 1, 0 };
 const struct vec3 COLOR_BLUE = { 0, 0, 1 };
 
+const struct vec3 COLOR_MALACHITE = {
+  0.20f,
+  1.00f,
+  0.33f
+};
 const struct vec3 COLOR_SKY_BLUE = {
   135.0f / 255.0f,
   206.0f / 255.0f,
