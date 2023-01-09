@@ -12,15 +12,15 @@
 #include "steam.h"
 #include "sky_cylinder_mesh.h"
 #include "mountain_mesh.h"
-#include "angel_mesh.h"
+// #include "angel_mesh.h"
 
 #include "steam_texture.h"
 #include "mountain_texture.h"
 #include "water_texture.h"
 #include "clouds_texture.h"
-#include "statue_texture.h"
+// #include "statue_texture.h"
 
-#include "statue_frag.h"
+// #include "statue_frag.h"
 #include "mountain_frag.h"
 #include "default_vert.h"
 #include "water_surface_frag.h"
@@ -28,7 +28,7 @@
 
 // CONSTANTS
 
-#define CAMERA_ROTATE_SPEED 4
+#define CAMERA_ROTATE_SPEED 0
 
 // READ ONLY
 
@@ -76,14 +76,14 @@ static struct transform mountain2_transform = (struct transform){
 
 // STATUE
 
-static struct shader statue_shader;
-static struct m4x4 statue_local_to_world;
-static struct m3x3 statue_normals_local_to_world;
-static struct transform statue_transform = (struct transform){
-  .position = { -7, -3, -25 },
-  .rotation_in_deg = { 10, 65, 30 },
-  .scale = 2
-};
+// static struct shader statue_shader;
+// static struct m4x4 statue_local_to_world;
+// static struct m3x3 statue_normals_local_to_world;
+// static struct transform statue_transform = (struct transform){
+//   .position = { -7, -3, -25 },
+//   .rotation_in_deg = { 10, 65, 30 },
+//   .scale = 2
+// };
 
 // STEAM
 
@@ -152,19 +152,19 @@ void ocean__init(
 
   // STATUE
 
-  gpu->copy_static_mesh_to_gpu(&angel_mesh);
-  statue_shader.frag_src = statue_frag_src;
-  statue_shader.vert_src = default_vert_src;
-  gpu->copy_shader_to_gpu(&statue_shader);
-  space__create_model(
-    &WORLDSPACE,
-    &statue_transform,
-    &statue_local_to_world
-  );
-  space__create_normals_model(
-    &statue_local_to_world,
-    &statue_normals_local_to_world
-  );
+  // gpu->copy_static_mesh_to_gpu(&angel_mesh);
+  // statue_shader.frag_src = statue_frag_src;
+  // statue_shader.vert_src = default_vert_src;
+  // gpu->copy_shader_to_gpu(&statue_shader);
+  // space__create_model(
+  //   &WORLDSPACE,
+  //   &statue_transform,
+  //   &statue_local_to_world
+  // );
+  // space__create_normals_model(
+  //   &statue_local_to_world,
+  //   &statue_normals_local_to_world
+  // );
 
   // MOUNTAINS
 
@@ -252,30 +252,30 @@ void ocean__tick(
 
   gpu->cull_back_faces();
 
-  gpu->select_shader(&statue_shader);
-  gpu->set_shader_vec3(
-    &statue_shader,
-    "light_dir",
-    vec3__normalize((struct vec3){ -1, -4, 2 })
-  );
-  gpu->set_shader_vec3(
-    &statue_shader,
-    "color",
-    COLOR_DARK_SLATE_GREY
-  );
-  gpu->set_shader_vec3(
-    &statue_shader,
-    "light_color",
-    COLOR_GOLDEN_YELLOW
-  );
-  gpu__set_mvp(
-    &statue_local_to_world,
-    &statue_normals_local_to_world,
-    &cam,
-    &statue_shader,
-    gpu
-  );
-  gpu->draw_mesh(&angel_mesh);
+  // gpu->select_shader(&statue_shader);
+  // gpu->set_shader_vec3(
+  //   &statue_shader,
+  //   "light_dir",
+  //   vec3__normalize((struct vec3){ -1, -4, 2 })
+  // );
+  // gpu->set_shader_vec3(
+  //   &statue_shader,
+  //   "color",
+  //   COLOR_DARK_SLATE_GREY
+  // );
+  // gpu->set_shader_vec3(
+  //   &statue_shader,
+  //   "light_color",
+  //   COLOR_GOLDEN_YELLOW
+  // );
+  // gpu__set_mvp(
+  //   &statue_local_to_world,
+  //   &statue_normals_local_to_world,
+  //   &cam,
+  //   &statue_shader,
+  //   gpu
+  // );
+  // gpu->draw_mesh(&angel_mesh);
 
   // MOUNTAINS
 

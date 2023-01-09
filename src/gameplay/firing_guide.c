@@ -42,7 +42,7 @@ void firing_guide__draw(
   gpu->set_shader_vec3(
     &guide_shader,
     "color",
-    COLOR_MALACHITE
+    COLOR_GREEN
   );
   gpu->set_shader_float(
     &guide_shader,

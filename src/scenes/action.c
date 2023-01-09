@@ -82,11 +82,19 @@ void action__init(
   struct gpu_api const *const gpu
 ) {
 
-  cam.position = (struct vec3){ 0, 1, 0.1f };
-  cam.look_target = ORIGIN;
+  cam.position = (struct vec3){ 0, 20, 8 };
+  cam.look_target = (struct vec3){
+    ORIGIN.x,
+    ORIGIN.y,
+    ORIGIN.z + 1.2f
+  };
+  cam.horizontal_fov_in_deg = 58;
+  cam.near_clip_distance = 0.3f;
+  cam.far_clip_distance = 100;
 
   camera__calculate_lookat(WORLDSPACE.up, &cam);
-  camera__calculate_ortho(12, 9, -4, 4, &cam);
+  camera__calculate_perspective(vwprt, &cam);
+  // camera__calculate_ortho(12, 9, -4, 4, &cam);
 
   bouncers__copy_assets_to_gpu(gpu);
 
@@ -147,15 +155,15 @@ void action__tick(
       player_one.transform.position.x
     )) + deg_mod;
   
-  if (
-    vec3__distance(player_one.projected_position, ORIGIN) >=
-    ARENA_EDGE_RADIUS
-  ) player_one.projected_position =
-    slide_along_radius_around_world_origin(
-      ARENA_EDGE_RADIUS,
-      player_one.projected_position,
-      player_one.transform.position
-    );
+  // if (
+  //   vec3__distance(player_one.projected_position, ORIGIN) >=
+  //   ARENA_EDGE_RADIUS
+  // ) player_one.projected_position =
+  //   slide_along_radius_around_world_origin(
+  //     ARENA_EDGE_RADIUS,
+  //     player_one.projected_position,
+  //     player_one.transform.position
+  //   );
 
   player_one.transform.position = player_one.projected_position;
 
@@ -191,13 +199,13 @@ static void bounce_player(
   bouncers__delete_from_grid(row, column, grid);
 }
 
-// static void begin_lvl0_fireball_autofire(
-//   struct gametime time,
-//   struct player const *const playr
-// ) {
-//   player_one_autofire = autofire_lvl0_fireballs;
-//   player_one_autofire(time, playr);
-// }
+static void begin_lvl0_fireball_autofire(
+  struct gametime time,
+  struct player const *const playr
+) {
+  player_one_autofire = autofire_lvl0_fireballs;
+  player_one_autofire(time, playr);
+}
 
 static void stop_autofiring(
   struct gametime time,
