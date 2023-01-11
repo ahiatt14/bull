@@ -78,12 +78,24 @@ void switch_scene(uint8_t new_scene) {
 
 int main() {
 
-  if (!window__create_fullscreen_game(
-    "twister",
+  // if (!window__create_fullscreen_game(
+  //   "twister",
+  //   REQUEST_VSYNC_ON,
+  //   MSAA_SAMPLES_8,
+  //   &window
+  // )) return 1;
+
+  if (!window__create_windowed_game(
+    800,
+    800,
+    100,
+    100,
+    "Bull",
     REQUEST_VSYNC_ON,
     MSAA_SAMPLES_8,
     &window
   )) return 1;
+
   gpu__create_api(&gpu);
 
   gpu.enable_MSAA();
@@ -100,6 +112,7 @@ int main() {
     print_gamepad_disconnected
   );
 
+  // TODO: shouldn't have to do this for a windowed game??? BUG?
   handle_resize(
     window.get_framebuffer_size().x,
     window.get_framebuffer_size().y

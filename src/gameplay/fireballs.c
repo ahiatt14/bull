@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <math.h>
+
 #include "tail.h"
 
 #include "fireballs.h"
@@ -8,13 +11,11 @@
 
 #include "lowpoly_sphere_smooth_mesh.h"
 
-#define MAX_FIREBALL_COUNT 100
+#define MAX_FIREBALL_COUNT 20
 
 struct fireball {
   struct battlefield_pos position;
-  float starting_battlefield_deg;
   double sec_since_activation;
-  int8_t ccw_coefficient; // 1 for ccw, -1 for cw (?)
 };
 
 static struct fireball fireballs[MAX_FIREBALL_COUNT];
@@ -30,36 +31,55 @@ void fireballs__deactivate_all() {
   highest_active_index = 0;
 }
 
-void fireballs__revolve(
+void fireballs__move(
   struct gametime time,
-  double revolutions_per_sec
+  float world_unit_per_second,
+  float max_radius
 ) {
   for (int i = 0; i < highest_active_index; i++) {
     fireballs[i].sec_since_activation += time.delta;
-    fireballs[i].position.degrees +=
-      revolutions_per_sec * 360.0f *
-      time.delta *
-      fireballs[i].ccw_coefficient;
+    fireballs[i].position.radius -= world_unit_per_second * time.delta;
   }
 }
 
+// void fireballs__revolve(
+//   struct gametime time,
+//   double revolutions_per_sec
+// ) {
+//   for (int i = 0; i < highest_active_index; i++) {
+//     fireballs[i].sec_since_activation += time.delta;
+//     fireballs[i].position.degrees +=
+//       revolutions_per_sec * 360.0f *
+//       time.delta *
+//       fireballs[i].ccw_coefficient;
+//   }
+// }
+
 void fireballs__activate_fireball(
-  struct battlefield_pos bfpos,
-  int_fast8_t ccw_coefficient
+  struct battlefield_pos bfpos
 ) {
-  // NOTE: should never happen
-  if (highest_active_index == MAX_FIREBALL_COUNT - 1) return;
-  fireballs[highest_active_index] = (struct fireball){
+  uint_fast16_t resolved_index =
+    highest_active_index + 1 >= MAX_FIREBALL_COUNT ?
+    highest_active_index :
+    highest_active_index++;
+
+  fireballs[resolved_index] = (struct fireball){
     .position = bfpos,
-    .starting_battlefield_deg = bfpos.degrees,
-    .ccw_coefficient = ccw_coefficient
+    .sec_since_activation = 0
   };
-  highest_active_index++;
+  
+  printf("highest index: %u\n", resolved_index);
+  printf(
+    "latest fireball: radius: %f ; deg: %f\n",
+    fireballs[resolved_index].position.radius,
+    fireballs[resolved_index].position.degrees
+  );
 }
 
 void fireballs__deactivate_fireball(
   int_fast16_t index_to_deactivate
 ) {
+
   fireballs[index_to_deactivate] = fireballs[highest_active_index--];
 }
 
@@ -70,7 +90,7 @@ void fireballs__draw(
   static struct m4x4 translation;
 
   gpu->select_shader(&SOLID_COLOR_SHADER);
-  gpu->set_shader_vec3(&SOLID_COLOR_SHADER, "color", COLOR_BLOOD_RED);
+  gpu->set_shader_vec3(&SOLID_COLOR_SHADER, "color", COLOR_GOLDEN_YELLOW);
   for (int i = 0; i < highest_active_index; i++) {
     // TODO: implement batch meshes to reduce draw calls!
     m4x4__translation(

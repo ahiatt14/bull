@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <math.h>
 
 #include "tail.h"
@@ -9,6 +10,7 @@
 #include "tail_helpers.h"
 
 #include "player.h"
+#include "fireballs.h"
 #include "bouncers.h"
 #include "firing_guide.h"
 
@@ -39,6 +41,16 @@ static void bounce_player(
   struct bouncer_grid *const grid
 );
 
+static void begin_lvl0_fireball_autofire(
+  struct gametime time,
+  struct player const *const playr
+);
+
+static void autofire_lvl0_fireballs(
+  struct gametime time,
+  struct player const *const playr
+);
+
 static void stop_autofiring(
   struct gametime time,
   struct player const *const playr
@@ -62,13 +74,9 @@ struct player player_one = (struct player){
 };
 player_one_autofire_ptr player_one_autofire = NULL;
 
-static void autofire_noop(
-  struct gametime time,
-  struct player const *const playr
-) {}
 static struct player_actions player_one_actions =
   (struct player_actions){
-    .start_autofire = autofire_noop,
+    .start_autofire = begin_lvl0_fireball_autofire,
     .stop_autofire = stop_autofiring
   };
 
@@ -97,6 +105,7 @@ void action__init(
   // camera__calculate_ortho(12, 9, -4, 4, &cam);
 
   bouncers__copy_assets_to_gpu(gpu);
+  fireballs__copy_assets_to_gpu(gpu);
 
   player__copy_assets_to_gpu(gpu);
   firing_guide__copy_assets_to_gpu(gpu);
@@ -136,9 +145,11 @@ void action__tick(
     &player_one
   );
 
+  fireballs__move(time, 15, ARENA_EDGE_RADIUS);
+
   bouncers__rotate_grid_row(4, 10, time, &bouncy_grid);
   bouncers__rotate_grid_row(6, -15, time, &bouncy_grid);
-  bouncers__radiate_grid(0.1f, time, &bouncy_grid);
+  // bouncers__radiate_grid(0.1f, time, &bouncy_grid);
 
   bouncers__check_collision_with_grid(
     bounce_player,
@@ -173,6 +184,8 @@ void action__tick(
   gpu->clear_depth_buffer();
 
   bouncers__draw_grid(time, &cam, gpu, &bouncy_grid);
+
+  fireballs__draw(&cam, gpu);
 
   player__draw(&cam, gpu, &player_one);
   firing_guide__draw(
@@ -215,21 +228,17 @@ static void stop_autofiring(
   player_one_autofire = NULL;
 }
 
-// static void autofire_lvl0_fireballs(
-//   struct gametime time,
-//   struct player const *const playr
-// ) {
+static void autofire_lvl0_fireballs(
+  struct gametime time,
+  struct player const *const playr
+) {
 
-//   seconds_until_next_autofire_shot -= time.delta;
-//   if (seconds_until_next_autofire_shot > 0) return;
-//   seconds_until_next_autofire_shot =
-//     FIREBALL_SHOT_SEC_INTERVAL_BY_LVL[playr->level];
+  seconds_until_next_autofire_shot -= time.delta;
+  if (seconds_until_next_autofire_shot > 0) return;
+  seconds_until_next_autofire_shot = 0.15f;
+    // FIREBALL_SHOT_SEC_INTERVAL_BY_LVL[playr->level];
 
-//   fireballs__activate_fireball(
-//     world_to_battlefield_pos(playr->transform.position),
-//     is_moving_cw_around_world_up(
-//       playr->projected_position,
-//       playr->transform.position
-//     ) ? -1 : 1
-//   );
-// }
+  fireballs__activate_fireball(
+    world_to_battlefield_pos(playr->transform.position)
+  );
+}

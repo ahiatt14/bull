@@ -12,14 +12,19 @@ void fireballs__copy_assets_to_gpu(
 
 void fireballs__deactivate_all();
 
+void fireballs__move(
+  struct gametime time,
+  float world_unit_per_second,
+  float max_radius
+);
+
 void fireballs__revolve(
   struct gametime time,
   double sec_per_revolution
 );
 
 void fireballs__activate_fireball(
-  struct battlefield_pos bfpos,
-  int_fast8_t ccw_coefficient
+  struct battlefield_pos bfpos
 );
 
 void fireballs__deactivate_fireball(
