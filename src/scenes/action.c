@@ -65,7 +65,7 @@ static struct gamepad_input gamepad;
 
 static struct bouncer_grid bouncy_grid;
 
-struct player player_one = (struct player){
+static struct player player_one = {
   .transform = {PLAYER_START_POS, {0, 0, 0}, 1},
   .previous_position = PLAYER_START_POS,
   .projected_position = PLAYER_START_POS,
@@ -74,11 +74,12 @@ struct player player_one = (struct player){
 };
 player_one_autofire_ptr player_one_autofire = NULL;
 
-static struct player_actions player_one_actions =
-  (struct player_actions){
-    .start_autofire = begin_lvl0_fireball_autofire,
-    .stop_autofire = stop_autofiring
-  };
+static struct player_actions player_one_actions ={
+  .start_autofire = begin_lvl0_fireball_autofire,
+  .stop_autofire = stop_autofiring
+};
+
+static struct fireballs fbs;
 
 /*
   ~~~~~~~~~PUBLIC API~~~~~~~~~~
@@ -145,7 +146,7 @@ void action__tick(
     &player_one
   );
 
-  fireballs__move(time, 15, ARENA_EDGE_RADIUS);
+  fireballs__move(time, 15, ARENA_EDGE_RADIUS, &fbs);
 
   bouncers__rotate_grid_row(4, 10, time, &bouncy_grid);
   bouncers__rotate_grid_row(6, -15, time, &bouncy_grid);
@@ -185,7 +186,7 @@ void action__tick(
 
   bouncers__draw_grid(time, &cam, gpu, &bouncy_grid);
 
-  fireballs__draw(&cam, gpu);
+  fireballs__draw(&cam, gpu, &fbs);
 
   player__draw(&cam, gpu, &player_one);
   firing_guide__draw(
@@ -238,7 +239,8 @@ static void autofire_lvl0_fireballs(
   seconds_until_next_autofire_shot = 0.15f;
     // FIREBALL_SHOT_SEC_INTERVAL_BY_LVL[playr->level];
 
-  fireballs__activate_fireball(
-    world_to_battlefield_pos(playr->transform.position)
+  fireballs__activate(
+    world_to_battlefield_pos(playr->transform.position),
+    &fbs
   );
 }

@@ -6,34 +6,48 @@
 #include "tail_helpers.h"
 #include "bull_math.h"
 
+#define MAX_FIREBALLS 5
+
+struct fireball {
+  struct battlefield_pos position;
+  double sec_since_activation;
+};
+
+struct fireballs {
+  struct fireball _ring_buffer[MAX_FIREBALLS];
+  unsigned int _tail;
+  unsigned int _active_count;
+};
+
 void fireballs__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 );
 
-void fireballs__deactivate_all();
+void fireballs__deactivate_all(
+  struct fireballs *const fbs
+);
 
 void fireballs__move(
   struct gametime time,
   float world_unit_per_second,
-  float max_radius
+  float max_radius,
+  struct fireballs *const fbs
 );
 
-void fireballs__revolve(
-  struct gametime time,
-  double sec_per_revolution
+void fireballs__activate(
+  struct battlefield_pos bfpos,
+  struct fireballs *const fbs
 );
 
-void fireballs__activate_fireball(
-  struct battlefield_pos bfpos
-);
-
-void fireballs__deactivate_fireball(
-  int_fast16_t index_to_deactivate
+void fireballs__deactivate(
+  uint_fast16_t from_start,
+  struct fireballs *const fbs
 );
 
 void fireballs__draw(
   struct camera const *const cam,
-  struct gpu_api const *const gpu
+  struct gpu_api const *const gpu,
+  struct fireballs const *const fbs
 );
 
 #endif
