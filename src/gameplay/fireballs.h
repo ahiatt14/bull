@@ -6,7 +6,7 @@
 #include "tail_helpers.h"
 #include "bull_math.h"
 
-#define MAX_FIREBALLS 5
+#define MAX_FIREBALLS 20
 
 struct fireball {
   struct battlefield_pos position;
@@ -47,7 +47,7 @@ void fireballs__deactivate(
 void fireballs__draw(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
-  struct fireballs const *const fbs
+  struct fireballs *const fbs
 );
 
 #endif
