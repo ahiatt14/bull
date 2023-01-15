@@ -146,7 +146,12 @@ void action__tick(
     &player_one
   );
 
-  fireballs__move(time, 15, ARENA_EDGE_RADIUS, &fbs);
+  fireballs__move(
+    time,
+    25,
+    ARENA_EDGE_RADIUS,
+    &fbs
+  );
 
   bouncers__rotate_grid_row(4, 10, time, &bouncy_grid);
   bouncers__rotate_grid_row(6, -15, time, &bouncy_grid);

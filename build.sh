@@ -86,7 +86,7 @@ compile_src() {
 link_obj() {
   rm -rf bin
   mkdir bin
-  $target -o bin/bullgame.exe $(echo obj/*.o) $tail_static
+  $target -o bin/bull.exe $(echo obj/*.o) $tail_static
 }
 
 ARG1=${@:$OPTIND:1}

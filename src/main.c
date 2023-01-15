@@ -177,10 +177,10 @@ int main() {
       if (button_was_released(BUTTON_SELECT, &gamepad)) {
         if (window.is_fullscreen()) {
           window.switch_to_windowed(
+            100,
             50,
-            50,
-            500,
-            500
+            650,
+            650
           );
         } else {
           window.switch_to_fullscreen();
