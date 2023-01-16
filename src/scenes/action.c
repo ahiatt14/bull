@@ -21,6 +21,8 @@
 #define PLAYER_LVL_COUNT 3
 #define PLAYER_START_POS {3, 0, 0}
 
+#define GUIDE_LAG_TIME_SECONDS 0.15f
+
 #define ARENA_EDGE_RADIUS 8.0f
 
 typedef void (*player_one_autofire_ptr)(
@@ -28,7 +30,10 @@ typedef void (*player_one_autofire_ptr)(
   struct player const *const playr
 );
 
-static double seconds_until_next_autofire_shot;
+struct guide_lag_state {
+  double seconds_since_player_moved;
+  struct vec3 guide_target_position;
+};
 
 /*
   ~~~~~~~~~FORWARD DECS~~~~~~~~~~
@@ -37,7 +42,6 @@ static double seconds_until_next_autofire_shot;
 static void bounce_player(
   uint8_t row,
   uint8_t column,
-  struct vec3 bouncer_to_target,
   struct bouncer_grid *const grid
 );
 
@@ -54,6 +58,12 @@ static void autofire_lvl0_fireballs(
 static void stop_autofiring(
   struct gametime time,
   struct player const *const playr
+);
+
+void guide_lag_update(
+  struct gametime time,
+  struct player const *const playr,
+  struct guide_lag_state *const guide_lag
 );
 
 /*
@@ -73,10 +83,15 @@ static struct player player_one = {
   .effect_state = PLAYER_EFFECT_STATE__HEALTHY
 };
 player_one_autofire_ptr player_one_autofire = NULL;
+static double seconds_until_next_autofire_shot;
 
 static struct player_actions player_one_actions ={
   .start_autofire = begin_lvl0_fireball_autofire,
   .stop_autofire = stop_autofiring
+};
+
+static struct guide_lag_state guide_lag = {
+  .guide_target_position = PLAYER_START_POS
 };
 
 static struct fireballs fbs;
@@ -113,7 +128,7 @@ void action__init(
 
   ocean__init(window, vwprt, gpu);
 
-  for (int i = 0; i < BOUNCER_GRID_MAX_PER_ROW; i++) {
+  for (int i = 0; i < BOUNCER_GRID_MAX_PER_ROW; i += 2) {
     bouncers__add_to_grid(4, i, &bouncy_grid);
     bouncers__add_to_grid(6, i, &bouncy_grid);
   }
@@ -140,6 +155,7 @@ void action__tick(
   // GAMEPLAY
 
   player__update(time, gamepad, &player_one_actions, &player_one);
+  guide_lag_update(time, &player_one, &guide_lag);
 
   if (player_one_autofire) player_one_autofire(
     time,
@@ -198,7 +214,7 @@ void action__tick(
     &cam,
     gpu,
     ARENA_EDGE_RADIUS,
-    player_one.transform.position
+    guide_lag.guide_target_position
   );
 
 }
@@ -212,9 +228,9 @@ void action__tick(
 static void bounce_player(
   uint8_t row,
   uint8_t column,
-  struct vec3 bouncer_to_target,
   struct bouncer_grid *const grid
 ) {
+  player_one.input_state = PLAYER_INPUT_STATE__FLIPPING;
   bouncers__delete_from_grid(row, column, grid);
 }
 
@@ -247,5 +263,24 @@ static void autofire_lvl0_fireballs(
   fireballs__activate(
     world_to_battlefield_pos(playr->transform.position),
     &fbs
+  );
+}
+
+void guide_lag_update(
+  struct gametime time,
+  struct player const *const playr,
+  struct guide_lag_state *const guide_lag
+) {
+  if (vec3__distance(
+    playr->previous_position,
+    playr->transform.position
+  ) <= 0.02) guide_lag->seconds_since_player_moved = 0;
+  guide_lag->seconds_since_player_moved += time.delta;
+  if (guide_lag->seconds_since_player_moved > GUIDE_LAG_TIME_SECONDS)
+    guide_lag->seconds_since_player_moved = GUIDE_LAG_TIME_SECONDS;
+  guide_lag->guide_target_position = vec3__lerp(
+    guide_lag->guide_target_position,
+    playr->transform.position,
+    guide_lag->seconds_since_player_moved / GUIDE_LAG_TIME_SECONDS
   );
 }

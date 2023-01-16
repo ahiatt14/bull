@@ -13,7 +13,7 @@
 
 // CONSTANTS
 
-#define PLAYER_INPUT_STATE_COUNT 3
+#define PLAYER_INPUT_STATE_COUNT 5
 #define PLAYER_EFFECT_STATE_COUNT 1
 
 #define PLAYER_SPEED 6
@@ -93,6 +93,32 @@ static void player_autofiring__update(
   }
 }
 
+static void player_reeling__update(
+  struct gametime time,
+  struct gamepad_input gamepad,
+  struct player_actions const *const actions,
+  struct player *const playr
+) {
+
+}
+
+static void player_flipping__update(
+  struct gametime time,
+  struct gamepad_input gamepad,
+  struct player_actions const *const actions,
+  struct player *const playr
+) {
+
+  playr->previous_position = playr->transform.position;
+
+  static struct battlefield_pos player_bfpos;
+  player_bfpos = world_to_battlefield_pos(playr->transform.position);
+  player_bfpos.degrees = (int)(player_bfpos.degrees + 180) % 360;
+  playr->projected_position = battlefield_to_world_pos(player_bfpos);
+
+  playr->input_state = PLAYER_INPUT_STATE__IDLE;
+}
+
 static void player_healthy__update(
   struct gametime time,
   struct player *const playr
@@ -108,7 +134,9 @@ void (*player_input_state_updates[PLAYER_INPUT_STATE_COUNT])(
 ) = {
   player_idle__update,
   player_thrusting__update,
-  player_autofiring__update
+  player_autofiring__update,
+  player_reeling__update,
+  player_flipping__update
 };
 
 void (*player_effect_state_updates[PLAYER_EFFECT_STATE_COUNT])(

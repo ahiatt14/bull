@@ -64,4 +64,10 @@ struct vec3 slide_along_radius_around_world_origin(
   struct vec3 pos
 );
 
+struct vec3 vec3__lerp(
+  struct vec3 t0,
+  struct vec3 t1,
+  float p
+);
+
 #endif

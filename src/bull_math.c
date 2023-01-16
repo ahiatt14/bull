@@ -130,3 +130,15 @@ struct battlefield_pos world_to_battlefield_pos(
     .degrees = battlefield_deg_from_world_pos(position)
   };
 }
+
+struct vec3 vec3__lerp(
+  struct vec3 t0,
+  struct vec3 t1,
+  float p
+) {
+  return (struct vec3){
+    t0.x + ((t1.x - t0.x) * p),
+    t0.y + ((t1.y - t0.y) * p),
+    t0.z + ((t1.z - t0.z) * p)
+  };
+}

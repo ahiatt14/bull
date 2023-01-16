@@ -44,11 +44,14 @@ void main() {
 
   bool show_radius_guide =
     abs(frag_radius_world - arena_radius_worldspace) < 0.05 &&
-    frag_distance_to_player_origin_line > MISSILE_GUIDE_HALF_WIDTH;
+    frag_distance_to_player_origin_line > MISSILE_GUIDE_HALF_WIDTH * 2.5;
 
+  bool show_center_guide = frag_radius_world < 0.1;
+
+  // TOOD: this stinks lol
   bool show_guide =
-    player_far_enough_away &&
-    (show_missile_guide || show_radius_guide);
+    show_center_guide ||
+    (player_far_enough_away && (show_missile_guide || show_radius_guide));
   
   FragColor = vec4(
     color,

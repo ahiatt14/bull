@@ -56,6 +56,7 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/statue.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/steam.png 3 $artifact_dir \
   && \
+  ./${tools}sourcify-obj.exe assets/mesh/lowpoly_mushroom_cloud.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/pyramid.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/exclamation.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/sphere.obj $artifact_dir && \

@@ -99,7 +99,6 @@ void bouncers__check_collision_with_grid(
   void (*on_collide)(
     uint8_t row,
     uint8_t column,
-    struct vec3 bouncer_to_target,
     struct bouncer_grid *const grid
   ),
   struct vec3 target,
@@ -129,7 +128,7 @@ void bouncers__check_collision_with_grid(
         vec3__distance(target, bouncer_position) > BOUNCER_RADIUS ||
         off_at_place(c, grid->active_bouncers[r])
       ) continue;
-      on_collide(r, c, vec3_minus_vec3(target, bouncer_position), grid);
+      on_collide(r, c, grid);
       return;
     }
   }
