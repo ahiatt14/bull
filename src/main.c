@@ -174,6 +174,10 @@ int main() {
 
       window.get_gamepad_input(&gamepad);
 
+      if (button_was_released(BUTTON_START, &gamepad)) {
+        break;
+      }
+
       if (button_was_released(BUTTON_SELECT, &gamepad)) {
         if (window.is_fullscreen()) {
           window.switch_to_windowed(
