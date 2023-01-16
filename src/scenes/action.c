@@ -128,9 +128,12 @@ void action__init(
 
   ocean__init(window, vwprt, gpu);
 
-  for (int i = 0; i < BOUNCER_GRID_MAX_PER_ROW; i += 2) {
-    bouncers__add_to_grid(4, i, &bouncy_grid);
-    bouncers__add_to_grid(6, i, &bouncy_grid);
+  for (int i = 0; i < BOUNCER_GRID_MAX_PER_ROW; i++) {
+    if (i < BOUNCER_GRID_MAX_PER_ROW / 2) {
+      bouncers__add_to_grid(4, i, &bouncy_grid);
+    } else {
+      bouncers__add_to_grid(6, i, &bouncy_grid);
+    }
   }
 }
 
@@ -230,6 +233,14 @@ static void bounce_player(
   uint8_t column,
   struct bouncer_grid *const grid
 ) {
+
+  static struct battlefield_pos guide_target_bfpos;
+  guide_target_bfpos = world_to_battlefield_pos(guide_lag.guide_target_position);
+  guide_target_bfpos.degrees = (int)(guide_target_bfpos.degrees + 180) % 360;
+
+  guide_lag.guide_target_position = battlefield_to_world_pos(guide_target_bfpos);
+  guide_lag.seconds_since_player_moved = GUIDE_LAG_TIME_SECONDS;
+
   player_one.input_state = PLAYER_INPUT_STATE__FLIPPING;
   bouncers__delete_from_grid(row, column, grid);
 }
