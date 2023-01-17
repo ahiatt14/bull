@@ -11,7 +11,7 @@
 
 #include "lowpoly_sphere_smooth_mesh.h"
 
-struct fireball* get_fireball(
+static struct fireball* get_fireball(
   uint_fast16_t from_start,
   struct fireballs *const fbs
 ) {

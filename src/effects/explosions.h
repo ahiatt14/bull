@@ -3,23 +3,28 @@
 
 #define MAX_EXPLOSIONS 10
 
+#include "tail.h"
+
+#include "tail_helpers.h"
+#include "bull_math.h"
+
 struct explosion {
-  struct transform transform;
+  struct battlefield_pos position;
   double sec_since_activation;
-}
+};
 
 struct explosions {
   struct explosion _ring_buffer[MAX_EXPLOSIONS];
   uint_fast16_t _tail;
   uint_fast16_t _active_count;
-}
+};
 
 void explosions__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 );
 
 void explosions__create(
-  struct vec3 position,
+  struct battlefield_pos bfpos,
   struct explosions *const explos
 );
 
@@ -38,8 +43,9 @@ void explosions__update(
 );
 
 void explosions__draw(
+  struct camera const *const cam,
   struct gpu_api const *const gpu,
-  struct explosions const *const explos
+  struct explosions *const explos
 );
 
 #endif

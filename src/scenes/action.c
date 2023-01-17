@@ -11,6 +11,7 @@
 
 #include "player.h"
 #include "fireballs.h"
+#include "explosions.h"
 #include "bouncers.h"
 #include "firing_guide.h"
 
@@ -95,6 +96,7 @@ static struct guide_lag_state guide_lag = {
 };
 
 static struct fireballs fbs;
+static struct explosions explos;
 
 /*
   ~~~~~~~~~PUBLIC API~~~~~~~~~~
@@ -122,6 +124,7 @@ void action__init(
 
   bouncers__copy_assets_to_gpu(gpu);
   fireballs__copy_assets_to_gpu(gpu);
+  explosions__copy_assets_to_gpu(gpu);
 
   player__copy_assets_to_gpu(gpu);
   firing_guide__copy_assets_to_gpu(gpu);
@@ -171,6 +174,10 @@ void action__tick(
     ARENA_EDGE_RADIUS,
     &fbs
   );
+  explosions__update(
+    time,
+    &explos
+  );
 
   bouncers__rotate_grid_row(4, 10, time, &bouncy_grid);
   bouncers__rotate_grid_row(6, -15, time, &bouncy_grid);
@@ -211,6 +218,7 @@ void action__tick(
   bouncers__draw_grid(time, &cam, gpu, &bouncy_grid);
 
   fireballs__draw(&cam, gpu, &fbs);
+  explosions__draw(&cam, gpu, &explos);
 
   player__draw(&cam, gpu, &player_one);
   firing_guide__draw(
@@ -249,6 +257,10 @@ static void begin_lvl0_fireball_autofire(
   struct gametime time,
   struct player const *const playr
 ) {
+  explosions__create(
+    world_to_battlefield_pos(playr->transform.position),
+    &explos
+  );
   player_one_autofire = autofire_lvl0_fireballs;
   player_one_autofire(time, playr);
 }

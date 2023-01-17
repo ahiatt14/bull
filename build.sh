@@ -6,9 +6,10 @@ artifact_dir="src/temp_asset_src_files/"
 tail_static="libs/tail/static/tail.a"
 declare -a options=("-O2" "-Wall")
 declare -a includes=("-Ilibs/tail/include" "-Isrc/headers" \
-"-Isrc/player" "-Isrc/scenes" "-Isrc/gameplay" "-Isrc/background" -I$artifact_dir)
+"-Isrc/player" "-Isrc/scenes" "-Isrc/gameplay" "-Isrc/background" \
+"-Isrc/effects" -I$artifact_dir)
 
-declare -a src_directories=("src/" "src/background/" "src/gameplay/" "src/scenes/")
+declare -a src_directories=("src/" "src/background/" "src/gameplay/" "src/scenes/" "src/effects/")
 
 clean() {
   rm -rf obj bin $artifact_dir
@@ -30,6 +31,7 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/sky_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/bouncer_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/steam_frag.glsl frag && \
+  ./${tools}validate-glsl.exe assets/glsl/mushroom_cloud_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/firing_guide_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/statue_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/mountain_frag.glsl frag \
@@ -45,6 +47,7 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/sky_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/bouncer_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/steam_frag.glsl $artifact_dir && \
+  ./${tools}sourcify-glsl.exe assets/glsl/mushroom_cloud_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/firing_guide_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/statue_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/mountain_frag.glsl $artifact_dir \
