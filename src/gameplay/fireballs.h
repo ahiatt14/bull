@@ -30,7 +30,11 @@ void fireballs__deactivate_all(
 void fireballs__move(
   struct gametime time,
   float world_unit_per_second,
-  float max_radius,
+  double lifespan_in_seconds,
+  void (*on_max_radius_contact)(
+    uint_fast16_t from_start_index,
+    struct fireball *const fb
+  ),
   struct fireballs *const fbs
 );
 

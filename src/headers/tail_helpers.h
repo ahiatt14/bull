@@ -24,9 +24,4 @@ void mesh__tile_uvs(
 
 // TODO: add space__euler_to_basis fn
 
-struct vec3 space__world_to_ndc(
-  struct camera const *const cam,
-  struct vec3 pos
-);
-
 #endif

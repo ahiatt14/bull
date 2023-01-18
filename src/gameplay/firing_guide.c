@@ -13,7 +13,7 @@ static struct m4x4 guide_local_to_world;
 static struct transform guide_transform = (struct transform){
   .position = {0,-0.1f,0},
   .rotation_in_deg = {-90,0,0},
-  .scale = 11
+  .scale = 20
 };
 
 void firing_guide__copy_assets_to_gpu(

@@ -35,9 +35,17 @@ void fireballs__deactivate_all(
 void fireballs__move(
   struct gametime time,
   float world_unit_per_second,
-  float max_radius,
+  double lifespan_in_seconds,
+  void (*on_max_radius_contact)(
+    uint_fast16_t from_start_index,
+    struct fireball *const fb
+  ),
   struct fireballs *const fbs
 ) {
+
+  static uint_fast16_t from_start_offsets_to_handle[MAX_FIREBALLS];
+  static uint_fast8_t from_start_offsets_to_handle_offset;
+  from_start_offsets_to_handle_offset = 0;
 
   for (int i = 0; i < fbs->_active_count; i++) {
 
@@ -46,6 +54,16 @@ void fireballs__move(
 
     fb->sec_since_activation += time.delta;
     fb->position.radius -= world_unit_per_second * time.delta;
+
+    if (fb->sec_since_activation >= lifespan_in_seconds)
+      from_start_offsets_to_handle[from_start_offsets_to_handle_offset++] = i;
+  }
+
+  for (int i = 0; i < from_start_offsets_to_handle_offset; i++) {
+    on_max_radius_contact(
+      from_start_offsets_to_handle[i],
+      get_fireball(from_start_offsets_to_handle[i], fbs)
+    );
   }
 }
 
@@ -63,19 +81,18 @@ void fireballs__activate (
   struct battlefield_pos bfpos,
   struct fireballs *const fbs
 ) {
+
+  static struct fireball fb;
+  fb = (struct fireball){
+    .position = bfpos,
+    .sec_since_activation = 0
+  };
+
   if (fbs->_active_count == MAX_FIREBALLS) {
-    fbs->_ring_buffer[fbs->_tail] = (struct fireball){
-      .position = bfpos,
-      .sec_since_activation = 0
-    };
+    fbs->_ring_buffer[fbs->_tail] = fb;
     fbs->_tail = (fbs->_tail + 1) % MAX_FIREBALLS;
   } else {
-    fbs->_ring_buffer[
-      (fbs->_tail + fbs->_active_count) % MAX_FIREBALLS
-    ] = (struct fireball){
-      .position = bfpos,
-      .sec_since_activation = 0
-    };
+    fbs->_ring_buffer[(fbs->_tail + fbs->_active_count) % MAX_FIREBALLS] = fb;
     fbs->_active_count++;
   }
 }

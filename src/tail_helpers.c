@@ -29,20 +29,3 @@ void mesh__tile_uvs(
     mesh->vertices[i].uv.y *= y_multiplier;
   }
 }
-
-// TODO: need a deep dive on this, not sure we're ending up where we want
-struct vec3 space__world_to_ndc(
-  struct camera const *const cam,
-  struct vec3 pos
-) {
-  static struct m4x4 view_x_projection;
-  m4x4_x_m4x4(
-    &cam->lookat,
-    &cam->projection,
-    &view_x_projection
-  );
-  return m4x4_x_point(
-    &view_x_projection,
-    pos
-  );
-}

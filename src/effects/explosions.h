@@ -5,11 +5,15 @@
 
 #include "tail.h"
 
+#include "billboard.h"
+
 #include "tail_helpers.h"
 #include "bull_math.h"
 
 struct explosion {
-  struct battlefield_pos position;
+  struct transform mushroom_cloud_transform;
+  struct transform explosion_transform;
+  struct billboard blink;
   double sec_since_activation;
 };
 
@@ -24,7 +28,7 @@ void explosions__copy_assets_to_gpu(
 );
 
 void explosions__create(
-  struct battlefield_pos bfpos,
+  struct vec3 position,
   struct explosions *const explos
 );
 

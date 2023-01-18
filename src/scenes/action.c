@@ -61,6 +61,11 @@ static void stop_autofiring(
   struct player const *const playr
 );
 
+static void explode_fireball(
+  uint_fast16_t from_start_index,
+  struct fireball *const fb
+);
+
 void guide_lag_update(
   struct gametime time,
   struct player const *const playr,
@@ -171,7 +176,8 @@ void action__tick(
   fireballs__move(
     time,
     25,
-    ARENA_EDGE_RADIUS,
+    0.33f,
+    explode_fireball,
     &fbs
   );
   explosions__update(
@@ -257,10 +263,6 @@ static void begin_lvl0_fireball_autofire(
   struct gametime time,
   struct player const *const playr
 ) {
-  explosions__create(
-    world_to_battlefield_pos(playr->transform.position),
-    &explos
-  );
   player_one_autofire = autofire_lvl0_fireballs;
   player_one_autofire(time, playr);
 }
@@ -305,5 +307,16 @@ void guide_lag_update(
     guide_lag->guide_target_position,
     playr->transform.position,
     guide_lag->seconds_since_player_moved / GUIDE_LAG_TIME_SECONDS
+  );
+}
+
+static void explode_fireball(
+  uint_fast16_t from_start_index,
+  struct fireball *const fb
+) {
+  fireballs__deactivate(from_start_index, &fbs);
+  explosions__create(
+    battlefield_to_world_pos(fb->position),
+    &explos
   );
 }
