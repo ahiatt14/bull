@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "tail.h"
 
 #include "firing_guide.h"
@@ -10,15 +12,19 @@
 
 static struct shader guide_shader;
 static struct m4x4 guide_local_to_world;
-static struct transform guide_transform = (struct transform){
-  .position = {0,-0.1f,0},
-  .rotation_in_deg = {-90,0,0},
-  .scale = 20
-};
+static struct transform guide_transform;
 
 void firing_guide__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
+  guide_transform = (struct transform){
+    .position = {0,-0.1f,0},
+    ._rotation = quaternion__create(
+      WORLDSPACE.right,
+      -(M_PI * 0.5f) 
+    ),
+    .scale = 20
+  };
   guide_shader.frag_src = firing_guide_frag_src;
   guide_shader.vert_src = default_vert_src;
   gpu->copy_shader_to_gpu(&guide_shader);

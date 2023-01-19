@@ -82,7 +82,10 @@ static struct gamepad_input gamepad;
 static struct bouncer_grid bouncy_grid;
 
 static struct player player_one = {
-  .transform = {PLAYER_START_POS, {0, 0, 0}, 1},
+  .transform = {
+    .position = PLAYER_START_POS,
+    .scale = 1
+  },
   .previous_position = PLAYER_START_POS,
   .projected_position = PLAYER_START_POS,
   .input_state = PLAYER_INPUT_STATE__IDLE,
@@ -196,13 +199,14 @@ void action__tick(
   );
 
   // TODO: abstract
-  static int deg_mod = 0;
-  deg_mod = player_one.transform.position.x >= 0 ? 90 : -90;
-  player_one.transform.rotation_in_deg.y =
-    rad_to_deg(atan(
-      -player_one.transform.position.z /
-      player_one.transform.position.x
-    )) + deg_mod;
+  static float player_rads, flip;
+  flip = player_one.transform.position.x >= 0 ? (M_PI * 0.5f) : -(M_PI * 0.5f);
+  player_rads = atan(
+    -player_one.transform.position.z /
+    player_one.transform.position.x
+  ) + flip;
+  player_one.transform._rotation =
+    quaternion__create(WORLDSPACE.up, player_rads);
   
   // if (
   //   vec3__distance(player_one.projected_position, ORIGIN) >=

@@ -11,10 +11,8 @@ void billboard__draw(
   struct billboard *const bb
 ) {
 
-  static struct vec3 forward, right, up; 
-  static struct m4x4 lookat, translation, local_to_world;
-
-  bb->transform.rotation_in_deg.y += 0.05f;
+  // static struct vec3 forward, right, up; 
+  // static struct m4x4 lookat, translation, local_to_world;
 
   space__create_model(
     &WORLDSPACE,

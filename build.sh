@@ -34,7 +34,6 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/mushroom_cloud_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/explosion_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/firing_guide_frag.glsl frag && \
-  ./${tools}validate-glsl.exe assets/glsl/statue_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/mountain_frag.glsl frag \
   && \
   ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_frag.glsl $artifact_dir && \
@@ -51,14 +50,12 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/mushroom_cloud_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/explosion_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/firing_guide_frag.glsl $artifact_dir && \
-  ./${tools}sourcify-glsl.exe assets/glsl/statue_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/mountain_frag.glsl $artifact_dir \
   && \
   ./${tools}sourcify-png.exe assets/png/water.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/mountain.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/clouds.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/fireball.png 3 $artifact_dir && \
-  ./${tools}sourcify-png.exe assets/png/statue.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/blink.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/steam.png 3 $artifact_dir \
   && \
@@ -71,7 +68,6 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_smooth.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/smooth_cube.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/sky_cylinder.obj $artifact_dir && \
-  ./${tools}sourcify-obj.exe assets/mesh/angel.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/mountain.obj $artifact_dir
 
   for filepath in ${artifact_dir}*.c; do

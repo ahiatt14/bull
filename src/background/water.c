@@ -24,12 +24,7 @@
 
 // LOCALS
 
-static struct transform trans = (struct transform){
-  {0, -0.1f, 0},
-  {270, 0, 0},
-  1
-};
-
+static struct transform trans;
 static struct vertex vertices[VERTS_PER_SIDE * VERTS_PER_SIDE];
 static unsigned int indices[INDEX_COUNT];
 static struct drawable_mesh mesh = {
@@ -91,6 +86,16 @@ void water__init_mesh_data() {
 void water__copy_assets_to_gpu(
   struct gpu_api const *const gpu
 ) {
+
+  trans = (struct transform){
+    {0, -0.1f, 0},
+    quaternion__create(
+      WORLDSPACE.right,
+      deg_to_rad(270)
+    ),
+    1
+  };
+
   surface_shader.vert_src = default_vert_src;
   surface_shader.frag_src = water_surface_frag_src;
   gpu->copy_dynamic_mesh_to_gpu(&mesh);

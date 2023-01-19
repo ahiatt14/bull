@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdint.h>
 
 #include "tail.h"
@@ -16,7 +17,7 @@
 
 static struct camera cam;
 
-static struct transform exclamation_transform = {{0,0,0},{90,0,0},1};
+static struct transform exclamation_transform;
 static struct m4x4 exclamation_local_to_world;
 
 void connect_gamepad__init(
@@ -25,6 +26,12 @@ void connect_gamepad__init(
   struct gpu_api const *const gpu
 ) {
   gpu->cull_no_faces();
+
+  exclamation_transform = (struct transform){
+    ORIGIN,
+    quaternion__create(WORLDSPACE.right, M_PI * 0.5f), 
+    1
+  };
 
   cam.position = (struct vec3){ 0, 0, 3 };
   cam.look_target = ORIGIN;

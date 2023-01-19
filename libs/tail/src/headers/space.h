@@ -1,6 +1,7 @@
 #ifndef __TAIL_SPACE__
 #define __TAIL_SPACE__
 
+#include "quaternion.h"
 #include "m4x4.h"
 #include "vector.h"
 
@@ -12,9 +13,15 @@ struct coordinate_space {
 
 struct transform {
   struct vec3 position;
-  struct vec3 rotation_in_deg;
+  struct quaternion _rotation;
   float scale;
 };
+
+struct vec3 space__ccw_rotate(
+  struct vec3 axis,
+  float radians,
+  struct vec3 point
+);
 
 void space__create_model(
   struct coordinate_space const *const space,
