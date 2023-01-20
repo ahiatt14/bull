@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "tail.h"
 
 #include "billboard.h"
@@ -11,36 +13,28 @@ void billboard__draw(
   struct billboard *const bb
 ) {
 
-  // static struct vec3 forward, right, up; 
-  // static struct m4x4 lookat, translation, local_to_world;
+  static struct vec3 new_forward;
+  new_forward = vec3_minus_vec3(cam->position, bb->transform.position);
+  
+  static float up_rotation_theta, right_rotation_theta;
+  static struct quaternion up_rotation, right_rotation;
 
+  up_rotation_theta = atan(new_forward.z / new_forward.x);
+  if (new_forward.x > 0) up_rotation_theta += M_PI;
+  up_rotation= quaternion__create(WORLDSPACE.up, up_rotation_theta);
+
+  right_rotation_theta = atan(new_forward.z / new_forward.y);
+  if (new_forward.y > 0) right_rotation_theta += M_PI;
+  right_rotation= quaternion__create(WORLDSPACE.right, right_rotation_theta);
+
+  bb->transform._rotation = quaternion__multiply(right_rotation, up_rotation);
+
+  static struct m4x4 local_to_world;
   space__create_model(
     &WORLDSPACE,
     &bb->transform,
     &local_to_world
   );
-
-  // forward = vec3__normalize(vec3_minus_vec3(
-  //   cam->position,
-  //   bb->transform.position
-  // ));
-  // right = vec3__normalize(vec3__cross(
-  //   WORLDSPACE.up,
-  //   forward
-  // ));
-  // up = vec3__normalize(vec3__cross(
-  //   forward, right
-  // ));
-
-  // m4x4__view(right, up, forward, &lookat);
-  // m4x4__translation(bb->transform.position, &translation);
-  // // m4x4__scaling(t->scale, &scale);
-
-  // m4x4_x_m4x4(
-  //   &lookat,
-  //   &translation,
-  //   &local_to_world
-  // );
 
   gpu->select_shader(bb->shader);
   gpu->select_texture(bb->texture);

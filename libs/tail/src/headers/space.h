@@ -17,9 +17,14 @@ struct transform {
   float scale;
 };
 
-struct vec3 space__ccw_rotate(
+struct vec3 space__ccw_angle_rotate(
   struct vec3 axis,
   float radians,
+  struct vec3 point
+);
+
+struct vec3 space__ccw_quat_rotate(
+  struct quaternion q,
   struct vec3 point
 );
 

@@ -9,18 +9,16 @@ struct quaternion {
   float w;
 };
 
-// struct quaternion quaternion__multiply(
-//   struct quaternion left_p,
-//   struct quaternion right_p,
-// );
-// void quaternion__conjugate(
-//   struct quaternion const *const p,
-//   struct quaternion *const dest
-// );
+struct quaternion quaternion__multiply(
+  struct quaternion lp,
+  struct quaternion rp
+);
+
 struct quaternion quaternion__create(
   struct vec3 axis,
   float radians
 );
+
 void quaternion__to_m4x4(
   struct quaternion p,
   struct m4x4 *const m
