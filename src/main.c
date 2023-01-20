@@ -5,6 +5,8 @@
 #include "constants.h"
 #include "scene.h"
 
+#include "billboard.h"
+
 #include "normal_debug_geo.h"
 #include "normal_debug_frag.h"
 #include "normal_debug_vert.h"
@@ -211,6 +213,7 @@ int main() {
 void copy_shared_assets_to_gpu() {
 
   debugging__copy_gizmo_assets_to_gpu(&gpu);
+  billboards__copy_assets_to_gpu(&gpu);
 
   FLAT_TEXTURE_SHADER.frag_src = flat_texture_frag_src;
   FLAT_TEXTURE_SHADER.vert_src = default_vert_src;

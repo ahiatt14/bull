@@ -7,39 +7,32 @@
 #include "constants.h"
 #include "bull_math.h"
 
+#include "billboard_vert.h"
+#include "flat_texture_frag.h"
+
+static struct shader shad;
+
+void billboards__copy_assets_to_gpu(
+  struct gpu_api const *const gpu
+) {
+  shad.frag_src = flat_texture_frag_src;
+  shad.vert_src = billboard_vert_src;
+  gpu->copy_shader_to_gpu(&shad);
+}
+
 void billboard__draw(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
   struct billboard *const bb
 ) {
 
-  static struct vec3 new_forward;
-  new_forward = vec3_minus_vec3(cam->position, bb->transform.position);
-  
-  static float up_rotation_theta, right_rotation_theta;
-  static struct quaternion up_rotation, right_rotation;
-
-  up_rotation_theta = atan(new_forward.z / new_forward.x);
-  if (new_forward.x > 0) up_rotation_theta += M_PI;
-  up_rotation= quaternion__create(WORLDSPACE.up, up_rotation_theta);
-
-  right_rotation_theta = atan(new_forward.z / new_forward.y);
-  if (new_forward.y > 0) right_rotation_theta += M_PI;
-  right_rotation= quaternion__create(WORLDSPACE.right, right_rotation_theta);
-
-  bb->transform._rotation = quaternion__multiply(right_rotation, up_rotation);
-
-  static struct m4x4 local_to_world;
-  space__create_model(
-    &WORLDSPACE,
-    &bb->transform,
-    &local_to_world
-  );
-
-  gpu->select_shader(bb->shader);
+  gpu->select_shader(&shad);
   gpu->select_texture(bb->texture);
-  gpu->set_shader_m4x4(bb->shader, "model", &local_to_world);
-  gpu->set_shader_m4x4(bb->shader, "view", &cam->lookat);
-  gpu->set_shader_m4x4(bb->shader, "projection", &cam->projection);
+
+  gpu->set_shader_vec3(&shad, "center_pos_world", bb->transform.position);
+  gpu->set_shader_float(&shad, "scale", bb->transform.scale);
+
+  gpu->set_shader_m4x4(&shad, "view", &cam->lookat);
+  gpu->set_shader_m4x4(&shad, "projection", &cam->projection);
   gpu->draw_mesh(&QUAD);
 }

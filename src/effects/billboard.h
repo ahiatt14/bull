@@ -6,8 +6,11 @@
 struct billboard {
   struct transform transform;
   const struct texture *texture;
-  const struct shader *shader;
 };
+
+void billboards__copy_assets_to_gpu(
+  struct gpu_api const *const gpu
+);
 
 void billboard__draw(
   struct camera const *const cam,

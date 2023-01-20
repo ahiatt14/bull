@@ -75,7 +75,6 @@ void explosions__create(
       .position = position
     },
     .blink = (struct billboard){
-      .shader = &FLAT_TEXTURE_SHADER,
       .texture = &blink_texture,
       .transform = (struct transform){
         .scale = 5,
@@ -191,7 +190,7 @@ void explosions__draw(
       &mushroom_cloud_shader,
       gpu
     );
-    gpu->draw_mesh(&lowpoly_mushroom_cloud_mesh);
+    // gpu->draw_mesh(&lowpoly_mushroom_cloud_mesh);
 
     gpu->select_shader(&explosion_shader);
     gpu->select_texture(&fireball_texture);
@@ -220,7 +219,7 @@ void explosions__draw(
       &explosion_shader,
       gpu
     );
-    gpu->draw_mesh(&sphere_mesh);
+    // gpu->draw_mesh(&sphere_mesh);
   }
 }
 
