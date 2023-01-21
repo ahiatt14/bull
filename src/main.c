@@ -5,14 +5,14 @@
 #include "constants.h"
 #include "scene.h"
 
-#include "billboard.h"
-
 #include "normal_debug_geo.h"
 #include "normal_debug_frag.h"
 #include "normal_debug_vert.h"
 #include "flat_texture_frag.h"
 #include "solid_color_frag.h"
 #include "default_vert.h"
+
+#include "billboard.h"
 
 #define ASPECT_RATIO (4.0f / 3.0f)
 #define WINDOW_HEIGHT_IN_SCREEN_COORD 900
@@ -213,7 +213,7 @@ int main() {
 void copy_shared_assets_to_gpu() {
 
   debugging__copy_gizmo_assets_to_gpu(&gpu);
-  billboards__copy_assets_to_gpu(&gpu);
+  billboard__copy_shared_assets_to_gpu(&gpu);
 
   FLAT_TEXTURE_SHADER.frag_src = flat_texture_frag_src;
   FLAT_TEXTURE_SHADER.vert_src = default_vert_src;

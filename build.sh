@@ -35,6 +35,7 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/explosion_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/firing_guide_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/billboard_vert.glsl vert && \
+  ./${tools}validate-glsl.exe assets/glsl/billboard_geo.glsl geo && \
   ./${tools}validate-glsl.exe assets/glsl/mountain_frag.glsl frag \
   && \
   ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_frag.glsl $artifact_dir && \
@@ -52,6 +53,7 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/explosion_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/firing_guide_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/billboard_vert.glsl $artifact_dir && \
+  ./${tools}sourcify-glsl.exe assets/glsl/billboard_geo.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/mountain_frag.glsl $artifact_dir \
   && \
   ./${tools}sourcify-png.exe assets/png/water.png 3 $artifact_dir && \

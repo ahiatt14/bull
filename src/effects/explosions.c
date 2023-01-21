@@ -75,9 +75,9 @@ void explosions__create(
       .position = position
     },
     .blink = (struct billboard){
-      .texture = &blink_texture,
+      .texture = &fireball_texture,
       .transform = (struct transform){
-        .scale = 5,
+        .scale = 1,
         .position = position
       }
     },
@@ -159,10 +159,8 @@ void explosions__draw(
     static struct explosion *explo;
     explo = get_explosion(i, explos);
 
-    billboard__draw(cam, gpu, &explo->blink);
-
     // if (explo->sec_since_activation < BLINK_LIFESPAN_SECONDS)
-    //   billboard__draw(cam, gpu, &explo->blink);
+      billboard__draw(cam, gpu, &explo->blink);
 
     gpu->select_shader(&mushroom_cloud_shader);
     gpu->select_texture(&fireball_texture);
@@ -190,7 +188,7 @@ void explosions__draw(
       &mushroom_cloud_shader,
       gpu
     );
-    // gpu->draw_mesh(&lowpoly_mushroom_cloud_mesh);
+    gpu->draw_mesh(&lowpoly_mushroom_cloud_mesh);
 
     gpu->select_shader(&explosion_shader);
     gpu->select_texture(&fireball_texture);
