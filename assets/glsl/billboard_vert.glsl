@@ -25,5 +25,5 @@ out VS_OUT {
 
 void main()
 {
-  gl_Position = model * view * vec4(position, 1.0);
+  gl_Position = view * model * vec4(position, 1.0);
 }
