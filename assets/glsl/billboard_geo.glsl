@@ -3,6 +3,7 @@
 layout (points) in;
 layout (triangle_strip, max_vertices = 6) out;
 
+uniform float scale = 1.0;
 uniform mat4 projection = mat4(
   vec4(1.0, 0.0, 0.0, 0.0),
   vec4(0.0, 1.0, 0.0, 0.0),
@@ -18,29 +19,41 @@ out VS_OUT {
 
 void main() {
 
-  gl_Position = projection * (gl_in[0].gl_Position + vec4(-1, -1, 0, 0));
+  gl_Position =
+    projection *
+    (gl_in[0].gl_Position + vec4(-1, -1, 0, 0) * scale);
   gs_out.tex_uv = vec2(0, 0);
   EmitVertex();
 
-  gl_Position = projection * (gl_in[0].gl_Position + vec4(1, -1, 0, 0));
+  gl_Position =
+    projection *
+    (gl_in[0].gl_Position + vec4(1, -1, 0, 0) * scale);
   gs_out.tex_uv = vec2(1, 0);
   EmitVertex();
 
-  gl_Position = projection * (gl_in[0].gl_Position + vec4(1, 1, 0, 0));
+  gl_Position =
+    projection *
+    (gl_in[0].gl_Position + vec4(1, 1, 0, 0) * scale);
   gs_out.tex_uv = vec2(1, 1);
   EmitVertex();
 
   EndPrimitive();
 
-  gl_Position = projection * (gl_in[0].gl_Position + vec4(-1, -1, 0, 0));
+  gl_Position =
+    projection *
+    (gl_in[0].gl_Position + vec4(-1, -1, 0, 0) * scale);
   gs_out.tex_uv = vec2(0, 0);
   EmitVertex();
 
-  gl_Position = projection * (gl_in[0].gl_Position + vec4(1, 1, 0, 0));
+  gl_Position =
+    projection *
+    (gl_in[0].gl_Position + vec4(1, 1, 0, 0) * scale);
   gs_out.tex_uv = vec2(1, 1);
   EmitVertex();
 
-  gl_Position = projection * (gl_in[0].gl_Position + vec4(-1, 1, 0, 0));
+  gl_Position =
+    projection *
+    (gl_in[0].gl_Position + vec4(-1, 1, 0, 0) * scale);
   gs_out.tex_uv = vec2(0, 1);
   EmitVertex();
 

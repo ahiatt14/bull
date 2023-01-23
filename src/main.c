@@ -213,7 +213,8 @@ int main() {
 void copy_shared_assets_to_gpu() {
 
   debugging__copy_gizmo_assets_to_gpu(&gpu);
-  billboard__copy_shared_assets_to_gpu(&gpu);
+
+  gpu.copy_points_to_gpu(&POINT);
 
   FLAT_TEXTURE_SHADER.frag_src = flat_texture_frag_src;
   FLAT_TEXTURE_SHADER.vert_src = default_vert_src;

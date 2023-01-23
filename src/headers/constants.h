@@ -13,6 +13,7 @@ extern struct shader SOLID_COLOR_SHADER;
 extern struct shader NORMALS_COLOR_SHADER;
 extern struct shader NORMALS_VIS_SHADER;
 
+extern struct point_buffer POINT;
 extern struct drawable_mesh QUAD;
 
 extern const struct vec3 COLOR_MALACHITE;

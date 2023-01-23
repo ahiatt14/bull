@@ -19,6 +19,11 @@ struct shader SOLID_COLOR_SHADER;
 struct shader NORMALS_COLOR_SHADER;
 struct shader NORMALS_VIS_SHADER;
 
+struct point_buffer POINT = (struct point_buffer){
+  .points = (struct vec3[1]){{ 0, 0, 0 }},
+  .points_length = 1
+};
+
 struct drawable_mesh QUAD = (struct drawable_mesh){
   .vertices = (struct vertex[4]){
     {{ -0.5f, -0.5f, 0 }, { 0, 1, 0 }, { 0, 0 }},

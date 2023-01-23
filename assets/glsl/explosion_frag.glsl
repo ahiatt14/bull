@@ -15,11 +15,17 @@ in VS_OUT {
 
 out vec4 FragColor;
 
+float brightness(vec3 color) {
+  return (color.r + color.g + color.b) / 3.0;
+}
+
 void main()
 {
   vec3 material = texture(surface_texture, fs_in.tex_uv).rgb;
 
-  float fade = total_elapsed_seconds / lifespan_in_seconds;
+  float fade = 1.0 - total_elapsed_seconds / lifespan_in_seconds;
+
+  if (brightness(material) > fade) discard;
 
   // vec3 mixed = mix(
   //   COLOR_WHITE,
@@ -29,6 +35,6 @@ void main()
   
   FragColor = vec4(
     material,
-    1.0 - fade
+    1.0
   );
 }

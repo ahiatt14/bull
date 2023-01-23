@@ -13,7 +13,6 @@
 struct explosion {
   struct transform mushroom_cloud_transform;
   struct transform explosion_transform;
-  struct billboard blink;
   double sec_since_activation;
 };
 

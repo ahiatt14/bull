@@ -15,15 +15,23 @@
 #include "explosion_frag.h"
 #include "default_vert.h"
 #include "fireball_texture.h"
+
+#include "billboard_vert.h"
+#include "billboard_geo.h"
+#include "explosion_blink_frag.h"
 #include "blink_texture.h"
 
 #define BLINK_SCALE 2.0f
 
-#define BLINK_LIFESPAN_SECONDS 0.033f
-#define EXPLOSION_LIFESPAN_SECONDS 0.5f
-#define MUSHROOM_CLOUD_LIFESPAN_SECONDS 1.0f
+#define EXPLOSION_START_SCALE 0.6f
 
-#define BILLOW_WORLD_UNIT_PER_SEC 1.0f
+#define BLINK_LIFESPAN_SECONDS 0.09f
+#define EXPLOSION_LIFESPAN_SECONDS 1.0f
+
+#define MUSHROOM_LIFT_SPEED 1.0f
+#define EXPLOSION_LIFT_SPEED 1.2f
+
+// FORWARD DECS
 
 static void scroll_mushroom_cloud_uvs(
   struct gametime time,
@@ -33,14 +41,11 @@ static void scroll_mushroom_cloud_uvs(
 static struct explosion* get_explosion(
   uint_fast16_t from_start,
   struct explosions *const explos
-) {
-  return &(explos->_ring_buffer[
-    (explos->_tail + from_start) % MAX_EXPLOSIONS
-  ]);
-}
+);
 
-static struct shader mushroom_cloud_shader;
-static struct shader explosion_shader;
+// LOCALS
+
+static struct shader mushroom_cloud_shader, explosion_shader, blink_shader;
 
 void explosions__copy_assets_to_gpu(
   struct gpu_api const *const gpu
@@ -48,12 +53,19 @@ void explosions__copy_assets_to_gpu(
   gpu->copy_static_mesh_to_gpu(&sphere_mesh);
   gpu->copy_dynamic_mesh_to_gpu(&lowpoly_mushroom_cloud_mesh);
 
-  mushroom_cloud_shader.frag_src = mushroom_cloud_frag_src;
+  // mushroom_cloud_shader.frag_src = mushroom_cloud_frag_src;
+  mushroom_cloud_shader.frag_src = explosion_frag_src;
   mushroom_cloud_shader.vert_src = default_vert_src;
   gpu->copy_shader_to_gpu(&mushroom_cloud_shader);
+
   explosion_shader.frag_src = explosion_frag_src;
   explosion_shader.vert_src = default_vert_src;
   gpu->copy_shader_to_gpu(&explosion_shader);
+
+  blink_shader.frag_src = explosion_blink_frag_src;
+  blink_shader.geo_src = billboard_geo_src;
+  blink_shader.vert_src = billboard_vert_src;
+  gpu->copy_shader_to_gpu(&blink_shader);
 
   gpu->copy_texture_to_gpu(&fireball_texture);
   gpu->copy_texture_to_gpu(&blink_texture);
@@ -71,15 +83,8 @@ void explosions__create(
       .scale = 1
     },
     .explosion_transform = (struct transform){
-      .scale = 0.7f,
+      .scale = EXPLOSION_START_SCALE,
       .position = position
-    },
-    .blink = (struct billboard){
-      .texture = &fireball_texture,
-      .transform = (struct transform){
-        .scale = 1,
-        .position = position
-      }
     },
     .sec_since_activation = 0
   };
@@ -127,10 +132,13 @@ void explosions__update(
     static struct explosion *explo;
     explo = get_explosion(i, explos);
     explo->sec_since_activation += time.delta;
+    explo->explosion_transform.scale -= 0 * time.delta;
+    explo->explosion_transform.position.y +=
+      EXPLOSION_LIFT_SPEED * time.delta;
     explo->mushroom_cloud_transform.position.y +=
-      BILLOW_WORLD_UNIT_PER_SEC * time.delta;
+      MUSHROOM_LIFT_SPEED * time.delta;
 
-    if (explo->sec_since_activation >= MUSHROOM_CLOUD_LIFESPAN_SECONDS) {
+    if (explo->sec_since_activation >= EXPLOSION_LIFESPAN_SECONDS) {
       from_start_offsets_to_destroy[
         from_start_offsets_to_destroy_offset++
       ] = i;
@@ -159,8 +167,27 @@ void explosions__draw(
     static struct explosion *explo;
     explo = get_explosion(i, explos);
 
-    // if (explo->sec_since_activation < BLINK_LIFESPAN_SECONDS)
-      billboard__draw(cam, gpu, &explo->blink);
+    if (explo->sec_since_activation < BLINK_LIFESPAN_SECONDS) {
+      gpu->select_shader(&blink_shader);
+      gpu->select_texture(&blink_texture);
+      gpu->set_shader_float(
+        &blink_shader,
+        "lifespan_in_seconds",
+        BLINK_LIFESPAN_SECONDS
+      );
+      gpu->set_shader_float(
+        &blink_shader,
+        "total_elapsed_seconds",
+        explo->sec_since_activation
+      );
+      billboard__draw(
+        cam,
+        gpu,
+        &blink_shader,
+        explo->explosion_transform.position,
+        BLINK_SCALE
+      );
+    }
 
     gpu->select_shader(&mushroom_cloud_shader);
     gpu->select_texture(&fireball_texture);
@@ -174,7 +201,7 @@ void explosions__draw(
     gpu->set_shader_float(
       &mushroom_cloud_shader,
       "lifespan_in_seconds",
-      MUSHROOM_CLOUD_LIFESPAN_SECONDS
+      EXPLOSION_LIFESPAN_SECONDS
     );
     
     m4x4__translation(
@@ -217,7 +244,7 @@ void explosions__draw(
       &explosion_shader,
       gpu
     );
-    // gpu->draw_mesh(&sphere_mesh);
+    gpu->draw_mesh(&sphere_mesh);
   }
 }
 
@@ -228,4 +255,13 @@ static void scroll_mushroom_cloud_uvs(
   for (int i = 0; i < mushroom_cloud_mesh->vertices_length; i++) {
     mushroom_cloud_mesh->vertices[i].uv.y += time.delta * 0.35f;
   }
+}
+
+static struct explosion* get_explosion(
+  uint_fast16_t from_start,
+  struct explosions *const explos
+) {
+  return &(explos->_ring_buffer[
+    (explos->_tail + from_start) % MAX_EXPLOSIONS
+  ]);
 }
