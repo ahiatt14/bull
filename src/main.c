@@ -12,8 +12,6 @@
 #include "solid_color_frag.h"
 #include "default_vert.h"
 
-#include "billboard.h"
-
 #define ASPECT_RATIO (4.0f / 3.0f)
 #define WINDOW_HEIGHT_IN_SCREEN_COORD 900
 

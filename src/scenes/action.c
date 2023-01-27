@@ -4,16 +4,16 @@
 #include "tail.h"
 
 #include "scene.h"
+#include "ecs.h"
 
 #include "constants.h"
 #include "bull_math.h"
 #include "tail_helpers.h"
 
 #include "player.h"
-#include "fireballs.h"
-#include "explosions.h"
-#include "bouncers.h"
 #include "firing_guide.h"
+
+#include "rocket_mesh.h"
 
 /*
   ~~~~~~~~~CONSTANTS~~~~~~~~~~
@@ -40,12 +40,6 @@ struct guide_lag_state {
   ~~~~~~~~~FORWARD DECS~~~~~~~~~~
 */
 
-static void bounce_player(
-  uint8_t row,
-  uint8_t column,
-  struct bouncer_grid *const grid
-);
-
 static void begin_lvl0_fireball_autofire(
   struct gametime time,
   struct player const *const playr
@@ -61,10 +55,8 @@ static void stop_autofiring(
   struct player const *const playr
 );
 
-static void explode_fireball(
-  uint_fast16_t from_start_index,
-  struct fireball *const fb
-);
+// static void explode_fireball(
+// );
 
 void guide_lag_update(
   struct gametime time,
@@ -78,8 +70,6 @@ void guide_lag_update(
 
 static struct camera cam;
 static struct gamepad_input gamepad;
-
-static struct bouncer_grid bouncy_grid;
 
 static struct player player_one = {
   .transform = {
@@ -103,8 +93,12 @@ static struct guide_lag_state guide_lag = {
   .guide_target_position = PLAYER_START_POS
 };
 
-static struct fireballs fbs;
-static struct explosions explos;
+static entity_id entities_to_destroy[MAX_ENTITIES];
+static uint_fast16_t count_of_entities_to_destroy;
+static void mark_entity_for_destruction(entity_id id) {
+  entities_to_destroy[count_of_entities_to_destroy++] = id;
+}
+
 
 /*
   ~~~~~~~~~PUBLIC API~~~~~~~~~~
@@ -128,24 +122,13 @@ void action__init(
 
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
-  // camera__calculate_ortho(12, 9, -4, 4, &cam);
 
-  bouncers__copy_assets_to_gpu(gpu);
-  fireballs__copy_assets_to_gpu(gpu);
-  explosions__copy_assets_to_gpu(gpu);
+  gpu->copy_static_mesh_to_gpu(&rocket_mesh);
 
   player__copy_assets_to_gpu(gpu);
   firing_guide__copy_assets_to_gpu(gpu);
 
   ocean__init(window, vwprt, gpu);
-
-  for (int i = 0; i < BOUNCER_GRID_MAX_PER_ROW; i++) {
-    if (i < BOUNCER_GRID_MAX_PER_ROW / 2) {
-      bouncers__add_to_grid(4, i, &bouncy_grid);
-    } else {
-      bouncers__add_to_grid(6, i, &bouncy_grid);
-    }
-  }
 }
 
 void action__tick(
@@ -176,28 +159,6 @@ void action__tick(
     &player_one
   );
 
-  fireballs__move(
-    time,
-    25,
-    0.33f,
-    explode_fireball,
-    &fbs
-  );
-  explosions__update(
-    time,
-    &explos
-  );
-
-  bouncers__rotate_grid_row(4, 10, time, &bouncy_grid);
-  bouncers__rotate_grid_row(6, -15, time, &bouncy_grid);
-  // bouncers__radiate_grid(0.1f, time, &bouncy_grid);
-
-  bouncers__check_collision_with_grid(
-    bounce_player,
-    player_one.projected_position,
-    &bouncy_grid
-  );
-
   // TODO: abstract
   static float player_rads, flip;
   flip = player_one.transform.position.x >= 0 ? (M_PI * 0.5f) : -(M_PI * 0.5f);
@@ -220,15 +181,16 @@ void action__tick(
 
   player_one.transform.position = player_one.projected_position;
 
+  count_of_entities_to_destroy = 0;
+  ecs__move(time);
+  ecs__timeout(time);
+  for (uint_fast16_t i = 0; i < count_of_entities_to_destroy; i++)
+    ecs__destroy_entity(entities_to_destroy[i]);
+
   // DRAW
 
   ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
   gpu->clear_depth_buffer();
-
-  bouncers__draw_grid(time, &cam, gpu, &bouncy_grid);
-
-  fireballs__draw(&cam, gpu, &fbs);
-  explosions__draw(&cam, gpu, &explos);
 
   player__draw(&cam, gpu, &player_one);
   firing_guide__draw(
@@ -238,6 +200,7 @@ void action__tick(
     guide_lag.guide_target_position
   );
 
+  ecs__draw(time, &cam, gpu);
 }
 
 /*
@@ -246,22 +209,22 @@ void action__tick(
 
 // static float 
 
-static void bounce_player(
-  uint8_t row,
-  uint8_t column,
-  struct bouncer_grid *const grid
-) {
+// static void bounce_player(
+//   uint8_t row,
+//   uint8_t column,
+//   struct bouncer_grid *const grid
+// ) {
 
-  static struct battlefield_pos guide_target_bfpos;
-  guide_target_bfpos = world_to_battlefield_pos(guide_lag.guide_target_position);
-  guide_target_bfpos.degrees = (int)(guide_target_bfpos.degrees + 180) % 360;
+//   static struct battlefield_pos guide_target_bfpos;
+//   guide_target_bfpos = world_to_battlefield_pos(guide_lag.guide_target_position);
+//   guide_target_bfpos.degrees = (int)(guide_target_bfpos.degrees + 180) % 360;
 
-  guide_lag.guide_target_position = battlefield_to_world_pos(guide_target_bfpos);
-  guide_lag.seconds_since_player_moved = GUIDE_LAG_TIME_SECONDS;
+//   guide_lag.guide_target_position = battlefield_to_world_pos(guide_target_bfpos);
+//   guide_lag.seconds_since_player_moved = GUIDE_LAG_TIME_SECONDS;
 
-  player_one.input_state = PLAYER_INPUT_STATE__FLIPPING;
-  bouncers__delete_from_grid(row, column, grid);
-}
+//   player_one.input_state = PLAYER_INPUT_STATE__FLIPPING;
+//   bouncers__delete_from_grid(row, column, grid);
+// }
 
 static void begin_lvl0_fireball_autofire(
   struct gametime time,
@@ -287,11 +250,30 @@ static void autofire_lvl0_fireballs(
   seconds_until_next_autofire_shot -= time.delta;
   if (seconds_until_next_autofire_shot > 0) return;
   seconds_until_next_autofire_shot = 0.15f;
-    // FIREBALL_SHOT_SEC_INTERVAL_BY_LVL[playr->level];
 
-  fireballs__activate(
-    world_to_battlefield_pos(playr->transform.position),
-    &fbs
+  entity_id fireball = ecs__create_entity();
+  ecs__add_timeout(
+    fireball,
+    (struct timeout){
+      .limit_in_seconds = 1,
+      .seconds_since_activation = 0,
+      .on_timeout = mark_entity_for_destruction
+    }
+  );
+  ecs__add_transform(
+    fireball,
+    (struct transform){
+      .position = playr->transform.position,
+      .scale = 1
+    }
+  );
+  ecs__add_draw_mesh(
+    fireball,
+    (struct draw){
+      .mesh = &rocket_mesh,
+      .texture = NULL,
+      .shader = &SOLID_COLOR_SHADER
+    }
   );
 }
 
@@ -314,13 +296,8 @@ void guide_lag_update(
   );
 }
 
-static void explode_fireball(
-  uint_fast16_t from_start_index,
-  struct fireball *const fb
-) {
-  fireballs__deactivate(from_start_index, &fbs);
-  explosions__create(
-    battlefield_to_world_pos(fb->position),
-    &explos
-  );
-}
+// static void explode_fireball(
+
+// ) {
+
+// }

@@ -7,9 +7,9 @@ tail_static="libs/tail/static/tail.a"
 declare -a options=("-O2" "-Wall")
 declare -a includes=("-Ilibs/tail/include" "-Isrc/headers" \
 "-Isrc/player" "-Isrc/scenes" "-Isrc/gameplay" "-Isrc/background" \
-"-Isrc/effects" -I$artifact_dir)
+"-Isrc/effects" "-Isrc/ecs" -I$artifact_dir)
 
-declare -a src_directories=("src/" "src/background/" "src/gameplay/" "src/scenes/" "src/effects/")
+declare -a src_directories=("src/" "src/background/" "src/gameplay/" "src/scenes/" "src/effects/" "src/ecs/")
 
 clean() {
   rm -rf obj bin $artifact_dir
