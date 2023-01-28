@@ -3,7 +3,7 @@
 
 #include "tail.h"
 
-struct gametime {
+struct GameTime {
   double delta;
   double sec_since_game_launch;
 };

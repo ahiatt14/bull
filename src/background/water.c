@@ -105,7 +105,7 @@ void water__copy_assets_to_gpu(
 
 void water__update_waves(
   struct vec2 wind_km_per_sec,
-  struct gametime time,
+  struct GameTime time,
   struct gpu_api const *const gpu
 ) {
 

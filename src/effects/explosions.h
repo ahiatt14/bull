@@ -41,7 +41,7 @@
 // );
 
 // void explosions__update(
-//   struct gametime time,
+//   struct GameTime time,
 //   struct explosions *const explos
 // );
 

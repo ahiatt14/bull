@@ -35,7 +35,7 @@ static uint8_t project_player_position(
 // STATE STUFF
 
 static void player_idle__update(
-  struct gametime time,
+  struct GameTime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr
@@ -54,7 +54,7 @@ static void player_idle__update(
 }
 
 static void player_thrusting__update(
-  struct gametime time,
+  struct GameTime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr
@@ -75,7 +75,7 @@ static void player_thrusting__update(
 }
 
 static void player_autofiring__update(
-  struct gametime time,
+  struct GameTime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr
@@ -94,7 +94,7 @@ static void player_autofiring__update(
 }
 
 static void player_reeling__update(
-  struct gametime time,
+  struct GameTime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr
@@ -103,31 +103,31 @@ static void player_reeling__update(
 }
 
 static void player_flipping__update(
-  struct gametime time,
+  struct GameTime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr
 ) {
 
-  playr->previous_position = playr->transform.position;
+  // playr->previous_position = playr->transform.position;
 
-  static struct battlefield_pos player_bfpos;
-  player_bfpos = world_to_battlefield_pos(playr->transform.position);
-  player_bfpos.degrees = (int)(player_bfpos.degrees + 180) % 360;
-  playr->projected_position = battlefield_to_world_pos(player_bfpos);
+  // static struct battlefield_pos player_bfpos;
+  // player_bfpos = world_to_battlefield_pos(playr->transform.position);
+  // player_bfpos.degrees = (int)(player_bfpos.degrees + 180) % 360;
+  // playr->projected_position = battlefield_to_world_pos(player_bfpos);
 
   playr->input_state = PLAYER_INPUT_STATE__IDLE;
 }
 
 static void player_healthy__update(
-  struct gametime time,
+  struct GameTime time,
   struct player *const playr
 ) {
   return;
 }
 
 void (*player_input_state_updates[PLAYER_INPUT_STATE_COUNT])(
-  struct gametime time,
+  struct GameTime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr
@@ -140,7 +140,7 @@ void (*player_input_state_updates[PLAYER_INPUT_STATE_COUNT])(
 };
 
 void (*player_effect_state_updates[PLAYER_EFFECT_STATE_COUNT])(
-  struct gametime time,
+  struct GameTime time,
   struct player *const playr
 ) = {
   player_healthy__update
@@ -155,7 +155,7 @@ void player__copy_assets_to_gpu(
 }
 
 void player__update(
-  struct gametime time,
+  struct GameTime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr

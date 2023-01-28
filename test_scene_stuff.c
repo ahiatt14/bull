@@ -14,7 +14,7 @@ struct character {
   struct battlefield_pos previous_position;
   struct battlefield_pos projected_position;
   void (*update)(
-    struct gametime time,
+    struct GameTime time,
     struct blackboard const* const bboard,
     struct character *const chr
   );
@@ -28,7 +28,7 @@ struct hornet_state {
 };
 
 void hornet__entering_battlefield_udpate(
-  struct gametime time,
+  struct GameTime time,
   struct blackboard const* const bboard,
   struct character *const chr
 ) {

@@ -27,11 +27,11 @@ struct player {
 
 struct player_actions {
   void (*start_autofire)(
-    struct gametime time,
+    struct GameTime time,
     struct player const *const playr
   );
   void (*stop_autofire)(
-    struct gametime time,
+    struct GameTime time,
     struct player const *const playr
   );
   // void (*fire_special)();
@@ -48,7 +48,7 @@ void player__copy_assets_to_gpu(
 );
 
 void player__update(
-  struct gametime time,
+  struct GameTime time,
   struct gamepad_input gamepad,
   struct player_actions const *const actions,
   struct player *const playr

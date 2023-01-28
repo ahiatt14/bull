@@ -34,7 +34,7 @@
 // // FORWARD DECS
 
 // static void scroll_mushroom_cloud_uvs(
-//   struct gametime time,
+//   struct GameTime time,
 //   struct drawable_mesh *const mushroom_cloud_mesh
 // );
 
@@ -120,7 +120,7 @@
 // }
 
 // void explosions__update(
-//   struct gametime time,
+//   struct GameTime time,
 //   struct explosions *const explos
 // ) {
 //   static uint_fast16_t from_start_offsets_to_destroy[MAX_EXPLOSIONS];
@@ -249,7 +249,7 @@
 // }
 
 // static void scroll_mushroom_cloud_uvs(
-//   struct gametime time,
+//   struct GameTime time,
 //   struct drawable_mesh *const mushroom_cloud_mesh
 // ) {
 //   for (int i = 0; i < mushroom_cloud_mesh->vertices_length; i++) {

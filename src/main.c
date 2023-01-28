@@ -163,7 +163,7 @@ int main() {
     if (!paused) {
 
       static double tick_start_time;
-      static struct gametime time;
+      static struct GameTime time;
 
       tick_start_time = time.sec_since_game_launch;
       time.sec_since_game_launch = window.get_seconds_since_creation();

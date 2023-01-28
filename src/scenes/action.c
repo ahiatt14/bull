@@ -10,10 +10,11 @@
 #include "bull_math.h"
 #include "tail_helpers.h"
 
+#include "rpg.h"
+#include "rocket_mesh.h"
+
 #include "player.h"
 #include "firing_guide.h"
-
-#include "rocket_mesh.h"
 
 /*
   ~~~~~~~~~CONSTANTS~~~~~~~~~~
@@ -27,7 +28,7 @@
 #define ARENA_EDGE_RADIUS 8.0f
 
 typedef void (*player_one_autofire_ptr)(
-  struct gametime time,
+  struct GameTime time,
   struct player const *const playr
 );
 
@@ -40,26 +41,23 @@ struct guide_lag_state {
   ~~~~~~~~~FORWARD DECS~~~~~~~~~~
 */
 
-static void begin_lvl0_fireball_autofire(
-  struct gametime time,
+static void begin_lvl0_rocket_autofire(
+  struct GameTime time,
   struct player const *const playr
 );
 
-static void autofire_lvl0_fireballs(
-  struct gametime time,
+static void autofire_lvl0_rockets(
+  struct GameTime time,
   struct player const *const playr
 );
 
 static void stop_autofiring(
-  struct gametime time,
+  struct GameTime time,
   struct player const *const playr
 );
 
-// static void explode_fireball(
-// );
-
 void guide_lag_update(
-  struct gametime time,
+  struct GameTime time,
   struct player const *const playr,
   struct guide_lag_state *const guide_lag
 );
@@ -67,6 +65,8 @@ void guide_lag_update(
 /*
   ~~~~~~~~~LOCAL STATE~~~~~~~~~~
 */
+
+static struct ECS ecs;
 
 static struct camera cam;
 static struct gamepad_input gamepad;
@@ -85,7 +85,7 @@ player_one_autofire_ptr player_one_autofire = NULL;
 static double seconds_until_next_autofire_shot;
 
 static struct player_actions player_one_actions ={
-  .start_autofire = begin_lvl0_fireball_autofire,
+  .start_autofire = begin_lvl0_rocket_autofire,
   .stop_autofire = stop_autofiring
 };
 
@@ -93,12 +93,11 @@ static struct guide_lag_state guide_lag = {
   .guide_target_position = PLAYER_START_POS
 };
 
-static entity_id entities_to_destroy[MAX_ENTITIES];
+static EntityId entities_to_destroy[MAX_ENTITIES];
 static uint_fast16_t count_of_entities_to_destroy;
-static void mark_entity_for_destruction(entity_id id) {
+static void mark_entity_for_destruction(EntityId id) {
   entities_to_destroy[count_of_entities_to_destroy++] = id;
 }
-
 
 /*
   ~~~~~~~~~PUBLIC API~~~~~~~~~~
@@ -132,7 +131,7 @@ void action__init(
 }
 
 void action__tick(
-  struct gametime time,
+  struct GameTime time,
   struct window_api const *const window,
   struct viewport *const vwprt,
   struct gpu_api const *const gpu,
@@ -168,24 +167,14 @@ void action__tick(
   ) + flip;
   player_one.transform._rotation =
     quaternion__create(WORLDSPACE.up, player_rads);
-  
-  // if (
-  //   vec3__distance(player_one.projected_position, ORIGIN) >=
-  //   ARENA_EDGE_RADIUS
-  // ) player_one.projected_position =
-  //   slide_along_radius_around_world_origin(
-  //     ARENA_EDGE_RADIUS,
-  //     player_one.projected_position,
-  //     player_one.transform.position
-  //   );
 
   player_one.transform.position = player_one.projected_position;
 
   count_of_entities_to_destroy = 0;
-  ecs__move(time);
-  ecs__timeout(time);
+  ecs__move(time, &ecs);
+  ecs__timeout(time, &ecs);
   for (uint_fast16_t i = 0; i < count_of_entities_to_destroy; i++)
-    ecs__destroy_entity(entities_to_destroy[i]);
+    ecs__destroy_entity(entities_to_destroy[i], &ecs);
 
   // DRAW
 
@@ -200,50 +189,31 @@ void action__tick(
     guide_lag.guide_target_position
   );
 
-  ecs__draw(time, &cam, gpu);
+  ecs__draw(time, &cam, gpu, &ecs);
 }
 
 /*
   ~~~~~~~~ FUNCTION DEFINITIONS ~~~~~~~~~
 */
 
-// static float 
-
-// static void bounce_player(
-//   uint8_t row,
-//   uint8_t column,
-//   struct bouncer_grid *const grid
-// ) {
-
-//   static struct battlefield_pos guide_target_bfpos;
-//   guide_target_bfpos = world_to_battlefield_pos(guide_lag.guide_target_position);
-//   guide_target_bfpos.degrees = (int)(guide_target_bfpos.degrees + 180) % 360;
-
-//   guide_lag.guide_target_position = battlefield_to_world_pos(guide_target_bfpos);
-//   guide_lag.seconds_since_player_moved = GUIDE_LAG_TIME_SECONDS;
-
-//   player_one.input_state = PLAYER_INPUT_STATE__FLIPPING;
-//   bouncers__delete_from_grid(row, column, grid);
-// }
-
-static void begin_lvl0_fireball_autofire(
-  struct gametime time,
+static void begin_lvl0_rocket_autofire(
+  struct GameTime time,
   struct player const *const playr
 ) {
-  player_one_autofire = autofire_lvl0_fireballs;
+  player_one_autofire = autofire_lvl0_rockets;
   player_one_autofire(time, playr);
 }
 
 static void stop_autofiring(
-  struct gametime time,
+  struct GameTime time,
   struct player const *const playr
 ) {
   seconds_until_next_autofire_shot = 0;
   player_one_autofire = NULL;
 }
 
-static void autofire_lvl0_fireballs(
-  struct gametime time,
+static void autofire_lvl0_rockets(
+  struct GameTime time,
   struct player const *const playr
 ) {
 
@@ -251,34 +221,14 @@ static void autofire_lvl0_fireballs(
   if (seconds_until_next_autofire_shot > 0) return;
   seconds_until_next_autofire_shot = 0.15f;
 
-  entity_id fireball = ecs__create_entity();
-  ecs__add_timeout(
-    fireball,
-    (struct timeout){
-      .limit_in_seconds = 1,
-      .seconds_since_activation = 0,
-      .on_timeout = mark_entity_for_destruction
-    }
-  );
-  ecs__add_transform(
-    fireball,
-    (struct transform){
-      .position = playr->transform.position,
-      .scale = 1
-    }
-  );
-  ecs__add_draw_mesh(
-    fireball,
-    (struct draw){
-      .mesh = &rocket_mesh,
-      .texture = NULL,
-      .shader = &SOLID_COLOR_SHADER
-    }
-  );
+  // EntityId rocket = create_rpg(
+
+  //   &ecs
+  // );
 }
 
 void guide_lag_update(
-  struct gametime time,
+  struct GameTime time,
   struct player const *const playr,
   struct guide_lag_state *const guide_lag
 ) {
@@ -295,9 +245,3 @@ void guide_lag_update(
     guide_lag->seconds_since_player_moved / GUIDE_LAG_TIME_SECONDS
   );
 }
-
-// static void explode_fireball(
-
-// ) {
-
-// }
