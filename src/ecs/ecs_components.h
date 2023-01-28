@@ -5,6 +5,16 @@
 
 #include "ecs_definitions.h"
 
+uint_fast8_t lacks_configuration(
+  uint_fast16_t necessary_configuration,
+  uint_fast16_t entity_configuration
+);
+
+uint_fast8_t has_component(
+  uint_fast16_t necessary_component,
+  uint_fast16_t entity_configuration
+);
+
 void ecs__add_transform(
   EntityId id,
   struct transform t,

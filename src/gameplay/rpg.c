@@ -3,6 +3,8 @@
 #include "rpg.h"
 
 #include "ecs.h"
+#include "ecs_definitions.h"
+#include "ecs_components.h"
 
 #include "bull_math.h"
 #include "constants.h"
@@ -19,10 +21,7 @@ EntityId create_rpg(
   EntityId rocket = ecs__create_entity(ecs);
 
   struct vec3 player_to_origin =
-    vec3__normalize(vec3_minus_vec3(
-      ORIGIN,
-      position
-    ));
+    vec3__normalize(vec3_minus_vec3(ORIGIN, position));
 
   ecs__add_transform(
     rocket,
@@ -56,7 +55,7 @@ EntityId create_rpg(
   );
   ecs__add_velocity(
     rocket,
-    scalar_x_vec3(10.0f, player_to_origin),
+    velocity,
     ecs
   );
 

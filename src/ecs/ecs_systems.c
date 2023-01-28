@@ -1,6 +1,6 @@
 #include "tail.h"
 
-#include "ecs.h"
+#include "ecs_definitions.h"
 #include "ecs_systems.h"
 #include "ecs_components.h"
 

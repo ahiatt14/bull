@@ -3,6 +3,22 @@
 #include "ecs_definitions.h"
 #include "ecs_components.h"
 
+uint_fast8_t lacks_configuration(
+  uint_fast16_t necessary_configuration,
+  uint_fast16_t entity_configuration
+) {
+  uint_fast16_t anded = necessary_configuration & entity_configuration;
+  return (anded == necessary_configuration) ? 0 : 1;
+}
+
+uint_fast8_t has_component(
+  uint_fast16_t necessary_component,
+  uint_fast16_t entity_configuration
+) {
+  uint_fast16_t anded = necessary_component & entity_configuration;
+  return (anded == necessary_component) ? 1 : 0;
+}
+
 void ecs__add_transform(
   EntityId id,
   struct transform t,

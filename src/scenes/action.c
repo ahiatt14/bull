@@ -4,7 +4,10 @@
 #include "tail.h"
 
 #include "scene.h"
+
 #include "ecs.h"
+#include "ecs_definitions.h"
+#include "ecs_systems.h"
 
 #include "constants.h"
 #include "bull_math.h"
@@ -221,10 +224,20 @@ static void autofire_lvl0_rockets(
   if (seconds_until_next_autofire_shot > 0) return;
   seconds_until_next_autofire_shot = 0.15f;
 
-  // EntityId rocket = create_rpg(
+  struct vec3 velocity = scalar_x_vec3(
+    10.0f,
+    vec3__normalize(vec3_minus_vec3(
+      ORIGIN,
+      playr->transform.position
+    ))
+  );
 
-  //   &ecs
-  // );
+  EntityId rocket = create_rpg(
+    playr->transform.position,
+    velocity,
+    mark_entity_for_destruction,
+    &ecs
+  );
 }
 
 void guide_lag_update(
