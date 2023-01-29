@@ -32,7 +32,7 @@
 
 typedef void (*player_one_autofire_ptr)(
   struct GameTime time,
-  struct player const *const playr
+  struct Player const *const playr
 );
 
 struct guide_lag_state {
@@ -46,22 +46,22 @@ struct guide_lag_state {
 
 static void begin_lvl0_rocket_autofire(
   struct GameTime time,
-  struct player const *const playr
+  struct Player const *const playr
 );
 
 static void autofire_lvl0_rockets(
   struct GameTime time,
-  struct player const *const playr
+  struct Player const *const playr
 );
 
 static void stop_autofiring(
   struct GameTime time,
-  struct player const *const playr
+  struct Player const *const playr
 );
 
 void guide_lag_update(
   struct GameTime time,
-  struct player const *const playr,
+  struct Player const *const playr,
   struct guide_lag_state *const guide_lag
 );
 
@@ -74,7 +74,7 @@ static struct ECS ecs;
 static struct camera cam;
 static struct gamepad_input gamepad;
 
-static struct player player_one = {
+static struct Player player_one = {
   .transform = {
     .position = PLAYER_START_POS,
     .scale = 1
@@ -87,7 +87,7 @@ static struct player player_one = {
 player_one_autofire_ptr player_one_autofire = NULL;
 static double seconds_until_next_autofire_shot;
 
-static struct player_actions player_one_actions ={
+static struct PlayerActions player_one_actions ={
   .start_autofire = begin_lvl0_rocket_autofire,
   .stop_autofire = stop_autofiring
 };
@@ -201,7 +201,7 @@ void action__tick(
 
 static void begin_lvl0_rocket_autofire(
   struct GameTime time,
-  struct player const *const playr
+  struct Player const *const playr
 ) {
   player_one_autofire = autofire_lvl0_rockets;
   player_one_autofire(time, playr);
@@ -209,7 +209,7 @@ static void begin_lvl0_rocket_autofire(
 
 static void stop_autofiring(
   struct GameTime time,
-  struct player const *const playr
+  struct Player const *const playr
 ) {
   seconds_until_next_autofire_shot = 0;
   player_one_autofire = NULL;
@@ -217,11 +217,12 @@ static void stop_autofiring(
 
 static void autofire_lvl0_rockets(
   struct GameTime time,
-  struct player const *const playr
+  struct Player const *const playr
 ) {
 
   seconds_until_next_autofire_shot -= time.delta;
   if (seconds_until_next_autofire_shot > 0) return;
+  // subtract any remainder from below
   seconds_until_next_autofire_shot = 0.15f;
 
   struct vec3 velocity = scalar_x_vec3(
@@ -242,7 +243,7 @@ static void autofire_lvl0_rockets(
 
 void guide_lag_update(
   struct GameTime time,
-  struct player const *const playr,
+  struct Player const *const playr,
   struct guide_lag_state *const guide_lag
 ) {
   if (vec3__distance(

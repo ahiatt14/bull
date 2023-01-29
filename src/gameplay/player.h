@@ -16,7 +16,7 @@ typedef uint8_t player_input_state;
 #define PLAYER_EFFECT_STATE__REELING 1
 typedef uint8_t player_effect_state;
 
-struct player {
+struct Player {
   struct transform transform;
   struct vec3 previous_position;
   struct vec3 projected_position;
@@ -25,14 +25,14 @@ struct player {
   uint8_t level;
 };
 
-struct player_actions {
+struct PlayerActions {
   void (*start_autofire)(
     struct GameTime time,
-    struct player const *const playr
+    struct Player const *const playr
   );
   void (*stop_autofire)(
     struct GameTime time,
-    struct player const *const playr
+    struct Player const *const playr
   );
   // void (*fire_special)();
 };
@@ -40,7 +40,7 @@ struct player_actions {
 // PUBLIC API
 
 void player__reset_state(
-  struct player *const playr
+  struct Player *const playr
 );
 
 void player__copy_assets_to_gpu(
@@ -50,14 +50,14 @@ void player__copy_assets_to_gpu(
 void player__update(
   struct GameTime time,
   struct gamepad_input gamepad,
-  struct player_actions const *const actions,
-  struct player *const playr
+  struct PlayerActions const *const actions,
+  struct Player *const playr
 );
 
 void player__draw(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
-  struct player const *const playr
+  struct Player const *const playr
 );
 
 #endif

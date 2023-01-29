@@ -25,7 +25,7 @@
 static uint8_t project_player_position(
   double delta_time,
   struct vec2 direction,
-  struct player *const playr
+  struct Player *const playr
 );
 
 // LOCALS
@@ -37,8 +37,8 @@ static uint8_t project_player_position(
 static void player_idle__update(
   struct GameTime time,
   struct gamepad_input gamepad,
-  struct player_actions const *const actions,
-  struct player *const playr
+  struct PlayerActions const *const actions,
+  struct Player *const playr
 ) {
 
   if (project_player_position(
@@ -56,8 +56,8 @@ static void player_idle__update(
 static void player_thrusting__update(
   struct GameTime time,
   struct gamepad_input gamepad,
-  struct player_actions const *const actions,
-  struct player *const playr
+  struct PlayerActions const *const actions,
+  struct Player *const playr
 ) {
 
   if (!project_player_position(
@@ -77,8 +77,8 @@ static void player_thrusting__update(
 static void player_autofiring__update(
   struct GameTime time,
   struct gamepad_input gamepad,
-  struct player_actions const *const actions,
-  struct player *const playr
+  struct PlayerActions const *const actions,
+  struct Player *const playr
 ) {
 
   project_player_position(
@@ -96,8 +96,8 @@ static void player_autofiring__update(
 static void player_reeling__update(
   struct GameTime time,
   struct gamepad_input gamepad,
-  struct player_actions const *const actions,
-  struct player *const playr
+  struct PlayerActions const *const actions,
+  struct Player *const playr
 ) {
 
 }
@@ -105,8 +105,8 @@ static void player_reeling__update(
 static void player_flipping__update(
   struct GameTime time,
   struct gamepad_input gamepad,
-  struct player_actions const *const actions,
-  struct player *const playr
+  struct PlayerActions const *const actions,
+  struct Player *const playr
 ) {
 
   // playr->previous_position = playr->transform.position;
@@ -121,7 +121,7 @@ static void player_flipping__update(
 
 static void player_healthy__update(
   struct GameTime time,
-  struct player *const playr
+  struct Player *const playr
 ) {
   return;
 }
@@ -129,8 +129,8 @@ static void player_healthy__update(
 void (*player_input_state_updates[PLAYER_INPUT_STATE_COUNT])(
   struct GameTime time,
   struct gamepad_input gamepad,
-  struct player_actions const *const actions,
-  struct player *const playr
+  struct PlayerActions const *const actions,
+  struct Player *const playr
 ) = {
   player_idle__update,
   player_thrusting__update,
@@ -141,7 +141,7 @@ void (*player_input_state_updates[PLAYER_INPUT_STATE_COUNT])(
 
 void (*player_effect_state_updates[PLAYER_EFFECT_STATE_COUNT])(
   struct GameTime time,
-  struct player *const playr
+  struct Player *const playr
 ) = {
   player_healthy__update
 };
@@ -157,8 +157,8 @@ void player__copy_assets_to_gpu(
 void player__update(
   struct GameTime time,
   struct gamepad_input gamepad,
-  struct player_actions const *const actions,
-  struct player *const playr
+  struct PlayerActions const *const actions,
+  struct Player *const playr
 ) {
   player_input_state_updates[playr->input_state](
     time,
@@ -172,7 +172,7 @@ void player__update(
 void player__draw(
   struct camera const *const cam,
   struct gpu_api const *const gpu,
-  struct player const *const playr
+  struct Player const *const playr
 ) {
   static struct m4x4 local_to_world;
   static struct m3x3 normals_local_to_world;
@@ -207,7 +207,7 @@ void player__draw(
 static uint8_t project_player_position(
   double delta,
   struct vec2 direction,
-  struct player *const playr
+  struct Player *const playr
 ) {
   static float mag;
   static struct vec2 normalized_left_stick_direction;
