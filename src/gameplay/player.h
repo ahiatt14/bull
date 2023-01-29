@@ -17,9 +17,9 @@ typedef uint8_t player_input_state;
 typedef uint8_t player_effect_state;
 
 struct Player {
-  struct transform transform;
-  struct vec3 previous_position;
-  struct vec3 projected_position;
+  struct Transform transform;
+  struct Vec3 previous_position;
+  struct Vec3 projected_position;
   player_input_state input_state;
   player_effect_state effect_state;
   uint8_t level;
@@ -44,19 +44,19 @@ void player__reset_state(
 );
 
 void player__copy_assets_to_gpu(
-  struct gpu_api const *const gpu
+  struct GPU const *const gpu
 );
 
 void player__update(
   struct GameTime time,
-  struct gamepad_input gamepad,
+  struct Gamepad gamepad,
   struct PlayerActions const *const actions,
   struct Player *const playr
 );
 
 void player__draw(
-  struct camera const *const cam,
-  struct gpu_api const *const gpu,
+  struct Camera const *const cam,
+  struct GPU const *const gpu,
   struct Player const *const playr
 );
 

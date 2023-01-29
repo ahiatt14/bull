@@ -29,7 +29,7 @@
 
 // READ ONLY
 
-static const struct vec2 WIND_KM_PER_SEC = {
+static const struct Vec2 WIND_KM_PER_SEC = {
   -0.0075f,
   -0.01f
 };
@@ -38,21 +38,21 @@ static const struct vec2 WIND_KM_PER_SEC = {
 
 // LOCALS
 
-static struct vec3 steam_light_direction = { 1, 0, 0 };
+static struct Vec3 steam_light_direction = { 1, 0, 0 };
 
 // SKY
 
-static struct shader sky_shader;
-static struct m4x4 sky_local_to_world;
-static struct m3x3 sky_normals_local_to_world;
-static struct transform sky_transform;
+static struct Shader sky_shader;
+static struct M4x4 sky_local_to_world;
+static struct M3x3 sky_normals_local_to_world;
+static struct Transform sky_transform;
 
 // MOUNTAINS
 
-static struct shader mountain_shader;
-static struct m4x4 mountain_local_to_world;
-static struct m3x3 mountain_normals_local_to_world;
-static struct transform mountain_transform;
+static struct Shader mountain_shader;
+static struct M4x4 mountain_local_to_world;
+static struct M3x3 mountain_normals_local_to_world;
+static struct Transform mountain_transform;
 
 // STEAM
 
@@ -69,16 +69,16 @@ static struct steam_column steam2 = (struct steam_column){
   .shape_index_offset = 14
 };
 
-static struct camera cam;
+static struct Camera cam;
 
 void ocean__init(
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu
 ) {
 
-  cam.position = (struct vec3){ 0, 0.05, 7 };
-  cam.look_target = (struct vec3){ 0, 1.05, 0 };
+  cam.position = (struct Vec3){ 0, 0.05, 7 };
+  cam.look_target = (struct Vec3){ 0, 1.05, 0 };
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
   cam.far_clip_distance = 100;
@@ -98,7 +98,7 @@ void ocean__init(
 
   // SKY
 
-  sky_transform = (struct transform){
+  sky_transform = (struct Transform){
     { 0, -1, 0 },
     quaternion__create(WORLDSPACE.up, M_PI),
     32
@@ -122,10 +122,10 @@ void ocean__init(
 
   // MOUNTAINS
 
-  mountain_transform = (struct transform){
+  mountain_transform = (struct Transform){
     .position = { 7, -0.2f, -18 },
-    ._rotation = quaternion__create(
-      (struct vec3){ 0, 1, 0 },
+    .rotation = quaternion__create(
+      (struct Vec3){ 0, 1, 0 },
       deg_to_rad(300)
     ),
     .scale = 4
@@ -149,16 +149,16 @@ void ocean__init(
 
 void ocean__tick(
   struct GameTime time, 
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu,
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu,
   uint8_t previous_scene,
   void (*switch_scene)(uint8_t new_scene)
 ) {
 
   // UPDATE
 
-  static struct m4x4 camera_rotation;
+  static struct M4x4 camera_rotation;
   m4x4__rotation(
     deg_to_rad(time.delta * CAMERA_ROTATE_SPEED),
     WORLDSPACE.up,
@@ -167,7 +167,7 @@ void ocean__tick(
   cam.position = m4x4_x_point(&camera_rotation, cam.position);
   steam_light_direction = m4x4_x_point(&camera_rotation, steam_light_direction);
 
-  static struct vec3 norm_steam_light_direction;
+  static struct Vec3 norm_steam_light_direction;
   norm_steam_light_direction = vec3__normalize(steam_light_direction);
 
   water__update_waves(WIND_KM_PER_SEC, time, gpu);
@@ -209,7 +209,7 @@ void ocean__tick(
   gpu->set_shader_vec3(
     &mountain_shader,
     "light_dir",
-    vec3__normalize((struct vec3){ 10, 0, 1 })
+    vec3__normalize((struct Vec3){ 10, 0, 1 })
   );
   gpu->set_shader_vec3(
     &mountain_shader,

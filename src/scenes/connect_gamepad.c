@@ -15,25 +15,25 @@
 #define EXCLAIM_VERTICAL_SPACING 0.5f
 #define EXPLAIN_SCROLL_SPEED 2
 
-static struct camera cam;
+static struct Camera cam;
 
-static struct transform exclamation_transform;
-static struct m4x4 exclamation_local_to_world;
+static struct Transform exclamation_transform;
+static struct M4x4 exclamation_local_to_world;
 
 void connect_gamepad__init(
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu
 ) {
   gpu->cull_no_faces();
 
-  exclamation_transform = (struct transform){
+  exclamation_transform = (struct Transform){
     ORIGIN,
     quaternion__create(WORLDSPACE.right, M_PI * 0.5f), 
     1
   };
 
-  cam.position = (struct vec3){ 0, 0, 3 };
+  cam.position = (struct Vec3){ 0, 0, 3 };
   cam.look_target = ORIGIN;
   cam.horizontal_fov_in_deg = 80;
   cam.near_clip_distance = 0.1f;
@@ -43,16 +43,16 @@ void connect_gamepad__init(
 
   gpu->copy_static_mesh_to_gpu(&exclamation_mesh);
 
-  // struct drawable_mesh batched_exclamation = {
+  // struct DrawableMesh batched_exclamation = {
   //   .vertices = 
   // };
 }
 
 void connect_gamepad__tick(
   struct GameTime time,
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu,
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu,
   uint8_t previous_scene,
   void (*switch_scene)(uint8_t new_scene)
 ) {

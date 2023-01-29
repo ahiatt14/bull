@@ -24,16 +24,16 @@ struct Timeout {
 };
 
 struct Draw {
-  struct drawable_mesh *mesh;
-  struct texture *texture;
-  struct shader *shader;
-  struct vec2 uv_scroll_speed;
+  struct DrawableMesh *mesh;
+  struct Texture *texture;
+  struct Shader *shader;
+  struct Vec2 uv_scroll_speed;
 };
 
 struct Entity {
   ComponentConfig config;
-  struct transform transform;
-  struct vec3 velocity;
+  struct Transform transform;
+  struct Vec3 velocity;
   struct Timeout timeout;
   struct Draw draw;
 };

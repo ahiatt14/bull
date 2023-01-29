@@ -12,22 +12,22 @@
 #include "rocket_mesh.h"
 
 EntityId create_rpg(
-  struct vec3 position,
-  struct vec3 velocity,
+  struct Vec3 position,
+  struct Vec3 velocity,
   void (*mark_entity_for_destruction)(EntityId),
   struct ECS *const ecs
 ) {
 
   EntityId rocket = ecs__create_entity(ecs);
 
-  struct vec3 player_to_origin =
+  struct Vec3 player_to_origin =
     vec3__normalize(vec3_minus_vec3(ORIGIN, position));
 
   ecs__add_transform(
     rocket,
-    (struct transform){
+    (struct Transform){
       .position = position,
-      ._rotation = quaternion__create(
+      .rotation = quaternion__create(
         WORLDSPACE.up,
         rads_ccw_from_forward_around_up(player_to_origin)
       ),

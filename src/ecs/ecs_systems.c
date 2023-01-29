@@ -74,8 +74,8 @@ void ecs__scroll_uvs(
 
 void ecs__draw(
   struct GameTime time,
-  struct camera const *const cam,
-  struct gpu_api const *const gpu,
+  struct Camera const *const cam,
+  struct GPU const *const gpu,
   struct ECS *const ecs
 ) {
 
@@ -86,7 +86,7 @@ void ecs__draw(
       lacks_configuration(c_DRAW_MESH, ecs->entities[id].config)
     ) continue;
 
-    struct shader *shad = ecs->entities[id].draw.shader;
+    struct Shader *shad = ecs->entities[id].draw.shader;
 
     gpu->select_shader(shad);
 
@@ -109,8 +109,8 @@ void ecs__draw(
       time.sec_since_game_launch
     );
 
-    struct m4x4 local_to_world;
-    struct m3x3 normals_local_to_world;
+    struct M4x4 local_to_world;
+    struct M3x3 normals_local_to_world;
 
     if (has_component(
       c_DRAW_BILLBOARD,

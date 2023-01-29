@@ -4,22 +4,22 @@
 #include "tail.h"
 
 float rads_ccw_from_forward_around_up(
-  struct vec3 t
+  struct Vec3 t
 );
 
-const struct m4x4* camera__calculate_ortho(
+const struct M4x4* camera__calculate_ortho(
   float r,
   float t,
   float n,
   float f,
-  struct camera *const cam
+  struct Camera *const cam
 );
 
 float loop_float(float v, float min, float max);
 
-struct vec3 vec3__lerp(
-  struct vec3 t0,
-  struct vec3 t1,
+struct Vec3 vec3__lerp(
+  struct Vec3 t0,
+  struct Vec3 t1,
   float p
 );
 

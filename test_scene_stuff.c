@@ -10,7 +10,7 @@ struct blackboard {
 };
 
 struct character {
-  struct transform transform;
+  struct Transform transform;
   struct battlefield_pos previous_position;
   struct battlefield_pos projected_position;
   void (*update)(

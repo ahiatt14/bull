@@ -9,7 +9,7 @@ int vec_equals_vec(
   float const *const x0,
   float const *const x1,
   unsigned short int element_count,
-  struct float_tolerance const *const ft
+  struct FloatTolerance const *const ft
 );
 int iclamp(int v, int min, int max);
 float fclamp(float v, float min, float max);

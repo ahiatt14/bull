@@ -10,16 +10,16 @@
 #include "firing_guide_frag.h"
 #include "default_vert.h"
 
-static struct shader guide_shader;
-static struct m4x4 guide_local_to_world;
-static struct transform guide_transform;
+static struct Shader guide_shader;
+static struct M4x4 guide_local_to_world;
+static struct Transform guide_transform;
 
 void firing_guide__copy_assets_to_gpu(
-  struct gpu_api const *const gpu
+  struct GPU const *const gpu
 ) {
-  guide_transform = (struct transform){
+  guide_transform = (struct Transform){
     .position = {0,-0.1f,0},
-    ._rotation = quaternion__create(
+    .rotation = quaternion__create(
       WORLDSPACE.right,
       -(M_PI * 0.5f) 
     ),
@@ -32,10 +32,10 @@ void firing_guide__copy_assets_to_gpu(
 }
 
 void firing_guide__draw(
-  struct camera const *const cam,
-  struct gpu_api const *const gpu,
+  struct Camera const *const cam,
+  struct GPU const *const gpu,
   float arena_radius_worldspace,
-  struct vec3 player_position
+  struct Vec3 player_position
 ) {
   gpu->select_shader(&guide_shader);
   gpu__set_mvp(

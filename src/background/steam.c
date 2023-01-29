@@ -24,18 +24,18 @@
 #define INDEX_COUNT VERTS_PER_LVL * 6 * (STEAM__LVL_COUNT - 1)
 #define MAX_COLUMN_HEIGHT STEAM__LVL_COUNT * LVL_HEIGHT
 
-static struct shader shared_steam_shader;
+static struct Shader shared_steam_shader;
 
-static struct drawable_mesh shared_column_mesh = (struct drawable_mesh){
-  .vertices = (struct vertex[VERT_COUNT]){0},
+static struct DrawableMesh shared_column_mesh = (struct DrawableMesh){
+  .vertices = (struct Vertex[VERT_COUNT]){0},
   .indices = (unsigned int[INDEX_COUNT]){0},
-  .vertices_size = sizeof(struct vertex) * VERT_COUNT,
+  .vertices_size = sizeof(struct Vertex) * VERT_COUNT,
   .indices_size = sizeof(unsigned int) * INDEX_COUNT,
   .indices_length = INDEX_COUNT
 };
 
 void steam__copy_assets_to_gpu(
-  struct gpu_api const *const gpu
+  struct GPU const *const gpu
 ) {
 
   shared_steam_shader.frag_src = steam_frag_src;
@@ -51,7 +51,7 @@ void steam__column_default(
   struct steam_column *const column
 ) {
   for (int lvl = 0; lvl < STEAM__LVL_COUNT; lvl++) {
-    column->ring_offsets[lvl] = (struct vec3){0, lvl * LVL_HEIGHT, 0};
+    column->ring_offsets[lvl] = (struct Vec3){0, lvl * LVL_HEIGHT, 0};
     column->ring_radii[lvl] = MIN_RING_RADII;
   }
   for (int i = 0; i < 300; i++)
@@ -121,15 +121,15 @@ void steam__create_shared_mesh_data() {
 
 static void calculate_ring_vertex_positions(
   uint16_t lvl,
-  struct vec3 ring_offset,
+  struct Vec3 ring_offset,
   float ring_radius
 ) {
   
-  static struct m4x4 rotation;
+  static struct M4x4 rotation;
 
   for (int vi = 0; vi < VERTS_PER_LVL; vi++) {
 
-    static struct vec3 position; position = (struct vec3){0};
+    static struct Vec3 position; position = (struct Vec3){0};
     position.z = -ring_radius;
 
     m4x4__rotation(
@@ -145,7 +145,7 @@ static void calculate_ring_vertex_positions(
   }
 }
 
-static struct vec3 calculate_face_normal(
+static struct Vec3 calculate_face_normal(
   uint_fast16_t face_start_index
 ) {
   return vec3__cross(
@@ -251,7 +251,7 @@ void steam__rise(
       // }
     }
     column->ring_radii[0] = MIN_RING_RADII;
-    column->ring_offsets[0] = (struct vec3){0};
+    column->ring_offsets[0] = (struct Vec3){0};
     column->shape_index_offset =
       column->shape_index_offset - 1 < 0 ?
       STEAM__LVL_COUNT :
@@ -261,13 +261,13 @@ void steam__rise(
 }
 
 void steam__draw_column(
-  struct camera const *const cam,
-  struct gpu_api const *const gpu,
-  struct vec3 light_direction,
+  struct Camera const *const cam,
+  struct GPU const *const gpu,
+  struct Vec3 light_direction,
   struct steam_column *const column
 ) {
-  static struct m4x4 local_to_world;
-  static struct m3x3 normals_local_to_world;
+  static struct M4x4 local_to_world;
+  static struct M3x3 normals_local_to_world;
 
   for (int lvl = 0; lvl < STEAM__LVL_COUNT; lvl++) {
     calculate_ring_vertex_positions(

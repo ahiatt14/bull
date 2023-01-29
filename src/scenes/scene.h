@@ -16,15 +16,15 @@ struct scene;
 struct scene {
   void (*set_previous_scene)(struct scene const *previous_scene);
   void (*init)(
-    struct window_api const *const window,
-    struct viewport *const vwprt,
-    struct gpu_api const *const gpu
+    struct Window const *const window,
+    struct Viewport *const vwprt,
+    struct GPU const *const gpu
   );
   void (*tick)(
     struct GameTime time,
-    struct window_api const *const window,
-    struct viewport *const vwprt,
-    struct gpu_api const *const gpu,
+    struct Window const *const window,
+    struct Viewport *const vwprt,
+    struct GPU const *const gpu,
     uint8_t previous_scene,
     void (*switch_scene)(uint8_t new_scene)
   );
@@ -32,57 +32,57 @@ struct scene {
 
 // TODO: take another crack at removing this redundancy!
 void main_menu__init(
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu
 );
 void main_menu__tick(
   struct GameTime time,
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu,
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu,
   uint8_t previous_scene,
   void (*switch_scene)(uint8_t new_scene)
 );
 
 void action__init(
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu
 );
 void action__tick(
   struct GameTime time,
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu,
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu,
   uint8_t previous_scene,
   void (*switch_scene)(uint8_t new_scene)
 );
 
 void connect_gamepad__init(
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu
 );
 void connect_gamepad__tick(
   struct GameTime time,
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu,
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu,
   uint8_t previous_scene,
   void (*switch_scene)(uint8_t new_scene)
 );
 
 void ocean__init(
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu
 );
 void ocean__tick(
   struct GameTime time,
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu,
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu,
   uint8_t previous_scene,
   void (*switch_scene)(uint8_t new_scene)
 );

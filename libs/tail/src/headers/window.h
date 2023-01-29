@@ -17,7 +17,7 @@
 #define REQUEST_FULLSCREEN 1
 #define REQUEST_WINDOWED 0
 
-struct window_api {
+struct Window {
   
   void (*on_minimize_and_restore)(
     void (*handle_minimize)(),
@@ -40,12 +40,12 @@ struct window_api {
 
   uint8_t (*gamepad_is_connected)();
   void (*get_gamepad_input)(
-    struct gamepad_input *const gamepad
+    struct Gamepad *const gamepad
   );
 
   uint8_t (*is_fullscreen)();
-  struct vec2 (*get_window_dim_in_screen_units)();
-  struct vec2 (*get_framebuffer_size)();
+  struct Vec2 (*get_window_dim_in_screen_units)();
+  struct Vec2 (*get_framebuffer_size)();
   double (*get_seconds_since_creation)();
   void (*switch_to_fullscreen)();
   void (*switch_to_windowed)(
@@ -68,7 +68,7 @@ uint8_t window__create_fullscreen_game(
   const char *name,
   uint8_t request_vsync,
   uint8_t MSAA_samples,
-  struct window_api *const window
+  struct Window *const window
 );
 
 uint8_t window__create_windowed_game(
@@ -79,7 +79,7 @@ uint8_t window__create_windowed_game(
   const char *name,
   uint8_t vsync,
   uint8_t request_MSAA,
-  struct window_api *const window
+  struct Window *const window
 );
 
 #endif

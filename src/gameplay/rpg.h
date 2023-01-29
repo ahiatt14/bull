@@ -6,8 +6,8 @@
 #include "ecs_definitions.h"
 
 EntityId create_rpg(
-  struct vec3 position,
-  struct vec3 velocity,
+  struct Vec3 position,
+  struct Vec3 velocity,
   void (*mark_entity_for_destruction)(EntityId),
   struct ECS *const ecs
 );

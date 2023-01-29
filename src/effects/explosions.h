@@ -11,8 +11,8 @@
 // #include "bull_math.h"
 
 // struct explosion {
-//   struct transform mushroom_cloud_transform;
-//   struct transform explosion_transform;
+//   struct Transform mushroom_cloud_transform;
+//   struct Transform explosion_transform;
 //   double sec_since_activation;
 // };
 
@@ -23,11 +23,11 @@
 // };
 
 // void explosions__copy_assets_to_gpu(
-//   struct gpu_api const *const gpu
+//   struct GPU const *const gpu
 // );
 
 // void explosions__create(
-//   struct vec3 position,
+//   struct Vec3 position,
 //   struct explosions *const explos
 // );
 
@@ -46,8 +46,8 @@
 // );
 
 // void explosions__draw(
-//   struct camera const *const cam,
-//   struct gpu_api const *const gpu,
+//   struct Camera const *const cam,
+//   struct GPU const *const gpu,
 //   struct explosions *const explos
 // );
 

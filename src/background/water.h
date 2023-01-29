@@ -9,16 +9,16 @@
 
 void water__init_mesh_data();
 void water__copy_assets_to_gpu(
-  struct gpu_api const *const gpu
+  struct GPU const *const gpu
 );
 void water__update_waves(
-  struct vec2 wind_speed,
+  struct Vec2 wind_speed,
   struct GameTime time,
-  struct gpu_api const *const gpu
+  struct GPU const *const gpu
 );
 void water__draw(
-  struct camera const *const cam,
-  struct gpu_api const *const gpu
+  struct Camera const *const cam,
+  struct GPU const *const gpu
 );
 
 #endif

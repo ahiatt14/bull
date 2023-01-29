@@ -24,8 +24,8 @@ void ecs__scroll_uvs(
 
 void ecs__draw(
   struct GameTime time,
-  struct camera const *const cam,
-  struct gpu_api const *const gpu,
+  struct Camera const *const cam,
+  struct GPU const *const gpu,
   struct ECS *const ecs
 );
 

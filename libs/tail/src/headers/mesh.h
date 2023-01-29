@@ -5,14 +5,14 @@
 
 #include "vector.h"
 
-struct vertex {
-  struct vec3 position;
-  struct vec3 normal;
-  struct vec2 uv;
+struct Vertex {
+  struct Vec3 position;
+  struct Vec3 normal;
+  struct Vec2 uv;
 };
 
-struct drawable_mesh {
-  struct vertex *vertices;
+struct DrawableMesh {
+  struct Vertex *vertices;
   unsigned int *indices;
   size_t vertices_size;
   size_t indices_size;

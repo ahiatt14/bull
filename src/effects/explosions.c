@@ -35,7 +35,7 @@
 
 // static void scroll_mushroom_cloud_uvs(
 //   struct GameTime time,
-//   struct drawable_mesh *const mushroom_cloud_mesh
+//   struct DrawableMesh *const mushroom_cloud_mesh
 // );
 
 // static struct explosion* get_explosion(
@@ -45,10 +45,10 @@
 
 // // LOCALS
 
-// static struct shader mushroom_cloud_shader, explosion_shader, blink_shader;
+// static struct Shader mushroom_cloud_shader, explosion_shader, blink_shader;
 
 // void explosions__copy_assets_to_gpu(
-//   struct gpu_api const *const gpu
+//   struct GPU const *const gpu
 // ) {
 //   gpu->copy_static_mesh_to_gpu(&sphere_mesh);
 //   gpu->copy_dynamic_mesh_to_gpu(&lowpoly_mushroom_cloud_mesh);
@@ -72,17 +72,17 @@
 // }
 
 // void explosions__create(
-//   struct vec3 position,
+//   struct Vec3 position,
 //   struct explosions *const explos
 // ) {
 
 //   static struct explosion explo;
 //   explo = (struct explosion){
-//     .mushroom_cloud_transform = (struct transform){
+//     .mushroom_cloud_transform = (struct Transform){
 //       .position = position,
 //       .scale = 1
 //     },
-//     .explosion_transform = (struct transform){
+//     .explosion_transform = (struct Transform){
 //       .scale = EXPLOSION_START_SCALE,
 //       .position = position
 //     },
@@ -153,8 +153,8 @@
 // }
 
 // void explosions__draw(
-//   struct camera const *const cam,
-//   struct gpu_api const *const gpu,
+//   struct Camera const *const cam,
+//   struct GPU const *const gpu,
 //   struct explosions *const explos
 // ) {
 
@@ -162,7 +162,7 @@
 
 //   for (int i = 0; i < explos->_active_count; i++) {
 
-//     static struct m4x4 local_to_world;
+//     static struct M4x4 local_to_world;
 
 //     static struct explosion *explo;
 //     explo = get_explosion(i, explos);
@@ -250,7 +250,7 @@
 
 // static void scroll_mushroom_cloud_uvs(
 //   struct GameTime time,
-//   struct drawable_mesh *const mushroom_cloud_mesh
+//   struct DrawableMesh *const mushroom_cloud_mesh
 // ) {
 //   for (int i = 0; i < mushroom_cloud_mesh->vertices_length; i++) {
 //     mushroom_cloud_mesh->vertices[i].uv.y += time.delta * 0.35f;

@@ -17,7 +17,7 @@ uint_fast8_t has_component(
 
 void ecs__add_transform(
   EntityId id,
-  struct transform t,
+  struct Transform t,
   struct ECS *const ecs
 );
 
@@ -29,7 +29,7 @@ void ecs__add_draw_mesh(
 
 void ecs__add_velocity(
   EntityId id,
-  struct vec3 velocity,
+  struct Vec3 velocity,
   struct ECS *const ecs
 );
 

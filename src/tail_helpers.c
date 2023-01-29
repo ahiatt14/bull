@@ -7,11 +7,11 @@
 
 // TODO: even worth it?
 void gpu__set_mvp(
-  struct m4x4 const *const model,
-  struct m3x3 const *const normals_model,
-  struct camera const *const cam,
-  struct shader const *const shad,
-  struct gpu_api const *const gpu
+  struct M4x4 const *const model,
+  struct M3x3 const *const normals_model,
+  struct Camera const *const cam,
+  struct Shader const *const shad,
+  struct GPU const *const gpu
 ) {
   gpu->set_shader_m3x3(shad, "normals_model", normals_model);
   gpu->set_shader_m4x4(shad, "model", model);
@@ -22,7 +22,7 @@ void gpu__set_mvp(
 void mesh__tile_uvs(
   float x_multiplier,
   float y_multiplier,
-  struct drawable_mesh *const mesh
+  struct DrawableMesh *const mesh
 ) {
   for (uint16_t i = 0; i < mesh->vertices_length; i++) {
     mesh->vertices[i].uv.x *= x_multiplier;

@@ -37,7 +37,7 @@ typedef void (*player_one_autofire_ptr)(
 
 struct guide_lag_state {
   double seconds_since_player_moved;
-  struct vec3 guide_target_position;
+  struct Vec3 guide_target_position;
 };
 
 /*
@@ -71,8 +71,8 @@ void guide_lag_update(
 
 static struct ECS ecs;
 
-static struct camera cam;
-static struct gamepad_input gamepad;
+static struct Camera cam;
+static struct Gamepad gamepad;
 
 static struct Player player_one = {
   .transform = {
@@ -107,13 +107,13 @@ static void mark_entity_for_destruction(EntityId id) {
 */
 
 void action__init(
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu
 ) {
 
-  cam.position = (struct vec3){ 0, 20, 8 };
-  cam.look_target = (struct vec3){
+  cam.position = (struct Vec3){ 0, 20, 8 };
+  cam.look_target = (struct Vec3){
     ORIGIN.x,
     ORIGIN.y,
     ORIGIN.z + 1.2f
@@ -135,9 +135,9 @@ void action__init(
 
 void action__tick(
   struct GameTime time,
-  struct window_api const *const window,
-  struct viewport *const vwprt,
-  struct gpu_api const *const gpu,
+  struct Window const *const window,
+  struct Viewport *const vwprt,
+  struct GPU const *const gpu,
   uint8_t previous_scene,
   void switch_scene(uint8_t new_scene)
 ) {
@@ -168,7 +168,7 @@ void action__tick(
     -player_one.transform.position.z /
     player_one.transform.position.x
   ) + flip;
-  player_one.transform._rotation =
+  player_one.transform.rotation =
     quaternion__create(WORLDSPACE.up, player_rads);
 
   player_one.transform.position = player_one.projected_position;
@@ -225,7 +225,7 @@ static void autofire_lvl0_rockets(
   // subtract any remainder from below
   seconds_until_next_autofire_shot = 0.15f;
 
-  struct vec3 velocity = scalar_x_vec3(
+  struct Vec3 velocity = scalar_x_vec3(
     10.0f,
     vec3__normalize(vec3_minus_vec3(
       ORIGIN,

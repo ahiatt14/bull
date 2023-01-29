@@ -7,14 +7,14 @@
 #include "camera.h"
 
 void debugging__copy_gizmo_assets_to_gpu(
-  struct gpu_api const *const gpu
+  struct GPU const *const gpu
 );
 
 void debugging__draw_space_gizmo(
-  struct gpu_api const *const gpu,
-  struct camera const *const cam,
-  struct coordinate_space const *const space,
-  struct vec3 position
+  struct GPU const *const gpu,
+  struct Camera const *const cam,
+  struct CoordinateSpace const *const space,
+  struct Vec3 position
 );
 
 #endif

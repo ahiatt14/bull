@@ -9,17 +9,17 @@ struct GameTime {
 };
 
 void gpu__set_mvp(
-  struct m4x4 const *const model,
-  struct m3x3 const *const normals_model,
-  struct camera const *const cam,
-  struct shader const *const shad,
-  struct gpu_api const *const gpu
+  struct M4x4 const *const model,
+  struct M3x3 const *const normals_model,
+  struct Camera const *const cam,
+  struct Shader const *const shad,
+  struct GPU const *const gpu
 );
 
 void mesh__tile_uvs(
   float x_multiplier,
   float y_multiplier,
-  struct drawable_mesh *const mesh
+  struct DrawableMesh *const mesh
 );
 
 // TODO: add space__euler_to_basis fn

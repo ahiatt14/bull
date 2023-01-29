@@ -24,19 +24,19 @@
 
 static uint8_t project_player_position(
   double delta_time,
-  struct vec2 direction,
+  struct Vec2 direction,
   struct Player *const playr
 );
 
 // LOCALS
 
-// static struct shader shared_healthy_shader;
+// static struct Shader shared_healthy_shader;
 
 // STATE STUFF
 
 static void player_idle__update(
   struct GameTime time,
-  struct gamepad_input gamepad,
+  struct Gamepad gamepad,
   struct PlayerActions const *const actions,
   struct Player *const playr
 ) {
@@ -55,7 +55,7 @@ static void player_idle__update(
 
 static void player_thrusting__update(
   struct GameTime time,
-  struct gamepad_input gamepad,
+  struct Gamepad gamepad,
   struct PlayerActions const *const actions,
   struct Player *const playr
 ) {
@@ -76,7 +76,7 @@ static void player_thrusting__update(
 
 static void player_autofiring__update(
   struct GameTime time,
-  struct gamepad_input gamepad,
+  struct Gamepad gamepad,
   struct PlayerActions const *const actions,
   struct Player *const playr
 ) {
@@ -95,7 +95,7 @@ static void player_autofiring__update(
 
 static void player_reeling__update(
   struct GameTime time,
-  struct gamepad_input gamepad,
+  struct Gamepad gamepad,
   struct PlayerActions const *const actions,
   struct Player *const playr
 ) {
@@ -104,7 +104,7 @@ static void player_reeling__update(
 
 static void player_flipping__update(
   struct GameTime time,
-  struct gamepad_input gamepad,
+  struct Gamepad gamepad,
   struct PlayerActions const *const actions,
   struct Player *const playr
 ) {
@@ -128,7 +128,7 @@ static void player_healthy__update(
 
 void (*player_input_state_updates[PLAYER_INPUT_STATE_COUNT])(
   struct GameTime time,
-  struct gamepad_input gamepad,
+  struct Gamepad gamepad,
   struct PlayerActions const *const actions,
   struct Player *const playr
 ) = {
@@ -149,14 +149,14 @@ void (*player_effect_state_updates[PLAYER_EFFECT_STATE_COUNT])(
 // PUBLIC API
 
 void player__copy_assets_to_gpu(
-  struct gpu_api const *const gpu
+  struct GPU const *const gpu
 ) {
   gpu->copy_static_mesh_to_gpu(&bird_mesh);
 }
 
 void player__update(
   struct GameTime time,
-  struct gamepad_input gamepad,
+  struct Gamepad gamepad,
   struct PlayerActions const *const actions,
   struct Player *const playr
 ) {
@@ -170,12 +170,12 @@ void player__update(
 }
 
 void player__draw(
-  struct camera const *const cam,
-  struct gpu_api const *const gpu,
+  struct Camera const *const cam,
+  struct GPU const *const gpu,
   struct Player const *const playr
 ) {
-  static struct m4x4 local_to_world;
-  static struct m3x3 normals_local_to_world;
+  static struct M4x4 local_to_world;
+  static struct M3x3 normals_local_to_world;
 
   space__create_model(
     &WORLDSPACE,
@@ -206,11 +206,11 @@ void player__draw(
 
 static uint8_t project_player_position(
   double delta,
-  struct vec2 direction,
+  struct Vec2 direction,
   struct Player *const playr
 ) {
   static float mag;
-  static struct vec2 normalized_left_stick_direction;
+  static struct Vec2 normalized_left_stick_direction;
 
   mag = vec2__magnitude(direction);
   if (mag < STICK_DEADZONE) return 0;

@@ -24,28 +24,28 @@
 
 // LOCALS
 
-static struct transform trans;
-static struct vertex vertices[VERTS_PER_SIDE * VERTS_PER_SIDE];
+static struct Transform trans;
+static struct Vertex vertices[VERTS_PER_SIDE * VERTS_PER_SIDE];
 static unsigned int indices[INDEX_COUNT];
-static struct drawable_mesh mesh = {
+static struct DrawableMesh mesh = {
   .vertices = vertices,
   .indices = indices,
-  .vertices_size = sizeof(struct vertex) *
+  .vertices_size = sizeof(struct Vertex) *
     VERTS_PER_SIDE * VERTS_PER_SIDE,
   .indices_size = sizeof(unsigned int) * INDEX_COUNT,
   .indices_length = INDEX_COUNT
 };
 
-static const struct vec3 ORIGIN_OFFSET = {
+static const struct Vec3 ORIGIN_OFFSET = {
   -FACE_WIDE_KM_LENGTH * VERTS_PER_SIDE * 0.5f,
   -FACE_WIDE_KM_LENGTH * VERTS_PER_SIDE * 0.5f,
   0
 };
 
-static struct shader surface_shader;
+static struct Shader surface_shader;
 
-static struct m4x4 shared_local_to_world;
-static struct m3x3 shared_normals_local_to_world;
+static struct M4x4 shared_local_to_world;
+static struct M3x3 shared_normals_local_to_world;
 
 void water__init_mesh_data() {
 
@@ -84,10 +84,10 @@ void water__init_mesh_data() {
 }
 
 void water__copy_assets_to_gpu(
-  struct gpu_api const *const gpu
+  struct GPU const *const gpu
 ) {
 
-  trans = (struct transform){
+  trans = (struct Transform){
     {0, -0.1f, 0},
     quaternion__create(
       WORLDSPACE.right,
@@ -104,9 +104,9 @@ void water__copy_assets_to_gpu(
 }
 
 void water__update_waves(
-  struct vec2 wind_km_per_sec,
+  struct Vec2 wind_km_per_sec,
   struct GameTime time,
-  struct gpu_api const *const gpu
+  struct GPU const *const gpu
 ) {
 
   // UPDATE WAVE VERTEX DATA
@@ -127,10 +127,10 @@ void water__update_waves(
   // UPDATE WAVE NORMALS
 
   vert_index = 0;
-  static struct vec3 x_edge;
-  static struct vec3 y_edges[2];
-  static struct vec3 final_y_edge;
-  static struct vec3 normal;
+  static struct Vec3 x_edge;
+  static struct Vec3 y_edges[2];
+  static struct Vec3 final_y_edge;
+  static struct Vec3 normal;
 
   for (int y = 0; y < VERTS_PER_SIDE; y++) {
 
@@ -166,8 +166,8 @@ void water__update_waves(
 }
 
 void water__draw(
-  struct camera const *const cam,
-  struct gpu_api const *const gpu
+  struct Camera const *const cam,
+  struct GPU const *const gpu
 ) {
   gpu->select_shader(&surface_shader);
   gpu->select_texture(&water_texture);
