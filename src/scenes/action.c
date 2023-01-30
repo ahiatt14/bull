@@ -251,7 +251,7 @@ void guide_lag_update(
   guide_lag->seconds_since_player_moved += time.delta;
   if (guide_lag->seconds_since_player_moved > GUIDE_LAG_TIME_SECONDS)
     guide_lag->seconds_since_player_moved = GUIDE_LAG_TIME_SECONDS;
-  guide_lag->guide_target_position = vec3__lerp(
+  guide_lag->guide_target_position = vec3__linear_lerp(
     guide_lag->guide_target_position,
     playr->transform.position,
     guide_lag->seconds_since_player_moved / GUIDE_LAG_TIME_SECONDS

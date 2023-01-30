@@ -21,6 +21,11 @@ void ecs__scroll_uvs(
   struct ECS *const ecs
 );
 
+void ecs__lerp_vec3(
+  struct GameTime time,
+  struct ECS *const ecs
+);
+
 void ecs__draw(
   struct GameTime time,
   struct Camera const *const cam,

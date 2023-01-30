@@ -68,3 +68,19 @@ void ecs__remove_timeout(
 ) {
   ecs->entities[id].config -= c_TIMEOUT;
 }
+
+void ecs__add_vec3lerp(
+  EntityId id,
+  struct Vec3Lerp vec3lerp,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config += c_VEC3_LERP;
+  ecs->entities[id].vec3lerp = vec3lerp;
+}
+
+void ecs__remove_vec3lerp(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config -= c_VEC3_LERP;
+}

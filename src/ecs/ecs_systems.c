@@ -72,6 +72,41 @@ void ecs__scroll_uvs(
   }
 }
 
+void ecs__lerp_vec3(
+  struct GameTime time,
+  struct ECS *const ecs
+) {
+
+  double ratio;
+
+  for (EntityId id = 0; id < ecs->count; id++) {
+
+    if (lacks_configuration(
+      c_VEC3_LERP,
+      ecs->entities[id].config
+    )) continue;
+
+    ecs->entities[id].vec3lerp.seconds_since_activation += time.delta;
+
+    ratio =
+      ecs->entities[id].vec3lerp.seconds_since_activation /
+      ecs->entities[id].vec3lerp.duration_in_seconds;
+
+    ecs->entities[id].transform.position =
+      ecs->entities[id].vec3lerp.lerp(
+        ecs->entities[id].vec3lerp.start,
+        ecs->entities[id].vec3lerp.end,
+        dmax(ratio, 1.0f)
+      );
+
+    if (ratio >= 1.0f) ecs->entities[id].vec3lerp.on_finish(
+      id,
+      ecs->entities[id].vec3lerp.seconds_since_activation -
+      ecs->entities[id].vec3lerp.duration_in_seconds
+    );
+  }
+}
+
 void ecs__draw(
   struct GameTime time,
   struct Camera const *const cam,

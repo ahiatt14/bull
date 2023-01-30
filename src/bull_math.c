@@ -35,20 +35,24 @@ float rads_ccw_from_forward_around_up(
   return rads;
 }
 
-float loop_float(float v, float min, float max) {
+double dmax(double v, double max) {
+  return v > max ? max : v;
+}
+
+float floop(float v, float min, float max) {
   if (v < min) return max - min - v;
   if (v > max) return min + v - max;
   return v;
 }
 
-struct Vec3 vec3__lerp(
+struct Vec3 vec3__linear_lerp(
   struct Vec3 t0,
   struct Vec3 t1,
-  float p
+  double ratio
 ) {
   return (struct Vec3){
-    t0.x + ((t1.x - t0.x) * p),
-    t0.y + ((t1.y - t0.y) * p),
-    t0.z + ((t1.z - t0.z) * p)
+    t0.x + ((t1.x - t0.x) * ratio),
+    t0.y + ((t1.y - t0.y) * ratio),
+    t0.z + ((t1.z - t0.z) * ratio)
   };
 }

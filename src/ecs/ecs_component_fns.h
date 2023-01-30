@@ -49,4 +49,15 @@ void ecs__remove_timeout(
   struct ECS *const ecs
 );
 
+void ecs__add_vec3lerp(
+  EntityId id,
+  struct Vec3Lerp vec3lerp,
+  struct ECS *const ecs
+);
+
+void ecs__remove_vec3lerp(
+  EntityId id,
+  struct ECS *const ecs
+);
+
 #endif

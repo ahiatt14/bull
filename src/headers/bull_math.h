@@ -15,12 +15,14 @@ const struct M4x4* camera__calculate_ortho(
   struct Camera *const cam
 );
 
-float loop_float(float v, float min, float max);
+double dmax(double v, double max);
 
-struct Vec3 vec3__lerp(
+float floop(float v, float min, float max);
+
+struct Vec3 vec3__linear_lerp(
   struct Vec3 t0,
   struct Vec3 t1,
-  float p
+  double ratio
 );
 
 #endif
