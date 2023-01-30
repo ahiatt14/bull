@@ -3,8 +3,6 @@
 #include "rpg.h"
 
 #include "ecs.h"
-#include "ecs_definitions.h"
-#include "ecs_components.h"
 
 #include "bull_math.h"
 #include "constants.h"

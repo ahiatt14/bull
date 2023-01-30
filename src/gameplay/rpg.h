@@ -3,7 +3,7 @@
 
 #include "tail.h"
 
-#include "ecs_definitions.h"
+#include "ecs.h"
 
 EntityId create_rpg(
   struct Vec3 position,

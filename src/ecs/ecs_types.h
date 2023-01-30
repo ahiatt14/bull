@@ -1,9 +1,7 @@
-#ifndef __BULL_ECS_DEFINITIONS__
-#define __BULL_ECS_DEFINITIONS__
+#ifndef __BULL_ECS_TYPES__
+#define __BULL_ECS_TYPES__
 
 #include <stdint.h>
-
-#include "tail.h"
 
 #define MAX_ENTITIES 500
 

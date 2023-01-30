@@ -1,7 +1,7 @@
 #include "tail.h"
 
-#include "ecs_definitions.h"
-#include "ecs_components.h"
+#include "ecs_types.h"
+#include "ecs_component_fns.h"
 
 uint_fast8_t lacks_configuration(
   uint_fast16_t necessary_configuration,

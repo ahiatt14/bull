@@ -1,8 +1,8 @@
 #include "tail.h"
 
-#include "ecs_definitions.h"
+#include "ecs_types.h"
 #include "ecs_systems.h"
-#include "ecs_components.h"
+#include "ecs_component_fns.h"
 
 #include "constants.h"
 #include "bull_math.h"

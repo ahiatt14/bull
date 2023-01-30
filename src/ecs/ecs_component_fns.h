@@ -1,9 +1,9 @@
-#ifndef __BULL_ECS_COMPONENTS__
-#define __BULL_ECS_COMPONENTS__
+#ifndef __BULL_ECS_COMPONENT_FNS__
+#define __BULL_ECS_COMPONENT_FNS__
 
 #include "tail.h"
 
-#include "ecs_definitions.h"
+#include "ecs_types.h"
 
 uint_fast8_t lacks_configuration(
   uint_fast16_t necessary_configuration,

@@ -2,10 +2,9 @@
 #define __BULL_ECS_SYSTEMS__
 
 #include "tail.h"
-
 #include "tail_helpers.h"
 
-#include "ecs_definitions.h"
+#include "ecs_types.h"
 
 void ecs__move(
   struct GameTime time,

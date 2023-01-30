@@ -1,11 +1,7 @@
-#include <stdio.h>
-
 #include "tail.h"
 
-#include "constants.h"
-#include "tail_helpers.h"
-
-#include "ecs.h"
+#include "ecs_types.h"
+#include "ecs_entities.h"
 
 EntityId ecs__create_entity(
   struct ECS *const ecs

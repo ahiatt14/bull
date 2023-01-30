@@ -6,8 +6,6 @@
 #include "scene.h"
 
 #include "ecs.h"
-#include "ecs_definitions.h"
-#include "ecs_systems.h"
 
 #include "constants.h"
 #include "bull_math.h"
