@@ -41,7 +41,7 @@ void connect_gamepad__init(
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
-  gpu->copy_static_mesh_to_gpu(&exclamation_mesh);
+  gpu->copy_static_mesh_to_gpu(&EXCLAMATION_MESH);
 
   // struct DrawableMesh batched_exclamation = {
   //   .vertices = 
@@ -84,5 +84,5 @@ void connect_gamepad__tick(
     "color",
     COLOR_RED
   );
-  gpu->draw_mesh(&exclamation_mesh);
+  gpu->draw_mesh(&EXCLAMATION_MESH);
 }

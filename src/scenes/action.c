@@ -125,7 +125,7 @@ void action__init(
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
-  gpu->copy_static_mesh_to_gpu(&rocket_mesh);
+  gpu->copy_static_mesh_to_gpu(&ROCKET_MESH);
 
   player__copy_assets_to_gpu(gpu);
   firing_guide__copy_assets_to_gpu(gpu);

@@ -151,7 +151,7 @@ void (*player_effect_state_updates[PLAYER_EFFECT_STATE_COUNT])(
 void player__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
-  gpu->copy_static_mesh_to_gpu(&bird_mesh);
+  gpu->copy_static_mesh_to_gpu(&BIRD_MESH);
 }
 
 void player__update(
@@ -199,7 +199,7 @@ void player__draw(
     &SOLID_COLOR_SHADER,
     gpu
   );
-  gpu->draw_mesh(&bird_mesh);
+  gpu->draw_mesh(&BIRD_MESH);
 }
 
 // HELPERS

@@ -25,8 +25,8 @@ void firing_guide__copy_assets_to_gpu(
     ),
     .scale = 20
   };
-  guide_shader.frag_src = firing_guide_frag_src;
-  guide_shader.vert_src = default_vert_src;
+  guide_shader.frag_src = FIRING_GUIDE_FRAG_SRC;
+  guide_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&guide_shader);
   space__create_model(&WORLDSPACE, &guide_transform, &guide_local_to_world);
 }

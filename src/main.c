@@ -214,21 +214,21 @@ void copy_shared_assets_to_gpu() {
 
   gpu.copy_points_to_gpu(&POINT);
 
-  FLAT_TEXTURE_SHADER.frag_src = flat_texture_frag_src;
-  FLAT_TEXTURE_SHADER.vert_src = default_vert_src;
+  FLAT_TEXTURE_SHADER.frag_src = FLAT_TEXTURE_FRAG_SRC;
+  FLAT_TEXTURE_SHADER.vert_src = DEFAULT_VERT_SRC;
   gpu.copy_shader_to_gpu(&FLAT_TEXTURE_SHADER);
 
-  SOLID_COLOR_SHADER.frag_src = solid_color_frag_src;
-  SOLID_COLOR_SHADER.vert_src = default_vert_src;
+  SOLID_COLOR_SHADER.frag_src = SOLID_COLOR_FRAG_SRC;
+  SOLID_COLOR_SHADER.vert_src = DEFAULT_VERT_SRC;
   gpu.copy_shader_to_gpu(&SOLID_COLOR_SHADER);
 
-  NORMALS_COLOR_SHADER.frag_src = normal_debug_frag_src;
-  NORMALS_COLOR_SHADER.vert_src = default_vert_src;
+  NORMALS_COLOR_SHADER.frag_src = NORMAL_DEBUG_FRAG_SRC;
+  NORMALS_COLOR_SHADER.vert_src = DEFAULT_VERT_SRC;
   gpu.copy_shader_to_gpu(&NORMALS_COLOR_SHADER);
 
-  NORMALS_VIS_SHADER.frag_src = solid_color_frag_src;
-  NORMALS_VIS_SHADER.geo_src = normal_debug_geo_src;
-  NORMALS_VIS_SHADER.vert_src = normal_debug_vert_src;
+  NORMALS_VIS_SHADER.frag_src = SOLID_COLOR_FRAG_SRC;
+  NORMALS_VIS_SHADER.geo_src = NORMAL_DEBUG_GEO_SRC;
+  NORMALS_VIS_SHADER.vert_src = NORMAL_DEBUG_VERT_SRC;
   gpu.copy_shader_to_gpu(&NORMALS_VIS_SHADER);
 
   gpu.copy_static_mesh_to_gpu(&QUAD);

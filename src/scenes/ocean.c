@@ -10,13 +10,13 @@
 #include "tail_helpers.h"
 #include "water.h"
 #include "steam.h"
-#include "sky_cylinder_mesh.h"
-#include "mountain_mesh.h"
+#include "SKY_CYLINDER_MESH.h"
+#include "MOUNTAIN_MESH.h"
 
 #include "steam_texture.h"
-#include "mountain_texture.h"
+#include "MOUNTAIN_TEXTURE.h"
 #include "water_texture.h"
-#include "clouds_texture.h"
+#include "CLOUDS_TEXTURE.h"
 
 #include "mountain_frag.h"
 #include "default_vert.h"
@@ -104,12 +104,12 @@ void ocean__init(
     32
   };
 
-  sky_shader.frag_src = sky_frag_src;
-  sky_shader.vert_src = default_vert_src;
+  sky_shader.frag_src = SKY_FRAG_SRC;
+  sky_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&sky_shader);
-  mesh__tile_uvs(3, 3, &sky_cylinder_mesh);
-  gpu->copy_static_mesh_to_gpu(&sky_cylinder_mesh);
-  gpu->copy_texture_to_gpu(&clouds_texture);
+  mesh__tile_uvs(3, 3, &SKY_CYLINDER_MESH);
+  gpu->copy_static_mesh_to_gpu(&SKY_CYLINDER_MESH);
+  gpu->copy_texture_to_gpu(&CLOUDS_TEXTURE);
   space__create_model(
     &WORLDSPACE,
     &sky_transform,
@@ -130,12 +130,12 @@ void ocean__init(
     ),
     .scale = 4
   };
-  mountain_shader.frag_src = mountain_frag_src;
-  mountain_shader.vert_src = default_vert_src;
+  mountain_shader.frag_src = MOUNTAIN_FRAG_SRC;
+  mountain_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&mountain_shader);
-  mesh__tile_uvs(2, 2, &mountain_mesh);
-  gpu->copy_static_mesh_to_gpu(&mountain_mesh);
-  gpu->copy_texture_to_gpu(&mountain_texture);
+  mesh__tile_uvs(2, 2, &MOUNTAIN_MESH);
+  gpu->copy_static_mesh_to_gpu(&MOUNTAIN_MESH);
+  gpu->copy_texture_to_gpu(&MOUNTAIN_TEXTURE);
   space__create_model(
     &WORLDSPACE,
     &mountain_transform,
@@ -189,7 +189,7 @@ void ocean__tick(
   // TODO: draw wireframe to help debug
 
   gpu->select_shader(&sky_shader);
-  gpu->select_texture(&clouds_texture);
+  gpu->select_texture(&CLOUDS_TEXTURE);
   gpu->set_shader_vec3(&sky_shader, "horizon_color", COLOR_DARK_SLATE_GREY);
   gpu__set_mvp(
     &sky_local_to_world,
@@ -198,14 +198,14 @@ void ocean__tick(
     &sky_shader,
     gpu
   );
-  gpu->draw_mesh(&sky_cylinder_mesh);
+  gpu->draw_mesh(&SKY_CYLINDER_MESH);
 
   gpu->cull_back_faces();
 
   // MOUNTAINS
 
   gpu->select_shader(&mountain_shader);
-  gpu->select_texture(&mountain_texture);
+  gpu->select_texture(&MOUNTAIN_TEXTURE);
   gpu->set_shader_vec3(
     &mountain_shader,
     "light_dir",
@@ -223,7 +223,7 @@ void ocean__tick(
     &mountain_shader,
     gpu
   );
-  gpu->draw_mesh(&mountain_mesh);
+  gpu->draw_mesh(&MOUNTAIN_MESH);
 
   steam__draw_column(&cam, gpu, norm_steam_light_direction, &steam0);
   steam__draw_column(&cam, gpu, norm_steam_light_direction, &steam1);

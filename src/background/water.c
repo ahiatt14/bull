@@ -96,11 +96,11 @@ void water__copy_assets_to_gpu(
     1
   };
 
-  surface_shader.vert_src = default_vert_src;
-  surface_shader.frag_src = water_surface_frag_src;
+  surface_shader.vert_src = DEFAULT_VERT_SRC;
+  surface_shader.frag_src = WATER_SURFACE_FRAG_SRC;
   gpu->copy_dynamic_mesh_to_gpu(&mesh);
   gpu->copy_shader_to_gpu(&surface_shader);
-  gpu->copy_texture_to_gpu(&water_texture);
+  gpu->copy_texture_to_gpu(&WATER_TEXTURE);
 }
 
 void water__update_waves(
@@ -170,7 +170,7 @@ void water__draw(
   struct GPU const *const gpu
 ) {
   gpu->select_shader(&surface_shader);
-  gpu->select_texture(&water_texture);
+  gpu->select_texture(&WATER_TEXTURE);
   gpu->set_shader_vec3(
     &surface_shader,
     "fade_color",

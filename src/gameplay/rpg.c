@@ -47,7 +47,7 @@ EntityId create_rpg(
   ecs__add_draw_mesh(
     rocket,
     (struct Draw){
-      .mesh = &rocket_mesh,
+      .mesh = &ROCKET_MESH,
       .texture = NULL,
       .shader = &SOLID_COLOR_SHADER
     },

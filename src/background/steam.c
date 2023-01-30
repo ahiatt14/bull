@@ -38,11 +38,11 @@ void steam__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
 
-  shared_steam_shader.frag_src = steam_frag_src;
-  shared_steam_shader.vert_src = default_vert_src;
+  shared_steam_shader.frag_src = STEAM_FRAG_SRC;
+  shared_steam_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&shared_steam_shader);
 
-  gpu->copy_texture_to_gpu(&steam_texture);
+  gpu->copy_texture_to_gpu(&STEAM_TEXTURE);
 
   gpu->copy_dynamic_mesh_to_gpu(&shared_column_mesh);
 }
@@ -280,7 +280,7 @@ void steam__draw_column(
   gpu->update_gpu_mesh_data(&shared_column_mesh);
   
   gpu->select_shader(&shared_steam_shader);
-  gpu->select_texture(&steam_texture);
+  gpu->select_texture(&STEAM_TEXTURE);
   gpu->set_shader_vec3(
     &shared_steam_shader,
     "light_dir",
