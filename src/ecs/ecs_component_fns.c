@@ -107,3 +107,19 @@ void ecs__remove_vec3lerp(
 ) {
   ecs->entities[id].config -= c_VEC3_LERP;
 }
+
+void ecs__add_uv_scroll(
+  EntityId id,
+  struct Vec2 speed,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config += c_UV_SCROLL;
+  ecs->entities[id].draw.uv_scroll_speed = speed;
+}
+
+void ecs__remove_uv_scroll(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config -= c_UV_SCROLL;
+}

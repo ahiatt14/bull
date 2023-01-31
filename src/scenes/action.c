@@ -313,16 +313,14 @@ void propel_rpg(
 }
 
 void explode_rpg(
-  EntityId id,
+  EntityId rocket,
   double remainder_in_seconds,
   struct ECS *const ecs
 ) {
 
-  mark_entity_for_destruction(id, ecs);
-
-  // spawn explosion effect
+  mark_entity_for_destruction(rocket, ecs);
   create_rpg_explosion(
-    ecs->entities[id].transform.position,
+    ecs->entities[rocket].transform.position,
     mark_entity_for_destruction,
     ecs
   );

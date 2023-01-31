@@ -4,8 +4,8 @@ uniform sampler2D surface_texture;
 
 vec3 COLOR_WHITE = vec3(1.0);
 
-uniform float lifespan_in_seconds;
-uniform float total_elapsed_seconds;
+uniform float seconds_since_activation;
+uniform float limit_in_seconds;
 
 in VS_OUT {
   vec3 world_frag_pos;
@@ -23,7 +23,7 @@ void main()
 {
   vec3 material = texture(surface_texture, fs_in.tex_uv).rgb;
 
-  float fade = 1.0 - total_elapsed_seconds / lifespan_in_seconds;
+  float fade = 1.0 - seconds_since_activation / limit_in_seconds;
 
   if (brightness(material) > fade) discard;
 

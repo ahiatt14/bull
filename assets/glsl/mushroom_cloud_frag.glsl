@@ -2,8 +2,8 @@
 
 uniform sampler2D surface_texture;
 
-uniform float lifespan_in_seconds;
-uniform float total_elapsed_seconds;
+uniform float seconds_since_activation;
+uniform float limit_in_seconds;
 
 in VS_OUT {
   vec3 world_frag_pos;
@@ -17,7 +17,7 @@ void main()
 {
   vec3 material = texture(surface_texture, fs_in.tex_uv).rgb;
 
-  float turning_to_smoke = 1.0 - total_elapsed_seconds / lifespan_in_seconds;
+  float turning_to_smoke = 1.0 - seconds_since_activation / limit_in_seconds;
   
   FragColor = vec4(material * turning_to_smoke, 1.0);
 }

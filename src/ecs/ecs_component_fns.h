@@ -76,4 +76,15 @@ void ecs__remove_vec3lerp(
   struct ECS *const ecs
 );
 
+void ecs__add_uv_scroll(
+  EntityId id,
+  struct Vec2 speed,
+  struct ECS *const ecs
+);
+
+void ecs__remove_uv_scroll(
+  EntityId id,
+  struct ECS *const ecs
+);
+
 #endif
