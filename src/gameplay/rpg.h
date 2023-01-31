@@ -5,10 +5,13 @@
 
 #include "ecs.h"
 
-EntityId create_rpg(
+EntityId deploy_rpg(
   struct Vec3 position,
-  struct Vec3 velocity,
-  void (*mark_entity_for_destruction)(EntityId),
+  void (*on_deployed)(
+    EntityId id,
+    double remainder_in_seconds,
+    struct ECS *const ecs
+  ),
   struct ECS *const ecs
 );
 

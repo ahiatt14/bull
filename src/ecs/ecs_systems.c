@@ -43,7 +43,7 @@ void ecs__timeout(
     if (
       ecs->entities[id].timeout.seconds_since_activation >=
       ecs->entities[id].timeout.limit_in_seconds
-    ) ecs->entities[id].timeout.on_timeout(id);
+    ) ecs->entities[id].timeout.on_timeout(id, ecs);
   }
 }
 
@@ -102,7 +102,8 @@ void ecs__lerp_vec3(
     if (ratio >= 1.0f) ecs->entities[id].vec3lerp.on_finish(
       id,
       ecs->entities[id].vec3lerp.seconds_since_activation -
-      ecs->entities[id].vec3lerp.duration_in_seconds
+      ecs->entities[id].vec3lerp.duration_in_seconds,
+      ecs
     );
   }
 }

@@ -16,10 +16,16 @@
 typedef uint_fast16_t EntityId;
 typedef uint_fast16_t ComponentConfig;
 
+struct ECS;
+struct Entity;
+
 struct Timeout {
   double seconds_since_activation;
   double limit_in_seconds;
-  void (*on_timeout)(EntityId id);
+  void (*on_timeout)(
+    EntityId id,
+    struct ECS *const ecs
+  );
 };
 
 // TODO: should we make a separate structure to hold these
@@ -44,7 +50,8 @@ struct Vec3Lerp {
   );
   void (*on_finish)(
     EntityId id,
-    double remainder_in_seconds
+    double remainder_in_seconds,
+    struct ECS *const ecs
   );
 };
 

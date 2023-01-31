@@ -64,6 +64,22 @@ void guide_lag_update(
 );
 
 /*
+  ~~~~~ENTITY EVENT HANDLERS~~~~
+*/
+
+void propel_rpg(
+  EntityId id,
+  double remainder_in_seconds,
+  struct ECS *const ecs
+);
+
+void explode_rpg(
+  EntityId id,
+  double remainder_in_seconds,
+  struct ECS *const ecs
+);
+
+/*
   ~~~~~~~~~LOCAL STATE~~~~~~~~~~
 */
 
@@ -96,7 +112,10 @@ static struct guide_lag_state guide_lag = {
 
 static EntityId entities_to_destroy[MAX_ENTITIES];
 static uint_fast16_t count_of_entities_to_destroy;
-static void mark_entity_for_destruction(EntityId id) {
+static void mark_entity_for_destruction(
+  EntityId id,
+  struct ECS *const ecs
+) {
   entities_to_destroy[count_of_entities_to_destroy++] = id;
 }
 
@@ -172,8 +191,9 @@ void action__tick(
   player_one.transform.position = player_one.projected_position;
 
   count_of_entities_to_destroy = 0;
-  ecs__move(time, &ecs);
   ecs__timeout(time, &ecs);
+  ecs__lerp_vec3(time, &ecs);
+  ecs__move(time, &ecs);
   for (uint_fast16_t i = 0; i < count_of_entities_to_destroy; i++)
     ecs__destroy_entity(entities_to_destroy[i], &ecs);
 
@@ -223,18 +243,17 @@ static void autofire_lvl0_rockets(
   // subtract any remainder from below
   seconds_until_next_autofire_shot = 0.15f;
 
-  struct Vec3 velocity = scalar_x_vec3(
-    10.0f,
-    vec3__normalize(vec3_minus_vec3(
-      ORIGIN,
-      playr->transform.position
-    ))
-  );
+  // struct Vec3 velocity = scalar_x_vec3(
+  //   10.0f,
+  //   vec3__normalize(vec3_minus_vec3(
+  //     ORIGIN,
+  //     playr->transform.position
+  //   ))
+  // );
 
-  EntityId rocket = create_rpg(
+  deploy_rpg(
     playr->transform.position,
-    velocity,
-    mark_entity_for_destruction,
+    propel_rpg,
     &ecs
   );
 }
@@ -256,4 +275,48 @@ void guide_lag_update(
     playr->transform.position,
     guide_lag->seconds_since_player_moved / GUIDE_LAG_TIME_SECONDS
   );
+}
+
+/*
+  ~~~~~ENTITY EVENT HANDLERS~~~~
+*/
+
+void propel_rpg(
+  EntityId id,
+  double remainder_in_seconds,
+  struct ECS *const ecs
+) {
+
+  struct Vec3 position =
+    ecs->entities[id].transform.position;
+  struct Quaternion rotation =
+    ecs->entities[id].transform.rotation;
+
+  struct Vec3 forward =
+    vec3__normalize(space__ccw_quat_rotate(
+      rotation,
+      WORLDSPACE.forward
+    ));
+
+  struct Vec3 end = vec3_plus_vec3(
+    position,
+    scalar_x_vec3(15.0f, forward)
+  );
+
+  ecs->entities[id].vec3lerp = (struct Vec3Lerp){
+    .start = position,
+    .end = end,
+    .seconds_since_activation = 0,
+    .duration_in_seconds = 1.0f,
+    .lerp = ecs->entities[id].vec3lerp.lerp,
+    .on_finish = explode_rpg
+  };
+}
+
+void explode_rpg(
+  EntityId id,
+  double remainder_in_seconds,
+  struct ECS *const ecs
+) {
+  mark_entity_for_destruction(id, ecs);
 }

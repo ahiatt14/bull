@@ -37,6 +37,13 @@ void ecs__add_draw_mesh(
   ecs->entities[id].draw = drw;
 }
 
+void ecs__remove_draw_mesh(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config -= c_DRAW_MESH;
+}
+
 void ecs__add_velocity(
   EntityId id,
   struct Vec3 velocity,

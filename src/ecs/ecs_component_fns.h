@@ -27,6 +27,11 @@ void ecs__add_draw_mesh(
   struct ECS *const ecs
 );
 
+void ecs__remove_draw_mesh(
+  EntityId id,
+  struct ECS *const ecs
+);
+
 void ecs__add_velocity(
   EntityId id,
   struct Vec3 velocity,
