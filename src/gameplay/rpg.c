@@ -48,7 +48,7 @@ EntityId deploy_rpg(
     },
     ecs
   );
-  ecs__add_draw_mesh(
+  ecs__add_draw(
     rocket,
     (struct Draw){
       .mesh = &ROCKET_MESH,
@@ -63,7 +63,7 @@ EntityId deploy_rpg(
       .start = position,
       .end = propel_position,
       .seconds_since_activation = 0,
-      .duration_in_seconds = 0.2f,
+      .duration_in_seconds = 0.15f,
       .lerp = vec3__linear_lerp,
       .on_finish = on_deployed
     },

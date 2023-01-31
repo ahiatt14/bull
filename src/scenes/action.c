@@ -12,6 +12,8 @@
 #include "tail_helpers.h"
 
 #include "rpg.h"
+#include "explosions.h"
+
 #include "rocket_mesh.h"
 
 #include "player.h"
@@ -144,6 +146,8 @@ void action__init(
 
   gpu->copy_static_mesh_to_gpu(&ROCKET_MESH);
 
+  explosions__copy_assets_to_gpu(gpu);
+
   player__copy_assets_to_gpu(gpu);
   firing_guide__copy_assets_to_gpu(gpu);
 
@@ -240,16 +244,8 @@ static void autofire_lvl0_rockets(
 
   seconds_until_next_autofire_shot -= time.delta;
   if (seconds_until_next_autofire_shot > 0) return;
-  // subtract any remainder from below
-  seconds_until_next_autofire_shot = 0.15f;
-
-  // struct Vec3 velocity = scalar_x_vec3(
-  //   10.0f,
-  //   vec3__normalize(vec3_minus_vec3(
-  //     ORIGIN,
-  //     playr->transform.position
-  //   ))
-  // );
+  seconds_until_next_autofire_shot =
+    0.15f - seconds_until_next_autofire_shot; // TODO: isn't this what we want?
 
   deploy_rpg(
     playr->transform.position,
@@ -287,6 +283,9 @@ void propel_rpg(
   struct ECS *const ecs
 ) {
 
+  // TODO: no reason we can't parameterize the needed
+  // info and put the rest of this in fns inside the rpg files
+
   struct Vec3 position =
     ecs->entities[id].transform.position;
   struct Quaternion rotation =
@@ -300,14 +299,14 @@ void propel_rpg(
 
   struct Vec3 end = vec3_plus_vec3(
     position,
-    scalar_x_vec3(15.0f, forward)
+    scalar_x_vec3(10.0f, forward)
   );
 
   ecs->entities[id].vec3lerp = (struct Vec3Lerp){
-    .start = position,
+    .start = position, // TODO: give headstart with lerp remainder
     .end = end,
-    .seconds_since_activation = 0,
-    .duration_in_seconds = 1.0f,
+    .seconds_since_activation = 0, // TODO: give headstart with lerp remainder?
+    .duration_in_seconds = 0.5f,
     .lerp = ecs->entities[id].vec3lerp.lerp,
     .on_finish = explode_rpg
   };
@@ -318,5 +317,15 @@ void explode_rpg(
   double remainder_in_seconds,
   struct ECS *const ecs
 ) {
+
   mark_entity_for_destruction(id, ecs);
+
+  // spawn explosion effect
+  create_rpg_explosion(
+    ecs->entities[id].transform.position,
+    mark_entity_for_destruction,
+    ecs
+  );
+
+  // damage radius?
 }

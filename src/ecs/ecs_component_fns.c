@@ -28,20 +28,36 @@ void ecs__add_transform(
   ecs->entities[id].transform = t;
 }
 
-void ecs__add_draw_mesh(
+void ecs__add_draw(
   EntityId id,
-  struct Draw drw,
+  struct Draw draw,
   struct ECS *const ecs
 ) {
   ecs->entities[id].config += c_DRAW_MESH;
-  ecs->entities[id].draw = drw;
+  ecs->entities[id].draw = draw;
 }
 
-void ecs__remove_draw_mesh(
+void ecs__remove_draw(
   EntityId id,
   struct ECS *const ecs
 ) {
   ecs->entities[id].config -= c_DRAW_MESH;
+}
+
+void ecs__add_draw_billboard(
+  EntityId id,
+  struct Draw draw,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config += c_DRAW_BILLBOARD;
+  ecs->entities[id].draw = draw;
+}
+
+void ecs__remove_draw_billboard(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config -= c_DRAW_BILLBOARD;
 }
 
 void ecs__add_velocity(

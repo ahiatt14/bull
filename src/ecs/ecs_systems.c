@@ -141,9 +141,21 @@ void ecs__draw(
     );
     gpu->set_shader_float(
       shad,
-      "sec_since_game_launch",
+      "total_elapsed_seconds",
       time.sec_since_game_launch
     );
+    if (has_component(c_TIMEOUT, ecs->entities[id].config)) {
+      gpu->set_shader_float(
+        shad,
+        "seconds_since_activation",
+        ecs->entities[id].timeout.seconds_since_activation
+      );
+      gpu->set_shader_float(
+        shad,
+        "limit_in_seconds",
+        ecs->entities[id].timeout.limit_in_seconds
+      );
+    }
 
     struct M4x4 local_to_world;
     struct M3x3 normals_local_to_world;

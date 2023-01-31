@@ -21,13 +21,24 @@ void ecs__add_transform(
   struct ECS *const ecs
 );
 
-void ecs__add_draw_mesh(
+void ecs__add_draw(
   EntityId id,
-  struct Draw drw,
+  struct Draw draw,
   struct ECS *const ecs
 );
 
-void ecs__remove_draw_mesh(
+void ecs__remove_draw(
+  EntityId id,
+  struct ECS *const ecs
+);
+
+void ecs__add_draw_billboard(
+  EntityId id,
+  struct Draw draw,
+  struct ECS *const ecs
+);
+
+void ecs__remove_draw_billboard(
   EntityId id,
   struct ECS *const ecs
 );
