@@ -13,7 +13,7 @@
 
 EntityId deploy_rpg(
   struct Vec3 position,
-  void (*on_deployed)(
+  void (*on_rpg_deployed)(
     EntityId id,
     double remainder_in_seconds,
     struct ECS *const ecs
@@ -65,7 +65,7 @@ EntityId deploy_rpg(
       .seconds_since_activation = 0,
       .duration_in_seconds = 0.15f,
       .lerp = vec3__linear_lerp,
-      .on_finish = on_deployed
+      .on_finish = on_rpg_deployed
     },
     ecs
   );
@@ -73,12 +73,39 @@ EntityId deploy_rpg(
   return rocket;
 }
 
-// ecs__add_timeout(
-//   rocket,
-//   (struct Timeout){
-//     .limit_in_seconds = 1,
-//     .seconds_since_activation = 0,
-//     .on_timeout = on_hit_limit
-//   },
-//   ecs
-// );
+void propel_rpg(
+  EntityId rocket,
+  double remainder_in_seconds,
+  void (*on_rpg_timer_up)(
+    EntityId id,
+    double remainder_in_seconds,
+    struct ECS *const ecs
+  ),
+  struct ECS *const ecs
+) {
+
+  struct Vec3 position =
+    ecs->entities[rocket].transform.position;
+  struct Quaternion rotation =
+    ecs->entities[rocket].transform.rotation;
+
+  struct Vec3 forward =
+    vec3__normalize(space__ccw_quat_rotate(
+      rotation,
+      WORLDSPACE.forward
+    ));
+
+  struct Vec3 end = vec3_plus_vec3(
+    position,
+    scalar_x_vec3(10.0f, forward)
+  );
+
+  ecs->entities[rocket].vec3lerp = (struct Vec3Lerp){
+    .start = position, // TODO: give headstart with lerp remainder
+    .end = end,
+    .seconds_since_activation = 0, // TODO: give headstart with lerp remainder?
+    .duration_in_seconds = 0.5f,
+    .lerp = ecs->entities[rocket].vec3lerp.lerp,
+    .on_finish = on_rpg_timer_up
+  };
+}

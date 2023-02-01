@@ -7,7 +7,18 @@
 
 EntityId deploy_rpg(
   struct Vec3 position,
-  void (*on_deployed)(
+  void (*on_rpg_deployed)(
+    EntityId id,
+    double remainder_in_seconds,
+    struct ECS *const ecs
+  ),
+  struct ECS *const ecs
+);
+
+void propel_rpg(
+  EntityId rocket,
+  double remainder_in_seconds,
+  void (*on_rpg_timer_up)(
     EntityId id,
     double remainder_in_seconds,
     struct ECS *const ecs

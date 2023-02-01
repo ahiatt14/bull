@@ -69,13 +69,13 @@ void guide_lag_update(
   ~~~~~ENTITY EVENT HANDLERS~~~~
 */
 
-void propel_rpg(
+void on_rpg_deployed(
   EntityId id,
   double remainder_in_seconds,
   struct ECS *const ecs
 );
 
-void explode_rpg(
+void on_rpg_timer_up(
   EntityId id,
   double remainder_in_seconds,
   struct ECS *const ecs
@@ -249,7 +249,7 @@ static void autofire_lvl0_rockets(
 
   deploy_rpg(
     playr->transform.position,
-    propel_rpg,
+    on_rpg_deployed,
     &ecs
   );
 }
@@ -277,42 +277,23 @@ void guide_lag_update(
   ~~~~~ENTITY EVENT HANDLERS~~~~
 */
 
-void propel_rpg(
-  EntityId id,
+void on_rpg_deployed(
+  EntityId rocket,
   double remainder_in_seconds,
   struct ECS *const ecs
 ) {
 
-  // TODO: no reason we can't parameterize the needed
-  // info and put the rest of this in fns inside the rpg files
-
-  struct Vec3 position =
-    ecs->entities[id].transform.position;
-  struct Quaternion rotation =
-    ecs->entities[id].transform.rotation;
-
-  struct Vec3 forward =
-    vec3__normalize(space__ccw_quat_rotate(
-      rotation,
-      WORLDSPACE.forward
-    ));
-
-  struct Vec3 end = vec3_plus_vec3(
-    position,
-    scalar_x_vec3(10.0f, forward)
+  propel_rpg(
+    rocket,
+    remainder_in_seconds,
+    on_rpg_timer_up,
+    ecs
   );
 
-  ecs->entities[id].vec3lerp = (struct Vec3Lerp){
-    .start = position, // TODO: give headstart with lerp remainder
-    .end = end,
-    .seconds_since_activation = 0, // TODO: give headstart with lerp remainder?
-    .duration_in_seconds = 0.5f,
-    .lerp = ecs->entities[id].vec3lerp.lerp,
-    .on_finish = explode_rpg
-  };
+  // TODO: spawn thruster effect (can do inside propel_rpg)
 }
 
-void explode_rpg(
+void on_rpg_timer_up(
   EntityId rocket,
   double remainder_in_seconds,
   struct ECS *const ecs
@@ -325,5 +306,5 @@ void explode_rpg(
     ecs
   );
 
-  // damage radius?
+  // TODO: damage radius
 }
