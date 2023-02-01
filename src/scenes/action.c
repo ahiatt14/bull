@@ -245,7 +245,7 @@ static void autofire_lvl0_rockets(
   seconds_until_next_autofire_shot -= time.delta;
   if (seconds_until_next_autofire_shot > 0) return;
   seconds_until_next_autofire_shot =
-    0.15f - seconds_until_next_autofire_shot; // TODO: isn't this what we want?
+    0.15f - seconds_until_next_autofire_shot;
 
   deploy_rpg(
     playr->transform.position,
@@ -289,6 +289,8 @@ void on_rpg_deployed(
     on_rpg_timer_up,
     ecs
   );
+
+  create_rpg_thruster_blink(rocket, ecs);
 
   // TODO: spawn thruster effect (can do inside propel_rpg)
 }

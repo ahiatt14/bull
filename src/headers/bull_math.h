@@ -25,4 +25,10 @@ struct Vec3 vec3__linear_lerp(
   double ratio
 );
 
+struct Vec3 vec3__square_lerp(
+  struct Vec3 t0,
+  struct Vec3 t1,
+  double ratio
+);
+
 #endif

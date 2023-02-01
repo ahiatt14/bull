@@ -26,4 +26,9 @@ void propel_rpg(
   struct ECS *const ecs
 );
 
+void create_rpg_thruster_blink(
+  EntityId rocket,
+  struct ECS *const ecs
+);
+
 #endif

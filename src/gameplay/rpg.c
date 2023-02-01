@@ -105,7 +105,14 @@ void propel_rpg(
     .end = end,
     .seconds_since_activation = 0, // TODO: give headstart with lerp remainder?
     .duration_in_seconds = 0.5f,
-    .lerp = ecs->entities[rocket].vec3lerp.lerp,
+    .lerp = vec3__square_lerp,
     .on_finish = on_rpg_timer_up
   };
+}
+
+void create_rpg_thruster_blink(
+  EntityId rocket,
+  struct ECS *const ecs
+) {
+  
 }

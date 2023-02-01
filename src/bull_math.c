@@ -56,3 +56,15 @@ struct Vec3 vec3__linear_lerp(
     t0.z + ((t1.z - t0.z) * ratio)
   };
 }
+
+struct Vec3 vec3__square_lerp(
+  struct Vec3 t0,
+  struct Vec3 t1,
+  double ratio
+) {
+  return (struct Vec3){
+    t0.x + ((t1.x - t0.x) * ratio * ratio),
+    t0.y + ((t1.y - t0.y) * ratio * ratio),
+    t0.z + ((t1.z - t0.z) * ratio * ratio)
+  };
+}
