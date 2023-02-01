@@ -5,13 +5,15 @@
 
 #define MAX_ENTITIES 500
 
-#define c_TRANSFORM 1
-#define c_VELOCITY 2
-#define c_TIMEOUT 4
-#define c_DRAW_BILLBOARD 8
-#define c_DRAW_MESH 16
-#define c_UV_SCROLL 32
-#define c_VEC3_LERP 64
+#define c_TRANSFORM 1 << 0
+#define c_VELOCITY 1 << 1
+#define c_TIMEOUT 1 << 2
+#define c_DRAW_BILLBOARD 1 << 3
+#define c_DRAW_MESH 1 << 4
+#define c_UV_SCROLL 1 << 5
+#define c_VEC3_LERP 1 << 6
+
+
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast16_t ComponentConfig;
