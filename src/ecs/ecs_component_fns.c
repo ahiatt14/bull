@@ -139,3 +139,17 @@ void ecs__remove_revolve_lerp(
 ) {
   ecs->entities[id].config -= c_REVOLVE_LERP;
 }
+
+void ecs__add_look_at_center(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config += c_LOOK_AT_CENTER;
+}
+
+void ecs__remove_look_at_center(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config -= c_LOOK_AT_CENTER;
+}

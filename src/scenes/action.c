@@ -199,6 +199,7 @@ void action__tick(
   ecs__lerp_vec3(time, &ecs);
   ecs__lerp_revolve(time, &ecs);
   ecs__move(time, &ecs);
+  ecs__look_at_center(time, &ecs);
   for (uint_fast16_t i = 0; i < count_of_entities_to_destroy; i++)
     ecs__destroy_entity(entities_to_destroy[i], &ecs);
 

@@ -148,6 +148,33 @@ void ecs__lerp_revolve(
   }
 }
 
+void ecs__look_at_center(
+  struct GameTime time,
+  struct ECS *const ecs
+) {
+
+  struct Vec3 forward;
+
+  for (EntityId id = 0; id < ecs->count; id++) {
+
+    if (lacks_configuration(
+      c_LOOK_AT_CENTER,
+      ecs->entities[id].config
+    )) continue;
+
+    forward = vec3__normalize(vec3_minus_vec3(
+      ORIGIN,
+      ecs->entities[id].transform.position
+    ));
+
+    ecs->entities[id].transform.rotation =
+      quaternion__create(
+        WORLDSPACE.up,
+        rads_ccw_from_forward_around_up(forward)
+      );
+  }
+}
+
 void ecs__draw(
   struct GameTime time,
   struct Camera const *const cam,

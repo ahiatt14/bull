@@ -98,4 +98,14 @@ void ecs__remove_revolve_lerp(
   struct ECS *const ecs
 );
 
+void ecs__add_look_at_center(
+  EntityId id,
+  struct ECS *const ecs
+);
+
+void ecs__remove_look_at_center(
+  EntityId id,
+  struct ECS *const ecs
+);
+
 #endif

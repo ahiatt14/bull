@@ -13,6 +13,7 @@
 #define c_UV_SCROLL 1 << 5
 #define c_VEC3_LERP 1 << 6
 #define c_REVOLVE_LERP 1 << 7
+#define c_LOOK_AT_CENTER 1 << 8
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast16_t ComponentConfig;

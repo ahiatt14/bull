@@ -26,15 +26,20 @@ void ecs__lerp_vec3(
   struct ECS *const ecs
 );
 
+void ecs__lerp_revolve(
+  struct GameTime time,
+  struct ECS *const ecs
+);
+
+void ecs__look_at_center(
+  struct GameTime time,
+  struct ECS *const ecs
+);
+
 void ecs__draw(
   struct GameTime time,
   struct Camera const *const cam,
   struct GPU const *const gpu,
-  struct ECS *const ecs
-);
-
-void ecs__lerp_revolve(
-  struct GameTime time,
   struct ECS *const ecs
 );
 
