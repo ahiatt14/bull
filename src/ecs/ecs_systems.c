@@ -108,6 +108,46 @@ void ecs__lerp_vec3(
   }
 }
 
+void ecs__lerp_revolve(
+  struct GameTime time,
+  struct ECS *const ecs
+) {
+
+  float ratio, rads;
+
+  for (EntityId id = 0; id < ecs->count; id++) {
+
+    if (lacks_configuration(
+      c_REVOLVE_LERP,
+      ecs->entities[id].config
+    )) continue;
+
+    ecs->entities[id].revolve_lerp.seconds_since_activation += time.delta;
+
+    ratio =
+      ecs->entities[id].revolve_lerp.seconds_since_activation /
+      ecs->entities[id].revolve_lerp.duration_in_seconds;
+
+    rads =
+      dmax(ratio, 1.0f) *
+      ecs->entities[id].revolve_lerp.target_rads;
+
+    ecs->entities[id].transform.position =
+      space__ccw_angle_rotate(
+        WORLDSPACE.up,
+        rads,
+        ecs->entities[id].revolve_lerp.start_position
+      );
+
+    if (ratio >= 1.0f) ecs->entities[id].revolve_lerp.on_finish(
+      id,
+      ecs->entities[id].revolve_lerp.seconds_since_activation -
+      ecs->entities[id].revolve_lerp.duration_in_seconds,
+      ecs
+    );
+  }
+}
+
 void ecs__draw(
   struct GameTime time,
   struct Camera const *const cam,

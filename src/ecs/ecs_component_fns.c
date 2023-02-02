@@ -123,3 +123,19 @@ void ecs__remove_uv_scroll(
 ) {
   ecs->entities[id].config -= c_UV_SCROLL;
 }
+
+void ecs__add_revolve_lerp(
+  EntityId id,
+  struct RevolveLerp revolve_lerp,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config += c_REVOLVE_LERP;
+  ecs->entities[id].revolve_lerp = revolve_lerp;
+}
+
+void ecs__remove_revolve_lerp(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config -= c_REVOLVE_LERP;
+}

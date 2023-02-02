@@ -197,6 +197,7 @@ void action__tick(
   count_of_entities_to_destroy = 0;
   ecs__timeout(time, &ecs);
   ecs__lerp_vec3(time, &ecs);
+  ecs__lerp_revolve(time, &ecs);
   ecs__move(time, &ecs);
   for (uint_fast16_t i = 0; i < count_of_entities_to_destroy; i++)
     ecs__destroy_entity(entities_to_destroy[i], &ecs);
@@ -290,7 +291,7 @@ void on_rpg_deployed(
     ecs
   );
 
-  create_rpg_thruster_blink(rocket, ecs);
+  // create_rpg_thruster_blink(rocket, ecs);
 
   // TODO: spawn thruster effect (can do inside propel_rpg)
 }

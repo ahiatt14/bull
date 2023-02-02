@@ -12,8 +12,7 @@
 #define c_DRAW_MESH 1 << 4
 #define c_UV_SCROLL 1 << 5
 #define c_VEC3_LERP 1 << 6
-
-
+#define c_REVOLVE_LERP 1 << 7
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast16_t ComponentConfig;
@@ -57,13 +56,26 @@ struct Vec3Lerp {
   );
 };
 
+struct RevolveLerp {
+  struct Vec3 start_position;
+  float target_rads;
+  double seconds_since_activation;
+  double duration_in_seconds;
+  void (*on_finish)(
+    EntityId id,
+    double remainder_in_seconds,
+    struct ECS *const ecs
+  );
+};
+
 struct Entity {
-  ComponentConfig config;
   struct Transform transform;
   struct Vec3Lerp vec3lerp;
-  struct Vec3 velocity;
+  struct RevolveLerp revolve_lerp;
   struct Timeout timeout;
+  struct Vec3 velocity;
   struct Draw draw;
+  ComponentConfig config;
 };
 
 struct ECS {

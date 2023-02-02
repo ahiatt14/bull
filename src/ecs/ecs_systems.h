@@ -33,4 +33,9 @@ void ecs__draw(
   struct ECS *const ecs
 );
 
+void ecs__lerp_revolve(
+  struct GameTime time,
+  struct ECS *const ecs
+);
+
 #endif

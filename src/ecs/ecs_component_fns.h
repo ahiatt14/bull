@@ -87,4 +87,15 @@ void ecs__remove_uv_scroll(
   struct ECS *const ecs
 );
 
+void ecs__add_revolve_lerp(
+  EntityId id,
+  struct RevolveLerp rev_lerp,
+  struct ECS *const ecs
+);
+
+void ecs__remove_revolve_lerp(
+  EntityId id,
+  struct ECS *const ecs
+);
+
 #endif
