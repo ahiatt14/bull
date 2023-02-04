@@ -6,11 +6,6 @@
 #include "scene.h"
 #include "constants.h"
 
-#include "pyramid_mesh.h"
-#include "smooth_cube_mesh.h"
-
-#include "default_vert.h"
-
 #define SEC_UNTIL_ACTION 2.0f
 
 void main_menu__init(
@@ -47,9 +42,4 @@ void main_menu__tick(
 
   // DRAW
 
-  gpu->cull_back_faces();
-
-  gpu->select_shader(&SOLID_COLOR_SHADER);
-  gpu->set_shader_vec3(&SOLID_COLOR_SHADER, "color", COLOR_DARK_GREY_BLUE);
-  gpu->draw_mesh(&QUAD);
 }

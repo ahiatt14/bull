@@ -31,6 +31,7 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/sky_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/bouncer_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/steam_frag.glsl frag && \
+  ./${tools}validate-glsl.exe assets/glsl/steam_geo.glsl geo && \
   ./${tools}validate-glsl.exe assets/glsl/mushroom_cloud_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/explosion_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/explosion_blink_frag.glsl frag && \
@@ -50,6 +51,7 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/sky_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/bouncer_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/steam_frag.glsl $artifact_dir && \
+  ./${tools}sourcify-glsl.exe assets/glsl/steam_geo.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/mushroom_cloud_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/explosion_blink_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/explosion_frag.glsl $artifact_dir && \
@@ -63,18 +65,20 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/clouds.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/fireball.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/blink.png 4 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/concrete_wall.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/night_sky.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/steam.png 3 $artifact_dir \
   && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_mushroom_cloud.obj $artifact_dir && \
-  ./${tools}sourcify-obj.exe assets/mesh/pyramid.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/exclamation.obj $artifact_dir && \
-  ./${tools}sourcify-obj.exe assets/mesh/sphere.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/fuel_sphere.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/bird.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/steam_column.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_flat.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_smooth.obj $artifact_dir && \
-  ./${tools}sourcify-obj.exe assets/mesh/smooth_cube.obj $artifact_dir && \
-  ./${tools}sourcify-obj.exe assets/mesh/sky_cylinder.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/rocket.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/cooling_tower.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/steam_column.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/mountain.obj $artifact_dir
 
   for filepath in ${artifact_dir}*.c; do

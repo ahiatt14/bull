@@ -19,14 +19,14 @@ void main()
 
   float incidence = max(dot(fs_in.normal, -light_dir), 0);
 
-  vec3 diffuse;
-  if (incidence > 0.3) {
-    diffuse = light_color * 0.4;
-  } else if (incidence > 0.25) {
-    diffuse = light_color * 0.15;
-  } else {
-    diffuse = vec3(0, 0, 0);
-  }
+  // vec3 diffuse;
+  // if (incidence > 0.3) {
+  //   diffuse = light_color * 0.4;
+  // } else if (incidence > 0.25) {
+  //   diffuse = light_color * 0.15;
+  // } else {
+  //   diffuse = vec3(0, 0, 0);
+  // }
   
-  FragColor = vec4(material + diffuse, 1);
+  FragColor = vec4(material + incidence, 1);
 }

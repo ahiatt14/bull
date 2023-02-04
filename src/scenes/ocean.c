@@ -4,24 +4,30 @@
 
 #include "tail.h"
 
+#include "ecs.h"
+
 #include "scene.h"
 #include "constants.h"
 #include "bull_math.h"
 #include "tail_helpers.h"
+
 #include "water.h"
-#include "steam.h"
-#include "SKY_CYLINDER_MESH.h"
-#include "MOUNTAIN_MESH.h"
 
-#include "steam_texture.h"
-#include "MOUNTAIN_TEXTURE.h"
-#include "water_texture.h"
-#include "CLOUDS_TEXTURE.h"
+#include "cooling_tower_mesh.h"
+#include "concrete_wall_texture.h"
 
+#include "mountain_mesh.h"
+#include "mountain_texture.h"
 #include "mountain_frag.h"
 #include "default_vert.h"
-#include "water_surface_frag.h"
-#include "sky_frag.h"
+
+#include "flat_texture_frag.h"
+#include "steam_column_mesh.h"
+#include "steam_texture.h"
+#include "steam_frag.h"
+#include "steam_geo.h"
+
+#include "clouds_texture.h"
 
 // CONSTANTS
 
@@ -29,23 +35,26 @@
 
 // READ ONLY
 
+static const struct Vec3 COOLING_TOWER_POSITION = {
+  -5,
+  -1.5f,
+  -8
+};
+
 static const struct Vec2 WIND_KM_PER_SEC = {
   -0.0075f,
   -0.01f
 };
 
-// FORWARD DECS
-
 // LOCALS
 
-static struct Vec3 steam_light_direction = { 1, 0, 0 };
+static struct Camera cam;
 
-// SKY
-
-static struct Shader sky_shader;
-static struct M4x4 sky_local_to_world;
-static struct M3x3 sky_normals_local_to_world;
-static struct Transform sky_transform;
+// COOLING TOWER
+static struct Shader cooling_tower_shader;
+static struct M4x4 cooling_tower_local_to_world;
+static struct M3x3 cooling_tower_normals_local_to_world;
+static struct Transform cooling_tower_transform;
 
 // MOUNTAINS
 
@@ -56,20 +65,10 @@ static struct Transform mountain_transform;
 
 // STEAM
 
-static struct steam_column steam0 = (struct steam_column){
-  .position = { 4, -1.5, -15 },
-  .shape_index_offset = 2
-};
-static struct steam_column steam1 = (struct steam_column){
-  .position = { -10, -1.5, -6},
-  .shape_index_offset = 7
-};
-static struct steam_column steam2 = (struct steam_column){
-  .position = { 7, -1.5, 4 },
-  .shape_index_offset = 14
-};
-
-static struct Camera cam;
+static struct Shader steam_shader;
+static struct M4x4 steam_local_to_world;
+static struct M3x3 steam_normals_local_to_world;
+static struct Transform steam_transform;
 
 void ocean__init(
   struct Window const *const window,
@@ -77,11 +76,14 @@ void ocean__init(
   struct GPU const *const gpu
 ) {
 
-  cam.position = (struct Vec3){ 0, 0.05, 7 };
+  cam.position = (struct Vec3){ 0, 0.05f, 7 };
   cam.look_target = (struct Vec3){ 0, 1.05, 0 };
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
   cam.far_clip_distance = 100;
+
+  camera__calculate_lookat(WORLDSPACE.up, &cam);
+  camera__calculate_perspective(vwprt, &cam);
 
   // WATER
 
@@ -90,45 +92,82 @@ void ocean__init(
 
   // STEAM
 
-  steam__create_shared_mesh_data();
-  steam__column_default(&steam0);
-  steam__column_default(&steam1);
-  steam__column_default(&steam2);
-  steam__copy_assets_to_gpu(gpu);
+  steam_transform = (struct Transform){
+    .position = COOLING_TOWER_POSITION,
+    .scale = 2.5f
+  };
+  // steam_shader.frag_src = STEAM_FRAG_SRC;
+  steam_shader.frag_src = FLAT_TEXTURE_FRAG_SRC;
+  steam_shader.geo_src = STEAM_GEO_SRC;
+  steam_shader.vert_src = DEFAULT_VERT_SRC;
+  gpu->copy_shader_to_gpu(&steam_shader);
+  gpu->copy_static_mesh_to_gpu(&STEAM_COLUMN_MESH);
+  gpu->copy_texture_to_gpu(&STEAM_TEXTURE);
+  space__create_model(
+    &WORLDSPACE,
+    &steam_transform,
+    &steam_local_to_world
+  );
+  space__create_normals_model(
+    &steam_local_to_world,
+    &steam_normals_local_to_world
+  );
 
   // SKY
 
-  sky_transform = (struct Transform){
-    { 0, -1, 0 },
-    quaternion__create(WORLDSPACE.up, M_PI),
-    32
+  // gpu->copy_texture_to_gpu(&CLOUDS_TEXTURE);
+  // EntityId sky = ecs__create_entity(&ecs);
+  // ecs__add_transform(
+  //   sky,
+  //   (struct Transform){
+  //     .position = (struct Vec3){ 0, 1, 2 },
+  //     .scale = 1
+  //   },
+  //   &ecs
+  // );
+  // ecs__add_draw_billboard(
+  //   sky,
+  //   (struct Draw){
+  //     .texture = &CLOUDS_TEXTURE,
+  //     .shader = &FLAT_TEXTURE_SHADER
+  //   },
+  //   &ecs
+  // );
+
+  // COOLING TOWER
+
+  cooling_tower_transform = (struct Transform){
+    .position = vec3_plus_vec3(
+      COOLING_TOWER_POSITION,
+      (struct Vec3){ 0, 0.7f, 0 }
+    ),
+    .scale = 3
   };
 
-  sky_shader.frag_src = SKY_FRAG_SRC;
-  sky_shader.vert_src = DEFAULT_VERT_SRC;
-  gpu->copy_shader_to_gpu(&sky_shader);
-  mesh__tile_uvs(3, 3, &SKY_CYLINDER_MESH);
-  gpu->copy_static_mesh_to_gpu(&SKY_CYLINDER_MESH);
-  gpu->copy_texture_to_gpu(&CLOUDS_TEXTURE);
+  cooling_tower_shader.frag_src = MOUNTAIN_FRAG_SRC;
+  cooling_tower_shader.vert_src = DEFAULT_VERT_SRC;
+  gpu->copy_shader_to_gpu(&cooling_tower_shader);
+  gpu->copy_static_mesh_to_gpu(&COOLING_TOWER_MESH);
+  gpu->copy_texture_to_gpu(&CONCRETE_WALL_TEXTURE);
   space__create_model(
     &WORLDSPACE,
-    &sky_transform,
-    &sky_local_to_world
+    &cooling_tower_transform,
+    &cooling_tower_local_to_world
   );
   space__create_normals_model(
-    &sky_local_to_world,
-    &sky_normals_local_to_world
+    &cooling_tower_local_to_world,
+    &cooling_tower_normals_local_to_world
   );
 
   // MOUNTAINS
 
   mountain_transform = (struct Transform){
-    .position = { 7, -0.2f, -18 },
+    .position = { 20, -0.4f, -23 },
     .rotation = quaternion__create(
       (struct Vec3){ 0, 1, 0 },
-      deg_to_rad(300)
+      -M_PI * 0.25f
     ),
-    .scale = 4
+    .scale = 10
   };
   mountain_shader.frag_src = MOUNTAIN_FRAG_SRC;
   mountain_shader.vert_src = DEFAULT_VERT_SRC;
@@ -158,49 +197,60 @@ void ocean__tick(
 
   // UPDATE
 
-  static struct M4x4 camera_rotation;
-  m4x4__rotation(
-    deg_to_rad(time.delta * CAMERA_ROTATE_SPEED),
-    WORLDSPACE.up,
-    &camera_rotation
-  );
-  cam.position = m4x4_x_point(&camera_rotation, cam.position);
-  steam_light_direction = m4x4_x_point(&camera_rotation, steam_light_direction);
+  // static struct M4x4 camera_rotation;
+  // m4x4__rotation(
+  //   deg_to_rad(time.delta * CAMERA_ROTATE_SPEED),
+  //   WORLDSPACE.up,
+  //   &camera_rotation
+  // );
+  // cam.position = m4x4_x_point(&camera_rotation, cam.position);
+  // steam_light_direction =
+  //   m4x4_x_point(&camera_rotation, steam_light_direction);
 
-  static struct Vec3 norm_steam_light_direction;
-  norm_steam_light_direction = vec3__normalize(steam_light_direction);
+  // for (unsigned int i = 0; i < STEAM_COLUMN_MESH.vertices_length; i++) {
+  //   STEAM_COLUMN_MESH.vertices[i].uv.y += 1.0f * time.delta;
+  // }
 
   water__update_waves(WIND_KM_PER_SEC, time, gpu);
-
-  steam__rise(time.delta, &steam0);
-  steam__rise(time.delta, &steam1);
-  steam__rise(time.delta, &steam2);
   
   // DRAW
 
-  camera__calculate_lookat(WORLDSPACE.up, &cam);
-  camera__calculate_perspective(vwprt, &cam);
-
   // SKY
-  
-  // TODO: go invert the sky cylinder normals in blender ya shmole
-  gpu->cull_no_faces();
 
-  // TODO: draw wireframe to help debug
+  // gpu->select_shader(&sky_shader);
+  // gpu->select_texture(&CLOUDS_TEXTURE);
+  // gpu->set_shader_vec3(&sky_shader, "horizon_color", COLOR_DARK_SLATE_GREY);
+  // gpu__set_mvp(
+  //   &sky_local_to_world,
+  //   &sky_normals_local_to_world,
+  //   &cam,
+  //   &sky_shader,
+  //   gpu
+  // );
+  // gpu->draw_mesh(&SKY_CYLINDER_MESH);
 
-  gpu->select_shader(&sky_shader);
-  gpu->select_texture(&CLOUDS_TEXTURE);
-  gpu->set_shader_vec3(&sky_shader, "horizon_color", COLOR_DARK_SLATE_GREY);
+  // COOLING TOWER
+
+  gpu->select_shader(&cooling_tower_shader);
+  gpu->select_texture(&CONCRETE_WALL_TEXTURE);
+  gpu->set_shader_vec3(
+    &cooling_tower_shader,
+    "light_dir",
+    WORLDSPACE.right
+  );
+  gpu->set_shader_vec3(
+    &cooling_tower_shader,
+    "light_color",
+    COLOR_GOLDEN_YELLOW
+  );
   gpu__set_mvp(
-    &sky_local_to_world,
-    &sky_normals_local_to_world,
+    &cooling_tower_local_to_world,
+    &cooling_tower_normals_local_to_world,
     &cam,
-    &sky_shader,
+    &cooling_tower_shader,
     gpu
   );
-  gpu->draw_mesh(&SKY_CYLINDER_MESH);
-
-  gpu->cull_back_faces();
+  gpu->draw_mesh(&COOLING_TOWER_MESH);
 
   // MOUNTAINS
 
@@ -209,7 +259,7 @@ void ocean__tick(
   gpu->set_shader_vec3(
     &mountain_shader,
     "light_dir",
-    vec3__normalize((struct Vec3){ 10, 0, 1 })
+    WORLDSPACE.right
   );
   gpu->set_shader_vec3(
     &mountain_shader,
@@ -225,9 +275,33 @@ void ocean__tick(
   );
   gpu->draw_mesh(&MOUNTAIN_MESH);
 
-  steam__draw_column(&cam, gpu, norm_steam_light_direction, &steam0);
-  steam__draw_column(&cam, gpu, norm_steam_light_direction, &steam1);
-  steam__draw_column(&cam, gpu, norm_steam_light_direction, &steam2);
+  // STEAM
+
+  gpu->select_shader(&steam_shader);
+  gpu->select_texture(&STEAM_TEXTURE);
+  gpu->set_shader_vec3(
+    &steam_shader,
+    "bottom_color",
+    COLOR_WHITE
+  );
+  gpu->set_shader_float(
+    &steam_shader,
+    "seconds_since_activation",
+    time.sec_since_game_launch
+  );
+  gpu->set_shader_float(
+    &steam_shader,
+    "max_altitude",
+    2
+  );
+  gpu__set_mvp(
+    &steam_local_to_world,
+    &steam_normals_local_to_world,
+    &cam,
+    &steam_shader,
+    gpu
+  );
+  gpu->draw_mesh(&STEAM_COLUMN_MESH);
 
   water__draw(&cam, gpu);
 
@@ -237,6 +311,4 @@ void ocean__tick(
   //   &WORLDSPACE,
   //   ORIGIN
   // );
-
-  gpu->cull_back_faces();
 }
