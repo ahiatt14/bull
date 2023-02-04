@@ -32,7 +32,7 @@
 
 typedef void (*player_one_autofire_ptr)(
   struct GameTime time,
-  struct Player const *const playr
+  struct Player const *const player
 );
 
 struct guide_lag_state {
@@ -44,24 +44,34 @@ struct guide_lag_state {
   ~~~~~~~~~FORWARD DECS~~~~~~~~~~
 */
 
+static void begin_lvl0_gun_autofire(
+  struct GameTime time,
+  struct Player const *const player
+);
+
+static void autofire_lvl0_guns(
+  struct GameTime time,
+  struct Player const *const player
+);
+
 static void begin_lvl0_rocket_autofire(
   struct GameTime time,
-  struct Player const *const playr
+  struct Player const *const player
 );
 
 static void autofire_lvl0_rockets(
   struct GameTime time,
-  struct Player const *const playr
+  struct Player const *const player
 );
 
 static void stop_autofiring(
   struct GameTime time,
-  struct Player const *const playr
+  struct Player const *const player
 );
 
 void guide_lag_update(
   struct GameTime time,
-  struct Player const *const playr,
+  struct Player const *const player,
   struct guide_lag_state *const guide_lag
 );
 
@@ -131,7 +141,7 @@ void action__init(
   struct GPU const *const gpu
 ) {
 
-  cam.position = (struct Vec3){ 0, 20, 8 };
+  cam.position = (struct Vec3){ 0, 20, 14 };
   cam.look_target = (struct Vec3){
     ORIGIN.x,
     ORIGIN.y,
@@ -223,25 +233,38 @@ void action__tick(
   ~~~~~~~~ FUNCTION DEFINITIONS ~~~~~~~~~
 */
 
-static void begin_lvl0_rocket_autofire(
+static void begin_lvl0_gun_autofire(
   struct GameTime time,
-  struct Player const *const playr
+  struct Player const *const player
 ) {
-  player_one_autofire = autofire_lvl0_rockets;
-  player_one_autofire(time, playr);
+  player_one_autofire = autofire_lvl0_guns;
+  player_one_autofire(time, player);
 }
 
-static void stop_autofiring(
+static void autofire_lvl0_guns(
   struct GameTime time,
-  struct Player const *const playr
+  struct Player const *const player
 ) {
-  seconds_until_next_autofire_shot = 0;
-  player_one_autofire = NULL;
+  
+  seconds_until_next_autofire_shot -= time.delta;
+  if (seconds_until_next_autofire_shot > 0) return;
+  seconds_until_next_autofire_shot =
+    0.15f - seconds_until_next_autofire_shot;
+
+  
+}
+
+static void begin_lvl0_rocket_autofire(
+  struct GameTime time,
+  struct Player const *const player
+) {
+  player_one_autofire = autofire_lvl0_rockets;
+  player_one_autofire(time, player);
 }
 
 static void autofire_lvl0_rockets(
   struct GameTime time,
-  struct Player const *const playr
+  struct Player const *const player
 ) {
 
   seconds_until_next_autofire_shot -= time.delta;
@@ -250,27 +273,35 @@ static void autofire_lvl0_rockets(
     0.15f - seconds_until_next_autofire_shot;
 
   deploy_rpg(
-    playr->transform.position,
+    player->transform.position,
     on_rpg_deployed,
     &ecs
   );
 }
 
+static void stop_autofiring(
+  struct GameTime time,
+  struct Player const *const player
+) {
+  seconds_until_next_autofire_shot = 0;
+  player_one_autofire = NULL;
+}
+
 void guide_lag_update(
   struct GameTime time,
-  struct Player const *const playr,
+  struct Player const *const player,
   struct guide_lag_state *const guide_lag
 ) {
   if (vec3__distance(
-    playr->previous_position,
-    playr->transform.position
+    player->previous_position,
+    player->transform.position
   ) <= 0.02) guide_lag->seconds_since_player_moved = 0;
   guide_lag->seconds_since_player_moved += time.delta;
   if (guide_lag->seconds_since_player_moved > GUIDE_LAG_TIME_SECONDS)
     guide_lag->seconds_since_player_moved = GUIDE_LAG_TIME_SECONDS;
   guide_lag->guide_target_position = vec3__linear_lerp(
     guide_lag->guide_target_position,
-    playr->transform.position,
+    player->transform.position,
     guide_lag->seconds_since_player_moved / GUIDE_LAG_TIME_SECONDS
   );
 }

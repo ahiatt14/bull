@@ -30,7 +30,7 @@
 #include "billboard_geo.h"
 #include "billboard_vert.h"
 #include "night_sky_texture.h"
-// #include "clouds_texture.h"
+#include "clouds_texture.h"
 
 // CONSTANTS
 
@@ -39,8 +39,8 @@
 // READ ONLY
 
 static const struct Vec3 COOLING_TOWER_POSITION = {
-  -5,
-  -1.5f,
+  -7,
+  -1,
   -8
 };
 
@@ -82,7 +82,7 @@ static struct Vec3 light_direction = {
 
 static struct Transform sky_transform = {
   .position = { 0, 0, -45 },
-  .scale = 30
+  .scale = 33
 };
 static struct M4x4 sky_local_to_world;
 static struct Shader sky_shader;
@@ -93,7 +93,7 @@ void ocean__init(
   struct GPU const *const gpu
 ) {
 
-  cam.position = (struct Vec3){ 0, 0.05f, 7 };
+  cam.position = (struct Vec3){ 0, 0.05f, 12 };
   cam.look_target = (struct Vec3){ 0, 1.05, 0 };
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
@@ -137,6 +137,7 @@ void ocean__init(
   sky_shader.vert_src = BILLBOARD_VERT_SRC;
   gpu->copy_shader_to_gpu(&sky_shader);
   gpu->copy_texture_to_gpu(&NIGHT_SKY_TEXTURE);
+  gpu->copy_texture_to_gpu(&CLOUDS_TEXTURE);
   m4x4__translation(
     sky_transform.position,
     &sky_local_to_world
@@ -206,8 +207,7 @@ void ocean__tick(
   // UPDATE
 
   for (unsigned int i = 0; i < STEAM_COLUMN_MESH.vertices_length; i++) {
-    // STEAM_COLUMN_MESH.vertices[i].uv.y -= 0.11f * time.delta;
-    STEAM_COLUMN_MESH.vertices[i].uv.x += 0.033f * time.delta;
+    STEAM_COLUMN_MESH.vertices[i].uv.x -= 0.1f * time.delta;
   }
   gpu->update_gpu_mesh_data(&STEAM_COLUMN_MESH);
 
@@ -218,7 +218,7 @@ void ocean__tick(
   // SKY
 
   gpu->select_shader(&sky_shader);
-  gpu->select_texture(&NIGHT_SKY_TEXTURE);
+  gpu->select_texture(&CLOUDS_TEXTURE);
   gpu__set_mvp(
     &sky_local_to_world,
     &M3X3_IDENTITY,

@@ -9,7 +9,7 @@ out vec4 FragColor;
 
 const float MAX_PLAYER_TO_FRAG_DISTANCE = 3;
 const float MISSILE_GUIDE_HALF_WIDTH = 2;
-const float LINE_THICKNESS = 0.1;
+const float LINE_THICKNESS = 0.05;
 
 vec2 WORLD_ORIGIN = vec2(0);
 
@@ -43,7 +43,7 @@ void main() {
     frag_radius_world <= arena_radius_worldspace;
 
   bool show_radius_guide =
-    abs(frag_radius_world - arena_radius_worldspace) < 0.05 &&
+    abs(frag_radius_world - arena_radius_worldspace) < 0.025 &&
     frag_distance_to_player_origin_line > MISSILE_GUIDE_HALF_WIDTH * 2.5;
 
   bool show_center_guide = frag_radius_world < 0.1;
@@ -55,6 +55,6 @@ void main() {
   
   FragColor = vec4(
     color,
-    show_guide ? 0.4 : 0.0
+    show_guide ? 0.6 : 0.0
   );
 }
