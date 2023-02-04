@@ -10,7 +10,7 @@ void muzzle_flashes__copy_assets_to_gpu(
 );
 
 EntityId create_lvl0_muzzle_flash(
-  struct Vec3 position,
+  struct Transform const *const source_transform,
   void (*mark_entity_for_destruction)(
     EntityId id,
     struct ECS *const ecs

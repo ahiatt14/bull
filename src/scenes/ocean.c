@@ -44,6 +44,12 @@ static const struct Vec3 COOLING_TOWER_POSITION = {
   -8
 };
 
+static const struct Vec3 COOLING_TOWER_OFFSET = {
+  7,
+  0,
+  4
+};
+
 static const struct Vec2 WIND_KM_PER_SEC = {
   -0.0075f,
   -0.01f
@@ -76,7 +82,7 @@ static struct Transform steam_transform;
 
 // SKY
 
-static struct Vec3 light_direction = {
+static struct Vec3 sunlight_direction = {
   3, 0, 1
 };
 
@@ -207,7 +213,7 @@ void ocean__tick(
   // UPDATE
 
   for (unsigned int i = 0; i < STEAM_COLUMN_MESH.vertices_length; i++) {
-    STEAM_COLUMN_MESH.vertices[i].uv.x -= 0.1f * time.delta;
+    STEAM_COLUMN_MESH.vertices[i].uv.x -= 0.4f * time.delta;
   }
   gpu->update_gpu_mesh_data(&STEAM_COLUMN_MESH);
 
@@ -240,7 +246,7 @@ void ocean__tick(
   gpu->set_shader_vec3(
     &cooling_tower_shader,
     "light_dir",
-    vec3__normalize(light_direction)
+    vec3__normalize(sunlight_direction)
   );
   gpu->set_shader_vec3(
     &cooling_tower_shader,
@@ -263,7 +269,7 @@ void ocean__tick(
   gpu->set_shader_vec3(
     &mountain_shader,
     "light_dir",
-    vec3__normalize(light_direction)
+    vec3__normalize(sunlight_direction)
   );
   gpu->set_shader_vec3(
     &mountain_shader,
@@ -283,10 +289,10 @@ void ocean__tick(
 
   gpu->select_shader(&steam_shader);
   gpu->select_texture(&STEAM_TEXTURE);
-  gpu->set_shader_vec3(
+  gpu->set_shader_float(
     &steam_shader,
-    "bottom_color",
-    COLOR_WHITE
+    "speed",
+    4
   );
   gpu->set_shader_float(
     &steam_shader,

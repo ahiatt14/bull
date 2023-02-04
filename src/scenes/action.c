@@ -13,6 +13,7 @@
 
 #include "rpg.h"
 #include "explosions.h"
+#include "muzzle_flashes.h"
 
 #include "rocket_mesh.h"
 
@@ -114,7 +115,7 @@ player_one_autofire_ptr player_one_autofire = NULL;
 static double seconds_until_next_autofire_shot;
 
 static struct PlayerActions player_one_actions ={
-  .start_autofire = begin_lvl0_rocket_autofire,
+  .start_autofire = begin_lvl0_gun_autofire,
   .stop_autofire = stop_autofiring
 };
 
@@ -157,6 +158,7 @@ void action__init(
   gpu->copy_static_mesh_to_gpu(&ROCKET_MESH);
 
   explosions__copy_assets_to_gpu(gpu);
+  muzzle_flashes__copy_assets_to_gpu(gpu);
 
   player__copy_assets_to_gpu(gpu);
   firing_guide__copy_assets_to_gpu(gpu);
@@ -245,13 +247,17 @@ static void autofire_lvl0_guns(
   struct GameTime time,
   struct Player const *const player
 ) {
-  
+
   seconds_until_next_autofire_shot -= time.delta;
   if (seconds_until_next_autofire_shot > 0) return;
   seconds_until_next_autofire_shot =
     0.15f - seconds_until_next_autofire_shot;
-
-  
+    
+  create_lvl0_muzzle_flash(
+    &player->transform,
+    mark_entity_for_destruction,
+    &ecs
+  );
 }
 
 static void begin_lvl0_rocket_autofire(
