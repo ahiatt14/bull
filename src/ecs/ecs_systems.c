@@ -15,27 +15,32 @@ void ecs__control_player(
   struct Entity *const player
 ) {
 
-  static const float PLAYER_SPEED = 10.0f;
-  static const float STICK_DEADZONE = 0.2f;
+  if (lacks_configuration(
+    c_PLAYER_CONTROLLER,
+    player->config
+  )) return;
+
+  static const float SPEED = 5.0f;
+  static const float STICK_DEADZONE = 0.5f;
   // static const float TRIGGER_DEADZONE = 0.5f;
 
-  struct Vec2 normalized_direction =
+  struct Vec2 norm_direction =
     vec2__normalize(gamepad.left_stick_direction);
   float magnitude =
     vec2__magnitude(gamepad.left_stick_direction);
 
   if (magnitude < STICK_DEADZONE) {
     player->velocity = (struct Vec3){0};
+    return;
   }
 
   player->velocity.x =
-    // PLAYER_SPEED * (magnitude + 1.0f) * magnitude *
-    PLAYER_SPEED * magnitude * magnitude *
-    normalized_direction.x;
+    SPEED * (magnitude + 1.0f) * magnitude *
+    norm_direction.x;
 
   player->velocity.z =
-    PLAYER_SPEED * magnitude * magnitude *
-    normalized_direction.y;
+    SPEED * (magnitude + 1.0f) * magnitude *
+    norm_direction.y;
 }
 
 void ecs__move(

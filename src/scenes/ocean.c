@@ -213,7 +213,7 @@ void ocean__tick(
   // UPDATE
 
   for (unsigned int i = 0; i < STEAM_COLUMN_MESH.vertices_length; i++) {
-    STEAM_COLUMN_MESH.vertices[i].uv.x -= 0.4f * time.delta;
+    STEAM_COLUMN_MESH.vertices[i].uv.x -= 1.7f * time.delta;
   }
   gpu->update_gpu_mesh_data(&STEAM_COLUMN_MESH);
 
@@ -292,7 +292,7 @@ void ocean__tick(
   gpu->set_shader_float(
     &steam_shader,
     "speed",
-    4
+    15
   );
   gpu->set_shader_float(
     &steam_shader,

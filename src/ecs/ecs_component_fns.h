@@ -15,6 +15,16 @@ uint_fast8_t has_component(
   uint_fast16_t entity_configuration
 );
 
+void ecs__add_player_controller(
+  EntityId id,
+  struct ECS *const ecs
+);
+
+void ecs__remove_player_controller(
+  EntityId id,
+  struct ECS *const ecs
+);
+
 void ecs__add_transform(
   EntityId id,
   struct Transform t,

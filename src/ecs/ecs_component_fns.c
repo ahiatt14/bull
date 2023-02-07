@@ -19,6 +19,20 @@ uint_fast8_t has_component(
   return (anded == necessary_component) ? 1 : 0;
 }
 
+void ecs__add_player_controller(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config += c_PLAYER_CONTROLLER;
+}
+
+void ecs__remove_player_controller(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config -= c_PLAYER_CONTROLLER;
+}
+
 void ecs__add_transform(
   EntityId id,
   struct Transform t,

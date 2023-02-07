@@ -26,6 +26,7 @@ EntityId create_player(
 
   EntityId player = ecs__create_entity(ecs);
 
+  ecs__add_player_controller(player, ecs);
   ecs__add_transform(
     player,
     (struct Transform){
@@ -34,7 +35,6 @@ EntityId create_player(
     },
     ecs
   );
-
   ecs__add_look_at_center(player, ecs);
   ecs__add_velocity(player, (struct Vec3){0}, ecs);
   ecs__add_draw(
