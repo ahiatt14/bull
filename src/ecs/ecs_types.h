@@ -14,6 +14,8 @@
 #define c_VEC3_LERP 1 << 6
 #define c_REVOLVE_LERP 1 << 7
 #define c_LOOK_AT_CENTER 1 << 8
+#define c_PLAYER_CONTROLLER 1 << 9
+#define c_REPEAT 1 << 10
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast16_t ComponentConfig;
@@ -26,6 +28,16 @@ struct Timeout {
   double limit_in_seconds;
   void (*on_timeout)(
     EntityId id,
+    struct ECS *const ecs
+  );
+};
+
+struct Repeat {
+  double seconds_since_interval;
+  double interval_in_seconds;
+  void (*on_interval)(
+    EntityId id,
+    double remainder_in_seconds,
     struct ECS *const ecs
   );
 };
@@ -69,11 +81,13 @@ struct RevolveLerp {
   );
 };
 
+// TODO: do hot/cold components at some point
 struct Entity {
   struct Transform transform;
   struct Vec3Lerp vec3lerp;
   struct RevolveLerp revolve_lerp;
   struct Timeout timeout;
+  struct Repeat repeat;
   struct Vec3 velocity;
   struct Draw draw;
   ComponentConfig config;

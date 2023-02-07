@@ -6,12 +6,23 @@
 
 #include "ecs_types.h"
 
+void ecs__control_player(
+  struct GameTime time,
+  struct Gamepad gamepad,
+  struct Entity *const player
+);
+
 void ecs__move(
   struct GameTime time,
   struct ECS *const ecs
 );
 
 void ecs__timeout(
+  struct GameTime time,
+  struct ECS *const ecs
+);
+
+void ecs__repeat(
   struct GameTime time,
   struct ECS *const ecs
 );

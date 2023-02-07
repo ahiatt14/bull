@@ -8,6 +8,36 @@
 #include "bull_math.h"
 #include "tail_helpers.h"
 
+void ecs__control_player(
+  struct GameTime time,
+  struct Gamepad gamepad,
+  // struct PlayerActions const *const player_actions,
+  struct Entity *const player
+) {
+
+  static const float PLAYER_SPEED = 10.0f;
+  static const float STICK_DEADZONE = 0.2f;
+  // static const float TRIGGER_DEADZONE = 0.5f;
+
+  struct Vec2 normalized_direction =
+    vec2__normalize(gamepad.left_stick_direction);
+  float magnitude =
+    vec2__magnitude(gamepad.left_stick_direction);
+
+  if (magnitude < STICK_DEADZONE) {
+    player->velocity = (struct Vec3){0};
+  }
+
+  player->velocity.x =
+    // PLAYER_SPEED * (magnitude + 1.0f) * magnitude *
+    PLAYER_SPEED * magnitude * magnitude *
+    normalized_direction.x;
+
+  player->velocity.z =
+    PLAYER_SPEED * magnitude * magnitude *
+    normalized_direction.y;
+}
+
 void ecs__move(
   struct GameTime time,
   struct ECS *const ecs
@@ -43,7 +73,36 @@ void ecs__timeout(
     if (
       ecs->entities[id].timeout.seconds_since_activation >=
       ecs->entities[id].timeout.limit_in_seconds
-    ) ecs->entities[id].timeout.on_timeout(id, ecs);
+    ) ecs->entities[id].timeout.on_timeout(id, ecs); // TODO: add remainder arg
+  }
+}
+
+void ecs__repeat(
+  struct GameTime time,
+  struct ECS *const ecs
+) {
+
+  double seconds_since_interval, interval_in_seconds;
+
+  for (EntityId id = 0; id < ecs->count; id++) {
+
+    if (lacks_configuration(
+      c_REPEAT,
+      ecs->entities[id].config
+    )) continue;
+
+    ecs->entities[id].repeat.seconds_since_interval += time.delta;
+    seconds_since_interval = ecs->entities[id].repeat.seconds_since_interval;
+    interval_in_seconds = ecs->entities[id].repeat.interval_in_seconds;
+
+    if (seconds_since_interval >= interval_in_seconds) {
+      ecs->entities[id].repeat.on_interval(
+        id,
+        seconds_since_interval - interval_in_seconds,
+        ecs
+      );
+      ecs->entities[id].repeat.seconds_since_interval = 0;
+    }
   }
 }
 

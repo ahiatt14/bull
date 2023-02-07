@@ -25,56 +25,12 @@
 */
 
 #define PLAYER_LVL_COUNT 3
-#define PLAYER_START_POS {3, 0, 0}
 
 #define GUIDE_LAG_TIME_SECONDS 0.15f
 
 #define ARENA_EDGE_RADIUS 8.0f
 
-typedef void (*player_one_autofire_ptr)(
-  struct GameTime time,
-  struct Player const *const player
-);
-
-struct guide_lag_state {
-  double seconds_since_player_moved;
-  struct Vec3 guide_target_position;
-};
-
-/*
-  ~~~~~~~~~FORWARD DECS~~~~~~~~~~
-*/
-
-static void begin_lvl0_gun_autofire(
-  struct GameTime time,
-  struct Player const *const player
-);
-
-static void autofire_lvl0_guns(
-  struct GameTime time,
-  struct Player const *const player
-);
-
-static void begin_lvl0_rocket_autofire(
-  struct GameTime time,
-  struct Player const *const player
-);
-
-static void autofire_lvl0_rockets(
-  struct GameTime time,
-  struct Player const *const player
-);
-
-static void stop_autofiring(
-  struct GameTime time,
-  struct Player const *const player
-);
-
-void guide_lag_update(
-  struct GameTime time,
-  struct Player const *const player,
-  struct guide_lag_state *const guide_lag
-);
+static const struct Vec3 PLAYER_START_POSITION = { 3, 0, 0 };
 
 /*
   ~~~~~ENTITY EVENT HANDLERS~~~~
@@ -101,27 +57,12 @@ static struct ECS ecs;
 static struct Camera cam;
 static struct Gamepad gamepad;
 
-static struct Player player_one = {
-  .transform = {
-    .position = PLAYER_START_POS,
-    .scale = 1
-  },
-  .previous_position = PLAYER_START_POS,
-  .projected_position = PLAYER_START_POS,
-  .input_state = PLAYER_INPUT_STATE__IDLE,
-  .effect_state = PLAYER_EFFECT_STATE__HEALTHY
-};
-player_one_autofire_ptr player_one_autofire = NULL;
-static double seconds_until_next_autofire_shot;
+static EntityId player;
 
-static struct PlayerActions player_one_actions ={
-  .start_autofire = begin_lvl0_gun_autofire,
-  .stop_autofire = stop_autofiring
-};
-
-static struct guide_lag_state guide_lag = {
-  .guide_target_position = PLAYER_START_POS
-};
+// static struct PlayerActions player_one_actions = {
+//   .start_autofire = begin_lvl0_gun_autofire,
+//   .stop_autofire = stop_autofiring
+// };
 
 static EntityId entities_to_destroy[MAX_ENTITIES];
 static uint_fast16_t count_of_entities_to_destroy;
@@ -161,6 +102,7 @@ void action__init(
   muzzle_flashes__copy_assets_to_gpu(gpu);
 
   player__copy_assets_to_gpu(gpu);
+  player = create_player(PLAYER_START_POSITION, &ecs);
   firing_guide__copy_assets_to_gpu(gpu);
 
   ocean__init(window, vwprt, gpu);
@@ -186,27 +128,8 @@ void action__tick(
 
   // GAMEPLAY
 
-  player__update(time, gamepad, &player_one_actions, &player_one);
-  guide_lag_update(time, &player_one, &guide_lag);
-
-  if (player_one_autofire) player_one_autofire(
-    time,
-    &player_one
-  );
-
-  // TODO: abstract
-  static float player_rads, flip;
-  flip = player_one.transform.position.x >= 0 ? (M_PI * 0.5f) : -(M_PI * 0.5f);
-  player_rads = atan(
-    -player_one.transform.position.z /
-    player_one.transform.position.x
-  ) + flip;
-  player_one.transform.rotation =
-    quaternion__create(WORLDSPACE.up, player_rads);
-
-  player_one.transform.position = player_one.projected_position;
-
   count_of_entities_to_destroy = 0;
+  ecs__control_player(time, gamepad, &ecs.entities[player]);
   ecs__timeout(time, &ecs);
   ecs__lerp_vec3(time, &ecs);
   ecs__lerp_revolve(time, &ecs);
@@ -220,14 +143,6 @@ void action__tick(
   ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
   gpu->clear_depth_buffer();
 
-  player__draw(&cam, gpu, &player_one);
-  firing_guide__draw(
-    &cam,
-    gpu,
-    ARENA_EDGE_RADIUS,
-    guide_lag.guide_target_position
-  );
-
   ecs__draw(time, &cam, gpu, &ecs);
 }
 
@@ -235,82 +150,81 @@ void action__tick(
   ~~~~~~~~ FUNCTION DEFINITIONS ~~~~~~~~~
 */
 
-static void begin_lvl0_gun_autofire(
-  struct GameTime time,
-  struct Player const *const player
-) {
-  player_one_autofire = autofire_lvl0_guns;
-  player_one_autofire(time, player);
-}
+// static void begin_lvl0_gun_autofire(
+//   EntityId player
+// ) {
+//   player_one_autofire = autofire_lvl0_guns;
+//   player_one_autofire(time, player);
+// }
 
-static void autofire_lvl0_guns(
-  struct GameTime time,
-  struct Player const *const player
-) {
+// static void autofire_lvl0_guns(
+//   struct GameTime time,
+//   struct Entity const *const player
+// ) {
 
-  seconds_until_next_autofire_shot -= time.delta;
-  if (seconds_until_next_autofire_shot > 0) return;
-  seconds_until_next_autofire_shot =
-    0.15f - seconds_until_next_autofire_shot;
+//   seconds_until_next_autofire_shot -= time.delta;
+//   if (seconds_until_next_autofire_shot > 0) return;
+//   seconds_until_next_autofire_shot =
+//     0.15f - seconds_until_next_autofire_shot;
     
-  create_lvl0_muzzle_flash(
-    &player->transform,
-    mark_entity_for_destruction,
-    &ecs
-  );
-}
+//   create_lvl0_muzzle_flash(
+//     &player->transform,
+//     mark_entity_for_destruction,
+//     &ecs
+//   );
+// }
 
-static void begin_lvl0_rocket_autofire(
-  struct GameTime time,
-  struct Player const *const player
-) {
-  player_one_autofire = autofire_lvl0_rockets;
-  player_one_autofire(time, player);
-}
+// static void begin_lvl0_rocket_autofire(
+//   struct GameTime time,
+//   struct Player const *const player
+// ) {
+//   player_one_autofire = autofire_lvl0_rockets;
+//   player_one_autofire(time, player);
+// }
 
-static void autofire_lvl0_rockets(
-  struct GameTime time,
-  struct Player const *const player
-) {
+// static void autofire_lvl0_rockets(
+//   struct GameTime time,
+//   struct Player const *const player
+// ) {
 
-  seconds_until_next_autofire_shot -= time.delta;
-  if (seconds_until_next_autofire_shot > 0) return;
-  seconds_until_next_autofire_shot =
-    0.15f - seconds_until_next_autofire_shot;
+//   seconds_until_next_autofire_shot -= time.delta;
+//   if (seconds_until_next_autofire_shot > 0) return;
+//   seconds_until_next_autofire_shot =
+//     0.15f - seconds_until_next_autofire_shot;
 
-  deploy_rpg(
-    player->transform.position,
-    on_rpg_deployed,
-    &ecs
-  );
-}
+//   deploy_rpg(
+//     player->transform.position,
+//     on_rpg_deployed,
+//     &ecs
+//   );
+// }
 
-static void stop_autofiring(
-  struct GameTime time,
-  struct Player const *const player
-) {
-  seconds_until_next_autofire_shot = 0;
-  player_one_autofire = NULL;
-}
+// static void stop_autofiring(
+//   struct GameTime time,
+//   struct Player const *const player
+// ) {
+//   seconds_until_next_autofire_shot = 0;
+//   player_one_autofire = NULL;
+// }
 
-void guide_lag_update(
-  struct GameTime time,
-  struct Player const *const player,
-  struct guide_lag_state *const guide_lag
-) {
-  if (vec3__distance(
-    player->previous_position,
-    player->transform.position
-  ) <= 0.02) guide_lag->seconds_since_player_moved = 0;
-  guide_lag->seconds_since_player_moved += time.delta;
-  if (guide_lag->seconds_since_player_moved > GUIDE_LAG_TIME_SECONDS)
-    guide_lag->seconds_since_player_moved = GUIDE_LAG_TIME_SECONDS;
-  guide_lag->guide_target_position = vec3__linear_lerp(
-    guide_lag->guide_target_position,
-    player->transform.position,
-    guide_lag->seconds_since_player_moved / GUIDE_LAG_TIME_SECONDS
-  );
-}
+// void guide_lag_update(
+//   struct GameTime time,
+//   struct Player const *const player,
+//   struct guide_lag_state *const guide_lag
+// ) {
+//   if (vec3__distance(
+//     player->previous_position,
+//     player->transform.position
+//   ) <= 0.02) guide_lag->seconds_since_player_moved = 0;
+//   guide_lag->seconds_since_player_moved += time.delta;
+//   if (guide_lag->seconds_since_player_moved > GUIDE_LAG_TIME_SECONDS)
+//     guide_lag->seconds_since_player_moved = GUIDE_LAG_TIME_SECONDS;
+//   guide_lag->guide_target_position = vec3__linear_lerp(
+//     guide_lag->guide_target_position,
+//     player->transform.position,
+//     guide_lag->seconds_since_player_moved / GUIDE_LAG_TIME_SECONDS
+//   );
+// }
 
 /*
   ~~~~~ENTITY EVENT HANDLERS~~~~

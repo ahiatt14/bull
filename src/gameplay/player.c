@@ -3,6 +3,8 @@
 
 #include "tail.h"
 
+#include "ecs.h"
+
 #include "player.h"
 #include "bull_math.h"
 #include "constants.h"
@@ -11,218 +13,39 @@
 #include "bird_mesh.h"
 #include "default_vert.h"
 
-// CONSTANTS
-
-#define PLAYER_INPUT_STATE_COUNT 5
-#define PLAYER_EFFECT_STATE_COUNT 1
-
-#define PLAYER_SPEED 10
-#define TRIGGER_DEADZONE 0.5f
-#define STICK_DEADZONE 0.2f
-
-// FORWARD DECS
-
-static uint8_t project_player_position(
-  double delta_time,
-  struct Vec2 direction,
-  struct Player *const playr
-);
-
-// LOCALS
-
-// static struct Shader shared_healthy_shader;
-
-// STATE STUFF
-
-static void player_idle__update(
-  struct GameTime time,
-  struct Gamepad gamepad,
-  struct PlayerActions const *const actions,
-  struct Player *const playr
-) {
-
-  if (project_player_position(
-    time.delta,
-    gamepad.left_stick_direction,
-    playr
-  )) playr->input_state = PLAYER_INPUT_STATE__THRUSTING;
-
-  if (gamepad.right_trigger >= TRIGGER_DEADZONE) {
-    actions->start_autofire(time, playr);
-    playr->input_state = PLAYER_INPUT_STATE__AUTOFIRING;
-  }
-}
-
-static void player_thrusting__update(
-  struct GameTime time,
-  struct Gamepad gamepad,
-  struct PlayerActions const *const actions,
-  struct Player *const playr
-) {
-
-  if (!project_player_position(
-    time.delta,
-    gamepad.left_stick_direction,
-    playr
-  )) {
-    playr->input_state = PLAYER_INPUT_STATE__IDLE;
-  }
-
-  if (gamepad.right_trigger >= TRIGGER_DEADZONE) {
-    actions->start_autofire(time, playr);
-    playr->input_state = PLAYER_INPUT_STATE__AUTOFIRING;
-  }
-}
-
-static void player_autofiring__update(
-  struct GameTime time,
-  struct Gamepad gamepad,
-  struct PlayerActions const *const actions,
-  struct Player *const playr
-) {
-
-  project_player_position(
-    time.delta,
-    gamepad.left_stick_direction,
-    playr
-  );
-
-  if (gamepad.right_trigger < TRIGGER_DEADZONE) {
-    actions->stop_autofire(time, playr);
-    playr->input_state = PLAYER_INPUT_STATE__IDLE;
-  }
-}
-
-static void player_reeling__update(
-  struct GameTime time,
-  struct Gamepad gamepad,
-  struct PlayerActions const *const actions,
-  struct Player *const playr
-) {
-
-}
-
-static void player_flipping__update(
-  struct GameTime time,
-  struct Gamepad gamepad,
-  struct PlayerActions const *const actions,
-  struct Player *const playr
-) {
-
-  // playr->previous_position = playr->transform.position;
-
-  // static struct battlefield_pos player_bfpos;
-  // player_bfpos = world_to_battlefield_pos(playr->transform.position);
-  // player_bfpos.degrees = (int)(player_bfpos.degrees + 180) % 360;
-  // playr->projected_position = battlefield_to_world_pos(player_bfpos);
-
-  playr->input_state = PLAYER_INPUT_STATE__IDLE;
-}
-
-static void player_healthy__update(
-  struct GameTime time,
-  struct Player *const playr
-) {
-  return;
-}
-
-void (*player_input_state_updates[PLAYER_INPUT_STATE_COUNT])(
-  struct GameTime time,
-  struct Gamepad gamepad,
-  struct PlayerActions const *const actions,
-  struct Player *const playr
-) = {
-  player_idle__update,
-  player_thrusting__update,
-  player_autofiring__update,
-  player_reeling__update,
-  player_flipping__update
-};
-
-void (*player_effect_state_updates[PLAYER_EFFECT_STATE_COUNT])(
-  struct GameTime time,
-  struct Player *const playr
-) = {
-  player_healthy__update
-};
-
-// PUBLIC API
-
 void player__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
   gpu->copy_static_mesh_to_gpu(&BIRD_MESH);
 }
 
-void player__update(
-  struct GameTime time,
-  struct Gamepad gamepad,
-  struct PlayerActions const *const actions,
-  struct Player *const playr
+EntityId create_player(
+  struct Vec3 position,
+  struct ECS *const ecs
 ) {
-  player_input_state_updates[playr->input_state](
-    time,
-    gamepad,
-    actions,
-    playr
+
+  EntityId player = ecs__create_entity(ecs);
+
+  ecs__add_transform(
+    player,
+    (struct Transform){
+      .position = position,
+      .scale = 1
+    },
+    ecs
   );
-  // TODO: add effect update call
-}
 
-void player__draw(
-  struct Camera const *const cam,
-  struct GPU const *const gpu,
-  struct Player const *const playr
-) {
-  static struct M4x4 local_to_world;
-  static struct M3x3 normals_local_to_world;
-
-  space__create_model(
-    &WORLDSPACE,
-    &playr->transform,
-    &local_to_world
+  ecs__add_look_at_center(player, ecs);
+  ecs__add_velocity(player, (struct Vec3){0}, ecs);
+  ecs__add_draw(
+    player,
+    (struct Draw){
+      .mesh = &BIRD_MESH,
+      .texture = NULL,
+      .shader = &SOLID_COLOR_SHADER
+    },
+    ecs
   );
-  space__create_normals_model(
-    &local_to_world,
-    &normals_local_to_world
-  );
-  gpu->select_shader(&SOLID_COLOR_SHADER);
-  gpu->set_shader_vec3(
-    &SOLID_COLOR_SHADER,
-    "color",
-    COLOR_WHITE
-  );
-  gpu__set_mvp(
-    &local_to_world,
-    &normals_local_to_world,
-    cam,
-    &SOLID_COLOR_SHADER,
-    gpu
-  );
-  gpu->draw_mesh(&BIRD_MESH);
-}
 
-// HELPERS
-
-static uint8_t project_player_position(
-  double delta,
-  struct Vec2 direction,
-  struct Player *const playr
-) {
-  static float mag;
-  static struct Vec2 normalized_left_stick_direction;
-
-  mag = vec2__magnitude(direction);
-  if (mag < STICK_DEADZONE) return 0;
-
-  playr->previous_position = playr->transform.position;
-  
-  normalized_left_stick_direction = vec2__normalize(direction);
-  playr->projected_position.x +=
-    normalized_left_stick_direction.x *
-    PLAYER_SPEED * mag * mag * delta;
-  playr->projected_position.z +=
-    normalized_left_stick_direction.y *
-    PLAYER_SPEED * mag * mag * delta;
-  return 1;
+  return player;
 }
