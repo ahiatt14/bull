@@ -9,6 +9,7 @@
 void ecs__control_player(
   struct GameTime time,
   struct Gamepad gamepad,
+  struct ControllerActions const *const actions,
   struct Entity *const player
 );
 

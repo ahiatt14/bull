@@ -75,6 +75,17 @@ void ecs__remove_timeout(
   struct ECS *const ecs
 );
 
+void ecs__add_repeat(
+  EntityId id,
+  struct Repeat repeat,
+  struct ECS *const ecs
+);
+
+void ecs__remove_repeat(
+  EntityId id,
+  struct ECS *const ecs
+);
+
 void ecs__add_vec3lerp(
   EntityId id,
   struct Vec3Lerp vec3lerp,
@@ -116,6 +127,17 @@ void ecs__add_look_at_center(
 void ecs__remove_look_at_center(
   EntityId id,
   struct ECS *const ecs
+);
+
+void ecs__add_weapons(
+  EntityId id,
+  struct Weapons weapons,
+  struct ECS *const ecs
+);
+
+void ecs__remove_weapons(
+  EntityId id,
+  struct ECS *const ecs  
 );
 
 #endif

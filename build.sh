@@ -66,13 +66,13 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/fireball.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/blink.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/concrete_wall.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/bullets.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/night_sky.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/muzzle_flash.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/steam.png 3 $artifact_dir \
   && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_mushroom_cloud.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/exclamation.obj $artifact_dir && \
-  ./${tools}sourcify-obj.exe assets/mesh/fuel_sphere.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/bird.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/steam_column.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_flat.obj $artifact_dir && \

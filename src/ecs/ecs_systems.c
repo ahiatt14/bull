@@ -4,6 +4,10 @@
 #include "ecs_systems.h"
 #include "ecs_component_fns.h"
 
+// TODO: we can make a Controller injectable
+// that's agnostic about player/AI
+#include "player.h"
+
 #include "constants.h"
 #include "bull_math.h"
 #include "tail_helpers.h"
@@ -11,18 +15,28 @@
 void ecs__control_player(
   struct GameTime time,
   struct Gamepad gamepad,
-  // struct PlayerActions const *const player_actions,
+  struct ControllerActions const *const actions,
   struct Entity *const player
 ) {
 
-  if (lacks_configuration(
-    c_PLAYER_CONTROLLER,
-    player->config
-  )) return;
+  // TODO: not as clean as the FSM we had before, hmm
+  // something to think about
 
   static const float SPEED = 5.0f;
-  static const float STICK_DEADZONE = 0.5f;
-  // static const float TRIGGER_DEADZONE = 0.5f;
+  static const float STICK_DEADZONE = 0.2f;
+  static const float TRIGGER_DEADZONE = 0.3f;
+
+  if (lacks_configuration(c_PLAYER_CONTROLLER, player->config)) return;
+
+  if (
+    !!has_component(c_REPEAT, player->config) &&
+    gamepad.right_trigger >= TRIGGER_DEADZONE
+  ) actions->on_start_autofire();
+
+  if (
+    has_component(c_REPEAT, player->config) &&
+    gamepad.left_trigger < TRIGGER_DEADZONE
+  ) actions->on_stop_autofire();
 
   struct Vec2 norm_direction =
     vec2__normalize(gamepad.left_stick_direction);
@@ -74,10 +88,10 @@ void ecs__timeout(
       ecs->entities[id].config
     )) continue;
 
-    ecs->entities[id].timeout.seconds_since_activation += time.delta;
+    ecs->entities[id].timeout.age += time.delta;
     if (
-      ecs->entities[id].timeout.seconds_since_activation >=
-      ecs->entities[id].timeout.limit_in_seconds
+      ecs->entities[id].timeout.age >=
+      ecs->entities[id].timeout.limit
     ) ecs->entities[id].timeout.on_timeout(id, ecs); // TODO: add remainder arg
   }
 }
@@ -87,7 +101,7 @@ void ecs__repeat(
   struct ECS *const ecs
 ) {
 
-  double seconds_since_interval, interval_in_seconds;
+  Seconds age, interval, remainder;
 
   for (EntityId id = 0; id < ecs->count; id++) {
 
@@ -96,17 +110,14 @@ void ecs__repeat(
       ecs->entities[id].config
     )) continue;
 
-    ecs->entities[id].repeat.seconds_since_interval += time.delta;
-    seconds_since_interval = ecs->entities[id].repeat.seconds_since_interval;
-    interval_in_seconds = ecs->entities[id].repeat.interval_in_seconds;
+    ecs->entities[id].repeat.age += time.delta;
+    age = ecs->entities[id].repeat.age;
+    interval = ecs->entities[id].repeat.interval;
 
-    if (seconds_since_interval >= interval_in_seconds) {
-      ecs->entities[id].repeat.on_interval(
-        id,
-        seconds_since_interval - interval_in_seconds,
-        ecs
-      );
-      ecs->entities[id].repeat.seconds_since_interval = 0;
+    if (age >= interval) {
+      remainder = age - interval;
+      ecs->entities[id].repeat.on_interval(id, remainder, ecs);
+      ecs->entities[id].repeat.age = remainder;
     }
   }
 }
@@ -150,11 +161,11 @@ void ecs__lerp_vec3(
       ecs->entities[id].config
     )) continue;
 
-    ecs->entities[id].vec3lerp.seconds_since_activation += time.delta;
+    ecs->entities[id].vec3lerp.age += time.delta;
 
     ratio =
-      ecs->entities[id].vec3lerp.seconds_since_activation /
-      ecs->entities[id].vec3lerp.duration_in_seconds;
+      ecs->entities[id].vec3lerp.age /
+      ecs->entities[id].vec3lerp.duration;
 
     ecs->entities[id].transform.position =
       ecs->entities[id].vec3lerp.lerp(
@@ -165,8 +176,8 @@ void ecs__lerp_vec3(
 
     if (ratio >= 1.0f) ecs->entities[id].vec3lerp.on_finish(
       id,
-      ecs->entities[id].vec3lerp.seconds_since_activation -
-      ecs->entities[id].vec3lerp.duration_in_seconds,
+      ecs->entities[id].vec3lerp.age -
+      ecs->entities[id].vec3lerp.duration,
       ecs
     );
   }
@@ -186,11 +197,11 @@ void ecs__lerp_revolve(
       ecs->entities[id].config
     )) continue;
 
-    ecs->entities[id].revolve_lerp.seconds_since_activation += time.delta;
+    ecs->entities[id].revolve_lerp.age += time.delta;
 
     ratio =
-      ecs->entities[id].revolve_lerp.seconds_since_activation /
-      ecs->entities[id].revolve_lerp.duration_in_seconds;
+      ecs->entities[id].revolve_lerp.age /
+      ecs->entities[id].revolve_lerp.duration;
 
     rads =
       dmax(ratio, 1.0f) *
@@ -200,13 +211,13 @@ void ecs__lerp_revolve(
       space__ccw_angle_rotate(
         WORLDSPACE.up,
         rads,
-        ecs->entities[id].revolve_lerp.start_position
+        ecs->entities[id].revolve_lerp.start
       );
 
     if (ratio >= 1.0f) ecs->entities[id].revolve_lerp.on_finish(
       id,
-      ecs->entities[id].revolve_lerp.seconds_since_activation -
-      ecs->entities[id].revolve_lerp.duration_in_seconds,
+      ecs->entities[id].revolve_lerp.age -
+      ecs->entities[id].revolve_lerp.duration,
       ecs
     );
   }
@@ -279,12 +290,12 @@ void ecs__draw(
       gpu->set_shader_float(
         shad,
         "seconds_since_activation",
-        ecs->entities[id].timeout.seconds_since_activation
+        ecs->entities[id].timeout.age
       );
       gpu->set_shader_float(
         shad,
         "limit_in_seconds",
-        ecs->entities[id].timeout.limit_in_seconds
+        ecs->entities[id].timeout.limit
       );
     }
 

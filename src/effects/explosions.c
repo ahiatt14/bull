@@ -58,8 +58,8 @@ void create_rpg_explosion(
   ecs__add_timeout(
     blink,
     (struct Timeout){
-      .seconds_since_activation = 0,
-      .limit_in_seconds = 0.15f,
+      .age = 0,
+      .limit = 0.15f,
       .on_timeout = mark_entity_for_destruction
     },
     ecs
@@ -90,8 +90,8 @@ void create_rpg_explosion(
   ecs__add_timeout(
     mushroom_cloud,
     (struct Timeout){
-      .seconds_since_activation = 0,
-      .limit_in_seconds = 1,
+      .age = 0,
+      .limit = 1,
       .on_timeout = mark_entity_for_destruction
     },
     ecs

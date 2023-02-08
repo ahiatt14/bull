@@ -15,7 +15,7 @@ EntityId deploy_rpg(
   struct Vec3 position,
   void (*on_rpg_deployed)(
     EntityId id,
-    double remainder_in_seconds,
+    Seconds remainder,
     struct ECS *const ecs
   ),
   struct ECS *const ecs
@@ -62,8 +62,8 @@ EntityId deploy_rpg(
     (struct Vec3Lerp){
       .start = position,
       .end = propel_position,
-      .seconds_since_activation = 0,
-      .duration_in_seconds = 0.15f,
+      .age = 0,
+      .duration = 0.15f,
       .lerp = vec3__linear_lerp,
       .on_finish = on_rpg_deployed
     },
@@ -75,10 +75,10 @@ EntityId deploy_rpg(
 
 void propel_rpg(
   EntityId rocket,
-  double remainder_in_seconds,
+  Seconds remainder,
   void (*on_rpg_timer_up)(
     EntityId id,
-    double remainder_in_seconds,
+    Seconds remainder,
     struct ECS *const ecs
   ),
   struct ECS *const ecs
@@ -103,8 +103,8 @@ void propel_rpg(
   ecs->entities[rocket].vec3lerp = (struct Vec3Lerp){
     .start = position, // TODO: give headstart with lerp remainder
     .end = end,
-    .seconds_since_activation = 0, // TODO: give headstart with lerp remainder?
-    .duration_in_seconds = 0.5f,
+    .age = 0, // TODO: give headstart with lerp remainder?
+    .duration = 0.5f,
     .lerp = vec3__square_lerp,
     .on_finish = on_rpg_timer_up
   };

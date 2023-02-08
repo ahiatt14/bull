@@ -106,6 +106,22 @@ void ecs__remove_timeout(
   ecs->entities[id].config -= c_TIMEOUT;
 }
 
+void ecs__add_repeat(
+  EntityId id,
+  struct Repeat repeat,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config += c_REPEAT;
+  ecs->entities[id].repeat = repeat;
+}
+
+void ecs__remove_repeat(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config -= c_REPEAT;
+}
+
 void ecs__add_vec3lerp(
   EntityId id,
   struct Vec3Lerp vec3lerp,
@@ -166,4 +182,20 @@ void ecs__remove_look_at_center(
   struct ECS *const ecs
 ) {
   ecs->entities[id].config -= c_LOOK_AT_CENTER;
+}
+
+void ecs__add_weapons(
+  EntityId id,
+  struct Weapons weapons,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].weapons = weapons;
+  ecs->entities[id].config += c_WEAPONS;
+}
+
+void ecs__remove_weapons(
+  EntityId id,
+  struct ECS *const ecs  
+) {
+  ecs->entities[id].config -= c_WEAPONS;
 }

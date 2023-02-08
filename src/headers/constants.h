@@ -5,6 +5,14 @@
 
 #define DELTA_CAP 1.0f / 30.0f
 
+// TODO: find better place for this
+struct ControllerActions {
+  void (*on_start_autofire)();
+  void (*on_stop_autofire)();
+};
+
+typedef double Seconds;
+
 extern struct M3x3 M3X3_IDENTITY;
 extern struct M4x4 M4X4_IDENTITY;
 

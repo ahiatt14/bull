@@ -11,18 +11,21 @@
 #include "bull_math.h"
 #include "tail_helpers.h"
 
+#include "player.h"
+#include "guns.h"
 #include "rpg.h"
 #include "explosions.h"
 #include "muzzle_flashes.h"
 
 #include "rocket_mesh.h"
 
-#include "player.h"
 #include "firing_guide.h"
 
 /*
-  ~~~~~~~~~CONSTANTS~~~~~~~~~~
+  ~~~~~~~~~DEFINITIONS~~~~~~~~~~
 */
+
+#define ENTITY_CALLBACK_PARAMS EntityId id, Seconds remainder, struct ECS *const ecs
 
 #define PLAYER_LVL_COUNT 3
 
@@ -33,20 +36,39 @@
 static const struct Vec3 PLAYER_START_POSITION = { 3, 0, 0 };
 
 /*
+  ~~~~~~~~ENTITY ACTIONS~~~~~~~~
+*/
+
+void fire_lvl0_cannon(
+  EntityId id,
+  Seconds remainder,
+  struct ECS *const ecs
+);
+
+/*
   ~~~~~ENTITY EVENT HANDLERS~~~~
 */
 
-void on_rpg_deployed(
+void on_reach_final_destination(
   EntityId id,
-  double remainder_in_seconds,
+  Seconds remainder,
+  struct ECS *const ecs
+);
+
+void on_rpg_deployed(
+  EntityId rocket,
+  Seconds remainder,
   struct ECS *const ecs
 );
 
 void on_rpg_timer_up(
-  EntityId id,
-  double remainder_in_seconds,
+  EntityId rocket,
+  Seconds remainder,
   struct ECS *const ecs
 );
+
+void on_player_start_autofire();
+void on_player_stop_autofire();
 
 /*
   ~~~~~~~~~LOCAL STATE~~~~~~~~~~
@@ -59,10 +81,10 @@ static struct Gamepad gamepad;
 
 static EntityId player;
 
-// static struct PlayerActions player_one_actions = {
-//   .start_autofire = begin_lvl0_gun_autofire,
-//   .stop_autofire = stop_autofiring
-// };
+static struct ControllerActions player_one_actions = {
+  .on_start_autofire = on_player_start_autofire,
+  .on_stop_autofire = on_player_stop_autofire
+};
 
 static EntityId entities_to_destroy[MAX_ENTITIES];
 static uint_fast16_t count_of_entities_to_destroy;
@@ -96,13 +118,18 @@ void action__init(
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
-  gpu->copy_static_mesh_to_gpu(&ROCKET_MESH);
+  gpu->copy_static_mesh_to_gpu(&ROCKET_MESH); // TODO: move into rpg file
 
+  guns__copy_assets_to_gpu(gpu);
   explosions__copy_assets_to_gpu(gpu);
   muzzle_flashes__copy_assets_to_gpu(gpu);
 
   player__copy_assets_to_gpu(gpu);
-  player = create_player(PLAYER_START_POSITION, &ecs);
+  player = create_player(
+    PLAYER_START_POSITION,
+    fire_lvl0_cannon,
+    &ecs
+  );
   firing_guide__copy_assets_to_gpu(gpu);
 
   ocean__init(window, vwprt, gpu);
@@ -129,8 +156,14 @@ void action__tick(
   // GAMEPLAY
 
   count_of_entities_to_destroy = 0;
-  ecs__control_player(time, gamepad, &ecs.entities[player]);
+  ecs__control_player(
+    time,
+    gamepad,
+    &player_one_actions,
+    &ecs.entities[player]
+  );
   ecs__timeout(time, &ecs);
+  ecs__repeat(time, &ecs);
   ecs__lerp_vec3(time, &ecs);
   ecs__lerp_revolve(time, &ecs);
   ecs__move(time, &ecs);
@@ -230,15 +263,46 @@ void action__tick(
   ~~~~~ENTITY EVENT HANDLERS~~~~
 */
 
+void on_player_start_autofire() {
+  // struct Entity *player = &ecs.entities[player];
+  // ecs__add_repeat(
+  //   player,
+  //   (struct Repeat){
+  //     .age = 0,
+  //     .interval = player->weapons.primary_weapon_interval,
+  //     .on_interval = player->weapons.primary
+  //   },
+  //   &ecs
+  // );
+  printf("autofire start");
+}
+
+void on_player_stop_autofire() {
+  // struct Entity *player = &ecs.entities[player];
+  // ecs__remove_repeat(player, &ecs);
+  printf("autofire stop");
+}
+
+void fire_lvl0_cannon(
+  EntityId weapon,
+  Seconds remainder,
+  struct ECS *const ecs
+) {
+  
+  // create_lvl0_cannonfire(
+
+  // );
+}
+
 void on_rpg_deployed(
   EntityId rocket,
-  double remainder_in_seconds,
+  Seconds remainder,
   struct ECS *const ecs
 ) {
 
   propel_rpg(
     rocket,
-    remainder_in_seconds,
+    remainder,
     on_rpg_timer_up,
     ecs
   );
@@ -250,7 +314,7 @@ void on_rpg_deployed(
 
 void on_rpg_timer_up(
   EntityId rocket,
-  double remainder_in_seconds,
+  Seconds remainder,
   struct ECS *const ecs
 ) {
 
@@ -262,4 +326,12 @@ void on_rpg_timer_up(
   );
 
   // TODO: damage radius
+}
+
+void on_reach_final_destination(
+  EntityId id,
+  Seconds remainder,
+  struct ECS *const ecs
+) {
+  mark_entity_for_destruction(id, ecs);
 }

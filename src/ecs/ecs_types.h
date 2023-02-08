@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#include "tail.h"
+#include "constants.h"
+
 #define MAX_ENTITIES 500
 
 #define c_TRANSFORM 1 << 0
@@ -16,6 +19,7 @@
 #define c_LOOK_AT_CENTER 1 << 8
 #define c_PLAYER_CONTROLLER 1 << 9
 #define c_REPEAT 1 << 10
+#define c_WEAPONS 1 << 11
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast16_t ComponentConfig;
@@ -23,9 +27,23 @@ typedef uint_fast16_t ComponentConfig;
 struct ECS;
 struct Entity;
 
+struct Weapons {
+  void (*primary)(
+    EntityId vehicle,
+    Seconds remainder,
+    struct ECS *const ecs
+  );
+  Seconds primary_autofire_interval;
+  // void (*secondary)(
+  //   EntityId vehicle,
+  //   Seconds remainder,
+  //   struct ECS *const ecs
+  // );
+};
+
 struct Timeout {
-  double seconds_since_activation;
-  double limit_in_seconds;
+  Seconds age;
+  Seconds limit;
   void (*on_timeout)(
     EntityId id,
     struct ECS *const ecs
@@ -33,11 +51,11 @@ struct Timeout {
 };
 
 struct Repeat {
-  double seconds_since_interval;
-  double interval_in_seconds;
+  Seconds age;
+  Seconds interval;
   void (*on_interval)(
     EntityId id,
-    double remainder_in_seconds,
+    Seconds remainder,
     struct ECS *const ecs
   );
 };
@@ -55,8 +73,8 @@ struct Draw {
 struct Vec3Lerp {
   struct Vec3 start;
   struct Vec3 end;
-  double seconds_since_activation;
-  double duration_in_seconds;
+  Seconds age;
+  Seconds duration;
   struct Vec3 (*lerp)(
     struct Vec3 start,
     struct Vec3 end,
@@ -64,19 +82,19 @@ struct Vec3Lerp {
   );
   void (*on_finish)(
     EntityId id,
-    double remainder_in_seconds,
+    Seconds remainder,
     struct ECS *const ecs
   );
 };
 
 struct RevolveLerp {
-  struct Vec3 start_position;
+  struct Vec3 start;
   float target_rads;
-  double seconds_since_activation;
-  double duration_in_seconds;
+  Seconds age;
+  Seconds duration;
   void (*on_finish)(
     EntityId id,
-    double remainder_in_seconds,
+    Seconds remainder,
     struct ECS *const ecs
   );
 };
@@ -84,12 +102,13 @@ struct RevolveLerp {
 // TODO: do hot/cold components at some point
 struct Entity {
   struct Transform transform;
-  struct Vec3Lerp vec3lerp;
-  struct RevolveLerp revolve_lerp;
   struct Timeout timeout;
   struct Repeat repeat;
+  struct RevolveLerp revolve_lerp;
+  struct Vec3Lerp vec3lerp;
   struct Vec3 velocity;
   struct Draw draw;
+  struct Weapons weapons;
   ComponentConfig config;
 };
 
