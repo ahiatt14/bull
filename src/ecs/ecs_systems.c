@@ -19,23 +19,24 @@ void ecs__control_player(
   struct Entity *const player
 ) {
 
-  // TODO: not as clean as the FSM we had before, hmm
-  // something to think about
-
+  // TODO: we should definitely create a Controller API
+  // to inject and move the player-specific stuff out
   static const float SPEED = 5.0f;
   static const float STICK_DEADZONE = 0.2f;
   static const float TRIGGER_DEADZONE = 0.3f;
 
   if (lacks_configuration(c_PLAYER_CONTROLLER, player->config)) return;
 
+  // TODO: not as clean as the FSM we had before, hmm
+  // something to think about
   if (
-    !!has_component(c_REPEAT, player->config) &&
+    (has_component(c_REPEAT, player->config) == 0) &&
     gamepad.right_trigger >= TRIGGER_DEADZONE
   ) actions->on_start_autofire();
 
   if (
     has_component(c_REPEAT, player->config) &&
-    gamepad.left_trigger < TRIGGER_DEADZONE
+    gamepad.right_trigger < TRIGGER_DEADZONE
   ) actions->on_stop_autofire();
 
   struct Vec2 norm_direction =

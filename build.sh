@@ -66,7 +66,7 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/fireball.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/blink.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/concrete_wall.png 3 $artifact_dir && \
-  ./${tools}sourcify-png.exe assets/png/bullets.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/bullets.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/night_sky.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/muzzle_flash.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/steam.png 3 $artifact_dir \

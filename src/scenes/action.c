@@ -264,23 +264,19 @@ void action__tick(
 */
 
 void on_player_start_autofire() {
-  // struct Entity *player = &ecs.entities[player];
-  // ecs__add_repeat(
-  //   player,
-  //   (struct Repeat){
-  //     .age = 0,
-  //     .interval = player->weapons.primary_weapon_interval,
-  //     .on_interval = player->weapons.primary
-  //   },
-  //   &ecs
-  // );
-  printf("autofire start");
+  ecs__add_repeat(
+    player,
+    (struct Repeat){
+      .age = 0,
+      .interval = ecs.entities[player].weapons.primary_autofire_interval,
+      .on_interval = ecs.entities[player].weapons.primary
+    },
+    &ecs
+  );
 }
 
 void on_player_stop_autofire() {
-  // struct Entity *player = &ecs.entities[player];
-  // ecs__remove_repeat(player, &ecs);
-  printf("autofire stop");
+  ecs__remove_repeat(player, &ecs);
 }
 
 void fire_lvl0_cannon(
@@ -289,9 +285,27 @@ void fire_lvl0_cannon(
   struct ECS *const ecs
 ) {
   
-  // create_lvl0_cannonfire(
+  // TOOD: add muzzle flash
 
-  // );
+  struct Vec3 direction =
+    vec3__normalize(vec3_minus_vec3(
+      ORIGIN,
+      ecs->entities[weapon].transform.position
+    ));
+
+  struct Vec3 target = vec3_plus_vec3(
+    scalar_x_vec3(25, direction),
+    ecs->entities[weapon].transform.position
+  );
+
+  // TODO: add remainder to starting position
+  create_lvl0_cannonfire(
+    ecs->entities[weapon].transform.position,
+    target,
+    1,
+    on_reach_final_destination,
+    ecs
+  );
 }
 
 void on_rpg_deployed(

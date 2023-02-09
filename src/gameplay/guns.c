@@ -16,7 +16,7 @@ void guns__copy_assets_to_gpu(
 }
 
 EntityId create_lvl0_cannonfire(
-  struct Transform const *const source_transform,
+  struct Vec3 position,
   struct Vec3 target,
   Seconds duration,
   void (*on_reach_final_destination)(
@@ -29,6 +29,11 @@ EntityId create_lvl0_cannonfire(
 
   EntityId cannonfire = ecs__create_entity(ecs);
 
+  struct Quaternion point_to_target = quaternion__create(
+    WORLDSPACE.up,
+    rads_ccw_from_forward_around_up(vec3_minus_vec3(position, target))
+  );
+
   struct Quaternion face_quad_up = quaternion__create(
     WORLDSPACE.right,
     M_PI * 0.5f
@@ -37,10 +42,10 @@ EntityId create_lvl0_cannonfire(
   ecs__add_transform(
     cannonfire,
     (struct Transform){
-      .position = source_transform->position,
-      .scale = 0.3f,
+      .position = position,
+      .scale = 1.5f,
       .rotation = quaternion__multiply(
-        source_transform->rotation,
+        point_to_target,
         face_quad_up
       )
     },
@@ -49,7 +54,7 @@ EntityId create_lvl0_cannonfire(
   ecs__add_vec3lerp(
     cannonfire,
     (struct Vec3Lerp){
-      .start = source_transform->position,
+      .start = position,
       .end = target,
       .age = 0,
       .duration = duration,

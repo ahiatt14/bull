@@ -12,7 +12,7 @@ void guns__copy_assets_to_gpu(
 );
 
 EntityId create_lvl0_cannonfire(
-  struct Transform const *const source_transform,
+  struct Vec3 position,
   struct Vec3 target,
   Seconds duration,
   void (*on_reach_final_destination)(
