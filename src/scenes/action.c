@@ -287,6 +287,8 @@ void fire_lvl0_cannon(
   
   // TOOD: add muzzle flash
 
+  static const Seconds flight_time = 1.0f;
+
   struct Vec3 direction =
     vec3__normalize(vec3_minus_vec3(
       ORIGIN,
@@ -294,15 +296,22 @@ void fire_lvl0_cannon(
     ));
 
   struct Vec3 target = vec3_plus_vec3(
-    scalar_x_vec3(25, direction),
+    scalar_x_vec3(30, direction),
     ecs->entities[weapon].transform.position
   );
 
+  struct Vec3 starting_position =
+    vec3__linear_lerp(
+      ecs->entities[weapon].transform.position,
+      target,
+      remainder
+    );
+
   // TODO: add remainder to starting position
   create_lvl0_cannonfire(
-    ecs->entities[weapon].transform.position,
+    starting_position,
     target,
-    1,
+    flight_time,
     on_reach_final_destination,
     ecs
   );
