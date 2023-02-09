@@ -40,6 +40,7 @@ void create_rpg_explosion(
   struct Vec3 position,
   void (*mark_entity_for_destruction)(
     EntityId id,
+    Seconds remainder,
     struct ECS *const ecs
   ),
   struct ECS *const ecs

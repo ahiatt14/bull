@@ -49,12 +49,6 @@ void fire_lvl0_cannon(
   ~~~~~ENTITY EVENT HANDLERS~~~~
 */
 
-void on_reach_final_destination(
-  EntityId id,
-  Seconds remainder,
-  struct ECS *const ecs
-);
-
 void on_rpg_deployed(
   EntityId rocket,
   Seconds remainder,
@@ -90,6 +84,7 @@ static EntityId entities_to_destroy[MAX_ENTITIES];
 static uint_fast16_t count_of_entities_to_destroy;
 static void mark_entity_for_destruction(
   EntityId id,
+  Seconds remainder,
   struct ECS *const ecs
 ) {
   entities_to_destroy[count_of_entities_to_destroy++] = id;
@@ -287,8 +282,6 @@ void fire_lvl0_cannon(
   
   // TOOD: add muzzle flash
 
-  static const Seconds flight_time = 1.0f;
-
   struct Vec3 direction =
     vec3__normalize(vec3_minus_vec3(
       ORIGIN,
@@ -310,9 +303,8 @@ void fire_lvl0_cannon(
   // TODO: add remainder to starting position
   create_lvl0_cannonfire(
     starting_position,
-    target,
-    flight_time,
-    on_reach_final_destination,
+    direction,
+    mark_entity_for_destruction,
     ecs
   );
 }
@@ -341,7 +333,7 @@ void on_rpg_timer_up(
   struct ECS *const ecs
 ) {
 
-  mark_entity_for_destruction(rocket, ecs);
+  mark_entity_for_destruction(rocket, remainder, ecs);
   create_rpg_explosion(
     ecs->entities[rocket].transform.position,
     mark_entity_for_destruction,
@@ -349,12 +341,4 @@ void on_rpg_timer_up(
   );
 
   // TODO: damage radius
-}
-
-void on_reach_final_destination(
-  EntityId id,
-  Seconds remainder,
-  struct ECS *const ecs
-) {
-  mark_entity_for_destruction(id, ecs);
 }

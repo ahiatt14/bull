@@ -46,6 +46,7 @@ struct Timeout {
   Seconds limit;
   void (*on_timeout)(
     EntityId id,
+    Seconds remainder,
     struct ECS *const ecs
   );
 };
@@ -99,6 +100,7 @@ struct RevolveLerp {
   );
 };
 
+// TODO: AoS vs SoA blah blah blah
 // TODO: do hot/cold components at some point
 struct Entity {
   struct Transform transform;

@@ -93,7 +93,11 @@ void ecs__timeout(
     if (
       ecs->entities[id].timeout.age >=
       ecs->entities[id].timeout.limit
-    ) ecs->entities[id].timeout.on_timeout(id, ecs); // TODO: add remainder arg
+    ) ecs->entities[id].timeout.on_timeout(
+      id,
+      ecs->entities[id].timeout.age - ecs->entities[id].timeout.limit,
+      ecs
+    );
   }
 }
 

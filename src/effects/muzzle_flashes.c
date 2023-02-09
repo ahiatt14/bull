@@ -30,6 +30,7 @@ void create_lvl0_muzzle_flash(
   struct Transform const *const source_transform,
   void (*mark_entity_for_destruction)(
     EntityId id,
+    Seconds remainder,
     struct ECS *const ecs
   ),
   struct ECS *const ecs
