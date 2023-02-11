@@ -161,8 +161,10 @@ void action__tick(
   ecs__repeat(time, &ecs);
   ecs__lerp_vec3(time, &ecs);
   ecs__lerp_revolve(time, &ecs);
+  ecs__gravity(time, &ecs);
   ecs__move(time, &ecs);
   ecs__look_at_center(time, &ecs);
+  ecs__scroll_uvs(time, &ecs);
   for (uint_fast16_t i = 0; i < count_of_entities_to_destroy; i++)
     ecs__destroy_entity(entities_to_destroy[i], &ecs);
 
@@ -304,9 +306,15 @@ void fire_lvl0_cannon(
   create_lvl0_cannonfire(
     starting_position,
     direction,
-    mark_entity_for_destruction,
+    on_rpg_timer_up,
     ecs
   );
+
+  // create_lvl0_muzzle_flash(
+  //   &ecs->entities[weapon].transform,
+  //   mark_entity_for_destruction,
+  //   ecs
+  // );
 }
 
 void on_rpg_deployed(
@@ -327,6 +335,9 @@ void on_rpg_deployed(
   // TODO: spawn thruster effect (can do inside propel_rpg)
 }
 
+// TODO: using this standardized callback signature,
+// we can move lotsa these ancillary callbacks
+// into their parent files
 void on_rpg_timer_up(
   EntityId rocket,
   Seconds remainder,
@@ -335,7 +346,7 @@ void on_rpg_timer_up(
 
   mark_entity_for_destruction(rocket, remainder, ecs);
   create_rpg_explosion(
-    ecs->entities[rocket].transform.position,
+    rocket,
     mark_entity_for_destruction,
     ecs
   );

@@ -17,9 +17,9 @@ void main()
 {
   vec4 texture_color = texture(tex, fs_in.tex_uv);
 
-  float lifespan_lived = seconds_since_activation / limit_in_seconds;
+  float fade = log(seconds_since_activation / limit_in_seconds) + 1.0;
 
-  if (texture_color.a < lifespan_lived) discard;
+  if (texture_color.a < fade) discard;
 
   gl_FragDepth = 0.0;
   FragColor = texture_color;

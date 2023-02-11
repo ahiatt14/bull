@@ -1,43 +1,57 @@
+#include <math.h>
+
 #include "tail.h"
 
 #include "ecs.h"
+
+#include "explosions.h"
+#include "sparks.h"
 
 #include "constants.h"
 
 #include "billboard_geo.h"
 #include "billboard_vert.h"
 #include "default_vert.h"
-#include "lowpoly_mushroom_cloud_mesh.h"
+#include "lowpoly_sphere_flat_mesh.h"
 #include "fireball_texture.h"
 #include "blink_texture.h"
 #include "explosion_blink_frag.h"
 #include "explosion_frag.h"
-#include "mushroom_cloud_frag.h"
 
 static struct Shader rpg_explosion_blink_shader;
-static struct Shader rpg_explosion_mushroom_cloud_shader;
+static struct Shader rpg_explosion_fireball_shader;
+
+// struct Quaternion quaternion__inverse(
+//   struct Quaternion q
+// ) {
+//   struct Quaternion conjugate = {
+//     .v = vec3__negate(q.v),
+//     .w = q.w
+//   };
+//   return quaternion__multiply(conjugate, q);
+// }
 
 void explosions__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
 
-  gpu->copy_static_mesh_to_gpu(&LOWPOLY_MUSHROOM_CLOUD_MESH);
+  gpu->copy_static_mesh_to_gpu(&LOWPOLY_SPHERE_FLAT_MESH);
 
   rpg_explosion_blink_shader.frag_src = EXPLOSION_BLINK_FRAG_SRC;
   rpg_explosion_blink_shader.geo_src= BILLBOARD_GEO_SRC;
   rpg_explosion_blink_shader.vert_src = BILLBOARD_VERT_SRC;
   gpu->copy_shader_to_gpu(&rpg_explosion_blink_shader);
 
-  rpg_explosion_mushroom_cloud_shader.frag_src = EXPLOSION_FRAG_SRC;
-  rpg_explosion_mushroom_cloud_shader.vert_src = DEFAULT_VERT_SRC;
-  gpu->copy_shader_to_gpu(&rpg_explosion_mushroom_cloud_shader);
+  rpg_explosion_fireball_shader.frag_src = EXPLOSION_FRAG_SRC;
+  rpg_explosion_fireball_shader.vert_src = DEFAULT_VERT_SRC;
+  gpu->copy_shader_to_gpu(&rpg_explosion_fireball_shader);
 
   gpu->copy_texture_to_gpu(&BLINK_TEXTURE);
   gpu->copy_texture_to_gpu(&FIREBALL_TEXTURE);
 }
 
 void create_rpg_explosion(
-  struct Vec3 position,
+  EntityId rocket,
   void (*mark_entity_for_destruction)(
     EntityId id,
     Seconds remainder,
@@ -51,8 +65,8 @@ void create_rpg_explosion(
   ecs__add_transform(
     blink,
     (struct Transform){
-      .position = position,
-      .scale = 1
+      .position = ecs->entities[rocket].transform.position,
+      .scale = 0.7f
     },
     ecs
   );
@@ -60,9 +74,14 @@ void create_rpg_explosion(
     blink,
     (struct Timeout){
       .age = 0,
-      .limit = 0.15f,
+      .limit = 1.0f / 30.0f,
       .on_timeout = mark_entity_for_destruction
     },
+    ecs
+  );
+  ecs__add_velocity(
+    blink,
+    (struct Vec3){ 0, 5, 0 },
     ecs
   );
   ecs__add_draw_billboard(
@@ -70,50 +89,56 @@ void create_rpg_explosion(
     (struct Draw){
       .texture = &BLINK_TEXTURE,
       .shader = &rpg_explosion_blink_shader
+      // .shader = &FLAT_TEXTURE_SHADER
     },
     ecs
   );
 
-  EntityId mushroom_cloud = ecs__create_entity(ecs);
+  EntityId fireball = ecs__create_entity(ecs);
 
   ecs__add_transform(
-    mushroom_cloud,
+    fireball,
     (struct Transform){
-      .position = position,
-      .rotation = quaternion__create(
-        WORLDSPACE.up,
-        0
-      ),
+      .position = ecs->entities[rocket].transform.position,
+      .rotation = ecs->entities[rocket].transform.rotation,
       .scale = 0.5f
     },
     ecs
   );
   ecs__add_timeout(
-    mushroom_cloud,
+    fireball,
     (struct Timeout){
       .age = 0,
-      .limit = 1,
+      .limit = 1.5f,
       .on_timeout = mark_entity_for_destruction
     },
     ecs
   );
   ecs__add_velocity(
-    mushroom_cloud,
-    (struct Vec3){ 0, 1, 0 },
+    fireball,
+    vec3__normalize(ecs->entities[rocket].velocity),
     ecs
   );
   ecs__add_uv_scroll(
-    mushroom_cloud,
-    (struct Vec2){ 0, 1 },
+    fireball,
+    (struct Vec2){ 0, 0.4f },
     ecs
   );
   ecs__add_draw(
-    mushroom_cloud,
+    fireball,
     (struct Draw){
       .texture = &FIREBALL_TEXTURE,
-      .shader = &rpg_explosion_mushroom_cloud_shader,
-      .mesh = &LOWPOLY_MUSHROOM_CLOUD_MESH
+      .shader = &rpg_explosion_fireball_shader,
+      .mesh = &LOWPOLY_SPHERE_FLAT_MESH
     },
+    ecs
+  );
+
+  create_sparks(
+    ecs->entities[rocket].transform.position,
+    ecs->entities[rocket].velocity,
+    5,
+    mark_entity_for_destruction,
     ecs
   );
 }

@@ -4,6 +4,7 @@ uniform sampler2D surface_texture;
 
 vec3 COLOR_WHITE = vec3(1.0);
 
+uniform vec2 total_uv_scroll;
 uniform float seconds_since_activation;
 uniform float limit_in_seconds;
 
@@ -21,9 +22,16 @@ float brightness(vec3 color) {
 
 void main()
 {
-  vec3 material = texture(surface_texture, fs_in.tex_uv).rgb;
+  vec3 material = texture(
+    surface_texture,
+    fs_in.tex_uv + total_uv_scroll
+  ).rgb;
+  float ratio = seconds_since_activation / limit_in_seconds;
 
-  float fade = 1.0 - seconds_since_activation / limit_in_seconds;
+  float fade = 1.0 - ratio;
+  // float fade = 1.0 - (log(ratio) + 1.0);
+  // TODO: why doesn't this work?...
+  // float fade = log(ratio);
 
   if (brightness(material) > fade) discard;
 

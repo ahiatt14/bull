@@ -53,6 +53,16 @@ void ecs__remove_draw_billboard(
   struct ECS *const ecs
 );
 
+void ecs__add_gravity(
+  EntityId id,
+  struct ECS *const ecs
+);
+
+void ecs__remove_gravity(
+  EntityId id,
+  struct ECS *const ecs
+);
+
 void ecs__add_velocity(
   EntityId id,
   struct Vec3 velocity,

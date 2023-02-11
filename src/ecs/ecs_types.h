@@ -8,6 +8,7 @@
 
 #define MAX_ENTITIES 500
 
+// TODO: reorder these at some point
 #define c_TRANSFORM 1 << 0
 #define c_VELOCITY 1 << 1
 #define c_TIMEOUT 1 << 2
@@ -20,6 +21,7 @@
 #define c_PLAYER_CONTROLLER 1 << 9
 #define c_REPEAT 1 << 10
 #define c_WEAPONS 1 << 11
+#define c_GRAVITY 1 << 12
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast16_t ComponentConfig;
@@ -39,6 +41,7 @@ struct Weapons {
   //   Seconds remainder,
   //   struct ECS *const ecs
   // );
+  // Seconds secondary_autofire_interval;
 };
 
 struct Timeout {
@@ -61,14 +64,12 @@ struct Repeat {
   );
 };
 
-// TODO: should we make a separate structure to hold these
-// and turn it into a cold member i.e. just a pointer
-// to the whole draw component
 struct Draw {
   struct DrawableMesh *mesh;
   struct Texture *texture;
   struct Shader *shader;
   struct Vec2 uv_scroll_speed;
+  struct Vec2 uv_scroll_total;
 };
 
 struct Vec3Lerp {
@@ -101,7 +102,7 @@ struct RevolveLerp {
 };
 
 // TODO: AoS vs SoA blah blah blah
-// TODO: do hot/cold components at some point
+// TODO: do hot/cold components point?
 struct Entity {
   struct Transform transform;
   struct Timeout timeout;

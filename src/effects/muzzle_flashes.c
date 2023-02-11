@@ -52,14 +52,17 @@ void create_lvl0_muzzle_flash(
     flash,
     (struct Transform){
       .position = vec3_plus_vec3(
-        source_transform->position,
-        scalar_x_vec3(0.5f, source_forward)
+        vec3_plus_vec3(
+          source_transform->position,
+          scalar_x_vec3(0.5, source_forward)
+        ),
+        (struct Vec3){0, 0, 0.1f}
       ),
       .rotation = quaternion__multiply(
         source_transform->rotation,
         right_rotation
       ),
-      .scale = 1.5f
+      .scale = 1
     },
     ecs
   );
@@ -67,7 +70,7 @@ void create_lvl0_muzzle_flash(
     flash,
     (struct Timeout){
       .age = 0,
-      .limit = 0.15f,
+      .limit = 1.0f / 60.0f,
       .on_timeout = mark_entity_for_destruction
     },
     ecs

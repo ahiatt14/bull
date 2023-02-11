@@ -13,6 +13,11 @@ void ecs__control_player(
   struct Entity *const player
 );
 
+void ecs__gravity(
+  struct GameTime time,
+  struct ECS *const ecs
+);
+
 void ecs__move(
   struct GameTime time,
   struct ECS *const ecs

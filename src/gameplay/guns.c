@@ -45,7 +45,7 @@ EntityId create_lvl0_cannonfire(
     cannonfire,
     (struct Transform){
       .position = position,
-      .scale = 1.5f,
+      .scale = 1.3f,
       .rotation = quaternion__multiply(
         point_to_target,
         face_quad_up
@@ -57,7 +57,7 @@ EntityId create_lvl0_cannonfire(
     cannonfire,
     (struct Timeout){
       .age = 0, // TODO: remainder??
-      .limit = 1,
+      .limit = 0.2f,
       .on_timeout = on_timeout
     },
     ecs

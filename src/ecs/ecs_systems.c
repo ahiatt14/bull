@@ -58,6 +58,28 @@ void ecs__control_player(
     norm_direction.y;
 }
 
+void ecs__gravity(
+  struct GameTime time,
+  struct ECS *const ecs
+) {
+
+  struct Vec3 acceleration = {0, -3 * time.delta, 0};
+
+  for (EntityId id = 0; id < ecs->count; id++) {
+
+    if (lacks_configuration(
+      c_GRAVITY | c_VELOCITY,
+      ecs->entities[id].config
+    )) continue;
+
+    ecs->entities[id].velocity = vec3_plus_vec3(
+      ecs->entities[id].velocity,
+      acceleration
+    ); 
+  }
+
+}
+
 void ecs__move(
   struct GameTime time,
   struct ECS *const ecs
@@ -139,16 +161,10 @@ void ecs__scroll_uvs(
       ecs->entities[id].config
     )) continue;
 
-    for (
-      uint_fast16_t i = 0;
-      i < ecs->entities[id].draw.mesh->vertices_length;
-      i++
-    ) {
-      ecs->entities[id].draw.mesh->vertices[i].uv.x +=
-        ecs->entities[id].draw.uv_scroll_speed.x * time.delta;
-      ecs->entities[id].draw.mesh->vertices[i].uv.y +=
-        ecs->entities[id].draw.uv_scroll_speed.y * time.delta;
-    }
+    ecs->entities[id].draw.uv_scroll_total.x +=
+      ecs->entities[id].draw.uv_scroll_speed.x * time.delta; 
+    ecs->entities[id].draw.uv_scroll_total.y +=
+      ecs->entities[id].draw.uv_scroll_speed.y * time.delta;
   }
 }
 
@@ -262,6 +278,8 @@ void ecs__draw(
   struct ECS *const ecs
 ) {
 
+  // TODO: boy this is getting messy
+
   for (EntityId id = 0; id < ecs->count; id++) {
 
     if (
@@ -291,6 +309,13 @@ void ecs__draw(
       "total_elapsed_seconds",
       time.sec_since_game_launch
     );
+    if (has_component(c_UV_SCROLL, ecs->entities[id].config)) {
+      gpu->set_shader_vec2(
+        shad,
+        "total_uv_scroll",
+        ecs->entities[id].draw.uv_scroll_total
+      );
+    }
     if (has_component(c_TIMEOUT, ecs->entities[id].config)) {
       gpu->set_shader_float(
         shad,

@@ -48,7 +48,9 @@ void ecs__add_draw(
   struct ECS *const ecs
 ) {
   ecs->entities[id].config += c_DRAW_MESH;
-  ecs->entities[id].draw = draw;
+  ecs->entities[id].draw.texture = draw.texture;
+  ecs->entities[id].draw.shader = draw.shader;
+  ecs->entities[id].draw.mesh = draw.mesh;
 }
 
 void ecs__remove_draw(
@@ -72,6 +74,20 @@ void ecs__remove_draw_billboard(
   struct ECS *const ecs
 ) {
   ecs->entities[id].config -= c_DRAW_BILLBOARD;
+}
+
+void ecs__add_gravity(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config += c_GRAVITY;
+}
+
+void ecs__remove_gravity(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config -= c_GRAVITY;
 }
 
 void ecs__add_velocity(
@@ -144,6 +160,7 @@ void ecs__add_uv_scroll(
   struct ECS *const ecs
 ) {
   ecs->entities[id].config += c_UV_SCROLL;
+  ecs->entities[id].draw.uv_scroll_total = (struct Vec2){0};
   ecs->entities[id].draw.uv_scroll_speed = speed;
 }
 

@@ -1,16 +1,14 @@
-#ifndef __BULL_EXPLOSION__
-#define __BULL_EXPLOSION__
+#ifndef __BULL_SPARKS__
+#define __BULL_SPARKS__
 
 #include "tail.h"
 
 #include "ecs.h"
 
-void explosions__copy_assets_to_gpu(
-  struct GPU const *const gpu
-);
-
-void create_rpg_explosion(
-  EntityId rocket,
+void create_sparks(
+  struct Vec3 position,
+  struct Vec3 direction,
+  uint_fast8_t count,
   void (*mark_entity_for_destruction)(
     EntityId id,
     Seconds remainder,
