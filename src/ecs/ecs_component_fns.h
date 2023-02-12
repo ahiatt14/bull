@@ -53,6 +53,11 @@ void ecs__remove_draw_billboard(
   struct ECS *const ecs
 );
 
+void ecs__add_draw_back_faces(
+  EntityId id,
+  struct ECS *const ecs
+);
+
 void ecs__add_gravity(
   EntityId id,
   struct ECS *const ecs

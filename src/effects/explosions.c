@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdlib.h>
 
 #include "tail.h"
 
@@ -52,6 +53,7 @@ void explosions__copy_assets_to_gpu(
 
 void create_rpg_explosion(
   EntityId rocket,
+  struct Vec3 camera_position,
   void (*mark_entity_for_destruction)(
     EntityId id,
     Seconds remainder,
@@ -62,11 +64,22 @@ void create_rpg_explosion(
 
   EntityId blink = ecs__create_entity(ecs);
 
+  struct Vec3 blink_position = vec3_plus_vec3(
+    ecs->entities[rocket].transform.position,
+    scalar_x_vec3(
+      0.3f,
+      vec3_minus_vec3(
+        camera_position,
+        ecs->entities[rocket].transform.position
+      )
+    )
+  );
+
   ecs__add_transform(
     blink,
     (struct Transform){
-      .position = ecs->entities[rocket].transform.position,
-      .scale = 0.7f
+      .position = blink_position,
+      .scale = 0.5f
     },
     ecs
   );
@@ -74,14 +87,9 @@ void create_rpg_explosion(
     blink,
     (struct Timeout){
       .age = 0,
-      .limit = 1.0f / 30.0f,
+      .limit = 1.0f / 15.0f,
       .on_timeout = mark_entity_for_destruction
     },
-    ecs
-  );
-  ecs__add_velocity(
-    blink,
-    (struct Vec3){ 0, 5, 0 },
     ecs
   );
   ecs__add_draw_billboard(
@@ -109,7 +117,7 @@ void create_rpg_explosion(
     fireball,
     (struct Timeout){
       .age = 0,
-      .limit = 1.5f,
+      .limit = 0.5f,
       .on_timeout = mark_entity_for_destruction
     },
     ecs
@@ -121,7 +129,10 @@ void create_rpg_explosion(
   );
   ecs__add_uv_scroll(
     fireball,
-    (struct Vec2){ 0, 0.4f },
+    (struct Vec2){
+      0.5f - rand() / (float)RAND_MAX,
+      rand() / (float)RAND_MAX
+    },
     ecs
   );
   ecs__add_draw(

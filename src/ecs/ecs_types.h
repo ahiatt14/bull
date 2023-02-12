@@ -22,6 +22,8 @@
 #define c_REPEAT 1 << 10
 #define c_WEAPONS 1 << 11
 #define c_GRAVITY 1 << 12
+#define c_DRAW_BACK_FACES 1 << 13
+#define c_LERP_ROTATION 1 << 14
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast16_t ComponentConfig;

@@ -174,6 +174,13 @@ void action__tick(
   gpu->clear_depth_buffer();
 
   ecs__draw(time, &cam, gpu, &ecs);
+
+  firing_guide__draw(
+  &cam,
+  gpu,
+  ARENA_EDGE_RADIUS,
+  ecs.entities[player].transform.position
+);
 }
 
 /*
@@ -347,6 +354,7 @@ void on_rpg_timer_up(
   mark_entity_for_destruction(rocket, remainder, ecs);
   create_rpg_explosion(
     rocket,
+    cam.position,
     mark_entity_for_destruction,
     ecs
   );

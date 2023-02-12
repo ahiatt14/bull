@@ -10,13 +10,15 @@
 #include "constants.h"
 #include "tail_helpers.h"
 
-#include "bird_mesh.h"
+#include "rex_mesh.h"
 #include "default_vert.h"
+#include "blasted_stone_texture.h"
 
 void player__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
-  gpu->copy_static_mesh_to_gpu(&BIRD_MESH);
+  gpu->copy_texture_to_gpu(&BLASTED_STONE_TEXTURE);
+  gpu->copy_static_mesh_to_gpu(&REX_MESH);
 }
 
 EntityId create_player(
@@ -46,16 +48,16 @@ EntityId create_player(
     player,
     (struct Transform){
       .position = position,
-      .scale = 1
+      .scale = 0.25f
     },
     ecs
   );
   ecs__add_draw(
     player,
     (struct Draw){
-      .mesh = &BIRD_MESH,
-      .texture = NULL,
-      .shader = &SOLID_COLOR_SHADER
+      .mesh = &REX_MESH,
+      .texture = &BLASTED_STONE_TEXTURE,
+      .shader = &FLAT_TEXTURE_SHADER
     },
     ecs
   );

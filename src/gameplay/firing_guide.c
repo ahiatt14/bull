@@ -48,7 +48,7 @@ void firing_guide__draw(
   gpu->set_shader_vec3(
     &guide_shader,
     "color",
-    COLOR_RED
+    COLOR_AQUA_BLUE
   );
   gpu->set_shader_float(
     &guide_shader,

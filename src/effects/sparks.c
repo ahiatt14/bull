@@ -7,10 +7,12 @@
 
 #include "ecs.h"
 
+#include "tiny_debris_texture.h"
+
 struct Vec3 random_direction() {
   return vec3__normalize((struct Vec3){
     0.5f - (rand() / (float)RAND_MAX),
-    0.5f - (rand() / (float)RAND_MAX),
+    (rand() / (float)RAND_MAX),
     0.5f - (rand() / (float)RAND_MAX)
   });
 }
@@ -30,10 +32,10 @@ void create_sparks(
   EntityId spark;
   struct Transform transform = {
     .position = position,
-    .scale = 10
+    .scale = 0.05f
   };
   struct Vec3 directions_to_average[2] = {
-    scalar_x_vec3(0.5f, velocity),
+    scalar_x_vec3(0.2f, velocity),
     (struct Vec3){0}
   };
 
@@ -50,10 +52,13 @@ void create_sparks(
       vec3__mean(directions_to_average, 2),
       ecs
     );
-    ecs__add_draw_billboard(
+    // ecs__add_draw_back_faces(spark, ecs);
+    ecs__add_draw(
       spark,
       (struct Draw){
-        .texture = NULL,
+        .texture = &TINY_DEBRIS_TEXTURE,
+        .mesh = &QUAD,
+        // .shader = &FLAT_TEXTURE_SHADER
         .shader = &SOLID_COLOR_SHADER
       },
       ecs
@@ -63,7 +68,7 @@ void create_sparks(
       spark,
       (struct Timeout){
         .age = 0,
-        .limit = 1,
+        .limit = 0.5,
         .on_timeout = mark_entity_for_destruction
       },
       ecs

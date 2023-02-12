@@ -68,7 +68,9 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/concrete_wall.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/bullets.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/night_sky.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/blasted_stone.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/muzzle_flash.png 4 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/tiny_debris.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/steam.png 3 $artifact_dir \
   && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_mushroom_cloud.obj $artifact_dir && \
@@ -80,7 +82,8 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/rocket.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/cooling_tower.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/steam_column.obj $artifact_dir && \
-  ./${tools}sourcify-obj.exe assets/mesh/mountain.obj $artifact_dir
+  ./${tools}sourcify-obj.exe assets/mesh/mountain.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/rex.obj $artifact_dir
 
   for filepath in ${artifact_dir}*.c; do
     echo $filepath

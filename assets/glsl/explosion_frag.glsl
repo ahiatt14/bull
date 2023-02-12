@@ -28,12 +28,12 @@ void main()
   ).rgb;
   float ratio = seconds_since_activation / limit_in_seconds;
 
-  float fade = 1.0 - ratio;
-  // float fade = 1.0 - (log(ratio) + 1.0);
-  // TODO: why doesn't this work?...
-  // float fade = log(ratio);
+  float fade = log(ratio) + 1.0;
 
-  if (brightness(material) > fade) discard;
+  if (
+    brightness(material) < 0.6 ||
+    brightness(material) < fade
+  ) discard;
 
   // vec3 mixed = mix(
   //   COLOR_WHITE,
