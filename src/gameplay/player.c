@@ -57,7 +57,8 @@ EntityId create_player(
     (struct Draw){
       .mesh = &REX_MESH,
       .texture = &BLASTED_STONE_TEXTURE,
-      .shader = &FLAT_TEXTURE_SHADER
+      // .shader = &FLAT_TEXTURE_SHADER
+      .shader = &SOLID_COLOR_SHADER
     },
     ecs
   );

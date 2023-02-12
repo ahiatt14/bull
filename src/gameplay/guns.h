@@ -14,6 +14,7 @@ void guns__copy_assets_to_gpu(
 EntityId create_lvl0_cannonfire(
   struct Vec3 position,
   struct Vec3 direction,
+  Seconds remainder,
   void (*on_timeout)(
     EntityId id,
     Seconds remainder,

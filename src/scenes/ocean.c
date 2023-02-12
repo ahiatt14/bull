@@ -87,7 +87,7 @@ static struct Vec3 sunlight_direction = {
 };
 
 static struct Transform sky_transform = {
-  .position = { 0, 0, -45 },
+  .position = { 0, 7, -45 },
   .scale = 33
 };
 static struct M4x4 sky_local_to_world;

@@ -313,7 +313,8 @@ void fire_lvl0_cannon(
   create_lvl0_cannonfire(
     starting_position,
     direction,
-    on_rpg_timer_up,
+    remainder,
+    mark_entity_for_destruction,
     ecs
   );
 

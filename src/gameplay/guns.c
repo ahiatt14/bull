@@ -18,8 +18,8 @@ void guns__copy_assets_to_gpu(
 EntityId create_lvl0_cannonfire(
   struct Vec3 position,
   struct Vec3 direction,
-  // Seconds remainder,
-  void (*on_timeout)(
+  Seconds remainder,
+  void (*mark_entity_for_destruction)(
     EntityId id,
     Seconds remainder,
     struct ECS *const ecs
@@ -27,7 +27,7 @@ EntityId create_lvl0_cannonfire(
   struct ECS *const ecs
 ) {
 
-  static const float speed = 30.0f;
+  static const double DURATION = 0.5f;
 
   EntityId cannonfire = ecs__create_entity(ecs);
 
@@ -41,11 +41,15 @@ EntityId create_lvl0_cannonfire(
     M_PI * 0.5f
   );
 
+  struct Vec3 destination = vec3_plus_vec3(
+    position,
+    scalar_x_vec3(20, direction)
+  );
+
   ecs__add_transform(
     cannonfire,
     (struct Transform){
-      .position = position,
-      .scale = 1.3f,
+      .scale = 1.2f,
       .rotation = quaternion__multiply(
         point_to_target,
         face_quad_up
@@ -53,18 +57,20 @@ EntityId create_lvl0_cannonfire(
     },
     ecs
   );
-  ecs__add_timeout(
+  ecs__add_vec3lerp(
     cannonfire,
-    (struct Timeout){
-      .age = 0, // TODO: remainder??
-      .limit = 0.2f,
-      .on_timeout = on_timeout
+    (struct Vec3Lerp){
+      .start = vec3__linear_lerp(
+        position,
+        destination,
+        remainder / DURATION
+      ),
+      .end = destination,
+      .age = remainder,
+      .duration = DURATION,
+      .lerp = vec3__linear_lerp,
+      .on_finish = mark_entity_for_destruction
     },
-    ecs
-  );
-  ecs__add_velocity(
-    cannonfire,
-    scalar_x_vec3(speed, direction),
     ecs
   );
   ecs__add_draw(
