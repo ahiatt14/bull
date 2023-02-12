@@ -49,7 +49,7 @@ EntityId create_lvl0_cannonfire(
   ecs__add_transform(
     cannonfire,
     (struct Transform){
-      .scale = 1.2f,
+      .scale = 1.6f,
       .rotation = quaternion__multiply(
         point_to_target,
         face_quad_up
