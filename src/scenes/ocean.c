@@ -32,6 +32,7 @@
 #include "night_sky_texture.h"
 #include "clouds_texture.h"
 
+#include "sky_mesh.h"
 #include "mist_frag.h"
 #include "mist_texture.h"
 
@@ -162,17 +163,15 @@ void ocean__init(
   mist_shader.frag_src = MIST_FRAG_SRC;
   mist_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&mist_shader);
+  gpu->copy_static_mesh_to_gpu(&SKY_MESH);
   gpu->copy_texture_to_gpu(&MIST_TEXTURE);
   mist = ecs__create_entity(&ecs);
   ecs__add_transform(
     mist,
     (struct Transform){
-      .scale = 50,
-      .rotation = quaternion__create(
-        WORLDSPACE.up,
-        M_PI
-      ),
-      .position = (struct Vec3){ 0, 0, -30 }
+      .scale = 18,
+      .rotation = quaternion__create(WORLDSPACE.up, 0),
+      .position = (struct Vec3){ 0, 3, 0 }
     },
     &ecs
   );
@@ -186,7 +185,7 @@ void ocean__init(
     (struct Draw){
       .shader = &mist_shader,
       .texture = &MIST_TEXTURE,
-      .mesh = &QUAD
+      .mesh = &SKY_MESH
     },
     &ecs
   );

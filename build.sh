@@ -86,6 +86,7 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/cooling_tower.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/steam_column.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/mountain.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/sky.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/rex.obj $artifact_dir
 
   for filepath in ${artifact_dir}*.c; do

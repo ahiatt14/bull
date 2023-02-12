@@ -4,6 +4,12 @@ uniform sampler2D mist_texture;
 
 uniform vec2 total_uv_scroll;
 
+const vec3 edge_color = vec3(
+  255.0 / 255.0,
+  255.0 / 255.0,
+  30.0 / 255.0
+);
+
 in VS_OUT {
   vec3 world_frag_pos;
   vec3 normal;
@@ -22,9 +28,19 @@ void main()
     mist_texture,
     fs_in.tex_uv + total_uv_scroll
   ).rgb;
+
+  float alpha = brightness(material) * brightness(material) * 3 - 1.0;
+
+  // vec3 color = mix(
+  //   material,
+  //   edge_color,
+  //   1.0 - alpha
+  // );
+
+  if (brightness(material) < 0.54) discard;
   
   FragColor = vec4(
     material,
-    brightness(material)
+    alpha
   );
 }
