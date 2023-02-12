@@ -244,20 +244,45 @@ void ecs__lerp_revolve(
   }
 }
 
-void ecs__lerp_rotation(
-  struct GameTime time,
-  struct ECS *const ecs
-) {
+// struct Quaternion quaternion__inverse(
+//   struct Quaternion q
+// ) {
+//   struct Quaternion conjugate = {
+//     .v = vec3__negate(q.v),
+//     .w = q.w
+//   };
+//   return quaternion__multiply(conjugate, q);
+// }
+
+// // static struct Quaternion slerp(
+// //   struct Quaternion q0,
+// //   struct Quaternion q1,
+// //   float t
+// // ) {
+
+// // }
+
+// void ecs__lerp_rotation(
+//   struct GameTime time,
+//   struct ECS *const ecs
+// ) {
   
-  for (EntityId id = 0; id < ecs->count; id++) {
+//   // float ratio, rads;
 
-    if (lacks_configuration(
-      c_ROTATION_LERP,
-      ecs->entities[id].config
-    )) continue;
+//   for (EntityId id = 0; id < ecs->count; id++) {
 
-  }
-}
+//     if (lacks_configuration(
+//       c_ROTATION_LERP,
+//       ecs->entities[id].config
+//     )) continue;
+
+//     ratio =
+//       ecs->entities[id].rotation_lerp.age / 
+//       ecs->entities[id].rotation_lerp.duration;
+
+    
+//   }
+// }
 
 void ecs__look_at_center(
   struct GameTime time,

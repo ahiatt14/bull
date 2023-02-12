@@ -169,15 +169,15 @@ void ocean__init(
   ecs__add_transform(
     mist,
     (struct Transform){
-      .scale = 18,
+      .scale = 12,
       .rotation = quaternion__create(WORLDSPACE.up, 0),
-      .position = (struct Vec3){ 0, 3, 0 }
+      .position = (struct Vec3){ 1, 4, 2 }
     },
     &ecs
   );
   ecs__add_uv_scroll(
     mist,
-    (struct Vec2){ -0.02f, 0 },
+    (struct Vec2){ -0.01f, 0 },
     &ecs
   );
   ecs__add_draw(

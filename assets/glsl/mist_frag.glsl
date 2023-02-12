@@ -37,7 +37,7 @@ void main()
   //   1.0 - alpha
   // );
 
-  if (brightness(material) < 0.54) discard;
+  if (brightness(material) < 0.45) discard;
   
   FragColor = vec4(
     material,
