@@ -5,7 +5,7 @@
 
 #include "ecs.h"
 
-#define LVL0_CANNON_AUTOFIRE_INTERVAL 0.12f
+#define LVL0_CANNON_AUTOFIRE_INTERVAL 0.10f
 
 void player__copy_assets_to_gpu(
   struct GPU const *const gpu

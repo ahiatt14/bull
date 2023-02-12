@@ -60,11 +60,7 @@ EntityId create_lvl0_cannonfire(
   ecs__add_vec3lerp(
     cannonfire,
     (struct Vec3Lerp){
-      .start = vec3__linear_lerp(
-        position,
-        destination,
-        remainder / DURATION
-      ),
+      .start = position,
       .end = destination,
       .age = remainder,
       .duration = DURATION,

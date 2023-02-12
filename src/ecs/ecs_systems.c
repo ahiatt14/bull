@@ -244,6 +244,21 @@ void ecs__lerp_revolve(
   }
 }
 
+void ecs__lerp_rotation(
+  struct GameTime time,
+  struct ECS *const ecs
+) {
+  
+  for (EntityId id = 0; id < ecs->count; id++) {
+
+    if (lacks_configuration(
+      c_ROTATION_LERP,
+      ecs->entities[id].config
+    )) continue;
+
+  }
+}
+
 void ecs__look_at_center(
   struct GameTime time,
   struct ECS *const ecs

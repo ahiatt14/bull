@@ -134,6 +134,17 @@ void ecs__remove_revolve_lerp(
   struct ECS *const ecs
 );
 
+void ecs__add_rotation_lerp(
+  EntityId id,
+  struct RotationLerp rotation_lerp,
+  struct ECS *const ecs
+);
+
+void ecs__remove_rotation_lerp(
+  EntityId id,
+  struct ECS *const ecs
+);
+
 void ecs__add_look_at_center(
   EntityId id,
   struct ECS *const ecs

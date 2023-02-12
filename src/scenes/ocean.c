@@ -32,6 +32,9 @@
 #include "night_sky_texture.h"
 #include "clouds_texture.h"
 
+#include "mist_frag.h"
+#include "mist_texture.h"
+
 // CONSTANTS
 
 #define CAMERA_ROTATE_SPEED 0
@@ -93,6 +96,12 @@ static struct Transform sky_transform = {
 static struct M4x4 sky_local_to_world;
 static struct Shader sky_shader;
 
+// MIST
+
+static struct ECS ecs;
+static EntityId mist;
+static struct Shader mist_shader;
+
 void ocean__init(
   struct Window const *const window,
   struct Viewport *const vwprt,
@@ -147,6 +156,39 @@ void ocean__init(
   m4x4__translation(
     sky_transform.position,
     &sky_local_to_world
+  );
+
+  // MIST
+  mist_shader.frag_src = MIST_FRAG_SRC;
+  mist_shader.vert_src = DEFAULT_VERT_SRC;
+  gpu->copy_shader_to_gpu(&mist_shader);
+  gpu->copy_texture_to_gpu(&MIST_TEXTURE);
+  mist = ecs__create_entity(&ecs);
+  ecs__add_transform(
+    mist,
+    (struct Transform){
+      .scale = 50,
+      .rotation = quaternion__create(
+        WORLDSPACE.up,
+        M_PI
+      ),
+      .position = (struct Vec3){ 0, 0, -30 }
+    },
+    &ecs
+  );
+  ecs__add_uv_scroll(
+    mist,
+    (struct Vec2){ -0.02f, 0 },
+    &ecs
+  );
+  ecs__add_draw(
+    mist,
+    (struct Draw){
+      .shader = &mist_shader,
+      .texture = &MIST_TEXTURE,
+      .mesh = &QUAD
+    },
+    &ecs
   );
 
   // COOLING TOWER
@@ -218,6 +260,8 @@ void ocean__tick(
   gpu->update_gpu_mesh_data(&STEAM_COLUMN_MESH);
 
   water__update_waves(WIND_KM_PER_SEC, time, gpu);
+
+  ecs__scroll_uvs(time, &ecs);
   
   // DRAW
 
@@ -314,4 +358,11 @@ void ocean__tick(
   gpu->draw_mesh(&STEAM_COLUMN_MESH);
 
   water__draw(&cam, gpu);
+
+  ecs__draw(
+    time,
+    &cam,
+    gpu,
+    &ecs
+  );
 }

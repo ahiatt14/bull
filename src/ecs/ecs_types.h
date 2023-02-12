@@ -23,7 +23,7 @@
 #define c_WEAPONS 1 << 11
 #define c_GRAVITY 1 << 12
 #define c_DRAW_BACK_FACES 1 << 13
-#define c_LERP_ROTATION 1 << 14
+#define c_ROTATION_LERP 1 << 14
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast16_t ComponentConfig;
@@ -103,6 +103,13 @@ struct RevolveLerp {
   );
 };
 
+struct RotationLerp {
+  struct Quaternion start;
+  struct Quaternion target;
+  Seconds age;
+  Seconds duration;
+};
+
 // TODO: AoS vs SoA blah blah blah
 // TODO: do hot/cold components point?
 struct Entity {
@@ -111,6 +118,7 @@ struct Entity {
   struct Repeat repeat;
   struct RevolveLerp revolve_lerp;
   struct Vec3Lerp vec3lerp;
+  struct RotationLerp rotation_lerp;
   struct Vec3 velocity;
   struct Draw draw;
   struct Weapons weapons;

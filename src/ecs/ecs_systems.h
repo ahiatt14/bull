@@ -48,6 +48,11 @@ void ecs__lerp_revolve(
   struct ECS *const ecs
 );
 
+void ecs__lerp_rotation(
+  struct GameTime time,
+  struct ECS *const ecs
+);
+
 void ecs__look_at_center(
   struct GameTime time,
   struct ECS *const ecs
