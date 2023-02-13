@@ -43,7 +43,7 @@
 // READ ONLY
 
 static const struct Vec3 COOLING_TOWER_POSITION = {
-  -7,
+  -8,
   -1.5,
   -13
 };
@@ -87,7 +87,7 @@ static struct Transform steam_transform;
 // SKY
 
 static struct Vec3 sunlight_direction = {
-  -1, -1, 1
+  -1, 0, -1
 };
 
 static struct Transform sky_transform = {
@@ -195,7 +195,7 @@ void ocean__init(
   cooling_tower_transform = (struct Transform){
     .position = vec3_plus_vec3(
       COOLING_TOWER_POSITION,
-      (struct Vec3){ 0, 0.7f, 0 }
+      (struct Vec3){ 0, 1.2f, 0 }
     ),
     .scale = 3
   };
@@ -254,7 +254,7 @@ void ocean__tick(
   // UPDATE
 
   for (unsigned int i = 0; i < STEAM_COLUMN_MESH.vertices_length; i++) {
-    STEAM_COLUMN_MESH.vertices[i].uv.x += 0.3f * time.delta;
+    STEAM_COLUMN_MESH.vertices[i].uv.x += 0.06f * time.delta;
   }
   gpu->update_gpu_mesh_data(&STEAM_COLUMN_MESH);
 
@@ -335,7 +335,7 @@ void ocean__tick(
   gpu->set_shader_float(
     &steam_shader,
     "speed",
-    2
+    -0.36f
   );
   gpu->set_shader_float(
     &steam_shader,

@@ -17,6 +17,8 @@
 #include "explosions.h"
 #include "muzzle_flashes.h"
 
+#include "mines.h"
+
 #include "rocket_mesh.h"
 
 #include "firing_guide.h"
@@ -128,6 +130,14 @@ void action__init(
   firing_guide__copy_assets_to_gpu(gpu);
 
   ocean__init(window, vwprt, gpu);
+
+  mines__copy_assets_to_gpu(gpu);
+  create__mine(
+    (struct Vec3){ -4, 0, -4 },
+    (struct Vec3){ -4, 0, 0 },
+    1,
+    &ecs
+  );
 }
 
 void action__tick(

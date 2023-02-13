@@ -7,14 +7,14 @@
 
 #include "mines.h"
 
-#include "lowpoly_sphere_smooth_mesh.h"
+#include "lowpoly_sphere_flat_mesh.h"
 #include "dark_rust_texture.h"
 
 void mines__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
   gpu->copy_texture_to_gpu(&DARK_RUST_TEXTURE);
-  gpu->copy_static_mesh_to_gpu(&LOWPOLY_SPHERE_SMOOTH_MESH);
+  gpu->copy_static_mesh_to_gpu(&LOWPOLY_SPHERE_FLAT_MESH);
 }
 
 static void start_revolution(
@@ -42,7 +42,7 @@ void create__mine(
   ecs__add_transform(
     mine,
     (struct Transform){
-      .scale = 0.5f,
+      .scale = 0.25f,
     },
     ecs
   );
@@ -51,7 +51,7 @@ void create__mine(
     (struct Draw){
       .texture = &DARK_RUST_TEXTURE,
       .shader = &FLAT_TEXTURE_SHADER,
-      .mesh = &LOWPOLY_SPHERE_SMOOTH_MESH
+      .mesh = &LOWPOLY_SPHERE_FLAT_MESH
     },
     ecs
   );
