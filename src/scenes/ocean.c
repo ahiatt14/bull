@@ -87,7 +87,7 @@ static struct Transform steam_transform;
 // SKY
 
 static struct Vec3 sunlight_direction = {
-  3, 0, 1
+  -1, -1, 1
 };
 
 static struct Transform sky_transform = {

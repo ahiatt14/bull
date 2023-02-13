@@ -4,6 +4,10 @@ uniform sampler2D surface_texture;
 
 uniform vec3 light_dir = vec3(0, -1, 0);
 uniform vec3 light_color = vec3(1, 1, 1);
+const float light_strength = 0.5;
+
+const vec3 ambient_light = vec3(1);
+const float ambient_strength = 0.5;
 
 in VS_OUT {
   vec3 world_frag_pos;
@@ -15,18 +19,18 @@ out vec4 FragColor;
 
 void main()
 {
-  vec3 material = texture(surface_texture, fs_in.tex_uv).rgb * 0.5;
+  vec3 material = texture(surface_texture, fs_in.tex_uv).rgb;
 
   float incidence = max(dot(fs_in.normal, -light_dir), 0);
 
-  // vec3 diffuse;
-  // if (incidence > 0.3) {
-  //   diffuse = light_color * 0.4;
-  // } else if (incidence > 0.25) {
-  //   diffuse = light_color * 0.15;
-  // } else {
-  //   diffuse = vec3(0, 0, 0);
-  // }
+  vec3 light = mix(
+    incidence + light_color * light_strength,
+    ambient_light * ambient_strength,
+    1.0 - incidence
+  );
   
-  FragColor = vec4(material + incidence, 1);
+  FragColor = vec4(
+    material * light,
+    1
+  );
 }

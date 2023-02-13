@@ -12,12 +12,21 @@
 
 #include "rex_mesh.h"
 #include "default_vert.h"
-#include "blasted_stone_texture.h"
+#include "mountain_frag.h"
+#include "rex_texture.h"
+#include "dark_rust_texture.h"
+
+static struct Shader player_shader;
 
 void player__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
-  gpu->copy_texture_to_gpu(&BLASTED_STONE_TEXTURE);
+
+  player_shader.frag_src = MOUNTAIN_FRAG_SRC;
+  player_shader.vert_src = DEFAULT_VERT_SRC;
+  gpu->copy_shader_to_gpu(&player_shader);
+
+  gpu->copy_texture_to_gpu(&DARK_RUST_TEXTURE);
   gpu->copy_static_mesh_to_gpu(&REX_MESH);
 }
 
@@ -56,9 +65,8 @@ EntityId create_player(
     player,
     (struct Draw){
       .mesh = &REX_MESH,
-      .texture = &BLASTED_STONE_TEXTURE,
-      // .shader = &FLAT_TEXTURE_SHADER
-      .shader = &SOLID_COLOR_SHADER
+      .texture = &DARK_RUST_TEXTURE,
+      .shader = &player_shader
     },
     ecs
   );

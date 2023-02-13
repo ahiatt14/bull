@@ -74,6 +74,8 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/muzzle_flash.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/tiny_debris.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/mist.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/dark_rust.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/rex.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/steam.png 3 $artifact_dir \
   && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_mushroom_cloud.obj $artifact_dir && \
