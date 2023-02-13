@@ -13,7 +13,6 @@
 #include "rex_mesh.h"
 #include "default_vert.h"
 #include "mountain_frag.h"
-#include "rex_texture.h"
 #include "dark_rust_texture.h"
 
 static struct Shader player_shader;
