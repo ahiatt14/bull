@@ -44,8 +44,8 @@
 
 static const struct Vec3 COOLING_TOWER_POSITION = {
   -7,
-  -1,
-  -8
+  -1.5,
+  -13
 };
 
 static const struct Vec3 COOLING_TOWER_OFFSET = {
@@ -254,7 +254,7 @@ void ocean__tick(
   // UPDATE
 
   for (unsigned int i = 0; i < STEAM_COLUMN_MESH.vertices_length; i++) {
-    STEAM_COLUMN_MESH.vertices[i].uv.x -= 1.7f * time.delta;
+    STEAM_COLUMN_MESH.vertices[i].uv.x += 0.3f * time.delta;
   }
   gpu->update_gpu_mesh_data(&STEAM_COLUMN_MESH);
 
@@ -294,7 +294,7 @@ void ocean__tick(
   gpu->set_shader_vec3(
     &cooling_tower_shader,
     "light_color",
-    COLOR_GOLDEN_YELLOW
+    COLOR_EVENING_SUNLIGHT
   );
   gpu__set_mvp(
     &cooling_tower_local_to_world,
@@ -317,7 +317,7 @@ void ocean__tick(
   gpu->set_shader_vec3(
     &mountain_shader,
     "light_color",
-    COLOR_GOLDEN_YELLOW
+    COLOR_EVENING_SUNLIGHT
   );
   gpu__set_mvp(
     &mountain_local_to_world,
@@ -335,7 +335,7 @@ void ocean__tick(
   gpu->set_shader_float(
     &steam_shader,
     "speed",
-    15
+    2
   );
   gpu->set_shader_float(
     &steam_shader,

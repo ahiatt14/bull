@@ -18,7 +18,7 @@ void firing_guide__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
   guide_transform = (struct Transform){
-    .position = {0,-0.1f,0},
+    .position = { 0, -0.4f, 0},
     .rotation = quaternion__create(
       WORLDSPACE.right,
       -(M_PI * 0.5f) 
