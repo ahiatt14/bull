@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "tail.h"
 
 #include "ecs.h"
@@ -10,6 +12,10 @@
 #include "lowpoly_sphere_flat_mesh.h"
 #include "dark_rust_texture.h"
 
+#define MAX_MINES 50
+
+static uint_fast8_t ccw_flags_by_id[MAX_MINES];
+
 void mines__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
@@ -17,12 +23,31 @@ void mines__copy_assets_to_gpu(
   gpu->copy_static_mesh_to_gpu(&LOWPOLY_SPHERE_FLAT_MESH);
 }
 
+void nuthin(
+  EntityId id,
+  Seconds remainder,
+  struct ECS *const ecs
+) {
+
+}
+
 static void start_revolution(
     EntityId mine,
     Seconds remainder,
     struct ECS *const ecs
 ) {
-
+  ecs__remove_vec3lerp(mine, ecs);
+  ecs__add_revolve_lerp(
+    mine,
+    (struct RevolveLerp){
+      .start = ecs->entities[mine].transform.position,
+      .target_rads = ccw_flags_by_id[mine] ? M_PI * 4 : -M_PI * 4,
+      .age = remainder,
+      .duration = 6,
+      .on_finish = nuthin
+    },
+    ecs
+  );
 }
 
 void create__mine(
@@ -38,6 +63,8 @@ void create__mine(
 ) {
    
   EntityId mine = ecs__create_entity(ecs);
+
+  ccw_flags_by_id[mine] = ccw;
 
   ecs__add_transform(
     mine,

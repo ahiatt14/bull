@@ -128,6 +128,8 @@ struct Entity {
 struct ECS {
   struct Entity entities[MAX_ENTITIES];
   uint_fast16_t count;
+  uint_fast16_t entities_to_destroy[MAX_ENTITIES];
+  uint_fast16_t entities_to_destroy_count;
 };
 
 #endif

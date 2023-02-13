@@ -22,6 +22,14 @@
 static struct Shader rpg_explosion_blink_shader;
 static struct Shader rpg_explosion_fireball_shader;
 
+static void destroy_explosion(
+  EntityId explosion,
+  Seconds remainder,
+  struct ECS *const ecs
+) {
+  ecs__mark_for_destruction(explosion, ecs);
+}
+
 // struct Quaternion quaternion__inverse(
 //   struct Quaternion q
 // ) {
@@ -54,11 +62,6 @@ void explosions__copy_assets_to_gpu(
 void create_rpg_explosion(
   EntityId rocket,
   struct Vec3 camera_position,
-  void (*mark_entity_for_destruction)(
-    EntityId id,
-    Seconds remainder,
-    struct ECS *const ecs
-  ),
   struct ECS *const ecs
 ) {
 
@@ -88,7 +91,7 @@ void create_rpg_explosion(
     (struct Timeout){
       .age = 0,
       .limit = 1.0f / 15.0f,
-      .on_timeout = mark_entity_for_destruction
+      .on_timeout = destroy_explosion
     },
     ecs
   );
@@ -118,7 +121,7 @@ void create_rpg_explosion(
     (struct Timeout){
       .age = 0,
       .limit = 0.5f,
-      .on_timeout = mark_entity_for_destruction
+      .on_timeout = destroy_explosion
     },
     ecs
   );
@@ -149,7 +152,6 @@ void create_rpg_explosion(
     ecs->entities[rocket].transform.position,
     ecs->entities[rocket].velocity,
     5,
-    mark_entity_for_destruction,
     ecs
   );
 }

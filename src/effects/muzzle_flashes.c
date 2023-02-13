@@ -15,6 +15,14 @@
 
 static struct Shader muzzle_flash_blink_shader;
 
+static void destroy_flash(
+  EntityId flash,
+  Seconds remainder,
+  struct ECS *const ecs
+) {
+  ecs__mark_for_destruction(flash, ecs);
+}
+
 void muzzle_flashes__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
@@ -28,11 +36,6 @@ void muzzle_flashes__copy_assets_to_gpu(
 
 void create_lvl0_muzzle_flash(
   struct Transform const *const source_transform,
-  void (*mark_entity_for_destruction)(
-    EntityId id,
-    Seconds remainder,
-    struct ECS *const ecs
-  ),
   struct ECS *const ecs
 ) {
 
@@ -71,7 +74,7 @@ void create_lvl0_muzzle_flash(
     (struct Timeout){
       .age = 0,
       .limit = 1.0f / 60.0f,
-      .on_timeout = mark_entity_for_destruction
+      .on_timeout = destroy_flash
     },
     ecs
   );

@@ -9,6 +9,14 @@
 
 #include "bullets_texture.h"
 
+static void destroy_bullet(
+  EntityId bullet,
+  Seconds remainder,
+  struct ECS *const ecs
+) {
+  ecs__mark_for_destruction(bullet, ecs);
+}
+
 void guns__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
@@ -19,11 +27,6 @@ EntityId create_lvl0_cannonfire(
   struct Vec3 position,
   struct Vec3 direction,
   Seconds remainder,
-  void (*mark_entity_for_destruction)(
-    EntityId id,
-    Seconds remainder,
-    struct ECS *const ecs
-  ),
   struct ECS *const ecs
 ) {
 
@@ -65,7 +68,7 @@ EntityId create_lvl0_cannonfire(
       .age = remainder,
       .duration = DURATION,
       .lerp = vec3__linear_lerp,
-      .on_finish = mark_entity_for_destruction
+      .on_finish = destroy_bullet
     },
     ecs
   );

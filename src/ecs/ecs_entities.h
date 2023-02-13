@@ -9,8 +9,12 @@ EntityId ecs__create_entity(
   struct ECS *const ecs
 );
 
-void ecs__destroy_entity(
+void ecs__mark_for_destruction(
   EntityId id,
+  struct ECS *const ecs
+);
+
+void ecs__destroy_marked_entities(
   struct ECS *const ecs
 );
 

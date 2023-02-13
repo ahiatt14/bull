@@ -27,15 +27,7 @@
   ~~~~~~~~~DEFINITIONS~~~~~~~~~~
 */
 
-#define ENTITY_CALLBACK_PARAMS EntityId id, Seconds remainder, struct ECS *const ecs
-
-#define PLAYER_LVL_COUNT 3
-
-#define GUIDE_LAG_TIME_SECONDS 0.15f
-
 #define ARENA_EDGE_RADIUS 8.0f
-
-static const struct Vec3 PLAYER_START_POSITION = { 3, 0, 0 };
 
 /*
   ~~~~~~~~ENTITY ACTIONS~~~~~~~~
@@ -82,16 +74,6 @@ static struct ControllerActions player_one_actions = {
   .on_stop_autofire = on_player_stop_autofire
 };
 
-static EntityId entities_to_destroy[MAX_ENTITIES];
-static uint_fast16_t count_of_entities_to_destroy;
-static void mark_entity_for_destruction(
-  EntityId id,
-  Seconds remainder,
-  struct ECS *const ecs
-) {
-  entities_to_destroy[count_of_entities_to_destroy++] = id;
-}
-
 /*
   ~~~~~~~~~PUBLIC API~~~~~~~~~~
 */
@@ -123,7 +105,7 @@ void action__init(
 
   player__copy_assets_to_gpu(gpu);
   player = create_player(
-    PLAYER_START_POSITION,
+    (struct Vec3){ 3, 0, 0 },
     fire_lvl0_cannon,
     &ecs
   );
@@ -160,7 +142,6 @@ void action__tick(
 
   // GAMEPLAY
 
-  count_of_entities_to_destroy = 0;
   ecs__control_player(
     time,
     gamepad,
@@ -175,8 +156,8 @@ void action__tick(
   ecs__move(time, &ecs);
   ecs__look_at_center(time, &ecs);
   ecs__scroll_uvs(time, &ecs);
-  for (uint_fast16_t i = 0; i < count_of_entities_to_destroy; i++)
-    ecs__destroy_entity(entities_to_destroy[i], &ecs);
+  
+  ecs__destroy_marked_entities(&ecs);
 
   // DRAW
 
@@ -186,73 +167,12 @@ void action__tick(
   ecs__draw(time, &cam, gpu, &ecs);
 
   firing_guide__draw(
-  &cam,
-  gpu,
-  ARENA_EDGE_RADIUS,
-  ecs.entities[player].transform.position
-);
+    &cam,
+    gpu,
+    ARENA_EDGE_RADIUS,
+    ecs.entities[player].transform.position
+  );
 }
-
-/*
-  ~~~~~~~~ FUNCTION DEFINITIONS ~~~~~~~~~
-*/
-
-// static void begin_lvl0_gun_autofire(
-//   EntityId player
-// ) {
-//   player_one_autofire = autofire_lvl0_guns;
-//   player_one_autofire(time, player);
-// }
-
-// static void autofire_lvl0_guns(
-//   struct GameTime time,
-//   struct Entity const *const player
-// ) {
-
-//   seconds_until_next_autofire_shot -= time.delta;
-//   if (seconds_until_next_autofire_shot > 0) return;
-//   seconds_until_next_autofire_shot =
-//     0.15f - seconds_until_next_autofire_shot;
-    
-//   create_lvl0_muzzle_flash(
-//     &player->transform,
-//     mark_entity_for_destruction,
-//     &ecs
-//   );
-// }
-
-// static void begin_lvl0_rocket_autofire(
-//   struct GameTime time,
-//   struct Player const *const player
-// ) {
-//   player_one_autofire = autofire_lvl0_rockets;
-//   player_one_autofire(time, player);
-// }
-
-// static void autofire_lvl0_rockets(
-//   struct GameTime time,
-//   struct Player const *const player
-// ) {
-
-//   seconds_until_next_autofire_shot -= time.delta;
-//   if (seconds_until_next_autofire_shot > 0) return;
-//   seconds_until_next_autofire_shot =
-//     0.15f - seconds_until_next_autofire_shot;
-
-//   deploy_rpg(
-//     player->transform.position,
-//     on_rpg_deployed,
-//     &ecs
-//   );
-// }
-
-// static void stop_autofiring(
-//   struct GameTime time,
-//   struct Player const *const player
-// ) {
-//   seconds_until_next_autofire_shot = 0;
-//   player_one_autofire = NULL;
-// }
 
 // void guide_lag_update(
 //   struct GameTime time,
@@ -319,18 +239,15 @@ void fire_lvl0_cannon(
       remainder
     );
 
-  // TODO: add remainder to starting position
   create_lvl0_cannonfire(
     starting_position,
     direction,
     remainder,
-    mark_entity_for_destruction,
     ecs
   );
 
   // create_lvl0_muzzle_flash(
   //   &ecs->entities[weapon].transform,
-  //   mark_entity_for_destruction,
   //   ecs
   // );
 }
@@ -362,11 +279,11 @@ void on_rpg_timer_up(
   struct ECS *const ecs
 ) {
 
-  mark_entity_for_destruction(rocket, remainder, ecs);
+  ecs__mark_for_destruction(rocket, ecs);
   create_rpg_explosion(
     rocket,
-    cam.position,
-    mark_entity_for_destruction,
+    cam.position, // TODO: turn cam into an ECS obj with known
+    // id (prolly 1) so systems can access it as needed
     ecs
   );
 

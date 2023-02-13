@@ -15,11 +15,6 @@ EntityId create_lvl0_cannonfire(
   struct Vec3 position,
   struct Vec3 direction,
   Seconds remainder,
-  void (*on_timeout)(
-    EntityId id,
-    Seconds remainder,
-    struct ECS *const ecs
-  ),
   struct ECS *const ecs
 );
 

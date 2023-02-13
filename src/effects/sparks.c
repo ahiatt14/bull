@@ -9,6 +9,14 @@
 
 #include "tiny_debris_texture.h"
 
+static void destroy_spark(
+  EntityId spark,
+  Seconds remainder,
+  struct ECS *const ecs
+) {
+  ecs__mark_for_destruction(spark, ecs);
+}
+
 struct Vec3 random_direction() {
   return vec3__normalize((struct Vec3){
     0.5f - (rand() / (float)RAND_MAX),
@@ -21,11 +29,6 @@ void create_sparks(
   struct Vec3 position,
   struct Vec3 velocity,
   uint_fast8_t count,
-  void (*mark_entity_for_destruction)(
-    EntityId id,
-    Seconds remainder,
-    struct ECS *const ecs
-  ),
   struct ECS *const ecs
 ) {
 
@@ -69,7 +72,7 @@ void create_sparks(
       (struct Timeout){
         .age = 0,
         .limit = 0.5,
-        .on_timeout = mark_entity_for_destruction
+        .on_timeout = destroy_spark
       },
       ecs
     );
