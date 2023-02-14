@@ -86,7 +86,7 @@ EntityId create_lvl0_cannonfire(
       .mesh = &QUAD,
       .texture = &BULLETS_TEXTURE,
       .shader = &FLAT_TEXTURE_SHADER,
-      .draw = ecs__draw_billboard
+      .draw = ecs__draw_mesh
     },
     ecs
   );

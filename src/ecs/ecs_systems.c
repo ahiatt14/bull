@@ -379,13 +379,13 @@ void ecs__draw(
       time.sec_since_game_launch
     );
 
-    gpu->set_shader_vec2(
-      shader,
-      "total_uv_scroll",
-      has_component(c_UV_SCROLL, ecs->entities[id].config) ?
-      ecs->entities[id].scroll_uv.total :
-      (struct Vec2){0}
-    );
+    if (has_component(c_TIMEOUT, ecs->entities[id].config)) {
+      gpu->set_shader_vec2(
+        shader,
+        "total_uv_scroll",
+        ecs->entities[id].scroll_uv.total
+      );
+    }
 
     if (has_component(c_TIMEOUT, ecs->entities[id].config)) {
       gpu->set_shader_float(
@@ -399,6 +399,9 @@ void ecs__draw(
         ecs->entities[id].timeout.limit
       );
     }
+
+    gpu->set_shader_m4x4(shader, "view", &camera->lookat);
+    gpu->set_shader_m4x4(shader, "projection", &camera->projection);
 
     ecs->entities[id].draw.draw(
       time,
