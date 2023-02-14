@@ -47,33 +47,15 @@ void ecs__add_draw(
   struct Draw draw,
   struct ECS *const ecs
 ) {
-  ecs->entities[id].config += c_DRAW_MESH;
-  ecs->entities[id].draw.texture = draw.texture;
-  ecs->entities[id].draw.shader = draw.shader;
-  ecs->entities[id].draw.mesh = draw.mesh;
+  ecs->entities[id].config += c_DRAW;
+  ecs->entities[id].draw = draw;
 }
 
 void ecs__remove_draw(
   EntityId id,
   struct ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_DRAW_MESH;
-}
-
-void ecs__add_draw_billboard(
-  EntityId id,
-  struct Draw draw,
-  struct ECS *const ecs
-) {
-  ecs->entities[id].config += c_DRAW_BILLBOARD;
-  ecs->entities[id].draw = draw;
-}
-
-void ecs__remove_draw_billboard(
-  EntityId id,
-  struct ECS *const ecs
-) {
-  ecs->entities[id].config -= c_DRAW_BILLBOARD;
+  ecs->entities[id].config -= c_DRAW;
 }
 
 void ecs__add_draw_back_faces(
@@ -163,12 +145,11 @@ void ecs__remove_vec3lerp(
 
 void ecs__add_uv_scroll(
   EntityId id,
-  struct Vec2 speed,
+  struct ScrollUV scroll_uv,
   struct ECS *const ecs
 ) {
   ecs->entities[id].config += c_UV_SCROLL;
-  ecs->entities[id].draw.uv_scroll_total = (struct Vec2){0};
-  ecs->entities[id].draw.uv_scroll_speed = speed;
+  ecs->entities[id].scroll_uv = scroll_uv;
 }
 
 void ecs__remove_uv_scroll(

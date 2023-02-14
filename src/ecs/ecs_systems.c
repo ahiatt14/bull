@@ -5,6 +5,7 @@
 #include "ecs_types.h"
 #include "ecs_systems.h"
 #include "ecs_component_fns.h"
+#include "ecs_drawing.h"
 
 // TODO: we can make a Controller injectable
 // that's agnostic about player/AI
@@ -158,15 +159,12 @@ void ecs__scroll_uvs(
 
   for (EntityId id = 0; id < ecs->count; id++) {
 
-    if (lacks_components(
-      c_DRAW_MESH | c_UV_SCROLL,
-      ecs->entities[id].config
-    )) continue;
+    if (lacks_components(c_UV_SCROLL, ecs->entities[id].config)) continue;
 
-    ecs->entities[id].draw.uv_scroll_total.x +=
-      ecs->entities[id].draw.uv_scroll_speed.x * time.delta; 
-    ecs->entities[id].draw.uv_scroll_total.y +=
-      ecs->entities[id].draw.uv_scroll_speed.y * time.delta;
+    ecs->entities[id].scroll_uv.total.x +=
+      ecs->entities[id].scroll_uv.speed.x * time.delta; 
+    ecs->entities[id].scroll_uv.total.y +=
+      ecs->entities[id].scroll_uv.speed.y * time.delta;
   }
 }
 
@@ -359,111 +357,55 @@ void ecs__check_projectile_radius_collisions(
 
 void ecs__draw(
   struct GameTime time,
-  struct Camera const *const cam,
+  struct Camera const *const camera,
   struct GPU const *const gpu,
   struct ECS *const ecs
 ) {
 
-  // TODO: boy this is getting messy
-
   for (EntityId id = 0; id < ecs->count; id++) {
 
-    if (
-      lacks_components(c_DRAW_BILLBOARD, ecs->entities[id].config) &&
-      lacks_components(c_DRAW_MESH, ecs->entities[id].config)
-    ) continue;
+    if (lacks_components(c_DRAW, ecs->entities[id].config)) continue;
 
-    struct Shader *shad = ecs->entities[id].draw.shader;
+    struct Shader *shader = ecs->entities[id].draw.shader;
 
-    gpu->select_shader(shad);
+    gpu->select_shader(shader);
 
     if (ecs->entities[id].draw.texture != NULL)
       gpu->select_texture(ecs->entities[id].draw.texture);
 
-    gpu->set_shader_m4x4(
-      shad,
-      "view",
-      &cam->lookat
-    );
-    gpu->set_shader_m4x4(
-      shad,
-      "projection",
-      &cam->projection
-    );
     gpu->set_shader_float(
-      shad,
+      shader,
       "total_elapsed_seconds",
       time.sec_since_game_launch
     );
-    if (has_component(c_UV_SCROLL, ecs->entities[id].config)) {
-      gpu->set_shader_vec2(
-        shad,
-        "total_uv_scroll",
-        ecs->entities[id].draw.uv_scroll_total
-      );
-    }
+
+    gpu->set_shader_vec2(
+      shader,
+      "total_uv_scroll",
+      has_component(c_UV_SCROLL, ecs->entities[id].config) ?
+      ecs->entities[id].scroll_uv.total :
+      (struct Vec2){0}
+    );
+
     if (has_component(c_TIMEOUT, ecs->entities[id].config)) {
       gpu->set_shader_float(
-        shad,
+        shader,
         "seconds_since_activation",
         ecs->entities[id].timeout.age
       );
       gpu->set_shader_float(
-        shad,
+        shader,
         "limit_in_seconds",
         ecs->entities[id].timeout.limit
       );
     }
 
-    struct M4x4 local_to_world;
-    struct M3x3 normals_local_to_world;
-
-    if (has_component(
-      c_DRAW_BILLBOARD,
-      ecs->entities[id].config
-    )) {
-
-      m4x4__translation(
-        ecs->entities[id].transform.position,
-        &local_to_world
-      );
-      gpu->set_shader_float(
-        shad,
-        "scale",
-        ecs->entities[id].transform.scale
-      );
-      gpu->set_shader_m4x4(
-        shad,
-        "model",
-        &local_to_world
-      );
-
-      gpu->draw_points(&POINT); 
-
-    } else {
-
-      space__create_model(
-        &WORLDSPACE,
-        &ecs->entities[id].transform,
-        &local_to_world
-      );
-      space__create_normals_model(
-        &local_to_world,
-        &normals_local_to_world
-      );
-
-      gpu->set_shader_m3x3(
-        shad,
-        "normals_model",
-        &normals_local_to_world
-      );
-      gpu->set_shader_m4x4(
-        shad,
-        "model",
-        &local_to_world
-      );
-
-      gpu->draw_mesh(ecs->entities[id].draw.mesh);
-    }
+    ecs->entities[id].draw.draw(
+      time,
+      camera,
+      gpu,
+      id,
+      ecs
+    );
   }
 }

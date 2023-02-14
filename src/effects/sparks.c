@@ -61,8 +61,8 @@ void create_sparks(
       (struct Draw){
         .texture = &TINY_DEBRIS_TEXTURE,
         .mesh = &QUAD,
-        // .shader = &FLAT_TEXTURE_SHADER
-        .shader = &SOLID_COLOR_SHADER
+        .shader = &SOLID_COLOR_SHADER,
+        .draw = ecs__draw_mesh
       },
       ecs
     );

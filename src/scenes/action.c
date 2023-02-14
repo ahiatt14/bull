@@ -295,6 +295,14 @@ void on_rpg_timer_up(
   // TODO: damage radius
 }
 
+// struct Vec3 velocity_from_vec3lerp(
+//   struct Vec3Lerp const *const vec3_lerp
+// ) {
+//   return scalar_x_vec3(
+
+//   );
+// }
+
 void handle_mine_shot_by_player(
   EntityId mine,
   EntityId projectile,
@@ -307,6 +315,7 @@ void handle_mine_shot_by_player(
   // );
   create_sparks(
     ecs->entities[projectile].transform.position,
+    // velocity_from_vec3lerp(ecs->entities[projectile].vec3lerp),
     (struct Vec3){0},
     6,
     ecs

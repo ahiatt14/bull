@@ -177,7 +177,10 @@ void ocean__init(
   );
   ecs__add_uv_scroll(
     mist,
-    (struct Vec2){ -0.01f, 0 },
+    (struct ScrollUV){
+      .speed = (struct Vec2){ -0.01f, 0 },
+      .total = (struct Vec2){0}
+    },
     &ecs
   );
   ecs__add_draw(
@@ -185,7 +188,8 @@ void ocean__init(
     (struct Draw){
       .shader = &mist_shader,
       .texture = &MIST_TEXTURE,
-      .mesh = &SKY_MESH
+      .mesh = &SKY_MESH,
+      .draw = ecs__draw_mesh
     },
     &ecs
   );

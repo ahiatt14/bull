@@ -15,6 +15,8 @@
 
 #define MAX_MINES 50
 
+// TODO: gotta be source of the ccw/cw flip bug when mines are destroyed
+// before they reach the battlefield
 static uint_fast8_t ccw_flags_by_id[MAX_MINES];
 
 static void (*on_shot_ptr)(
@@ -145,7 +147,8 @@ void create__mine(
     (struct Draw){
       .texture = &BLASTED_STONE_TEXTURE,
       .shader = &FLAT_TEXTURE_SHADER,
-      .mesh = &LOWPOLY_SPHERE_FLAT_MESH
+      .mesh = &LOWPOLY_SPHERE_FLAT_MESH,
+      .draw = ecs__draw_mesh
     },
     ecs
   );

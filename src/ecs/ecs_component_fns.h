@@ -42,17 +42,6 @@ void ecs__remove_draw(
   struct ECS *const ecs
 );
 
-void ecs__add_draw_billboard(
-  EntityId id,
-  struct Draw draw,
-  struct ECS *const ecs
-);
-
-void ecs__remove_draw_billboard(
-  EntityId id,
-  struct ECS *const ecs
-);
-
 void ecs__add_draw_back_faces(
   EntityId id,
   struct ECS *const ecs
@@ -114,7 +103,7 @@ void ecs__remove_vec3lerp(
 
 void ecs__add_uv_scroll(
   EntityId id,
-  struct Vec2 speed,
+  struct ScrollUV scroll_uv,
   struct ECS *const ecs
 );
 

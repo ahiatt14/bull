@@ -83,7 +83,8 @@ void create_lvl0_muzzle_flash(
     (struct Draw){
       .texture = &MUZZLE_FLASH_TEXTURE,
       .mesh = &QUAD,
-      .shader = &muzzle_flash_blink_shader
+      .shader = &muzzle_flash_blink_shader,
+      .draw = ecs__draw_mesh
     },
     ecs
   );

@@ -98,12 +98,12 @@ void create_rpg_explosion(
     },
     ecs
   );
-  ecs__add_draw_billboard(
+  ecs__add_draw(
     blink,
     (struct Draw){
       .texture = &BLINK_TEXTURE,
-      .shader = &rpg_explosion_blink_shader
-      // .shader = &FLAT_TEXTURE_SHADER
+      .shader = &rpg_explosion_blink_shader,
+      .draw = ecs__draw_billboard
     },
     ecs
   );
@@ -135,9 +135,12 @@ void create_rpg_explosion(
   );
   ecs__add_uv_scroll(
     fireball,
-    (struct Vec2){
-      0.5f - rand() / (float)RAND_MAX,
-      rand() / (float)RAND_MAX
+    (struct ScrollUV){
+      .speed = (struct Vec2){
+        0.5f - rand() / (float)RAND_MAX,
+        rand() / (float)RAND_MAX
+      },
+      .total = (struct Vec2){0}
     },
     ecs
   );
@@ -146,7 +149,8 @@ void create_rpg_explosion(
     (struct Draw){
       .texture = &FIREBALL_TEXTURE,
       .shader = &rpg_explosion_fireball_shader,
-      .mesh = &LOWPOLY_SPHERE_FLAT_MESH
+      .mesh = &LOWPOLY_SPHERE_FLAT_MESH,
+      .draw = ecs__draw_mesh
     },
     ecs
   );

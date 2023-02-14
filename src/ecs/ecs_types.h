@@ -5,6 +5,7 @@
 
 #include "tail.h"
 #include "constants.h"
+#include "tail_helpers.h"
 
 #define MAX_ENTITIES 500
 
@@ -12,8 +13,8 @@
 #define c_TRANSFORM 1 << 0
 #define c_VELOCITY 1 << 1
 #define c_TIMEOUT 1 << 2
-#define c_DRAW_BILLBOARD 1 << 3
-#define c_DRAW_MESH 1 << 4
+#define c_DRAW 1 << 3
+#define c_ROTATION_LERP 1 << 4
 #define c_UV_SCROLL 1 << 5
 #define c_VEC3_LERP 1 << 6
 #define c_REVOLVE_LERP 1 << 7
@@ -25,7 +26,6 @@
 #define c_DRAW_BACK_FACES 1 << 13
 #define c_PROJECTILE_RADIUS_COLLIDER 1 << 14
 #define c_DAMAGABLE_RADIUS_COLLIDER 1 << 15
-#define c_ROTATION_LERP 1 << 16
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast32_t ComponentConfig;
@@ -81,8 +81,18 @@ struct Draw {
   struct DrawableMesh *mesh;
   struct Texture *texture;
   struct Shader *shader;
-  struct Vec2 uv_scroll_speed;
-  struct Vec2 uv_scroll_total;
+  void (*draw)(
+    struct GameTime time,
+    struct Camera const *const cam,
+    struct GPU const *const gpu,
+    EntityId id,
+    struct ECS const *const ecs
+  );
+};
+
+struct ScrollUV {
+  struct Vec2 speed;
+  struct Vec2 total;
 };
 
 struct Vec3Lerp {
@@ -131,6 +141,7 @@ struct Entity {
   struct Vec3Lerp vec3lerp;
   struct RotationLerp rotation_lerp;
   struct Vec3 velocity;
+  struct ScrollUV scroll_uv;
   struct Draw draw;
   struct Weapons weapons;
   struct RadiusCollider radius_collider;
