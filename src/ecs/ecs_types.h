@@ -23,10 +23,12 @@
 #define c_WEAPONS 1 << 11
 #define c_GRAVITY 1 << 12
 #define c_DRAW_BACK_FACES 1 << 13
-#define c_ROTATION_LERP 1 << 14
+#define c_PROJECTILE_RADIUS_COLLIDER 1 << 14
+#define c_DAMAGABLE_RADIUS_COLLIDER 1 << 15
+#define c_ROTATION_LERP 1 << 16
 
 typedef uint_fast16_t EntityId;
-typedef uint_fast16_t ComponentConfig;
+typedef uint_fast32_t ComponentConfig;
 
 struct ECS;
 struct Entity;
@@ -44,6 +46,15 @@ struct Weapons {
   //   struct ECS *const ecs
   // );
   // Seconds secondary_autofire_interval;
+};
+
+struct RadiusCollider {
+  float radius;
+  void (*on_collide)(
+    EntityId id,
+    EntityId other,
+    struct ECS *const ecs
+  );
 };
 
 struct Timeout {
@@ -122,6 +133,7 @@ struct Entity {
   struct Vec3 velocity;
   struct Draw draw;
   struct Weapons weapons;
+  struct RadiusCollider radius_collider;
   ComponentConfig config;
 };
 

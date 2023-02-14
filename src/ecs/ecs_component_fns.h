@@ -5,14 +5,14 @@
 
 #include "ecs_types.h"
 
-uint_fast8_t lacks_configuration(
-  uint_fast16_t necessary_configuration,
-  uint_fast16_t entity_configuration
+uint_fast8_t lacks_components(
+  ComponentConfig necessary_configuration,
+  ComponentConfig entity_configuration
 );
 
 uint_fast8_t has_component(
-  uint_fast16_t necessary_component,
-  uint_fast16_t entity_configuration
+  ComponentConfig necessary_component,
+  ComponentConfig entity_configuration
 );
 
 void ecs__add_player_controller(
@@ -164,6 +164,28 @@ void ecs__add_weapons(
 void ecs__remove_weapons(
   EntityId id,
   struct ECS *const ecs  
+);
+
+void ecs__add_projectile_radius_collider(
+  EntityId id,
+  struct RadiusCollider radius_collider,
+  struct ECS *const ecs
+);
+
+void ecs__remove_projectile_radius_collider(
+  EntityId id,
+  struct ECS *const ecs
+);
+
+void ecs__add_damagable_radius_collider(
+  EntityId id,
+  struct RadiusCollider radius_collider,
+  struct ECS *const ecs
+);
+
+void ecs__remove_damagable_radius_collider(
+  EntityId id,
+  struct ECS *const ecs
 );
 
 #endif

@@ -72,6 +72,14 @@ EntityId create_lvl0_cannonfire(
     },
     ecs
   );
+  ecs__add_projectile_radius_collider(
+    cannonfire,
+    (struct RadiusCollider){
+      .radius = 0.1f,
+      .on_collide = NULL
+    },
+    ecs
+  );
   ecs__add_draw(
     cannonfire,
     (struct Draw){

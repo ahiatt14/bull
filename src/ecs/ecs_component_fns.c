@@ -3,17 +3,17 @@
 #include "ecs_types.h"
 #include "ecs_component_fns.h"
 
-uint_fast8_t lacks_configuration(
-  uint_fast16_t necessary_configuration,
-  uint_fast16_t entity_configuration
+uint_fast8_t lacks_components(
+  ComponentConfig necessary_configuration,
+  ComponentConfig entity_configuration
 ) {
   uint_fast16_t anded = necessary_configuration & entity_configuration;
   return (anded == necessary_configuration) ? 0 : 1;
 }
 
 uint_fast8_t has_component(
-  uint_fast16_t necessary_component,
-  uint_fast16_t entity_configuration
+  ComponentConfig necessary_component,
+  ComponentConfig entity_configuration
 ) {
   uint_fast16_t anded = necessary_component & entity_configuration;
   return (anded == necessary_component) ? 1 : 0;
@@ -238,4 +238,36 @@ void ecs__remove_weapons(
   struct ECS *const ecs  
 ) {
   ecs->entities[id].config -= c_WEAPONS;
+}
+
+void ecs__add_projectile_radius_collider(
+  EntityId id,
+  struct RadiusCollider radius_collider,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config += c_PROJECTILE_RADIUS_COLLIDER;
+  ecs->entities[id].radius_collider = radius_collider;
+}
+
+void ecs__remove_projectile_radius_collider(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config -= c_PROJECTILE_RADIUS_COLLIDER;
+}
+
+void ecs__add_damagable_radius_collider(
+  EntityId id,
+  struct RadiusCollider radius_collider,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config += c_DAMAGABLE_RADIUS_COLLIDER;
+  ecs->entities[id].radius_collider = radius_collider;
+}
+
+void ecs__remove_damagable_radius_collider(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config -= c_DAMAGABLE_RADIUS_COLLIDER;
 }

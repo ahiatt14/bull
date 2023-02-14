@@ -59,6 +59,9 @@ void explosions__copy_assets_to_gpu(
   gpu->copy_texture_to_gpu(&FIREBALL_TEXTURE);
 }
 
+// TODO: refactor into reusable explosion
+// TODO: we won't be able to rely on velocity
+// since objects will move via revolve & bezier curve lerping
 void create_rpg_explosion(
   EntityId rocket,
   struct Vec3 camera_position,

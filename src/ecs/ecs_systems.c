@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "tail.h"
 
 #include "ecs_types.h"
@@ -25,7 +27,7 @@ void ecs__control_player(
   static const float STICK_DEADZONE = 0.2f;
   static const float TRIGGER_DEADZONE = 0.3f;
 
-  if (lacks_configuration(c_PLAYER_CONTROLLER, player->config)) return;
+  if (lacks_components(c_PLAYER_CONTROLLER, player->config)) return;
 
   // TODO: not as clean as the FSM we had before, hmm
   // something to think about
@@ -67,7 +69,7 @@ void ecs__gravity(
 
   for (EntityId id = 0; id < ecs->count; id++) {
 
-    if (lacks_configuration(
+    if (lacks_components(
       c_GRAVITY | c_VELOCITY,
       ecs->entities[id].config
     )) continue;
@@ -87,7 +89,7 @@ void ecs__move(
 
   for (EntityId id = 0; id < ecs->count; id++) {
 
-    if (lacks_configuration(
+    if (lacks_components(
       c_TRANSFORM | c_VELOCITY,
       ecs->entities[id].config
     )) continue;
@@ -106,7 +108,7 @@ void ecs__timeout(
   
   for (EntityId id = 0; id < ecs->count; id++) {
 
-    if (lacks_configuration(
+    if (lacks_components(
       c_TIMEOUT,
       ecs->entities[id].config
     )) continue;
@@ -132,7 +134,7 @@ void ecs__repeat(
 
   for (EntityId id = 0; id < ecs->count; id++) {
 
-    if (lacks_configuration(
+    if (lacks_components(
       c_REPEAT,
       ecs->entities[id].config
     )) continue;
@@ -156,7 +158,7 @@ void ecs__scroll_uvs(
 
   for (EntityId id = 0; id < ecs->count; id++) {
 
-    if (lacks_configuration(
+    if (lacks_components(
       c_DRAW_MESH | c_UV_SCROLL,
       ecs->entities[id].config
     )) continue;
@@ -177,7 +179,7 @@ void ecs__lerp_vec3(
 
   for (EntityId id = 0; id < ecs->count; id++) {
 
-    if (lacks_configuration(
+    if (lacks_components(
       c_VEC3_LERP,
       ecs->entities[id].config
     )) continue;
@@ -213,7 +215,7 @@ void ecs__lerp_revolve(
 
   for (EntityId id = 0; id < ecs->count; id++) {
 
-    if (lacks_configuration(
+    if (lacks_components(
       c_REVOLVE_LERP,
       ecs->entities[id].config
     )) continue;
@@ -271,7 +273,7 @@ void ecs__lerp_revolve(
 
 //   for (EntityId id = 0; id < ecs->count; id++) {
 
-//     if (lacks_configuration(
+//     if (lacks_components(
 //       c_ROTATION_LERP,
 //       ecs->entities[id].config
 //     )) continue;
@@ -293,7 +295,7 @@ void ecs__look_at_center(
 
   for (EntityId id = 0; id < ecs->count; id++) {
 
-    if (lacks_configuration(
+    if (lacks_components(
       c_LOOK_AT_CENTER,
       ecs->entities[id].config
     )) continue;
@@ -311,6 +313,50 @@ void ecs__look_at_center(
   }
 }
 
+// TODO: learn how to do efficient collision detection in ECS!
+void ecs__check_projectile_radius_collisions(
+  struct GameTime time,
+  struct ECS *const ecs
+) {
+
+  float distance_between_positions, damagable_radius, projectile_radius;
+
+  for (EntityId id = 0; id < ecs->count; id++) {
+
+    if (lacks_components(
+      c_DAMAGABLE_RADIUS_COLLIDER,
+      ecs->entities[id].config
+    )) continue;
+
+    for (EntityId projectile = 0; projectile < ecs->count; projectile++) {
+
+      if (lacks_components(
+        c_PROJECTILE_RADIUS_COLLIDER,
+        ecs->entities[projectile].config
+      )) continue;
+
+      distance_between_positions = vec3__distance(
+        ecs->entities[id].transform.position,
+        ecs->entities[projectile].transform.position
+      );
+
+      damagable_radius = ecs->entities[id].radius_collider.radius;
+      projectile_radius = ecs->entities[projectile].radius_collider.radius;
+
+      if (
+        (distance_between_positions - damagable_radius - projectile_radius) >
+        (damagable_radius + projectile_radius)
+      ) continue;
+
+      ecs->entities[id].radius_collider.on_collide(
+        id,
+        projectile,
+        ecs
+      );
+    }
+  }
+}
+
 void ecs__draw(
   struct GameTime time,
   struct Camera const *const cam,
@@ -323,8 +369,8 @@ void ecs__draw(
   for (EntityId id = 0; id < ecs->count; id++) {
 
     if (
-      lacks_configuration(c_DRAW_BILLBOARD, ecs->entities[id].config) &&
-      lacks_configuration(c_DRAW_MESH, ecs->entities[id].config)
+      lacks_components(c_DRAW_BILLBOARD, ecs->entities[id].config) &&
+      lacks_components(c_DRAW_MESH, ecs->entities[id].config)
     ) continue;
 
     struct Shader *shad = ecs->entities[id].draw.shader;

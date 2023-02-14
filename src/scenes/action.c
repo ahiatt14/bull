@@ -15,6 +15,7 @@
 #include "guns.h"
 #include "rpg.h"
 #include "explosions.h"
+#include "sparks.h"
 #include "muzzle_flashes.h"
 
 #include "mines.h"
@@ -42,6 +43,12 @@ void fire_lvl0_cannon(
 /*
   ~~~~~ENTITY EVENT HANDLERS~~~~
 */
+
+void handle_mine_shot_by_player(
+  EntityId mine,
+  EntityId projectile,
+  struct ECS *const ecs
+);
 
 void on_rpg_deployed(
   EntityId rocket,
@@ -114,12 +121,9 @@ void action__init(
   ocean__init(window, vwprt, gpu);
 
   mines__copy_assets_to_gpu(gpu);
-  create__mine(
-    (struct Vec3){ -4, 0, -4 },
-    (struct Vec3){ -4, 0, 0 },
-    1,
-    &ecs
-  );
+  mines__init_scene_callbacks(handle_mine_shot_by_player);
+  mines__create_pattern_0(&ecs);
+  mines__create_pattern_1(&ecs);
 }
 
 void action__tick(
@@ -156,7 +160,8 @@ void action__tick(
   ecs__move(time, &ecs);
   ecs__look_at_center(time, &ecs);
   ecs__scroll_uvs(time, &ecs);
-  
+  ecs__check_projectile_radius_collisions(time, &ecs);
+
   ecs__destroy_marked_entities(&ecs);
 
   // DRAW
@@ -288,4 +293,24 @@ void on_rpg_timer_up(
   );
 
   // TODO: damage radius
+}
+
+void handle_mine_shot_by_player(
+  EntityId mine,
+  EntityId projectile,
+  struct ECS *const ecs
+) {
+  // create_rpg_explosion(
+  //   projectile,
+  //   cam.position,
+  //   ecs
+  // );
+  create_sparks(
+    ecs->entities[projectile].transform.position,
+    (struct Vec3){0},
+    6,
+    ecs
+  );
+  // ecs__mark_for_destruction(mine, ecs);
+  ecs__mark_for_destruction(projectile, ecs);
 }
