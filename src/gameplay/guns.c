@@ -31,8 +31,9 @@ EntityId create_lvl0_cannonfire(
 ) {
 
   static const double DURATION = 0.5f;
+  static const float SPEED = 30.0f;
 
-  EntityId cannonfire = ecs__create_entity(ecs);
+  EntityId bullet = ecs__create_entity(ecs);
 
   struct Quaternion point_to_target = quaternion__create(
     WORLDSPACE.up,
@@ -44,14 +45,15 @@ EntityId create_lvl0_cannonfire(
     M_PI * 0.5f
   );
 
-  struct Vec3 destination = vec3_plus_vec3(
-    position,
-    scalar_x_vec3(20, direction)
-  );
+  struct Vec3 velocity = scalar_x_vec3(SPEED, direction);
 
   ecs__add_transform(
-    cannonfire,
+    bullet,
     (struct Transform){
+      .position = vec3_plus_vec3(
+        position,
+        scalar_x_vec3(remainder, velocity)
+      ),
       .scale = 1.6f,
       .rotation = quaternion__multiply(
         point_to_target,
@@ -60,20 +62,22 @@ EntityId create_lvl0_cannonfire(
     },
     ecs
   );
-  ecs__add_vec3lerp(
-    cannonfire,
-    (struct Vec3Lerp){
-      .start = position,
-      .end = destination,
+  ecs__add_velocity(
+    bullet,
+    velocity,
+    ecs
+  );
+  ecs__add_timeout(
+    bullet,
+    (struct Timeout){
       .age = remainder,
-      .duration = DURATION,
-      .lerp = vec3__linear_lerp,
-      .on_finish = destroy_bullet
+      .limit = DURATION,
+      .on_timeout = destroy_bullet
     },
     ecs
   );
   ecs__add_projectile_radius_collider(
-    cannonfire,
+    bullet,
     (struct RadiusCollider){
       .radius = 0.1f,
       .on_collide = NULL
@@ -81,7 +85,7 @@ EntityId create_lvl0_cannonfire(
     ecs
   );
   ecs__add_draw(
-    cannonfire,
+    bullet,
     (struct Draw){
       .mesh = &QUAD,
       .texture = &BULLETS_TEXTURE,
@@ -91,5 +95,5 @@ EntityId create_lvl0_cannonfire(
     ecs
   );
 
-  return cannonfire;
+  return bullet;
 }

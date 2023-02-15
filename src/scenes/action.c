@@ -232,20 +232,8 @@ void fire_lvl0_cannon(
       ecs->entities[weapon].transform.position
     ));
 
-  struct Vec3 target = vec3_plus_vec3(
-    scalar_x_vec3(30, direction),
-    ecs->entities[weapon].transform.position
-  );
-
-  struct Vec3 starting_position =
-    vec3__linear_lerp(
-      ecs->entities[weapon].transform.position,
-      target,
-      remainder
-    );
-
   create_lvl0_cannonfire(
-    starting_position,
+    ecs->entities[weapon].transform.position,
     direction,
     remainder,
     ecs
@@ -315,8 +303,7 @@ void handle_mine_shot_by_player(
   // );
   create_sparks(
     ecs->entities[projectile].transform.position,
-    // velocity_from_vec3lerp(ecs->entities[projectile].vec3lerp),
-    (struct Vec3){0},
+    ecs->entities[projectile].velocity,
     6,
     ecs
   );
