@@ -12,8 +12,8 @@ void main() {
 
   vec4 _0 = pos;
   vec4 _1 = pos + gs_in[0].endpoint;
-  vec4 _2 = _0 + vec4(cross(_1.xyz, _0.xyz), 0.0) * 0.001;
-  vec4 _3 = _1 + vec4(cross(_1.xyz, _0.xyz), 0.0) * 0.001;
+  vec4 _2 = _0 + vec4(cross(_1.xyz, _0.xyz), 0.0) * 0.002;
+  vec4 _3 = _1 + vec4(cross(_1.xyz, _0.xyz), 0.0) * 0.002;
 
   gl_Position = _0;
   EmitVertex();

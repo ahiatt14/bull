@@ -54,7 +54,7 @@ EntityId create_lvl0_cannonfire(
         position,
         scalar_x_vec3(remainder, velocity)
       ),
-      .scale = 1.6f,
+      .scale = 2.5f,
       .rotation = quaternion__multiply(
         point_to_target,
         face_quad_up

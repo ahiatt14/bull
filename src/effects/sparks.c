@@ -50,16 +50,14 @@ static void draw_spark(
   static struct M4x4 model;
   static struct Shader *shader;
   shader = ecs->entities[spark].draw.shader;
-
-  struct Vec3 velocity =
-    scalar_x_vec3(
-      time.delta * 7,
-      ecs->entities[spark].velocity
-    );
  
   m4x4__translation(ecs->entities[spark].transform.position, &model);
   gpu->set_shader_m4x4(shader, "model", &model);
-  gpu->set_shader_vec3(shader, "velocity", velocity);
+  gpu->set_shader_vec3(
+    shader,
+    "velocity",
+    scalar_x_vec3(0.04, ecs->entities[spark].velocity)
+  );
 
   gpu->draw_points(&POINT);
 }
@@ -74,7 +72,7 @@ void create_sparks(
   EntityId spark;
   struct Transform transform = { position };
   struct Vec3 directions_to_average[2] = {
-    scalar_x_vec3(0.2f, velocity),
+    scalar_x_vec3(0.7f, velocity),
     (struct Vec3){0}
   };
 
@@ -83,7 +81,7 @@ void create_sparks(
     spark = ecs__create_entity(ecs);
 
     directions_to_average[1] =
-      scalar_x_vec3(10, random_direction());
+      scalar_x_vec3(30, random_direction());
 
     ecs__add_transform(spark, transform, ecs);
     ecs__add_velocity(
@@ -101,12 +99,11 @@ void create_sparks(
       },
       ecs
     );
-    ecs__add_gravity(spark, ecs);
     ecs__add_timeout(
       spark,
       (struct Timeout){
         .age = 0,
-        .limit = 0.3f,
+        .limit = 0.15f,
         .on_timeout = destroy_spark
       },
       ecs
