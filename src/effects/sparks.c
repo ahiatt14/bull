@@ -2,12 +2,26 @@
 #include <stdio.h>
 
 #include "tail.h"
+#include "ecs.h"
 
 #include "sparks.h"
 
-#include "ecs.h"
+#include "constants.h"
 
-#include "tiny_debris_texture.h"
+#include "spark_geo.h"
+#include "spark_frag.h"
+#include "spark_vert.h"
+
+static struct Shader spark_shader;
+
+void sparks__copy_assets_to_gpu(
+  struct GPU const *const gpu
+) {
+  spark_shader.frag_src = SPARK_FRAG_SRC;
+  spark_shader.geo_src = SPARK_GEO_SRC;
+  spark_shader.vert_src = SPARK_VERT_SRC;
+  gpu->copy_shader_to_gpu(&spark_shader);
+}
 
 static void destroy_spark(
   EntityId spark,
@@ -17,12 +31,31 @@ static void destroy_spark(
   ecs__mark_for_destruction(spark, ecs);
 }
 
-struct Vec3 random_direction() {
+static struct Vec3 random_direction() {
   return vec3__normalize((struct Vec3){
     0.5f - (rand() / (float)RAND_MAX),
     (rand() / (float)RAND_MAX),
     0.5f - (rand() / (float)RAND_MAX)
   });
+}
+
+static void draw_spark(
+  struct GameTime time,
+  struct Camera const *const camera,
+  struct GPU const *const gpu,
+  EntityId spark,
+  struct ECS const *const ecs
+) {
+
+  static struct M4x4 model;
+  static struct Shader *shader;
+  shader = ecs->entities[spark].draw.shader;
+ 
+  m4x4__translation(ecs->entities[spark].transform.position, &model);
+  gpu->set_shader_m4x4(shader, "model", &model);
+  gpu->set_shader_vec3(shader, "velocity", ecs->entities[spark].velocity);
+
+  gpu->draw_points(&POINT);
 }
 
 void create_sparks(
@@ -59,10 +92,10 @@ void create_sparks(
     ecs__add_draw(
       spark,
       (struct Draw){
-        .texture = &TINY_DEBRIS_TEXTURE,
-        .mesh = &QUAD,
-        .shader = &SOLID_COLOR_SHADER,
-        .draw = ecs__draw_mesh
+        .texture = NULL,
+        .mesh = NULL,
+        .shader = &spark_shader,
+        .draw = draw_spark
       },
       ecs
     );
@@ -71,7 +104,7 @@ void create_sparks(
       spark,
       (struct Timeout){
         .age = 0,
-        .limit = 0.5,
+        .limit = 6,
         .on_timeout = destroy_spark
       },
       ecs

@@ -5,6 +5,10 @@
 
 #include "ecs.h"
 
+void sparks__copy_assets_to_gpu(
+  struct GPU const *const gpu
+);
+
 void create_sparks(
   struct Vec3 position,
   struct Vec3 direction,

@@ -379,7 +379,7 @@ void ecs__draw(
       time.sec_since_game_launch
     );
 
-    if (has_component(c_TIMEOUT, ecs->entities[id].config)) {
+    if (has_component(c_UV_SCROLL, ecs->entities[id].config)) {
       gpu->set_shader_vec2(
         shader,
         "total_uv_scroll",
@@ -403,12 +403,6 @@ void ecs__draw(
     gpu->set_shader_m4x4(shader, "view", &camera->lookat);
     gpu->set_shader_m4x4(shader, "projection", &camera->projection);
 
-    ecs->entities[id].draw.draw(
-      time,
-      camera,
-      gpu,
-      id,
-      ecs
-    );
+    ecs->entities[id].draw.draw(time, camera, gpu, id, ecs);
   }
 }
