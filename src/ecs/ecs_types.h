@@ -26,6 +26,7 @@
 #define c_DRAW_BACK_FACES 1 << 13
 #define c_PROJECTILE_RADIUS_COLLIDER 1 << 14
 #define c_DAMAGABLE_RADIUS_COLLIDER 1 << 15
+#define c_AIR_DRAG 1 << 16
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast32_t ComponentConfig;

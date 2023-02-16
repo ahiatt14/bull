@@ -35,7 +35,11 @@ float rads_ccw_from_forward_around_up(
   return rads;
 }
 
-double dmax(double v, double max) {
+double d_max(double v, double max) {
+  return v > max ? max : v;
+}
+
+float f_max(float v, float max) {
   return v > max ? max : v;
 }
 

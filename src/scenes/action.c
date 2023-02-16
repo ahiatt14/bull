@@ -305,7 +305,7 @@ void handle_mine_shot_by_player(
   create_sparks(
     ecs->entities[projectile].transform.position,
     ecs->entities[projectile].velocity,
-    6,
+    5,
     ecs
   );
   // ecs__mark_for_destruction(mine, ecs);

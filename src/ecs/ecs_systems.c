@@ -66,7 +66,7 @@ void ecs__gravity(
   struct ECS *const ecs
 ) {
 
-  struct Vec3 acceleration = {0, -3 * time.delta, 0};
+  struct Vec3 acceleration = {0, -9.8 * time.delta, 0};
 
   for (EntityId id = 0; id < ecs->count; id++) {
 
@@ -80,8 +80,13 @@ void ecs__gravity(
       acceleration
     ); 
   }
-
 }
+
+// void ecs__air_drag(
+
+// ) {
+
+// }
 
 void ecs__move(
   struct GameTime time,
@@ -192,7 +197,7 @@ void ecs__lerp_vec3(
       ecs->entities[id].vec3lerp.lerp(
         ecs->entities[id].vec3lerp.start,
         ecs->entities[id].vec3lerp.end,
-        dmax(ratio, 1.0f)
+        d_max(ratio, 1.0f)
       );
 
     if (ratio >= 1.0f) ecs->entities[id].vec3lerp.on_finish(
@@ -225,7 +230,7 @@ void ecs__lerp_revolve(
       ecs->entities[id].revolve_lerp.duration;
 
     rads =
-      dmax(ratio, 1.0f) *
+      d_max(ratio, 1.0f) *
       ecs->entities[id].revolve_lerp.target_rads;
 
     ecs->entities[id].transform.position =

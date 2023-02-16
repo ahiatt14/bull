@@ -15,7 +15,8 @@ const struct M4x4* camera__calculate_ortho(
   struct Camera *const cam
 );
 
-double dmax(double v, double max);
+double d_max(double v, double max);
+float f_max(float v, float max);
 
 float floop(float v, float min, float max);
 

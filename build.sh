@@ -41,7 +41,7 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/mountain_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/spark_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/spark_geo.glsl geo && \
-  ./${tools}sourcify-glsl.exe assets/glsl/spark_vert.glsl vert \
+  ./${tools}validate-glsl.exe assets/glsl/spark_vert.glsl vert \
   && \
   ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_vert.glsl $artifact_dir && \

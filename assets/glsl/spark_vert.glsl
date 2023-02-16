@@ -21,6 +21,8 @@ uniform mat4 projection = mat4(
   vec4(0.0, 0.0, 0.0, 1.0)
 );
 
+uniform vec3 velocity;
+
 out VS_OUT {
   vec4 endpoint;
 } gs_out;

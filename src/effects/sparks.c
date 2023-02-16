@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 
 #include "tail.h"
 #include "ecs.h"
@@ -7,6 +6,7 @@
 #include "sparks.h"
 
 #include "constants.h"
+#include "bull_math.h"
 
 #include "spark_geo.h"
 #include "spark_frag.h"
@@ -50,10 +50,16 @@ static void draw_spark(
   static struct M4x4 model;
   static struct Shader *shader;
   shader = ecs->entities[spark].draw.shader;
+
+  struct Vec3 velocity =
+    scalar_x_vec3(
+      time.delta * 7,
+      ecs->entities[spark].velocity
+    );
  
   m4x4__translation(ecs->entities[spark].transform.position, &model);
   gpu->set_shader_m4x4(shader, "model", &model);
-  gpu->set_shader_vec3(shader, "velocity", ecs->entities[spark].velocity);
+  gpu->set_shader_vec3(shader, "velocity", velocity);
 
   gpu->draw_points(&POINT);
 }
@@ -66,10 +72,7 @@ void create_sparks(
 ) {
 
   EntityId spark;
-  struct Transform transform = {
-    .position = position,
-    .scale = 0.05f
-  };
+  struct Transform transform = { position };
   struct Vec3 directions_to_average[2] = {
     scalar_x_vec3(0.2f, velocity),
     (struct Vec3){0}
@@ -88,7 +91,6 @@ void create_sparks(
       vec3__mean(directions_to_average, 2),
       ecs
     );
-    // ecs__add_draw_back_faces(spark, ecs);
     ecs__add_draw(
       spark,
       (struct Draw){
@@ -104,7 +106,7 @@ void create_sparks(
       spark,
       (struct Timeout){
         .age = 0,
-        .limit = 6,
+        .limit = 0.3f,
         .on_timeout = destroy_spark
       },
       ecs
