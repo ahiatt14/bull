@@ -31,6 +31,11 @@ void ecs__add_transform(
   struct ECS *const ecs
 );
 
+void ecs__add_alpha_effect(
+  EntityId id,
+  struct ECS *const ecs
+);
+
 void ecs__add_draw(
   EntityId id,
   struct Draw draw,

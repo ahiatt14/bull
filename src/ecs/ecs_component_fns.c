@@ -7,7 +7,7 @@ uint_fast8_t lacks_components(
   ComponentConfig necessary_configuration,
   ComponentConfig entity_configuration
 ) {
-  uint_fast16_t anded = necessary_configuration & entity_configuration;
+  uint_fast32_t anded = necessary_configuration & entity_configuration;
   return (anded == necessary_configuration) ? 0 : 1;
 }
 
@@ -15,7 +15,7 @@ uint_fast8_t has_component(
   ComponentConfig necessary_component,
   ComponentConfig entity_configuration
 ) {
-  uint_fast16_t anded = necessary_component & entity_configuration;
+  uint_fast32_t anded = necessary_component & entity_configuration;
   return (anded == necessary_component) ? 1 : 0;
 }
 
@@ -40,6 +40,13 @@ void ecs__add_transform(
 ) {
   ecs->entities[id].config += c_TRANSFORM;
   ecs->entities[id].transform = t;
+}
+
+void ecs__add_alpha_effect(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config += c_ALPHA_EFFECT;
 }
 
 void ecs__add_draw(

@@ -13,33 +13,31 @@ void ecs__draw_mesh(
   struct GameTime time,
   struct Camera const *const camera,
   struct GPU const *const gpu,
-  EntityId id,
-  struct ECS const *const ecs
+  struct Entity const *const entity
 ) {
 
-  shader = ecs->entities[id].draw.shader;
+  shader = entity->draw.shader;
 
-  space__create_model(&WORLDSPACE, &ecs->entities[id].transform, &model);
+  space__create_model(&WORLDSPACE, &entity->transform, &model);
   gpu->set_shader_m4x4(shader, "model", &model);
   space__create_normals_model(&model, &normals_model);
   gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
 
-  gpu->draw_mesh(ecs->entities[id].draw.mesh);
+  gpu->draw_mesh(entity->draw.mesh);
 }
 
 void ecs__draw_billboard(
   struct GameTime time,
   struct Camera const *const camera,
   struct GPU const *const gpu,
-  EntityId id,
-  struct ECS const *const ecs
+  struct Entity const *const entity
 ) {
 
-  shader = ecs->entities[id].draw.shader;
+  shader = entity->draw.shader;
 
-  m4x4__translation(ecs->entities[id].transform.position, &model);
+  m4x4__translation(entity->transform.position, &model);
   gpu->set_shader_m4x4(shader, "model", &model);
-  gpu->set_shader_float(shader, "scale", ecs->entities[id].transform.scale);
+  gpu->set_shader_float(shader, "scale", entity->transform.scale);
 
   gpu->draw_points(&POINT);
 }

@@ -48,11 +48,11 @@ static const struct Vec3 COOLING_TOWER_POSITION = {
   -13
 };
 
-static const struct Vec3 COOLING_TOWER_OFFSET = {
-  7,
-  0,
-  4
-};
+// static const struct Vec3 COOLING_TOWER_OFFSET = {
+//   7,
+//   0,
+//   4
+// };
 
 static const struct Vec2 WIND_KM_PER_SEC = {
   -0.0075f,

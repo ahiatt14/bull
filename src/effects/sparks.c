@@ -43,20 +43,19 @@ static void draw_spark(
   struct GameTime time,
   struct Camera const *const camera,
   struct GPU const *const gpu,
-  EntityId spark,
-  struct ECS const *const ecs
+  struct Entity const *const entity
 ) {
 
   static struct M4x4 model;
   static struct Shader *shader;
-  shader = ecs->entities[spark].draw.shader;
+  shader = entity->draw.shader;
  
-  m4x4__translation(ecs->entities[spark].transform.position, &model);
+  m4x4__translation(entity->transform.position, &model);
   gpu->set_shader_m4x4(shader, "model", &model);
   gpu->set_shader_vec3(
     shader,
     "velocity",
-    scalar_x_vec3(0.04, ecs->entities[spark].velocity)
+    scalar_x_vec3(0.04, entity->velocity)
   );
 
   gpu->draw_points(&POINT);
@@ -80,6 +79,8 @@ void create_sparks(
 
     spark = ecs__create_entity(ecs);
 
+    // TODO: pre-calculate and store a bunch of directions
+    // to consume
     directions_to_average[1] =
       scalar_x_vec3(30, random_direction());
 

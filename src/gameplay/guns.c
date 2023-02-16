@@ -9,6 +9,8 @@
 
 #include "bullets_texture.h"
 
+#define Z_OFFSET 0.05f
+
 static void destroy_bullet(
   EntityId bullet,
   Seconds remainder,
@@ -30,6 +32,8 @@ EntityId create_lvl0_cannonfire(
   struct ECS *const ecs
 ) {
 
+  static uint_fast8_t offset_z;
+
   static const double DURATION = 0.5f;
   static const float SPEED = 30.0f;
 
@@ -47,13 +51,17 @@ EntityId create_lvl0_cannonfire(
 
   struct Vec3 velocity = scalar_x_vec3(SPEED, direction);
 
+  offset_z = offset_z ? 0 : 1;
+  struct Vec3 z_offset = { 0, offset_z ? Z_OFFSET : 0, 0 };
+  struct Vec3 offset_position = vec3_plus_vec3(
+    z_offset,
+    vec3_plus_vec3(position, scalar_x_vec3(remainder, velocity))
+  );
+
   ecs__add_transform(
     bullet,
     (struct Transform){
-      .position = vec3_plus_vec3(
-        position,
-        scalar_x_vec3(remainder, velocity)
-      ),
+      .position = offset_position,
       .scale = 2.5f,
       .rotation = quaternion__multiply(
         point_to_target,
@@ -84,6 +92,7 @@ EntityId create_lvl0_cannonfire(
     },
     ecs
   );
+  // ecs__add_alpha_effect(bullet, ecs);
   ecs__add_draw(
     bullet,
     (struct Draw){

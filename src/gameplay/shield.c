@@ -4,5 +4,5 @@
 
 #include "shield.h"
 
-static struct Shader reflecting_free_shield_shader;
+// static struct Shader reflecting_free_shield_shader;
 

@@ -15,16 +15,14 @@ void ecs__draw_mesh(
   struct GameTime time,
   struct Camera const *const camera,
   struct GPU const *const gpu,
-  EntityId id,
-  struct ECS const *const ecs
+  struct Entity const *const entity
 );
 
 void ecs__draw_billboard(
   struct GameTime time,
   struct Camera const *const camera,
   struct GPU const *const gpu,
-  EntityId id,
-  struct ECS const *const ecs
+  struct Entity const *const entity
 );
 
 #endif

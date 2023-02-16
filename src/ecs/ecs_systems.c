@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "tail.h"
 
 #include "ecs_types.h"
@@ -360,6 +358,78 @@ void ecs__check_projectile_radius_collisions(
   }
 }
 
+// TODO: clean up the naming/organization of all these
+// ecs drawing fns
+static void draw_entity(
+  struct GameTime time,
+  struct Camera const *const camera,
+  struct GPU const *const gpu,
+  struct Entity const *const entity
+) {
+
+  struct Shader *shader = entity->draw.shader;
+
+  gpu->select_shader(shader);
+
+  if (entity->draw.texture != NULL)
+    gpu->select_texture(entity->draw.texture);
+
+  gpu->set_shader_float(
+    shader,
+    "total_elapsed_seconds",
+    time.sec_since_game_launch
+  );
+
+  if (has_component(c_UV_SCROLL, entity->config)) {
+    gpu->set_shader_vec2(
+      shader,
+      "total_uv_scroll",
+      entity->scroll_uv.total
+    );
+  }
+
+  if (has_component(c_TIMEOUT, entity->config)) {
+    gpu->set_shader_float(
+      shader,
+      "seconds_since_activation",
+      entity->timeout.age
+    );
+    gpu->set_shader_float(
+      shader,
+      "limit_in_seconds",
+      entity->timeout.limit
+    );
+  }
+
+  gpu->set_shader_m4x4(shader, "view", &camera->lookat);
+  gpu->set_shader_m4x4(shader, "projection", &camera->projection);
+
+  entity->draw.draw(time, camera, gpu, entity);
+}
+
+void swap(EntityId *id0, EntityId *id1) {
+  EntityId temp = *id0;
+  *id0 = *id1;
+  *id1 = temp;
+}
+
+void sort_alpha_entities(
+  EntityId *alpha_entities,
+  uint_fast16_t alpha_entity_count,
+  struct ECS const *const ecs
+) {
+  int i, j, min_i;
+  for (i = 0; i < alpha_entity_count - 1; i++) {
+    min_i = i;
+    for (j = i + 1; j < alpha_entity_count; j++)
+      if (
+        ecs->entities[alpha_entities[j]].transform.position.z <
+        ecs->entities[alpha_entities[min_i]].transform.position.z
+      ) min_i = j;
+    swap(&alpha_entities[min_i], &alpha_entities[i]);
+  }
+}
+
 void ecs__draw(
   struct GameTime time,
   struct Camera const *const camera,
@@ -367,47 +437,25 @@ void ecs__draw(
   struct ECS *const ecs
 ) {
 
+  static EntityId alpha_entities[MAX_ENTITIES];
+  static uint_fast16_t alpha_entity_count;
+  alpha_entity_count = 0;
+
   for (EntityId id = 0; id < ecs->count; id++) {
 
-    if (lacks_components(c_DRAW, ecs->entities[id].config)) continue;
+    if (lacks_components(c_DRAW, ecs->entities[id].config))
+      continue;
 
-    struct Shader *shader = ecs->entities[id].draw.shader;
-
-    gpu->select_shader(shader);
-
-    if (ecs->entities[id].draw.texture != NULL)
-      gpu->select_texture(ecs->entities[id].draw.texture);
-
-    gpu->set_shader_float(
-      shader,
-      "total_elapsed_seconds",
-      time.sec_since_game_launch
-    );
-
-    if (has_component(c_UV_SCROLL, ecs->entities[id].config)) {
-      gpu->set_shader_vec2(
-        shader,
-        "total_uv_scroll",
-        ecs->entities[id].scroll_uv.total
-      );
+    if (has_component(c_ALPHA_EFFECT, ecs->entities[id].config)) {
+      alpha_entities[alpha_entity_count++] = id;
+      continue;
     }
 
-    if (has_component(c_TIMEOUT, ecs->entities[id].config)) {
-      gpu->set_shader_float(
-        shader,
-        "seconds_since_activation",
-        ecs->entities[id].timeout.age
-      );
-      gpu->set_shader_float(
-        shader,
-        "limit_in_seconds",
-        ecs->entities[id].timeout.limit
-      );
-    }
-
-    gpu->set_shader_m4x4(shader, "view", &camera->lookat);
-    gpu->set_shader_m4x4(shader, "projection", &camera->projection);
-
-    ecs->entities[id].draw.draw(time, camera, gpu, id, ecs);
+    draw_entity(time, camera, gpu, &ecs->entities[id]);
   }
+
+  sort_alpha_entities(alpha_entities, alpha_entity_count, ecs);
+
+  for (uint_fast16_t i = 0; i < alpha_entity_count; i++)
+    draw_entity(time, camera, gpu, &ecs->entities[alpha_entities[i]]);
 }
