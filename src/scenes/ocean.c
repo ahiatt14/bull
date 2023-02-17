@@ -11,10 +11,10 @@
 #include "bull_math.h"
 #include "tail_helpers.h"
 
-#include "water.h"
-
 #include "cooling_tower_mesh.h"
 #include "concrete_wall_texture.h"
+
+#include "ocean.h"
 
 #include "mountain_mesh.h"
 #include "mountain_texture.h"
@@ -53,11 +53,6 @@ static const struct Vec3 COOLING_TOWER_POSITION = {
 //   0,
 //   4
 // };
-
-static const struct Vec2 WIND_KM_PER_SEC = {
-  -0.0075f,
-  -0.01f
-};
 
 // LOCALS
 
@@ -118,11 +113,6 @@ void ocean__init(
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
-  // WATER
-
-  water__init_mesh_data();
-  water__copy_assets_to_gpu(gpu);
-
   // STEAM
 
   steam_transform = (struct Transform){
@@ -158,6 +148,10 @@ void ocean__init(
     sky_transform.position,
     &sky_local_to_world
   );
+
+  // OCEAN
+  ocean__copy_assets_to_gpu(gpu);
+  create_ocean(&ecs);
 
   // MIST
   mist_shader.frag_src = MIST_FRAG_SRC;
@@ -262,8 +256,6 @@ void ocean__tick(
   }
   gpu->update_gpu_mesh_data(&STEAM_COLUMN_MESH);
 
-  water__update_waves(WIND_KM_PER_SEC, time, gpu);
-
   ecs__scroll_uvs(time, &ecs);
   
   // DRAW
@@ -359,8 +351,6 @@ void ocean__tick(
     gpu
   );
   gpu->draw_mesh(&STEAM_COLUMN_MESH);
-
-  water__draw(&cam, gpu);
 
   ecs__draw(
     time,

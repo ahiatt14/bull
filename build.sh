@@ -26,7 +26,8 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/default_vert.glsl vert && \
   ./${tools}validate-glsl.exe assets/glsl/solid_color_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/flat_texture_frag.glsl frag && \
-  ./${tools}validate-glsl.exe assets/glsl/water_surface_frag.glsl frag \
+  ./${tools}validate-glsl.exe assets/glsl/ocean_frag.glsl frag && \
+  ./${tools}validate-glsl.exe assets/glsl/ocean_vert.glsl vert && \
   ./${tools}validate-glsl.exe assets/glsl/sky_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/bouncer_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/steam_frag.glsl frag && \
@@ -49,7 +50,8 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/flat_texture_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/solid_color_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/default_vert.glsl $artifact_dir && \
-  ./${tools}sourcify-glsl.exe assets/glsl/water_surface_frag.glsl $artifact_dir && \
+  ./${tools}sourcify-glsl.exe assets/glsl/ocean_frag.glsl $artifact_dir && \
+  ./${tools}sourcify-glsl.exe assets/glsl/ocean_vert.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/sky_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/bouncer_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/steam_frag.glsl $artifact_dir && \
@@ -92,6 +94,7 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/steam_column.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/mountain.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/sky.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/ocean_surface.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/rex.obj $artifact_dir
 
   for filepath in ${artifact_dir}*.c; do
