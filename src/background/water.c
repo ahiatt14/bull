@@ -25,6 +25,31 @@ void water__copy_assets_to_gpu(
   gpu->copy_static_mesh_to_gpu(&OCEAN_SURFACE_MESH);
 }
 
+static void draw_water(
+  struct GameTime time,
+  struct Camera const *const camera,
+  struct GPU const *const gpu,
+  struct Entity const *const water
+) {
+
+  static struct Shader *shader;
+  static struct M4x4 model;
+  static struct M3x3 normals_model;
+
+  shader = water->draw.shader;
+
+  space__create_model(&WORLDSPACE, &water->transform, &model);
+  space__create_normals_model(&model, &normals_model);
+  gpu->set_shader_m4x4(shader, "model", &model);
+  gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
+
+  gpu->set_shader_float(shader, "w", 1); // wavelength
+  gpu->set_shader_float(shader, "s", 0.2f); // speed
+  gpu->set_shader_float(shader, "a", 0.1f); // amplitude
+
+  gpu->draw_mesh(water->draw.mesh);
+}
+
 void create_water(
   struct ECS *const ecs
 ) {
@@ -48,7 +73,7 @@ void create_water(
       .shader = &shader,
       .mesh = &OCEAN_SURFACE_MESH,
       .texture = NULL,
-      .draw = ecs__draw_mesh
+      .draw = draw_water
     },
     ecs
   );
