@@ -8,7 +8,7 @@ out vec4 FragColor;
 
 void main() {
   FragColor = vec4(
-    vec3(fs_in.frag_world_pos.y),
+    // vec3(fs_in.frag_world_pos.y),
     1.0
   );
 }

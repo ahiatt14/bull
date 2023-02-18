@@ -3,6 +3,8 @@
 #define PI 3.1415926536
 
 layout (location = 0) in vec3 position;
+// layout (location = 1) in vec3 local_normal;
+// layout (location = 2) in vec2 uv;
 
 uniform mat4 model = mat4(
   vec4(1.0, 0.0, 0.0, 0.0),
@@ -23,8 +25,11 @@ uniform mat4 projection = mat4(
   vec4(0.0, 0.0, 0.0, 1.0)
 );
 
-uniform float w = 2.5; // wavelength
-uniform float a = 1; // amplitude
+uniform float total_elapsed_seconds;
+
+uniform float s = 1; // speed
+uniform float w = 1; // wavelength
+uniform float a = 0.1; // amplitude
 
 out VS_OUT {
   vec3 normal;
@@ -35,7 +40,7 @@ void main() {
 
   float k = 2 * PI / w;
 
-  float y = a * sin(k * position.x);
+  float y = a * sin(k * position.x - s * total_elapsed_seconds);
 
   vec3 wave_pos = position;
   wave_pos.y = y;

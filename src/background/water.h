@@ -4,11 +4,11 @@
 #include "tail.h"
 #include "ecs.h"
 
-void ocean__copy_assets_to_gpu(
+void water__copy_assets_to_gpu(
   struct GPU const *const gpu
 );
 
-void create_ocean(
+void create_water(
   struct ECS *const ecs
 );
 

@@ -62,7 +62,7 @@ EntityId create_lvl0_cannonfire(
     bullet,
     (struct Transform){
       .position = offset_position,
-      .scale = 2.5f,
+      .scale = 1,
       .rotation = quaternion__multiply(
         point_to_target,
         face_quad_up

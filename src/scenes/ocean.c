@@ -14,7 +14,7 @@
 #include "cooling_tower_mesh.h"
 #include "concrete_wall_texture.h"
 
-#include "ocean.h"
+#include "water.h"
 
 #include "mountain_mesh.h"
 #include "mountain_texture.h"
@@ -150,8 +150,8 @@ void ocean__init(
   );
 
   // OCEAN
-  ocean__copy_assets_to_gpu(gpu);
-  create_ocean(&ecs);
+  water__copy_assets_to_gpu(gpu);
+  create_water(&ecs);
 
   // MIST
   mist_shader.frag_src = MIST_FRAG_SRC;
@@ -259,6 +259,8 @@ void ocean__tick(
   ecs__scroll_uvs(time, &ecs);
   
   // DRAW
+
+  gpu->cull_back_faces();
 
   // SKY
 

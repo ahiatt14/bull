@@ -4,15 +4,17 @@
 
 #include "constants.h"
 
-#include "ocean.h"
+#include "water.h"
 
 #include "ocean_surface_mesh.h"
 #include "ocean_frag.h"
 #include "ocean_vert.h"
 
+#include "solid_color_frag.h"
+
 static struct Shader shader;
 
-void ocean__copy_assets_to_gpu(
+void water__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
 
@@ -23,22 +25,25 @@ void ocean__copy_assets_to_gpu(
   gpu->copy_static_mesh_to_gpu(&OCEAN_SURFACE_MESH);
 }
 
-void create_ocean(
+void create_water(
   struct ECS *const ecs
 ) {
   
-  EntityId ocean = ecs__create_entity(ecs);
+  EntityId water = ecs__create_entity(ecs);
 
   ecs__add_transform(
-    ocean,
+    water,
     (struct Transform){
-      .position = ORIGIN,
-      .scale = 10
+      .position = vec3_minus_vec3(
+        ORIGIN,
+        (struct Vec3){ 0, 1, 0 }
+      ),
+      .scale = 8
     },
     ecs
   );
   ecs__add_draw(
-    ocean,
+    water,
     (struct Draw){
       .shader = &shader,
       .mesh = &OCEAN_SURFACE_MESH,

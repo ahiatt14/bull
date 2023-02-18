@@ -90,7 +90,6 @@ void action__init(
   struct Viewport *const vwprt,
   struct GPU const *const gpu
 ) {
-
   cam.position = (struct Vec3){ 0, 20, 14 };
   cam.look_target = (struct Vec3){
     ORIGIN.x,
@@ -169,6 +168,10 @@ void action__tick(
 
   ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
   gpu->clear_depth_buffer();
+
+  // TODO: apparently the bullet quad is rotated badly
+  // cuz it won't render when back faces are culled
+  gpu->cull_back_faces();
 
   ecs__draw(time, &cam, gpu, &ecs);
 
