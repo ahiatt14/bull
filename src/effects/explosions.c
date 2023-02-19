@@ -93,7 +93,7 @@ void create_rpg_explosion(
     blink,
     (struct Timeout){
       .age = 0,
-      .limit = 1.0f / 15.0f,
+      .limit = 1.0f / 30.0f,
       .on_timeout = destroy_explosion
     },
     ecs

@@ -43,9 +43,8 @@ static void draw_water(
   gpu->set_shader_m4x4(shader, "model", &model);
   gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
 
-  gpu->set_shader_float(shader, "w", 1); // wavelength
-  gpu->set_shader_float(shader, "s", 0.2f); // speed
-  gpu->set_shader_float(shader, "a", 0.1f); // amplitude
+  gpu->set_shader_float(shader, "wavelength", 0.1f);
+  gpu->set_shader_float(shader, "steepness", 0.3f);
 
   gpu->draw_mesh(water->draw.mesh);
 }
@@ -63,7 +62,7 @@ void create_water(
         ORIGIN,
         (struct Vec3){ 0, 1, 0 }
       ),
-      .scale = 8
+      .scale = 10
     },
     ecs
   );

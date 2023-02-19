@@ -32,9 +32,8 @@ uniform mat3 normals_model = mat3(
 
 uniform float total_elapsed_seconds;
 
-uniform float s = 1; // speed
-uniform float w = 1; // wavelength
-uniform float a = 0.1; // amplitude
+uniform float wavelength = 1;
+uniform float steepness = 1;
 
 out VS_OUT {
   vec3 normal;
@@ -45,13 +44,17 @@ void main() {
 
   vec3 p = position;
 
-  float k = 2 * PI / w;
-  float f = k * (position.x - s * total_elapsed_seconds);
+  float k = 2 * PI / wavelength;
+  float phase_speed = sqrt(0.98 / k);
+  float f = k * (position.x - phase_speed * total_elapsed_seconds);
+  float a = steepness / k;
   
+  p.x += a * cos(f);
   p.y = a * sin(f);
+
   vec3 tangent = normalize(vec3(
-    1,
-    k * a * cos(f),
+    1 - steepness * sin(f),
+    steepness * cos(f),
     0
   ));
   vec3 normal = vec3(-tangent.y, tangent.x, 0);
