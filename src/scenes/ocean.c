@@ -43,9 +43,9 @@
 // READ ONLY
 
 static const struct Vec3 COOLING_TOWER_POSITION = {
-  -8,
-  -1.5,
-  -13
+  -17,
+  0,
+  -30
 };
 
 // static const struct Vec3 COOLING_TOWER_OFFSET = {
@@ -86,8 +86,8 @@ static struct Vec3 sunlight_direction = {
 };
 
 static struct Transform sky_transform = {
-  .position = { 0, 7, -45 },
-  .scale = 33
+  .position = { 0, 7, -60 },
+  .scale = 50
 };
 static struct M4x4 sky_local_to_world;
 static struct Shader sky_shader;
@@ -104,8 +104,8 @@ void ocean__init(
   struct GPU const *const gpu
 ) {
 
-  cam.position = (struct Vec3){ 0, 0.05f, 12 };
-  cam.look_target = (struct Vec3){ 0, 1.05, 0 };
+  cam.position = (struct Vec3){ 0, 1, 12 };
+  cam.look_target = (struct Vec3){ 0, 1, 0 };
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
   cam.far_clip_distance = 100;
@@ -117,7 +117,7 @@ void ocean__init(
 
   steam_transform = (struct Transform){
     .position = COOLING_TOWER_POSITION,
-    .scale = 3.0f
+    .scale = 4
   };
   // steam_shader.frag_src = STEAM_FRAG_SRC;
   steam_shader.frag_src = FLAT_TEXTURE_FRAG_SRC;
@@ -191,11 +191,8 @@ void ocean__init(
   // COOLING TOWER
 
   cooling_tower_transform = (struct Transform){
-    .position = vec3_plus_vec3(
-      COOLING_TOWER_POSITION,
-      (struct Vec3){ 0, 1.2f, 0 }
-    ),
-    .scale = 3
+    .position = COOLING_TOWER_POSITION,
+    .scale = 4
   };
 
   cooling_tower_shader.frag_src = MOUNTAIN_FRAG_SRC;
@@ -216,12 +213,12 @@ void ocean__init(
   // MOUNTAINS
 
   mountain_transform = (struct Transform){
-    .position = { 20, -0.4f, -23 },
+    .position = { 10, -0.4f, -50 },
     .rotation = quaternion__create(
       (struct Vec3){ 0, 1, 0 },
       -M_PI * 0.25f
     ),
-    .scale = 10
+    .scale = 13
   };
   mountain_shader.frag_src = MOUNTAIN_FRAG_SRC;
   mountain_shader.vert_src = DEFAULT_VERT_SRC;

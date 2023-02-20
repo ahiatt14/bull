@@ -10,6 +10,8 @@
 #include "ocean_frag.h"
 #include "ocean_vert.h"
 
+#include "water_texture.h"
+
 #include "solid_color_frag.h"
 
 static struct Shader shader;
@@ -21,6 +23,8 @@ void water__copy_assets_to_gpu(
   shader.vert_src = OCEAN_VERT_SRC;
   shader.frag_src = OCEAN_FRAG_SRC;
   gpu->copy_shader_to_gpu(&shader);
+
+  gpu->copy_texture_to_gpu(&WATER_TEXTURE);
 
   gpu->copy_static_mesh_to_gpu(&OCEAN_SURFACE_MESH);
 }
@@ -37,6 +41,8 @@ static void draw_water(
   static struct M3x3 normals_model;
 
   shader = water->draw.shader;
+
+  gpu->select_texture(&WATER_TEXTURE);
 
   space__create_model(&WORLDSPACE, &water->transform, &model);
   space__create_normals_model(&model, &normals_model);
@@ -63,8 +69,8 @@ void create_water(
   ecs__add_transform(
     water,
     (struct Transform){
-      .position = (struct Vec3){ 0, -0.5f, -10 },
-      .scale = 1
+      .position = (struct Vec3){ 0, -0.2f, -10 },
+      .scale = 0.2f
     },
     ecs
   );
