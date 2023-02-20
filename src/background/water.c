@@ -43,8 +43,13 @@ static void draw_water(
   gpu->set_shader_m4x4(shader, "model", &model);
   gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
 
-  gpu->set_shader_float(shader, "wavelength", 0.1f);
-  gpu->set_shader_float(shader, "steepness", 0.3f);
+  gpu->set_shader_float(shader, "wavelength", 3);
+  gpu->set_shader_float(shader, "steepness", 0.4f);
+  gpu->set_shader_vec2(
+    shader,
+    "direction",
+    vec2__normalize((struct Vec2){ -1, -1 })
+  );
 
   gpu->draw_mesh(water->draw.mesh);
 }
@@ -58,11 +63,8 @@ void create_water(
   ecs__add_transform(
     water,
     (struct Transform){
-      .position = vec3_minus_vec3(
-        ORIGIN,
-        (struct Vec3){ 0, 1, 0 }
-      ),
-      .scale = 10
+      .position = (struct Vec3){ 0, -0.5f, -10 },
+      .scale = 1
     },
     ecs
   );
