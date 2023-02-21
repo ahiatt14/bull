@@ -292,17 +292,17 @@ void handle_mine_shot_by_player(
   EntityId projectile,
   struct ECS *const ecs
 ) {
-  create_rpg_explosion(
-    projectile,
-    cam.position,
-    ecs
-  );
-  // create_sparks(
-  //   ecs->entities[projectile].transform.position,
-  //   ecs->entities[projectile].velocity,
-  //   4,
+  // create_rpg_explosion(
+  //   projectile,
+  //   cam.position,
   //   ecs
   // );
+  create_sparks(
+    ecs->entities[projectile].transform.position,
+    ecs->entities[projectile].velocity,
+    4,
+    ecs
+  );
   // ecs__mark_for_destruction(mine, ecs);
   ecs__mark_for_destruction(projectile, ecs);
 }

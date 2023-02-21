@@ -25,11 +25,11 @@ uniform vec3 velocity;
 
 out VS_OUT {
   vec4 endpoint;
-} gs_out;
+} vs_out;
 
 void main()
 {
   mat3 velocityVM = mat3(transpose(inverse(view * model)));
-  gs_out.endpoint = projection * vec4(velocityVM * velocity, 0.0);
+  vs_out.endpoint = projection * vec4(velocityVM * velocity, 0.0);
   gl_Position = projection * view * model * vec4(position, 1.0);
 }
