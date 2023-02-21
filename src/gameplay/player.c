@@ -6,6 +6,8 @@
 #include "ecs.h"
 
 #include "player.h"
+
+#include "assets.h"
 #include "bull_math.h"
 #include "constants.h"
 #include "tail_helpers.h"
@@ -13,7 +15,6 @@
 #include "rex_mesh.h"
 #include "default_vert.h"
 #include "mountain_frag.h"
-#include "dark_rust_texture.h"
 
 static struct Shader player_shader;
 
@@ -25,7 +26,6 @@ void player__copy_assets_to_gpu(
   player_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&player_shader);
 
-  gpu->copy_texture_to_gpu(&DARK_RUST_TEXTURE);
   gpu->copy_static_mesh_to_gpu(&REX_MESH);
 }
 
@@ -64,7 +64,7 @@ EntityId create_player(
     player,
     (struct Draw){
       .mesh = &REX_MESH,
-      .texture = &DARK_RUST_TEXTURE,
+      .texture = TEXTURES[DARK_RUST_TEXTURE],
       .shader = &player_shader,
       .draw = ecs__draw_mesh
     },

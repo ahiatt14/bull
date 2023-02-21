@@ -11,6 +11,7 @@
 struct Texture {
   unsigned int _impl_id;
   unsigned char *data;
+  const char *name;
   int width;
   int height;
   int channel_count;

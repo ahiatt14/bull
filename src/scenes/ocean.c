@@ -7,34 +7,30 @@
 #include "ecs.h"
 
 #include "scene.h"
+
+#include "assets.h"
 #include "constants.h"
 #include "bull_math.h"
 #include "tail_helpers.h"
 
 #include "cooling_tower_mesh.h"
-#include "concrete_wall_texture.h"
 
 #include "water.h"
 
 #include "mountain_mesh.h"
-#include "mountain_texture.h"
 #include "mountain_frag.h"
 #include "default_vert.h"
 
 #include "flat_texture_frag.h"
 #include "steam_column_mesh.h"
-#include "steam_texture.h"
 #include "steam_frag.h"
 #include "steam_geo.h"
 
 #include "billboard_geo.h"
 #include "billboard_vert.h"
-#include "night_sky_texture.h"
-#include "clouds_texture.h"
 
 #include "sky_mesh.h"
 #include "mist_frag.h"
-#include "mist_texture.h"
 
 // CONSTANTS
 
@@ -125,7 +121,6 @@ void ocean__init(
   steam_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&steam_shader);
   gpu->copy_dynamic_mesh_to_gpu(&STEAM_COLUMN_MESH);
-  gpu->copy_texture_to_gpu(&STEAM_TEXTURE);
   space__create_model(
     &WORLDSPACE,
     &steam_transform,
@@ -142,8 +137,6 @@ void ocean__init(
   sky_shader.geo_src = BILLBOARD_GEO_SRC;
   sky_shader.vert_src = BILLBOARD_VERT_SRC;
   gpu->copy_shader_to_gpu(&sky_shader);
-  gpu->copy_texture_to_gpu(&NIGHT_SKY_TEXTURE);
-  gpu->copy_texture_to_gpu(&CLOUDS_TEXTURE);
   m4x4__translation(
     sky_transform.position,
     &sky_local_to_world
@@ -158,7 +151,6 @@ void ocean__init(
   mist_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&mist_shader);
   gpu->copy_static_mesh_to_gpu(&SKY_MESH);
-  gpu->copy_texture_to_gpu(&MIST_TEXTURE);
   mist = ecs__create_entity(&ecs);
   ecs__add_transform(
     mist,
@@ -181,7 +173,7 @@ void ocean__init(
     mist,
     (struct Draw){
       .shader = &mist_shader,
-      .texture = &MIST_TEXTURE,
+      .texture = TEXTURES[MIST_TEXTURE],
       .mesh = &SKY_MESH,
       .draw = ecs__draw_mesh
     },
@@ -199,7 +191,6 @@ void ocean__init(
   cooling_tower_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&cooling_tower_shader);
   gpu->copy_static_mesh_to_gpu(&COOLING_TOWER_MESH);
-  gpu->copy_texture_to_gpu(&CONCRETE_WALL_TEXTURE);
   space__create_model(
     &WORLDSPACE,
     &cooling_tower_transform,
@@ -225,7 +216,6 @@ void ocean__init(
   gpu->copy_shader_to_gpu(&mountain_shader);
   mesh__tile_uvs(2, 2, &MOUNTAIN_MESH);
   gpu->copy_static_mesh_to_gpu(&MOUNTAIN_MESH);
-  gpu->copy_texture_to_gpu(&MOUNTAIN_TEXTURE);
   space__create_model(
     &WORLDSPACE,
     &mountain_transform,
@@ -262,7 +252,7 @@ void ocean__tick(
   // SKY
 
   gpu->select_shader(&sky_shader);
-  gpu->select_texture(&CLOUDS_TEXTURE);
+  gpu->select_texture(TEXTURES[CLOUDS_TEXTURE]);
   gpu__set_mvp(
     &sky_local_to_world,
     &M3X3_IDENTITY,
@@ -280,7 +270,7 @@ void ocean__tick(
   // COOLING TOWER
 
   gpu->select_shader(&cooling_tower_shader);
-  gpu->select_texture(&CONCRETE_WALL_TEXTURE);
+  gpu->select_texture(TEXTURES[CONCRETE_WALL_TEXTURE]);
   gpu->set_shader_vec3(
     &cooling_tower_shader,
     "light_dir",
@@ -303,7 +293,7 @@ void ocean__tick(
   // MOUNTAINS
 
   gpu->select_shader(&mountain_shader);
-  gpu->select_texture(&MOUNTAIN_TEXTURE);
+  gpu->select_texture(TEXTURES[MOUNTAIN_TEXTURE]);
   gpu->set_shader_vec3(
     &mountain_shader,
     "light_dir",
@@ -326,7 +316,7 @@ void ocean__tick(
   // STEAM
 
   gpu->select_shader(&steam_shader);
-  gpu->select_texture(&STEAM_TEXTURE);
+  gpu->select_texture(TEXTURES[STEAM_TEXTURE]);
   gpu->set_shader_float(
     &steam_shader,
     "speed",

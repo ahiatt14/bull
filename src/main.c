@@ -2,6 +2,8 @@
 #include <stdint.h>
 
 #include "tail.h"
+
+#include "assets.h"
 #include "constants.h"
 #include "scene.h"
 
@@ -210,6 +212,8 @@ int main() {
 }
 
 void copy_shared_assets_to_gpu() {
+
+  assets__copy_textures_to_gpu(&gpu);
 
   debugging__copy_gizmo_assets_to_gpu(&gpu);
 

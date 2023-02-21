@@ -8,14 +8,13 @@
 #include "explosions.h"
 #include "sparks.h"
 
+#include "assets.h"
 #include "constants.h"
 
 #include "billboard_geo.h"
 #include "billboard_vert.h"
 #include "default_vert.h"
 #include "lowpoly_sphere_flat_mesh.h"
-#include "fireball_texture.h"
-#include "blink_texture.h"
 #include "explosion_blink_frag.h"
 #include "explosion_frag.h"
 
@@ -29,16 +28,6 @@ static void destroy_explosion(
 ) {
   ecs__mark_for_destruction(explosion, ecs);
 }
-
-// struct Quaternion quaternion__inverse(
-//   struct Quaternion q
-// ) {
-//   struct Quaternion conjugate = {
-//     .v = vec3__negate(q.v),
-//     .w = q.w
-//   };
-//   return quaternion__multiply(conjugate, q);
-// }
 
 void explosions__copy_assets_to_gpu(
   struct GPU const *const gpu
@@ -54,14 +43,8 @@ void explosions__copy_assets_to_gpu(
   rpg_explosion_fireball_shader.frag_src = EXPLOSION_FRAG_SRC;
   rpg_explosion_fireball_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&rpg_explosion_fireball_shader);
-
-  gpu->copy_texture_to_gpu(&BLINK_TEXTURE);
-  gpu->copy_texture_to_gpu(&FIREBALL_TEXTURE);
 }
 
-// TODO: refactor into reusable explosion
-// TODO: we won't be able to rely on velocity
-// since objects will move via revolve & bezier curve lerping
 void create_rpg_explosion(
   EntityId rocket,
   struct Vec3 camera_position,
@@ -101,7 +84,7 @@ void create_rpg_explosion(
   ecs__add_draw(
     blink,
     (struct Draw){
-      .texture = &BLINK_TEXTURE,
+      .texture = TEXTURES[BLINK_TEXTURE],
       .shader = &rpg_explosion_blink_shader,
       .draw = ecs__draw_billboard
     },
@@ -147,7 +130,7 @@ void create_rpg_explosion(
   ecs__add_draw(
     fireball,
     (struct Draw){
-      .texture = &FIREBALL_TEXTURE,
+      .texture = TEXTURES[FIREBALL_TEXTURE],
       .shader = &rpg_explosion_fireball_shader,
       .mesh = &LOWPOLY_SPHERE_FLAT_MESH,
       .draw = ecs__draw_mesh

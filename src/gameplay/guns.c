@@ -4,10 +4,9 @@
 
 #include "ecs.h"
 
+#include "assets.h"
 #include "constants.h"
 #include "bull_math.h"
-
-#include "bullets_texture.h"
 
 #define Z_OFFSET 0.05f
 
@@ -22,7 +21,7 @@ static void destroy_bullet(
 void guns__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
-  gpu->copy_texture_to_gpu(&BULLETS_TEXTURE);
+
 }
 
 EntityId create_lvl0_cannonfire(
@@ -97,7 +96,7 @@ EntityId create_lvl0_cannonfire(
     bullet,
     (struct Draw){
       .mesh = &QUAD,
-      .texture = &BULLETS_TEXTURE,
+      .texture = TEXTURES[BULLETS_TEXTURE],
       .shader = &FLAT_TEXTURE_SHADER,
       .draw = ecs__draw_mesh
     },

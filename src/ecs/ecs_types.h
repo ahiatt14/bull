@@ -132,7 +132,7 @@ struct RotationLerp {
 };
 
 // TODO: AoS vs SoA blah blah blah
-// TODO: do hot/cold components point?
+// TODO: do hot/cold components?
 struct Entity {
   struct Transform transform;
   struct Timeout timeout;

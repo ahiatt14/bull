@@ -2,15 +2,14 @@
 
 #include "ecs.h"
 
-#include "constants.h"
-
 #include "water.h"
+
+#include "assets.h"
+#include "constants.h"
 
 #include "ocean_surface_mesh.h"
 #include "ocean_frag.h"
 #include "ocean_vert.h"
-
-#include "water_texture.h"
 
 #include "solid_color_frag.h"
 
@@ -23,8 +22,6 @@ void water__copy_assets_to_gpu(
   shader.vert_src = OCEAN_VERT_SRC;
   shader.frag_src = OCEAN_FRAG_SRC;
   gpu->copy_shader_to_gpu(&shader);
-
-  gpu->copy_texture_to_gpu(&WATER_TEXTURE);
 
   gpu->copy_static_mesh_to_gpu(&OCEAN_SURFACE_MESH);
 }
@@ -41,8 +38,6 @@ static void draw_water(
   static struct M3x3 normals_model;
 
   shader = water->draw.shader;
-
-  gpu->select_texture(&WATER_TEXTURE);
 
   space__create_model(&WORLDSPACE, &water->transform, &model);
   space__create_normals_model(&model, &normals_model);
@@ -79,7 +74,7 @@ void create_water(
     (struct Draw){
       .shader = &shader,
       .mesh = &OCEAN_SURFACE_MESH,
-      .texture = NULL,
+      .texture = TEXTURES[FIREBALL_TEXTURE],
       .draw = draw_water
     },
     ecs

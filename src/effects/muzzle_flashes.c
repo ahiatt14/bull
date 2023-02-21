@@ -4,13 +4,13 @@
 
 #include "ecs.h"
 
+#include "assets.h"
 #include "constants.h"
 
 #include "default_vert.h"
 #include "billboard_geo.h"
 #include "billboard_vert.h"
 
-#include "muzzle_flash_texture.h"
 #include "explosion_blink_frag.h"
 
 static struct Shader muzzle_flash_blink_shader;
@@ -30,8 +30,6 @@ void muzzle_flashes__copy_assets_to_gpu(
   muzzle_flash_blink_shader.frag_src = EXPLOSION_BLINK_FRAG_SRC;
   muzzle_flash_blink_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&muzzle_flash_blink_shader);
-
-  gpu->copy_texture_to_gpu(&MUZZLE_FLASH_TEXTURE);
 }
 
 void create_lvl0_muzzle_flash(
@@ -81,7 +79,8 @@ void create_lvl0_muzzle_flash(
   ecs__add_draw(
     flash,
     (struct Draw){
-      .texture = &MUZZLE_FLASH_TEXTURE,
+      // .texture = TEXTURES[MUZZLE_FLASH_TEXTURE],
+      .texture = NULL,
       .mesh = &QUAD,
       .shader = &muzzle_flash_blink_shader,
       .draw = ecs__draw_mesh

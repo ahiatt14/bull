@@ -4,14 +4,13 @@
 
 #include "ecs.h"
 
+#include "assets.h"
 #include "bull_math.h"
 #include "constants.h"
 
 #include "mines.h"
 
 #include "lowpoly_sphere_flat_mesh.h"
-#include "dark_rust_texture.h"
-#include "blasted_stone_texture.h"
 
 #define MAX_MINES 50
 
@@ -46,8 +45,6 @@ void mines__init_scene_callbacks(
 void mines__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
-  gpu->copy_texture_to_gpu(&BLASTED_STONE_TEXTURE);
-  // gpu->copy_texture_to_gpu(&DARK_RUST_TEXTURE);
   gpu->copy_static_mesh_to_gpu(&LOWPOLY_SPHERE_FLAT_MESH);
 }
 
@@ -145,7 +142,7 @@ void create__mine(
   ecs__add_draw(
     mine,
     (struct Draw){
-      .texture = &BLASTED_STONE_TEXTURE,
+      .texture = TEXTURES[BLASTED_STONE_TEXTURE],
       .shader = &FLAT_TEXTURE_SHADER,
       .mesh = &LOWPOLY_SPHERE_FLAT_MESH,
       .draw = ecs__draw_mesh
