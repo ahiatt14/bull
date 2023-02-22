@@ -38,10 +38,10 @@
 
 // READ ONLY
 
-static const struct Vec3 COOLING_TOWER_POSITION = {
-  -17,
-  0,
-  -30
+static const struct Transform COOLING_TOWER_TRANSFORM = {
+  .position = { -17, 0.3f, -40 },
+  .scale = 5,
+  .rotation = (struct Quaternion){0}
 };
 
 // static const struct Vec3 COOLING_TOWER_OFFSET = {
@@ -59,7 +59,6 @@ static struct Camera cam;
 static struct Shader cooling_tower_shader;
 static struct M4x4 cooling_tower_local_to_world;
 static struct M3x3 cooling_tower_normals_local_to_world;
-static struct Transform cooling_tower_transform;
 
 // MOUNTAINS
 
@@ -73,7 +72,6 @@ static struct Transform mountain_transform;
 static struct Shader steam_shader;
 static struct M4x4 steam_local_to_world;
 static struct M3x3 steam_normals_local_to_world;
-static struct Transform steam_transform;
 
 // SKY
 
@@ -100,22 +98,16 @@ void ocean__init(
   struct GPU const *const gpu
 ) {
 
-  cam.position = (struct Vec3){ 0, 1, 12 };
-  cam.look_target = (struct Vec3){ 0, 1, 0 };
+  cam.position = (struct Vec3){ 0, 2, 12 };
+  cam.look_target = (struct Vec3){ 0, 2, 0 };
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
   cam.far_clip_distance = 100;
-
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
   // STEAM
 
-  steam_transform = (struct Transform){
-    .position = COOLING_TOWER_POSITION,
-    .scale = 4
-  };
-  // steam_shader.frag_src = STEAM_FRAG_SRC;
   steam_shader.frag_src = FLAT_TEXTURE_FRAG_SRC;
   steam_shader.geo_src = STEAM_GEO_SRC;
   steam_shader.vert_src = DEFAULT_VERT_SRC;
@@ -123,7 +115,7 @@ void ocean__init(
   gpu->copy_dynamic_mesh_to_gpu(&STEAM_COLUMN_MESH);
   space__create_model(
     &WORLDSPACE,
-    &steam_transform,
+    &COOLING_TOWER_TRANSFORM,
     &steam_local_to_world
   );
   space__create_normals_model(
@@ -156,7 +148,7 @@ void ocean__init(
     mist,
     (struct Transform){
       .scale = 12,
-      .rotation = quaternion__create(WORLDSPACE.up, 0),
+      .rotation = (struct Quaternion){0},
       .position = (struct Vec3){ 1, 4, 2 }
     },
     &ecs
@@ -182,18 +174,13 @@ void ocean__init(
 
   // COOLING TOWER
 
-  cooling_tower_transform = (struct Transform){
-    .position = COOLING_TOWER_POSITION,
-    .scale = 4
-  };
-
   cooling_tower_shader.frag_src = MOUNTAIN_FRAG_SRC;
   cooling_tower_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&cooling_tower_shader);
   gpu->copy_static_mesh_to_gpu(&COOLING_TOWER_MESH);
   space__create_model(
     &WORLDSPACE,
-    &cooling_tower_transform,
+    &COOLING_TOWER_TRANSFORM,
     &cooling_tower_local_to_world
   );
   space__create_normals_model(
@@ -242,6 +229,14 @@ void ocean__tick(
     STEAM_COLUMN_MESH.vertices[i].uv.x += 0.06f * time.delta;
   }
   gpu->update_gpu_mesh_data(&STEAM_COLUMN_MESH);
+
+  // cam.position = space__ccw_angle_rotate(
+  //   WORLDSPACE.up,
+  //   0.1f * time.delta,
+  //   cam.position
+  // );
+  camera__calculate_lookat(WORLDSPACE.up, &cam);
+  camera__calculate_perspective(vwprt, &cam);
 
   ecs__scroll_uvs(time, &ecs);
   

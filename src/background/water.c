@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "tail.h"
 
 #include "ecs.h"
@@ -44,6 +46,8 @@ static void draw_water(
   gpu->set_shader_m4x4(shader, "model", &model);
   gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
 
+  gpu->set_shader_vec3(shader, "cam_world_pos", camera->position);
+
   gpu->set_shader_float(shader, "wavelength", 3);
   gpu->set_shader_float(shader, "steepness", 0.4f);
   gpu->set_shader_vec2(
@@ -59,23 +63,46 @@ void create_water(
   struct ECS *const ecs
 ) {
   
-  EntityId water = ecs__create_entity(ecs);
+  EntityId near_water = ecs__create_entity(ecs);
 
   ecs__add_transform(
-    water,
+    near_water,
     (struct Transform){
-      .position = (struct Vec3){ 0, -0.2f, -10 },
-      .scale = 0.2f
+      .rotation = (struct Quaternion){0},
+      .position = (struct Vec3){ 0, 1, 0 },
+      .scale = 1
     },
     ecs
   );
   ecs__add_draw(
-    water,
+    near_water,
     (struct Draw){
       .shader = &shader,
       .mesh = &OCEAN_SURFACE_MESH,
-      .texture = TEXTURES[FIREBALL_TEXTURE],
+      .texture = TEXTURES[WATER_TEXTURE],
       .draw = draw_water
+    },
+    ecs
+  );
+
+  EntityId far_water = ecs__create_entity(ecs);
+
+  ecs__add_transform(
+    far_water,
+    (struct Transform){
+      .position = (struct Vec3){0},
+      .rotation = quaternion__create(WORLDSPACE.right, -M_PI * 0.5f),
+      .scale = 200
+    },
+    ecs
+  );
+  ecs__add_draw(
+    far_water,
+    (struct Draw){
+      .shader = &FLAT_TEXTURE_SHADER,
+      .mesh = &QUAD,
+      .texture = TEXTURES[WATER_TEXTURE],
+      .draw = ecs__draw_mesh
     },
     ecs
   );

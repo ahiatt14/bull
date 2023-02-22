@@ -1,7 +1,7 @@
 #version 330 core
 
 #define PI 3.1415926536
-#define GRAVITY 0.2
+#define GRAVITY 0.4
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 local_normal;
@@ -32,6 +32,8 @@ uniform mat3 normals_model = mat3(
 );
 
 uniform float total_elapsed_seconds;
+
+uniform vec3 cam_world_pos = vec3(0);
 
 out VS_OUT {
   vec3 normal;
@@ -67,9 +69,9 @@ vec3 gerstner_wave(
     1.0 - direction.y * direction.y * steepness * sin(f)
   );
   return vec3(
-    pos.x += direction.x * a * cos(f),
-    pos.y = a * sin(f),
-    pos.z += direction.y * a * cos(f)
+    direction.x * a * cos(f),
+    a * sin(f),
+    direction.y * a * cos(f)
   );
 }
 
@@ -78,17 +80,23 @@ void main() {
   vs_out.tex_uv = uv;
 
   vec3 pos = position;
+  // TODO: scrolling w/ cam position uniform
 
   binormal = vec3(0);
   tangent = vec3(0);
 
-  pos += gerstner_wave(normalize(vec2(0.2, -1)), 6, 0.9, pos);
-  pos += gerstner_wave(normalize(vec2(-0.6, -1)), 3, 0.7, pos);
-  pos += gerstner_wave(normalize(vec2(1, 1)), 1.5, 0.7, pos);
+  pos += gerstner_wave(normalize(vec2(0.2, -1)), 10, 0.3, pos);
+  pos += gerstner_wave(normalize(vec2(-0.6, -1)), 7, 0.2, pos);
+  pos += gerstner_wave(normalize(vec2(1, 1)), 3, 0.2, pos);
+
+  vec4 vert_world_pos = model * vec4(pos, 1.0);
+
+  vert_world_pos.y *=
+    0.3 / min(distance(cam_world_pos.xz, vert_world_pos.xz), 1.0);
 
   vec3 normal = normalize(cross(binormal, tangent));
   vs_out.normal = normalize(normals_model * normal);
-  vs_out.frag_world_pos = vec3(model * vec4(pos, 1.0));
+  vs_out.frag_world_pos = vert_world_pos.xyz;
 
-  gl_Position = projection * view * model * vec4(pos, 1.0);
+  gl_Position = projection * view * vert_world_pos;
 }

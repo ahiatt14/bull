@@ -82,7 +82,6 @@ struct GPU {
   void (*select_textures)(
     struct Shader const *const shad,
     uint8_t texture_count,
-    char const *const *const uniform_names,
     struct Texture const *const *const textures
   );
 

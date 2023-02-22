@@ -31,15 +31,6 @@ struct Texture* TEXTURES[TEXTURE_COUNT] = {
 void assets__copy_textures_to_gpu(
   struct GPU const *const gpu
 ) {
-  gpu->copy_texture_to_gpu(TEXTURES[BLASTED_STONE_TEXTURE]);
-  gpu->copy_texture_to_gpu(TEXTURES[BULLETS_TEXTURE]);
-  gpu->copy_texture_to_gpu(TEXTURES[CLOUDS_TEXTURE]);
-  gpu->copy_texture_to_gpu(TEXTURES[CONCRETE_WALL_TEXTURE]);
-  gpu->copy_texture_to_gpu(TEXTURES[FIREBALL_TEXTURE]);
-  gpu->copy_texture_to_gpu(TEXTURES[MIST_TEXTURE]);
-  gpu->copy_texture_to_gpu(TEXTURES[STEAM_TEXTURE]);
-  gpu->copy_texture_to_gpu(TEXTURES[WATER_TEXTURE]);
-  gpu->copy_texture_to_gpu(TEXTURES[BLINK_TEXTURE]);
-  gpu->copy_texture_to_gpu(TEXTURES[MOUNTAIN_TEXTURE]);
-  gpu->copy_texture_to_gpu(TEXTURES[DARK_RUST_TEXTURE]);
+  for (uint_fast8_t i = 0; i < TEXTURE_COUNT - 1; i++)
+    gpu->copy_texture_to_gpu(TEXTURES[i]);
 }
