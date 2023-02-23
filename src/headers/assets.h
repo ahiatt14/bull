@@ -3,7 +3,7 @@
 
 #include "tail.h"
 
-#define TEXTURE_COUNT 11
+#define TEXTURE_COUNT 12
 
 enum texture_key {
   BLASTED_STONE_TEXTURE,
@@ -16,7 +16,8 @@ enum texture_key {
   WATER_TEXTURE,
   BLINK_TEXTURE,
   MOUNTAIN_TEXTURE,
-  DARK_RUST_TEXTURE
+  DARK_RUST_TEXTURE,
+  SMALL_SPARK_TEXTURE
 };
 
 extern struct Texture* TEXTURES[TEXTURE_COUNT];

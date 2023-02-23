@@ -20,6 +20,7 @@ extern struct Shader FLAT_TEXTURE_SHADER;
 extern struct Shader SOLID_COLOR_SHADER;
 extern struct Shader NORMALS_COLOR_SHADER;
 extern struct Shader NORMALS_VIS_SHADER;
+extern struct Shader DEFAULT_BILLBOARD_SHADER;
 
 extern struct PointBuffer POINT;
 extern struct DrawableMesh QUAD;

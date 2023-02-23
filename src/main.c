@@ -13,6 +13,8 @@
 #include "flat_texture_frag.h"
 #include "solid_color_frag.h"
 #include "default_vert.h"
+#include "billboard_geo.h"
+#include "billboard_vert.h"
 
 // #define ASPECT_RATIO (4.0f / 3.0f)
 #define ASPECT_RATIO (16.0f / 9.0f)
@@ -222,6 +224,11 @@ void copy_shared_assets_to_gpu() {
   FLAT_TEXTURE_SHADER.frag_src = FLAT_TEXTURE_FRAG_SRC;
   FLAT_TEXTURE_SHADER.vert_src = DEFAULT_VERT_SRC;
   gpu.copy_shader_to_gpu(&FLAT_TEXTURE_SHADER);
+
+  DEFAULT_BILLBOARD_SHADER.frag_src = FLAT_TEXTURE_FRAG_SRC;
+  DEFAULT_BILLBOARD_SHADER.vert_src = BILLBOARD_VERT_SRC;
+  DEFAULT_BILLBOARD_SHADER.geo_src = BILLBOARD_GEO_SRC;
+  gpu.copy_shader_to_gpu(&DEFAULT_BILLBOARD_SHADER);
 
   SOLID_COLOR_SHADER.frag_src = SOLID_COLOR_FRAG_SRC;
   SOLID_COLOR_SHADER.vert_src = DEFAULT_VERT_SRC;

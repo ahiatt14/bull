@@ -18,6 +18,7 @@ struct Shader FLAT_TEXTURE_SHADER;
 struct Shader SOLID_COLOR_SHADER;
 struct Shader NORMALS_COLOR_SHADER;
 struct Shader NORMALS_VIS_SHADER;
+struct Shader DEFAULT_BILLBOARD_SHADER;
 
 struct PointBuffer POINT = (struct PointBuffer){
   .points = (struct Vec3[1]){{ 0, 0, 0 }},

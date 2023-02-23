@@ -116,7 +116,6 @@ void action__init(
     &ecs
   );
   firing_guide__copy_assets_to_gpu(gpu);
-  sparks__copy_assets_to_gpu(gpu);
 
   ocean__init(window, vwprt, gpu);
 
