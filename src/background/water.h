@@ -8,7 +8,7 @@ void water__copy_assets_to_gpu(
   struct GPU const *const gpu
 );
 
-void create_water(
+EntityId create_water(
   struct ECS *const ecs
 );
 

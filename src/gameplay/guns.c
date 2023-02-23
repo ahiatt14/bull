@@ -8,7 +8,7 @@
 #include "constants.h"
 #include "bull_math.h"
 
-#define Z_OFFSET 0.05f
+#define Z_OFFSET 0.15f
 
 static void destroy_bullet(
   EntityId bullet,
@@ -34,7 +34,7 @@ EntityId create_lvl0_cannonfire(
   static uint_fast8_t offset_z;
 
   static const double DURATION = 0.5f;
-  static const float SPEED = 30.0f;
+  static const float SPEED = 50.0f;
 
   EntityId bullet = ecs__create_entity(ecs);
 

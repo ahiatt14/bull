@@ -80,19 +80,24 @@ void main() {
   vs_out.tex_uv = uv;
 
   vec3 pos = position;
-  // TODO: scrolling w/ cam position uniform
+  // pos.x = pos.x + cam_world_pos.x;
+  // pos.z = pos.z + cam_world_pos.z;
 
   binormal = vec3(0);
   tangent = vec3(0);
 
-  pos += gerstner_wave(normalize(vec2(0.2, -1)), 10, 0.3, pos);
-  pos += gerstner_wave(normalize(vec2(-0.6, -1)), 7, 0.2, pos);
-  pos += gerstner_wave(normalize(vec2(1, 1)), 3, 0.2, pos);
+  pos += gerstner_wave(normalize(vec2(0.2, -1)), 6, 0.2, pos);
+  pos += gerstner_wave(normalize(vec2(-0.6, -1)), 5, 0.15, pos);
+  pos += gerstner_wave(normalize(vec2(1, 1)), 3, 0.15, pos);
 
   vec4 vert_world_pos = model * vec4(pos, 1.0);
 
-  vert_world_pos.y *=
-    0.3 / min(distance(cam_world_pos.xz, vert_world_pos.xz), 1.0);
+  vert_world_pos.y =
+    vert_world_pos.y /
+    max(
+      .5 * sqrt(length(position)),
+      1.0
+    );
 
   vec3 normal = normalize(cross(binormal, tangent));
   vs_out.normal = normalize(normals_model * normal);

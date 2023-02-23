@@ -164,7 +164,7 @@ void create__mine(
   ecs__add_damagable_radius_collider(
     mine,
     (struct RadiusCollider){
-      .radius = 0.2f,
+      .radius = 0.15f,
       .on_collide = on_shot_ptr
     },
     ecs

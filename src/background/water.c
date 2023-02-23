@@ -59,14 +59,14 @@ static void draw_water(
   gpu->draw_mesh(water->draw.mesh);
 }
 
-void create_water(
+EntityId create_water(
   struct ECS *const ecs
 ) {
   
-  EntityId near_water = ecs__create_entity(ecs);
+  EntityId waves = ecs__create_entity(ecs);
 
   ecs__add_transform(
-    near_water,
+    waves,
     (struct Transform){
       .rotation = (struct Quaternion){0},
       .position = (struct Vec3){ 0, 1, 0 },
@@ -75,7 +75,7 @@ void create_water(
     ecs
   );
   ecs__add_draw(
-    near_water,
+    waves,
     (struct Draw){
       .shader = &shader,
       .mesh = &OCEAN_SURFACE_MESH,
@@ -106,4 +106,6 @@ void create_water(
     },
     ecs
   );
+
+  return waves;
 }

@@ -53,6 +53,7 @@ static const struct Transform COOLING_TOWER_TRANSFORM = {
 // LOCALS
 
 static struct Camera cam;
+static EntityId waves;
 
 // COOLING TOWER
 
@@ -136,7 +137,7 @@ void ocean__init(
 
   // OCEAN
   water__copy_assets_to_gpu(gpu);
-  create_water(&ecs);
+  waves = create_water(&ecs);
 
   // MIST
   mist_shader.frag_src = MIST_FRAG_SRC;
@@ -230,13 +231,9 @@ void ocean__tick(
   }
   gpu->update_gpu_mesh_data(&STEAM_COLUMN_MESH);
 
-  // cam.position = space__ccw_angle_rotate(
-  //   WORLDSPACE.up,
-  //   0.1f * time.delta,
-  //   cam.position
-  // );
-  camera__calculate_lookat(WORLDSPACE.up, &cam);
-  camera__calculate_perspective(vwprt, &cam);
+  // cam.position.y += 0.5f * time.delta;
+  // camera__calculate_lookat(WORLDSPACE.up, &cam);
+  // camera__calculate_perspective(vwprt, &cam);
 
   ecs__scroll_uvs(time, &ecs);
   
