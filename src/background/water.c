@@ -46,7 +46,7 @@ static void draw_water(
   gpu->set_shader_m4x4(shader, "model", &model);
   gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
 
-  gpu->set_shader_vec3(shader, "cam_world_pos", camera->position);
+  gpu->set_shader_vec3(shader, "camera_offset", camera->position);
 
   gpu->set_shader_float(shader, "wavelength", 3);
   gpu->set_shader_float(shader, "steepness", 0.4f);

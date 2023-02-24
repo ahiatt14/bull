@@ -34,14 +34,14 @@
 
 // READ ONLY
 
-static const struct Transform COOLING_TOWER_TRANSFORM = {
+static struct Transform COOLING_TOWER_TRANSFORM = {
   .position = { -17, 0.3f, -40 },
-  .scale = 5,
-  .rotation = (struct Quaternion){0}
+  .scale = 5
 };
 
 // LOCALS
 
+static struct Gamepad gamepad;
 static struct Camera cam;
 static EntityId waves;
 
@@ -119,6 +119,7 @@ void ocean__init(
     },
     &ecs
   );
+  ecs__add_alpha_effect(mist, &ecs);
   ecs__add_draw(
     mist,
     (struct Draw){
@@ -193,9 +194,34 @@ void ocean__tick(
   // }
   // gpu->update_gpu_mesh_data(&STEAM_COLUMN_MESH);
 
-  // cam.position.y += 0.5f * time.delta;
-  // camera__calculate_lookat(WORLDSPACE.up, &cam);
-  // camera__calculate_perspective(vwprt, &cam);
+  window->get_gamepad_input(&gamepad);
+
+  static const float SPEED = 0.2f;
+  static const float STICK_DEADZONE = 0.2f;
+
+  struct Vec2 norm_direction =
+    vec2__normalize(gamepad.left_stick_direction);
+  float magnitude =
+    vec2__magnitude(gamepad.left_stick_direction);
+  struct Vec2 offset = {0};
+
+  if (magnitude >= STICK_DEADZONE) {
+    offset.x =
+      SPEED * (magnitude + 1.0f) * magnitude *
+      norm_direction.x;
+    offset.y =
+      SPEED * (magnitude + 1.0f) * magnitude *
+      norm_direction.y;
+
+    cam.position.x += offset.x;
+    cam.position.z += offset.y;
+
+    cam.look_target.x += offset.x;
+    cam.look_target.z += offset.y;
+  }
+
+  camera__calculate_lookat(WORLDSPACE.up, &cam);
+  camera__calculate_perspective(vwprt, &cam);
 
   ecs__scroll_uvs(time, &ecs);
 

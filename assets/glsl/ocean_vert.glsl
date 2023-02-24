@@ -33,7 +33,7 @@ uniform mat3 normals_model = mat3(
 
 uniform float total_elapsed_seconds;
 
-uniform vec3 cam_world_pos = vec3(0);
+uniform vec3 camera_offset = vec3(0);
 
 out VS_OUT {
   vec3 normal;
@@ -80,15 +80,15 @@ void main() {
   vs_out.tex_uv = uv;
 
   vec3 pos = position;
-  // pos.x = pos.x + cam_world_pos.x;
-  // pos.z = pos.z + cam_world_pos.z;
+  pos.x = pos.x + camera_offset.x;
+  pos.z = pos.z + camera_offset.z;
 
   binormal = vec3(0);
   tangent = vec3(0);
 
-  pos += gerstner_wave(normalize(vec2(0.2, -1)), 6, 0.2, pos);
-  pos += gerstner_wave(normalize(vec2(-0.6, -1)), 5, 0.15, pos);
-  pos += gerstner_wave(normalize(vec2(1, 1)), 3, 0.15, pos);
+  pos += gerstner_wave(normalize(vec2(1, -1)), 8, 0.2, pos);
+  pos += gerstner_wave(normalize(vec2(-0.6, -0.9)), 7, 0.1, pos);
+  // pos += gerstner_wave(normalize(vec2(1, 1)), 3, 0.15, pos);
 
   vec4 vert_world_pos = model * vec4(pos, 1.0);
 

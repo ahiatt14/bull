@@ -17,9 +17,17 @@ const float light_strength = 3;
 uniform vec3 ambient_color = vec3(1);
 const float ambient_strength = 0.1;
 
+uniform vec3 camera_offset = vec3(0);
+
 void main() {
 
-  vec3 material = texture(tex, fs_in.tex_uv).xyz * 0.6;
+  vec3 material = texture(
+    tex,
+    fs_in.tex_uv + vec2(
+      camera_offset.x * 0.06,
+      -camera_offset.z * 0.06
+    )
+  ).xyz * 0.6;
 
   float incidence = max(dot(fs_in.normal, -light_dir), 0);
 
