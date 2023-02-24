@@ -5,9 +5,8 @@
 
 #include "ecs_types.h"
 
-void set_mvp(
-  struct Transform const *const transform,
-  struct Camera const *const camera,
+void set_textures(
+  struct Entity const *const entity,
   struct GPU const *const gpu
 );
 

@@ -79,7 +79,7 @@ EntityId create_water(
     (struct Draw){
       .shader = &shader,
       .mesh = &OCEAN_SURFACE_MESH,
-      .texture = TEXTURES[WATER_TEXTURE],
+      .textures = WATER_TEXTURE,
       .draw = draw_water
     },
     ecs
@@ -101,7 +101,7 @@ EntityId create_water(
     (struct Draw){
       .shader = &FLAT_TEXTURE_SHADER,
       .mesh = &QUAD,
-      .texture = TEXTURES[WATER_TEXTURE],
+      .textures = WATER_TEXTURE,
       .draw = ecs__draw_mesh
     },
     ecs

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "tail.h"
 
 #include "guns.h"
@@ -96,7 +97,7 @@ EntityId create_lvl0_cannonfire(
     bullet,
     (struct Draw){
       .mesh = &QUAD,
-      .texture = TEXTURES[BULLETS_TEXTURE],
+      .textures = BULLETS_TEXTURE,
       .shader = &FLAT_TEXTURE_SHADER,
       .draw = ecs__draw_mesh
     },

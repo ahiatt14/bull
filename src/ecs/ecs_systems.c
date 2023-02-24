@@ -80,12 +80,6 @@ void ecs__gravity(
   }
 }
 
-// void ecs__air_drag(
-
-// ) {
-
-// }
-
 void ecs__move(
   struct GameTime time,
   struct ECS *const ecs
@@ -371,8 +365,7 @@ static void draw_entity(
 
   gpu->select_shader(shader);
 
-  if (entity->draw.texture != NULL)
-    gpu->select_texture(entity->draw.texture);
+  if (entity->draw.textures > 0) set_textures(entity, gpu);
 
   gpu->set_shader_float(
     shader,

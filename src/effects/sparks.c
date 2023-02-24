@@ -76,7 +76,7 @@ void create_sparks(
     ecs__add_draw(
       spark,
       (struct Draw){
-        .texture = TEXTURES[SMALL_SPARK_TEXTURE],
+        .textures = SMALL_SPARK_TEXTURE,
         .shader = &DEFAULT_BILLBOARD_SHADER,
         .draw = ecs__draw_billboard
       },

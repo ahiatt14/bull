@@ -64,7 +64,7 @@ EntityId create_player(
     player,
     (struct Draw){
       .mesh = &REX_MESH,
-      .texture = TEXTURES[DARK_RUST_TEXTURE],
+      .textures = DARK_RUST_TEXTURE,
       .shader = &player_shader,
       .draw = ecs__draw_mesh
     },

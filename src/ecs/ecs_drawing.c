@@ -1,9 +1,48 @@
+#include <stdio.h>
+
 #include "tail.h"
 
 #include "ecs.h"
 
+#include "assets.h"
 #include "tail_helpers.h"
 #include "constants.h"
+
+// TODO: arbitrary for now
+#define MAX_TEXTURES_PER_ENTITY 3
+
+static inline uint_fast8_t has_texture(
+  uint_fast16_t texture,
+  uint_fast16_t entity_texture_mask
+) {
+  uint_fast16_t anded = texture & entity_texture_mask;
+  return (anded == texture) ? 1 : 0;
+}
+
+// TODO: expensive thing to do for every draw call
+void set_textures(
+  struct Entity const *const entity,
+  struct GPU const *const gpu
+) {
+
+  uint_fast8_t selected_texture_count = 0;
+
+  static struct Texture const *textures[MAX_TEXTURES_PER_ENTITY];
+
+  for (uint_fast16_t i = 0; i < TEXTURE_COUNT; i++)
+    if (has_texture(1 << i, entity->draw.textures))
+      textures[selected_texture_count++] = TEXTURES[i];
+
+  if (selected_texture_count > 1) {
+    gpu->select_textures(
+      entity->draw.shader,
+      selected_texture_count,
+      textures
+    );
+  } else {
+    gpu->select_texture(textures[0]);
+  }
+}
 
 void ecs__draw_mesh(
   struct GameTime time,

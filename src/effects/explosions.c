@@ -84,7 +84,7 @@ void create_rpg_explosion(
   ecs__add_draw(
     blink,
     (struct Draw){
-      .texture = TEXTURES[BLINK_TEXTURE],
+      .textures = BLINK_TEXTURE,
       .shader = &rpg_explosion_blink_shader,
       .draw = ecs__draw_billboard
     },
@@ -130,7 +130,7 @@ void create_rpg_explosion(
   ecs__add_draw(
     fireball,
     (struct Draw){
-      .texture = TEXTURES[FIREBALL_TEXTURE],
+      .textures = FIREBALL_TEXTURE,
       .shader = &rpg_explosion_fireball_shader,
       .mesh = &LOWPOLY_SPHERE_FLAT_MESH,
       .draw = ecs__draw_mesh

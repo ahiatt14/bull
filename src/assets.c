@@ -17,6 +17,7 @@
 #include "dark_rust_texture.h"
 #include "small_spark_texture.h"
 
+// TODO: I don't like this naming "tail_texture" vs "texture" for the bitmask vals
 struct Texture* TEXTURES[TEXTURE_COUNT] = {
   &BLASTED_STONE_TAIL_TEXTURE,
   &BULLETS_TAIL_TEXTURE,

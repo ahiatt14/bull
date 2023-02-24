@@ -79,8 +79,7 @@ void create_lvl0_muzzle_flash(
   ecs__add_draw(
     flash,
     (struct Draw){
-      // .texture = TEXTURES[MUZZLE_FLASH_TEXTURE],
-      .texture = NULL,
+      .textures = 0,
       .mesh = &QUAD,
       .shader = &muzzle_flash_blink_shader,
       .draw = ecs__draw_mesh

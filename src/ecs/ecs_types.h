@@ -80,7 +80,7 @@ struct Repeat {
 
 struct Draw {
   struct DrawableMesh *mesh;
-  struct Texture *texture;
+  uint_fast16_t textures;
   struct Shader *shader;
   void (*draw)(
     struct GameTime time,

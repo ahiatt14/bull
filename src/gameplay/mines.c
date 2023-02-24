@@ -142,7 +142,7 @@ void create__mine(
   ecs__add_draw(
     mine,
     (struct Draw){
-      .texture = TEXTURES[BLASTED_STONE_TEXTURE],
+      .textures = BLASTED_STONE_TEXTURE,
       .shader = &FLAT_TEXTURE_SHADER,
       .mesh = &LOWPOLY_SPHERE_FLAT_MESH,
       .draw = ecs__draw_mesh

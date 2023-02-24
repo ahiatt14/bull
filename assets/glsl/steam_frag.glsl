@@ -1,6 +1,6 @@
 #version 330 core
 
-uniform sampler2D surface_texture;
+uniform sampler2D mist;
 
 uniform float max_altitude = 1;
 uniform vec3 bottom_color = vec3(1.0);
@@ -19,7 +19,7 @@ void main() {
 
   normalized_altitude = fs_in.world_frag_pos.y / max_altitude;
 
-  vec3 material = texture(surface_texture, fs_in.tex_uv).rgb;
+  vec3 material = texture(mist, fs_in.tex_uv).rgb;
 
   vec3 faded = mix(
     bottom_color * 0.7,

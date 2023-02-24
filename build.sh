@@ -28,7 +28,6 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/flat_texture_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/ocean_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/ocean_vert.glsl vert && \
-  ./${tools}validate-glsl.exe assets/glsl/sky_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/bouncer_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/steam_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/steam_geo.glsl geo && \
@@ -39,10 +38,7 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/billboard_vert.glsl vert && \
   ./${tools}validate-glsl.exe assets/glsl/billboard_geo.glsl geo && \
   ./${tools}validate-glsl.exe assets/glsl/mist_frag.glsl frag && \
-  ./${tools}validate-glsl.exe assets/glsl/mountain_frag.glsl frag && \
-  ./${tools}validate-glsl.exe assets/glsl/spark_frag.glsl frag && \
-  ./${tools}validate-glsl.exe assets/glsl/spark_geo.glsl geo && \
-  ./${tools}validate-glsl.exe assets/glsl/spark_vert.glsl vert \
+  ./${tools}validate-glsl.exe assets/glsl/mountain_frag.glsl frag \
   && \
   ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/normal_debug_vert.glsl $artifact_dir && \
@@ -52,7 +48,6 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/default_vert.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/ocean_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/ocean_vert.glsl $artifact_dir && \
-  ./${tools}sourcify-glsl.exe assets/glsl/sky_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/bouncer_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/steam_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/steam_geo.glsl $artifact_dir && \
@@ -63,10 +58,7 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/billboard_vert.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/billboard_geo.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/mist_frag.glsl $artifact_dir && \
-  ./${tools}sourcify-glsl.exe assets/glsl/mountain_frag.glsl $artifact_dir && \
-  ./${tools}sourcify-glsl.exe assets/glsl/spark_frag.glsl $artifact_dir && \
-  ./${tools}sourcify-glsl.exe assets/glsl/spark_geo.glsl $artifact_dir && \
-  ./${tools}sourcify-glsl.exe assets/glsl/spark_vert.glsl $artifact_dir \
+  ./${tools}sourcify-glsl.exe assets/glsl/mountain_frag.glsl $artifact_dir \
   && \
   ./${tools}sourcify-png.exe assets/png/water.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/mountain.png 3 $artifact_dir && \

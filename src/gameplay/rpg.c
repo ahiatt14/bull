@@ -52,7 +52,7 @@ EntityId deploy_rpg(
     rocket,
     (struct Draw){
       .mesh = &ROCKET_MESH,
-      .texture = NULL,
+      .textures = 0,
       .shader = &SOLID_COLOR_SHADER,
       .draw = ecs__draw_mesh
     },
