@@ -160,24 +160,38 @@ void ecs__remove_weapons(
   struct ECS *const ecs  
 );
 
-void ecs__add_projectile_radius_collider(
+void ecs__add_radius_collider(
   EntityId id,
-  struct RadiusCollider radius_collider,
+  float radius,
   struct ECS *const ecs
 );
 
-void ecs__remove_projectile_radius_collider(
+void ecs__remove_radius_collider(
   EntityId id,
   struct ECS *const ecs
 );
 
-void ecs__add_damagable_radius_collider(
+void ecs__add_damagable(
   EntityId id,
-  struct RadiusCollider radius_collider,
+  void (*on_hit_by_damager)(
+    EntityId id,
+    EntityId other,
+    struct ECS *const ecs
+  ),
   struct ECS *const ecs
 );
 
-void ecs__remove_damagable_radius_collider(
+void ecs__remove_damagable(
+  EntityId id,
+  struct ECS *const ecs
+);
+
+void ecs__add_damager(
+  EntityId id,
+  struct ECS *const ecs
+);
+
+void ecs__remove_damager(
   EntityId id,
   struct ECS *const ecs
 );

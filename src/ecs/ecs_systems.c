@@ -319,14 +319,14 @@ void ecs__check_projectile_radius_collisions(
   for (EntityId id = 0; id < ecs->count; id++) {
 
     if (lacks_components(
-      c_DAMAGABLE_RADIUS_COLLIDER,
+      c_DAMAGABLE | c_RADIUS_COLLIDER,
       ecs->entities[id].config
     )) continue;
 
     for (EntityId projectile = 0; projectile < ecs->count; projectile++) {
 
       if (lacks_components(
-        c_PROJECTILE_RADIUS_COLLIDER,
+        c_RADIUS_COLLIDER | c_DAMAGER,
         ecs->entities[projectile].config
       )) continue;
 
@@ -335,15 +335,15 @@ void ecs__check_projectile_radius_collisions(
         ecs->entities[projectile].transform.position
       );
 
-      damagable_radius = ecs->entities[id].radius_collider.radius;
-      projectile_radius = ecs->entities[projectile].radius_collider.radius;
+      damagable_radius = ecs->entities[id].radius;
+      projectile_radius = ecs->entities[projectile].radius;
 
       if (
         (distance_between_positions - damagable_radius - projectile_radius) >
         (damagable_radius + projectile_radius)
       ) continue;
 
-      ecs->entities[id].radius_collider.on_collide(
+      ecs->entities[id].on_hit_by_damager(
         id,
         projectile,
         ecs

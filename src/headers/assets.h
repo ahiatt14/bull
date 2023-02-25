@@ -3,7 +3,7 @@
 
 #include "tail.h"
 
-#define TEXTURE_COUNT 12
+#define TEXTURE_COUNT 13
 
 #define BLASTED_STONE_TEXTURE 1 << 0
 #define BULLETS_TEXTURE 1 << 1
@@ -17,6 +17,7 @@
 #define MOUNTAIN_TEXTURE 1 << 9
 #define DARK_RUST_TEXTURE 1 << 10
 #define SMALL_SPARK_TEXTURE 1 << 11
+#define ARROW_LAUNCHER_TEXTURE 1 << 12
 
 extern struct Texture* TEXTURES[TEXTURE_COUNT];
 

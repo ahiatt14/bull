@@ -24,9 +24,11 @@
 #define c_WEAPONS 1 << 11
 #define c_GRAVITY 1 << 12
 #define c_DRAW_BACK_FACES 1 << 13
-#define c_PROJECTILE_RADIUS_COLLIDER 1 << 14
-#define c_DAMAGABLE_RADIUS_COLLIDER 1 << 15
-#define c_ALPHA_EFFECT 1 << 16
+#define c_RADIUS_COLLIDER 1 << 14
+#define c_DAMAGER 1 << 15
+#define c_DAMAGABLE 1 << 16
+#define c_PICKUPABLE 1 << 17
+#define c_ALPHA_EFFECT 1 << 18
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast32_t ComponentConfig;
@@ -144,7 +146,12 @@ struct Entity {
   struct ScrollUV scroll_uv;
   struct Draw draw;
   struct Weapons weapons;
-  struct RadiusCollider radius_collider;
+  float radius;
+  void (*on_hit_by_damager)(
+    EntityId collidee,
+    EntityId collider,
+    struct ECS *const ecs
+  );
   ComponentConfig config;
 };
 

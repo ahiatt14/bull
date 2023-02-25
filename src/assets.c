@@ -16,6 +16,7 @@
 #include "mountain_texture.h"
 #include "dark_rust_texture.h"
 #include "small_spark_texture.h"
+#include "arrow_texture.h"
 
 // TODO: I don't like this naming "tail_texture" vs "texture" for the bitmask vals
 struct Texture* TEXTURES[TEXTURE_COUNT] = {
@@ -30,7 +31,8 @@ struct Texture* TEXTURES[TEXTURE_COUNT] = {
   &BLINK_TAIL_TEXTURE,
   &MOUNTAIN_TAIL_TEXTURE,
   &DARK_RUST_TAIL_TEXTURE,
-  &SMALL_SPARK_TAIL_TEXTURE
+  &SMALL_SPARK_TAIL_TEXTURE,
+  &ARROW_TAIL_TEXTURE
 };
 
 void assets__copy_textures_to_gpu(

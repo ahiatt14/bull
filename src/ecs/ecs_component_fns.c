@@ -228,34 +228,52 @@ void ecs__remove_weapons(
   ecs->entities[id].config -= c_WEAPONS;
 }
 
-void ecs__add_projectile_radius_collider(
+void ecs__add_radius_collider(
   EntityId id,
-  struct RadiusCollider radius_collider,
+  float radius,
   struct ECS *const ecs
 ) {
-  ecs->entities[id].config += c_PROJECTILE_RADIUS_COLLIDER;
-  ecs->entities[id].radius_collider = radius_collider;
+  ecs->entities[id].config += c_RADIUS_COLLIDER;
+  ecs->entities[id].radius = radius;
 }
 
-void ecs__remove_projectile_radius_collider(
+void ecs__remove_radius_collider(
   EntityId id,
   struct ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_PROJECTILE_RADIUS_COLLIDER;
+  ecs->entities[id].config -= c_RADIUS_COLLIDER;
 }
 
-void ecs__add_damagable_radius_collider(
+void ecs__add_damagable(
   EntityId id,
-  struct RadiusCollider radius_collider,
+  void (*on_hit_by_damager)(
+    EntityId collidee,
+    EntityId collider,
+    struct ECS *const ecs
+  ),
   struct ECS *const ecs
 ) {
-  ecs->entities[id].config += c_DAMAGABLE_RADIUS_COLLIDER;
-  ecs->entities[id].radius_collider = radius_collider;
+  ecs->entities[id].config += c_DAMAGABLE;
+  ecs->entities[id].on_hit_by_damager = on_hit_by_damager;
 }
 
-void ecs__remove_damagable_radius_collider(
+void ecs__remove_damagable(
   EntityId id,
   struct ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_DAMAGABLE_RADIUS_COLLIDER;
+  ecs->entities[id].config -= c_DAMAGABLE;
+}
+
+void ecs__add_damager(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config += c_DAMAGER;
+}
+
+void ecs__remove_damager(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config -= c_DAMAGER;
 }
