@@ -17,6 +17,7 @@
 #include "explosions.h"
 #include "sparks.h"
 #include "muzzle_flashes.h"
+#include "launchers.h"
 
 #include "mines.h"
 
@@ -43,6 +44,12 @@ void fire_lvl0_cannon(
 /*
   ~~~~~ENTITY EVENT HANDLERS~~~~
 */
+
+void handle_radial_launcher_picked_up_by_player(
+  EntityId launcher,
+  EntityId player,
+  struct ECS *const ecs
+);
 
 void handle_mine_shot_by_player(
   EntityId mine,
@@ -105,7 +112,6 @@ void action__init(
 
   gpu->copy_static_mesh_to_gpu(&ROCKET_MESH); // TODO: move into rpg file
 
-  guns__copy_assets_to_gpu(gpu);
   explosions__copy_assets_to_gpu(gpu);
   muzzle_flashes__copy_assets_to_gpu(gpu);
 
@@ -119,10 +125,14 @@ void action__init(
 
   ocean__init(window, vwprt, gpu);
 
-  mines__copy_assets_to_gpu(gpu);
-  mines__init_scene_callbacks(handle_mine_shot_by_player);
-  mines__create_pattern_0(&ecs);
-  mines__create_pattern_1(&ecs);
+  launchers__copy_assets_to_gpu(gpu);
+  launchers__init_scene_callbacks(handle_radial_launcher_picked_up_by_player);
+  create_radial_launcher_spawner(&ecs);
+
+  // mines__init_scene_callbacks(handle_mine_shot_by_player);
+  // mines__copy_assets_to_gpu(gpu);
+  // mines__create_pattern_0(&ecs);
+  // mines__create_pattern_1(&ecs);
 }
 
 void action__tick(
@@ -284,6 +294,15 @@ void on_rpg_timer_up(
   );
 
   // TODO: damage radius
+}
+
+void handle_radial_launcher_picked_up_by_player(
+  EntityId launcher,
+  EntityId player,
+  struct ECS *const ecs
+) {
+  printf("WE DID IT\n");
+  ecs__mark_for_destruction(launcher, ecs);
 }
 
 void handle_mine_shot_by_player(

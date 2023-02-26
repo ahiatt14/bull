@@ -4,7 +4,7 @@ uniform sampler2D surface_texture;
 
 vec3 COLOR_WHITE = vec3(1.0);
 
-uniform vec2 total_uv_scroll;
+uniform vec2 uv_scroll;
 uniform float seconds_since_activation;
 uniform float limit_in_seconds;
 
@@ -24,7 +24,7 @@ void main()
 {
   vec3 material = texture(
     surface_texture,
-    fs_in.tex_uv + total_uv_scroll
+    fs_in.tex_uv + uv_scroll
   ).rgb;
   float ratio = seconds_since_activation / limit_in_seconds;
 

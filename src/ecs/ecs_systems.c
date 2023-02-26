@@ -352,6 +352,8 @@ void ecs__check_projectile_radius_collisions(
   }
 }
 
+// ecs__check_
+
 // TODO: clean up the naming/organization of all these
 // ecs drawing fns
 static void draw_entity(
@@ -373,13 +375,13 @@ static void draw_entity(
     time.sec_since_game_launch
   );
 
-  if (has_component(c_UV_SCROLL, entity->config)) {
-    gpu->set_shader_vec2(
-      shader,
-      "total_uv_scroll",
-      entity->scroll_uv.total
-    );
-  }
+  // TODO: mmmm idk bout this
+  // it seems like uniform values are being preserved between
+  // invokations of the *same* shader regardless of whether
+  // that uniform is set. investigate
+  has_component(c_UV_SCROLL, entity->config) ?
+  gpu->set_shader_vec2(shader, "uv_scroll", entity->scroll_uv.total) :
+  gpu->set_shader_vec2(shader, "uv_scroll", (struct Vec2){0});
 
   if (has_component(c_TIMEOUT, entity->config)) {
     gpu->set_shader_float(

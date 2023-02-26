@@ -5,28 +5,25 @@
 
 #include "ecs.h"
 
-EntityId create_arrow_launcher(
+void launchers__copy_assets_to_gpu(
+  struct GPU const *const gpu
+);
+
+void launchers__init_scene_callbacks(
+  void (*on_player_collide_with_arrow)(
+    EntityId launcher,
+    EntityId player,
+    struct ECS *const ecs
+  )
+);
+
+EntityId create_radial_launcher(
   struct Vec3 position,
   struct ECS *const ecs
-) {
+);
 
-  EntityId arrow_launcher = ecs__create_entity(ecs);
-
-  ecs__add_transform(
-
-  );
-  ecs__add_uv_scroll(
-    arrow_launcher,
-    (struct )
-    ecs
-  );
-  ecs__add_alpha_effect(arrow_launcher, ecs);
-  ecs__add_draw(
-
-  );
-  ecs__add_radius(
-    
-  );
-}
+void create_radial_launcher_spawner(
+  struct ECS *const ecs
+);
 
 #endif

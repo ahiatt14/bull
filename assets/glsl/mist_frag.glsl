@@ -2,7 +2,7 @@
 
 uniform sampler2D mist_texture;
 
-uniform vec2 total_uv_scroll;
+uniform vec2 uv_scroll;
 
 const vec3 edge_color = vec3(
   255.0 / 255.0,
@@ -26,7 +26,7 @@ void main()
 {
   vec3 material = texture(
     mist_texture,
-    fs_in.tex_uv + total_uv_scroll
+    fs_in.tex_uv + uv_scroll
   ).rgb;
 
   float alpha = brightness(material) * brightness(material) * 3 - 1.0;

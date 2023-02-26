@@ -17,7 +17,7 @@
 #define MOUNTAIN_TEXTURE 1 << 9
 #define DARK_RUST_TEXTURE 1 << 10
 #define SMALL_SPARK_TEXTURE 1 << 11
-#define ARROW_LAUNCHER_TEXTURE 1 << 12
+#define ARROW_TEXTURE 1 << 12
 
 extern struct Texture* TEXTURES[TEXTURE_COUNT];
 

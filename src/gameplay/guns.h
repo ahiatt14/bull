@@ -7,10 +7,6 @@
 
 #include "ecs.h"
 
-void guns__copy_assets_to_gpu(
-  struct GPU const *const gpu
-);
-
 EntityId create_lvl0_cannonfire(
   struct Vec3 position,
   struct Vec3 direction,

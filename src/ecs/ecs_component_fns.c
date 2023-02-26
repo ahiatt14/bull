@@ -277,3 +277,23 @@ void ecs__remove_damager(
 ) {
   ecs->entities[id].config -= c_DAMAGER;
 }
+
+void ecs__add_pickupable(
+  EntityId id,
+  void (*on_picked_up)(
+    EntityId pickupable,
+    EntityId pickuper,
+    struct ECS *const ecs
+  ),
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config += c_PICKUPABLE;
+  ecs->entities[id].on_picked_up = on_picked_up;
+}
+
+void ecs__remove_pickupable(
+  EntityId id,
+  struct ECS *const ecs
+) {
+  ecs->entities[id].config -= c_PICKUPABLE;
+}

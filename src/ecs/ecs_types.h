@@ -152,6 +152,11 @@ struct Entity {
     EntityId collider,
     struct ECS *const ecs
   );
+  void (*on_picked_up)(
+    EntityId pickupable,
+    EntityId pickuper,
+    struct ECS *const ecs
+  );
   ComponentConfig config;
 };
 

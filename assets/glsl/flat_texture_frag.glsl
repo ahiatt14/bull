@@ -10,7 +10,12 @@ in VS_OUT {
 
 uniform sampler2D tex;
 
+uniform vec2 uv_scroll = vec2(0, 0);
+
 void main()
 {
-  FragColor = texture(tex, fs_in.tex_uv);
+  FragColor = texture(
+    tex,
+    fs_in.tex_uv + uv_scroll
+  );
 }
