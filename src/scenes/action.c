@@ -78,8 +78,8 @@ void on_player_stop_autofire();
 
 static struct ECS ecs;
 
-static struct Camera cam;
-static struct Gamepad gamepad;
+static Camera cam;
+static Gamepad gamepad;
 
 static struct ControllerActions player_one_actions = {
   .on_start_autofire = on_player_start_autofire,
@@ -91,12 +91,12 @@ static struct ControllerActions player_one_actions = {
 */
 
 void action__init(
-  struct Window const *const window,
-  struct Viewport *const vwprt,
-  struct GPU const *const gpu
+  Window const *const window,
+  Viewport *const vwprt,
+  GPU const *const gpu
 ) {
-  cam.position = (struct Vec3){ 0, 20, 14 };
-  cam.look_target = (struct Vec3){
+  cam.position = (Vec3){ 0, 20, 14 };
+  cam.look_target = (Vec3){
     ORIGIN.x,
     ORIGIN.y,
     ORIGIN.z + 1.2f
@@ -115,7 +115,7 @@ void action__init(
 
   player__copy_assets_to_gpu(gpu);
   create_player(
-    (struct Vec3){ 3, 0, 0 },
+    (Vec3){ 3, 0, 0 },
     fire_lvl0_cannon,
     &ecs
   );
@@ -135,9 +135,9 @@ void action__init(
 
 void action__tick(
   struct GameTime time,
-  struct Window const *const window,
-  struct Viewport *const vwprt,
-  struct GPU const *const gpu,
+  Window const *const window,
+  Viewport *const vwprt,
+  GPU const *const gpu,
   uint8_t previous_scene,
   void switch_scene(uint8_t new_scene)
 ) {
@@ -236,7 +236,7 @@ void fire_lvl0_cannon(
   
   // TOOD: add muzzle flash
 
-  struct Vec3 direction =
+  Vec3 direction =
     vec3__normalize(vec3_minus_vec3(
       ORIGIN,
       ecs->entities[weapon].transform.position
@@ -312,8 +312,8 @@ void handle_radial_launcher_picked_up_by_player(
 
   ecs__mark_for_destruction(launcher, ecs);
 
-  struct Vec3 start_position = ecs->entities[launcher].transform.position;
-  struct Vec3 end_position = space__ccw_angle_rotate(
+  Vec3 start_position = ecs->entities[launcher].transform.position;
+  Vec3 end_position = space__ccw_angle_rotate(
     WORLDSPACE.up,
     M_PI,
     start_position

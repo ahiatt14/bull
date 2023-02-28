@@ -9,18 +9,18 @@
 #define SEC_UNTIL_ACTION 2.0f
 
 void main_menu__init(
-  struct Window const *const window,
-  struct Viewport *const vwprt,
-  struct GPU const *const gpu
+  Window const *const window,
+  Viewport *const vwprt,
+  GPU const *const gpu
 ) {
 
 }
 
 void main_menu__tick(
   struct GameTime time,
-  struct Window const *const window,
-  struct Viewport *const vwprt,
-  struct GPU const *const gpu,
+  Window const *const window,
+  Viewport *const vwprt,
+  GPU const *const gpu,
   uint8_t previous_scene,
   void (*switch_scene)(uint8_t new_scene)
 ) {

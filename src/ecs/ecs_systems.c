@@ -15,7 +15,7 @@
 
 void ecs__control_player(
   struct GameTime time,
-  struct Gamepad gamepad,
+  Gamepad gamepad,
   struct ControllerActions const *const actions,
   struct Entity *const player
 ) {
@@ -40,13 +40,13 @@ void ecs__control_player(
     gamepad.right_trigger < TRIGGER_DEADZONE
   ) actions->on_stop_autofire();
 
-  struct Vec2 norm_direction =
+  Vec2 norm_direction =
     vec2__normalize(gamepad.left_stick_direction);
   float magnitude =
     vec2__magnitude(gamepad.left_stick_direction);
 
   if (magnitude < STICK_DEADZONE) {
-    player->velocity = (struct Vec3){0};
+    player->velocity = (Vec3){0};
     return;
   }
 
@@ -64,7 +64,7 @@ void ecs__gravity(
   struct ECS *const ecs
 ) {
 
-  struct Vec3 acceleration = {0, -9.8 * time.delta, 0};
+  Vec3 acceleration = {0, -9.8 * time.delta, 0};
 
   for (EntityId id = 0; id < ecs->count; id++) {
 
@@ -241,19 +241,19 @@ void ecs__lerp_revolve(
   }
 }
 
-// struct Quaternion quaternion__inverse(
-//   struct Quaternion q
+// Quaternion quaternion__inverse(
+//   Quaternion q
 // ) {
-//   struct Quaternion conjugate = {
+//   Quaternion conjugate = {
 //     .v = vec3__negate(q.v),
 //     .w = q.w
 //   };
 //   return quaternion__multiply(conjugate, q);
 // }
 
-// // static struct Quaternion slerp(
-// //   struct Quaternion q0,
-// //   struct Quaternion q1,
+// // static Quaternion slerp(
+// //   Quaternion q0,
+// //   Quaternion q1,
 // //   float t
 // // ) {
 
@@ -286,7 +286,7 @@ void ecs__look_at_center(
   struct ECS *const ecs
 ) {
 
-  struct Vec3 forward;
+  Vec3 forward;
 
   for (EntityId id = 0; id < ecs->count; id++) {
 
@@ -366,7 +366,7 @@ void ecs__check_pickup_radius_collisions(
   float distance_between_positions, pickup_radius;
 
   float player_radius = ecs->entities[PLAYER_ID].radius;
-  struct Vec3 player_position = ecs->entities[PLAYER_ID].transform.position;
+  Vec3 player_position = ecs->entities[PLAYER_ID].transform.position;
 
   for (EntityId pickup = 0; pickup < ecs->count; pickup++) {
 
@@ -395,12 +395,12 @@ void ecs__check_pickup_radius_collisions(
 // ecs drawing fns
 static void draw_entity(
   struct GameTime time,
-  struct Camera const *const camera,
-  struct GPU const *const gpu,
+  Camera const *const camera,
+  GPU const *const gpu,
   struct Entity const *const entity
 ) {
 
-  struct Shader *shader = entity->draw.shader;
+  Shader *shader = entity->draw.shader;
 
   gpu->select_shader(shader);
 
@@ -418,7 +418,7 @@ static void draw_entity(
   // that uniform is set. investigate
   has_component(c_UV_SCROLL, entity->config) ?
   gpu->set_shader_vec2(shader, "uv_scroll", entity->scroll_uv.total) :
-  gpu->set_shader_vec2(shader, "uv_scroll", (struct Vec2){0});
+  gpu->set_shader_vec2(shader, "uv_scroll", (Vec2){0});
 
   if (has_component(c_TIMEOUT, entity->config)) {
     gpu->set_shader_float(
@@ -464,8 +464,8 @@ void sort_alpha_entities(
 
 void ecs__draw(
   struct GameTime time,
-  struct Camera const *const camera,
-  struct GPU const *const gpu,
+  Camera const *const camera,
+  GPU const *const gpu,
   struct ECS *const ecs
 ) {
 

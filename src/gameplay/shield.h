@@ -7,11 +7,11 @@
 #include "constants.h"
 
 void shield__copy_assets_to_gpu(
-  struct GPU const *const gpu
+  GPU const *const gpu
 );
 
 void shield__create_free_shield(
-  struct Vec3 position,
+  Vec3 position,
   float radius,
   void (*start_script)(
     EntityId id,

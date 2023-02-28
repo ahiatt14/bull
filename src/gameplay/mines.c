@@ -43,7 +43,7 @@
 // }
 
 // void mines__copy_assets_to_gpu(
-//   struct GPU const *const gpu
+//   GPU const *const gpu
 // ) {
 //   gpu->copy_static_mesh_to_gpu(&LOWPOLY_SPHERE_FLAT_MESH);
 // }
@@ -71,11 +71,11 @@
 //   struct ECS *const ecs
 // ) {
 
-//   struct Vec3 spawn_start = { -2, 0, -10 };
-//   struct Vec3 spawn_offset = { -2, 0, 0 };
+//   Vec3 spawn_start = { -2, 0, -10 };
+//   Vec3 spawn_offset = { -2, 0, 0 };
 
-//   struct Vec3 battlefield_start = { -2, 0, 0 };
-//   struct Vec3 battlefield_start_offset = { -2, 0, 0 };
+//   Vec3 battlefield_start = { -2, 0, 0 };
+//   Vec3 battlefield_start_offset = { -2, 0, 0 };
 
 //   for (uint_fast8_t i = 0; i < 4; i++) {
 
@@ -98,11 +98,11 @@
 //   struct ECS *const ecs
 // ) {
 
-//   struct Vec3 spawn_start = { 1, 0, -10 };
-//   struct Vec3 spawn_offset = { 2, 0, 0 };
+//   Vec3 spawn_start = { 1, 0, -10 };
+//   Vec3 spawn_offset = { 2, 0, 0 };
 
-//   struct Vec3 battlefield_start = { 1, 0, 0 };
-//   struct Vec3 battlefield_start_offset = { 2, 0, 0 };
+//   Vec3 battlefield_start = { 1, 0, 0 };
+//   Vec3 battlefield_start_offset = { 2, 0, 0 };
 
 //   for (uint_fast8_t i = 0; i < 4; i++) {
 
@@ -122,8 +122,8 @@
 // }
 
 // void create__mine(
-//   struct Vec3 spawn_start,
-//   struct Vec3 battlefield_start,
+//   Vec3 spawn_start,
+//   Vec3 battlefield_start,
 //   uint_fast8_t ccw,
 //   struct ECS *const ecs
 // ) {
@@ -134,7 +134,7 @@
 
 //   ecs__add_transform(
 //     mine,
-//     (struct Transform){
+//     (Transform){
 //       .scale = 0.33f,
 //     },
 //     ecs

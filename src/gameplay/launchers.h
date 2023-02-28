@@ -6,7 +6,7 @@
 #include "ecs.h"
 
 void launchers__copy_assets_to_gpu(
-  struct GPU const *const gpu
+  GPU const *const gpu
 );
 
 void launchers__init_scene_callbacks(
@@ -19,7 +19,7 @@ void launchers__init_scene_callbacks(
 );
 
 EntityId create_radial_launcher(
-  struct Vec3 position,
+  Vec3 position,
   struct ECS *const ecs
 );
 

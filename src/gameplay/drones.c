@@ -15,7 +15,7 @@ void drones__init_scene_callbacks(
 }
 
 void drones__copy_assets_to_gpu(
-  struct GPU const *const gpu 
+  GPU const *const gpu 
 ) {
   // gpu->copy_static_mesh_to_gpu(&DRONE_MESH);
 }
@@ -28,7 +28,7 @@ EntityId create_drone(
 
   ecs__add_transform(
     drone,
-    (struct Transform){
+    (Transform){
       .scale = 1
     },
     ecs

@@ -14,7 +14,7 @@ void mines__init_scene_callbacks(
 );
 
 void mines__copy_assets_to_gpu(
-  struct GPU const *const gpu
+  GPU const *const gpu
 );
 
 void mines__create_pattern_0(
@@ -26,8 +26,8 @@ void mines__create_pattern_1(
 );
 
 void create__mine(
-  struct Vec3 spawn_start,
-  struct Vec3 battlefield_start,
+  Vec3 spawn_start,
+  Vec3 battlefield_start,
   uint_fast8_t ccw,
   struct ECS *const ecs
 );

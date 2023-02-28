@@ -8,7 +8,7 @@
 
 void ecs__control_player(
   struct GameTime time,
-  struct Gamepad gamepad,
+  Gamepad gamepad,
   struct ControllerActions const *const actions,
   struct Entity *const player
 );
@@ -70,8 +70,8 @@ void ecs__check_pickup_radius_collisions(
 
 void ecs__draw(
   struct GameTime time,
-  struct Camera const *const cam,
-  struct GPU const *const gpu,
+  Camera const *const cam,
+  GPU const *const gpu,
   struct ECS *const ecs
 );
 

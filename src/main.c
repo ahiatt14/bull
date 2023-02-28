@@ -22,11 +22,11 @@
 
 #define SCENE_COUNT 4
 
-static struct Window window;
-static struct GPU gpu;
-static struct Viewport vwprt;
+static Window window;
+static GPU gpu;
+static Viewport vwprt;
 
-static struct Gamepad gamepad;
+static Gamepad gamepad;
 
 static uint8_t paused = 0;
 void pause() { paused = 1; }
@@ -45,7 +45,7 @@ void handle_resize(uint16_t framebuffer_width, uint16_t framebuffer_height) {
   uint16_t viewport_width = framebuffer_width;
   uint16_t viewport_height = framebuffer_height;
 
-  struct Vec2 window_dimensions = window.get_window_dim_in_screen_units();
+  Vec2 window_dimensions = window.get_window_dim_in_screen_units();
   uint8_t window_aspect_is_wider_than_ours =
     window_dimensions.x / window_dimensions.y > ASPECT_RATIO ? 1 : 0;
 

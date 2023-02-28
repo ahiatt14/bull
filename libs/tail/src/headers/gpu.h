@@ -11,23 +11,23 @@
 #define FILTER__NEAREST 0
 #define FILTER__LINEAR 1
 
-struct Texture {
+typedef struct TAILTEXTURE {
   unsigned int _impl_id;
   unsigned char *data;
   const char *name;
   int width;
   int height;
   int channel_count;
-};
+} Texture;
 
-struct PointBuffer {
+typedef struct TAILPOINTBUFFER {
   unsigned int _impl_vbo_id;
   unsigned int _impl_vao_id;
   unsigned int points_length;
-  struct Vec3 *points;
-};
+  Vec3 *points;
+} PointBuffer;
 
-struct Shader {
+typedef struct TAILSHADER {
   unsigned int _frag_impl_id;
   unsigned int _vert_impl_id;
   unsigned int _geo_impl_id;
@@ -35,12 +35,12 @@ struct Shader {
   const char *frag_src;
   const char *vert_src;
   const char *geo_src;
-};
+} Shader;
 
-struct GPU {
+typedef struct TAILGPU {
 
   void (*clear)(
-    struct Vec3 const *const color
+    Vec3 const *const color
   );
   void (*clear_depth_buffer)();
   void (*enable_depth_test)();
@@ -53,40 +53,40 @@ struct GPU {
   void (*cull_no_faces)();  
 
   void (*copy_dynamic_mesh_to_gpu)(
-    struct DrawableMesh *const dm
+    DrawableMesh *const dm
   );
   void (*copy_static_mesh_to_gpu)(
-    struct DrawableMesh *const dm
+    DrawableMesh *const dm
   );
   void (*copy_points_to_gpu)(
-    struct PointBuffer *const pb
+    PointBuffer *const pb
   );
   void (*update_gpu_mesh_data)(
-    struct DrawableMesh const *const dm
+    DrawableMesh const *const dm
   );
 
   void (*copy_texture_to_gpu)(
     uint8_t filter,
-    struct Texture *const tex
+    Texture *const tex
   );
 
   void (*copy_shader_to_gpu)(
-    struct Shader *const gpup
+    Shader *const gpup
   );
   void (*copy_geo_stage_to_gpu)(
     const char *geo_src,
-    struct Shader *const gpup
+    Shader *const gpup
   );
   void (*select_shader)(
-    struct Shader const *const gpup
+    Shader const *const gpup
   );
   void (*select_texture)(
-    struct Texture const *const tex
+    Texture const *const tex
   );
   void (*select_textures)(
-    struct Shader const *const shad,
+    Shader const *const shad,
     uint8_t texture_count,
-    struct Texture const *const *const textures
+    Texture const *const *const textures
   );
 
   void (*set_viewport)(
@@ -99,44 +99,44 @@ struct GPU {
   int (*get_viewport_width)();
 
   void (*set_shader_m3x3)(
-    struct Shader const *const gpup,
+    Shader const *const gpup,
     char const *name,
-    struct M3x3 const *const value
+    M3x3 const *const value
   );
   void (*set_shader_m4x4)(
-    struct Shader const *const gpup,
+    Shader const *const gpup,
     char const *name,
-    struct M4x4 const *const value
+    M4x4 const *const value
   );
   void (*set_shader_vec2)(
-    struct Shader const *const gpup,
+    Shader const *const gpup,
     char const *name,
-    struct Vec2 value
+    Vec2 value
   );  
   void (*set_shader_vec3)(
-    struct Shader const *const gpup,
+    Shader const *const gpup,
     char const *name,
-    struct Vec3 value
+    Vec3 value
   );
   void (*set_shader_float)(
-    struct Shader const *const gpup,
+    Shader const *const gpup,
     char const *name,
     float value
   );
 
   void (*draw_mesh)(
-    struct DrawableMesh const *const dm
+    DrawableMesh const *const dm
   );
   void (*draw_wireframe)(
-    struct DrawableMesh const *const dm
+    DrawableMesh const *const dm
   );
   void (*draw_points)(
-    struct PointBuffer const *const pb
+    PointBuffer const *const pb
   );
-};
+} GPU;
 
 void gpu__create_api(
-  struct GPU *const gpu
+  GPU *const gpu
 );
 
 #endif

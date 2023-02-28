@@ -19,7 +19,7 @@
 #include "arrow_texture.h"
 
 // TODO: I don't like this naming "tail_texture" vs "texture" for the bitmask vals
-struct Texture* TEXTURES[TEXTURE_COUNT] = {
+Texture* TEXTURES[TEXTURE_COUNT] = {
   &BLASTED_STONE_TAIL_TEXTURE,
   &BULLETS_TAIL_TEXTURE,
   &CLOUDS_TAIL_TEXTURE,
@@ -36,7 +36,7 @@ struct Texture* TEXTURES[TEXTURE_COUNT] = {
 };
 
 void assets__copy_textures_to_gpu(
-  struct GPU const *const gpu
+  GPU const *const gpu
 ) {
   gpu->copy_texture_to_gpu(FILTER__NEAREST, &BLASTED_STONE_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, &BULLETS_TAIL_TEXTURE);

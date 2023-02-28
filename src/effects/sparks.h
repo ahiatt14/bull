@@ -6,8 +6,8 @@
 #include "ecs.h"
 
 void create_sparks(
-  struct Vec3 position,
-  struct Vec3 source_velocity,
+  Vec3 position,
+  Vec3 source_velocity,
   uint_fast8_t count,
   struct ECS *const ecs
 );

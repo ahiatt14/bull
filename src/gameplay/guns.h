@@ -8,8 +8,8 @@
 #include "ecs.h"
 
 EntityId create_lvl0_cannonfire(
-  struct Vec3 position,
-  struct Vec3 direction,
+  Vec3 position,
+  Vec3 direction,
   Seconds remainder,
   struct ECS *const ecs
 );

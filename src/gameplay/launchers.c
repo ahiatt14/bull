@@ -34,7 +34,7 @@ void (*on_player_collide_with_radial_ptr)(
 double (*get_seconds_since_creation_ptr)();
 
 void launchers__copy_assets_to_gpu(
-  struct GPU const *const gpu
+  GPU const *const gpu
 ) {
   gpu->copy_static_mesh_to_gpu(&ARROW_MESH);
 }
@@ -52,7 +52,7 @@ void launchers__init_scene_callbacks(
 }
 
 EntityId create_radial_launcher(
-  struct Vec3 position,
+  Vec3 position,
   struct ECS *const ecs
 ) {
 
@@ -60,9 +60,9 @@ EntityId create_radial_launcher(
 
   ecs__add_transform(
     launcher,
-    (struct Transform){
+    (Transform){
       .position = position,
-      .rotation = (struct Quaternion){ (struct Vec3){0}, 0 },
+      .rotation = (Quaternion){ (Vec3){0}, 0 },
       .scale = 0.7f
     },
     ecs
@@ -85,7 +85,7 @@ EntityId create_radial_launcher(
     on_player_collide_with_radial_ptr,
     ecs
   );
-  static struct Vec2 UV_SCROLL_SPEED = (struct Vec2){ 0, -6 };
+  static Vec2 UV_SCROLL_SPEED = (Vec2){ 0, -6 };
   ecs__add_uv_scroll(
     launcher,
     (struct ScrollUV){
@@ -110,15 +110,15 @@ static void spawn_radial_launcher(
   static float radians;
   radians += M_PI * 0.1f;
 
-  struct Vec3 start = space__ccw_angle_rotate(
+  Vec3 start = space__ccw_angle_rotate(
     WORLDSPACE.up,
     radians,
-    (struct Vec3){ 0, 0, -START_RADIUS }
+    (Vec3){ 0, 0, -START_RADIUS }
   );
-  struct Vec3 end = space__ccw_angle_rotate(
+  Vec3 end = space__ccw_angle_rotate(
     WORLDSPACE.up,
     radians,
-    (struct Vec3){ 0, 0, -END_RADIUS }
+    (Vec3){ 0, 0, -END_RADIUS }
   );
 
   EntityId launcher = create_radial_launcher(start, ecs);

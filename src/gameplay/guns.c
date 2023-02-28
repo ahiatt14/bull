@@ -20,8 +20,8 @@ static void destroy_bullet(
 }
 
 EntityId create_lvl0_cannonfire(
-  struct Vec3 position,
-  struct Vec3 direction,
+  Vec3 position,
+  Vec3 direction,
   Seconds remainder,
   struct ECS *const ecs
 ) {
@@ -33,23 +33,23 @@ EntityId create_lvl0_cannonfire(
 
   EntityId bullet = ecs__create_entity(ecs);
 
-  struct Quaternion point_to_target = quaternion__create(
+  Quaternion point_to_target = quaternion__create(
     WORLDSPACE.up,
     rads_ccw_from_forward_around_up(direction)
   );
 
-  struct Vec3 velocity = scalar_x_vec3(SPEED, direction);
+  Vec3 velocity = scalar_x_vec3(SPEED, direction);
 
   offset_z = offset_z ? 0 : 1;
-  struct Vec3 z_offset = { 0, offset_z ? Z_OFFSET : 0, 0 };
-  struct Vec3 offset_position = vec3_plus_vec3(
+  Vec3 z_offset = { 0, offset_z ? Z_OFFSET : 0, 0 };
+  Vec3 offset_position = vec3_plus_vec3(
     z_offset,
     vec3_plus_vec3(position, scalar_x_vec3(remainder, velocity))
   );
 
   ecs__add_transform(
     bullet,
-    (struct Transform){
+    (Transform){
       .position = offset_position,
       .scale = 1.2f,
       .rotation = point_to_target

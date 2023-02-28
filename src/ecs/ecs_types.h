@@ -80,30 +80,30 @@ struct Repeat {
 };
 
 struct Draw {
-  struct DrawableMesh *mesh;
+  DrawableMesh *mesh;
   uint_fast16_t textures;
-  struct Shader *shader;
+  Shader *shader;
   void (*draw)(
     struct GameTime time,
-    struct Camera const *const cam,
-    struct GPU const *const gpu,
+    Camera const *const cam,
+    GPU const *const gpu,
     struct Entity const *const entity
   );
 };
 
 struct ScrollUV {
-  struct Vec2 speed;
-  struct Vec2 total;
+  Vec2 speed;
+  Vec2 total;
 };
 
 struct Vec3Lerp {
-  struct Vec3 start;
-  struct Vec3 end;
+  Vec3 start;
+  Vec3 end;
   Seconds age;
   Seconds duration;
-  struct Vec3 (*lerp)(
-    struct Vec3 start,
-    struct Vec3 end,
+  Vec3 (*lerp)(
+    Vec3 start,
+    Vec3 end,
     double ratio
   );
   void (*on_finish)(
@@ -114,7 +114,7 @@ struct Vec3Lerp {
 };
 
 struct RevolveLerp {
-  struct Vec3 start;
+  Vec3 start;
   float target_rads;
   Seconds age;
   Seconds duration;
@@ -126,8 +126,8 @@ struct RevolveLerp {
 };
 
 struct RotationLerp {
-  struct Quaternion start;
-  struct Quaternion target;
+  Quaternion start;
+  Quaternion target;
   Seconds age;
   Seconds duration;
 };
@@ -135,13 +135,13 @@ struct RotationLerp {
 // TODO: AoS vs SoA blah blah blah
 // TODO: do hot/cold components?
 struct Entity {
-  struct Transform transform;
+  Transform transform;
   struct Timeout timeout;
   struct Repeat repeat;
   struct RevolveLerp revolve_lerp;
   struct Vec3Lerp vec3lerp;
   struct RotationLerp rotation_lerp;
-  struct Vec3 velocity;
+  Vec3 velocity;
   struct ScrollUV scroll_uv;
   struct Draw draw;
   struct Weapons weapons;

@@ -18,7 +18,7 @@
 #define REQUEST_FULLSCREEN 1
 #define REQUEST_WINDOWED 0
 
-struct Window {
+typedef struct TAILWINDOW {
   
   void (*on_minimize_and_restore)(
     void (*handle_minimize)(),
@@ -41,12 +41,12 @@ struct Window {
 
   uint8_t (*gamepad_is_connected)();
   void (*get_gamepad_input)(
-    struct Gamepad *const gamepad
+    Gamepad *const gamepad
   );
 
   uint8_t (*is_fullscreen)();
-  struct Vec2 (*get_window_dim_in_screen_units)();
-  struct Vec2 (*get_framebuffer_size)();
+  Vec2 (*get_window_dim_in_screen_units)();
+  Vec2 (*get_framebuffer_size)();
   double (*get_seconds_since_creation)();
   void (*switch_to_fullscreen)();
   void (*switch_to_windowed)(
@@ -63,13 +63,13 @@ struct Window {
   void (*request_buffer_swap)();
   uint8_t (*received_closed_event)();
   void (*end)();
-};
+} Window;
 
 uint8_t window__create_fullscreen_game(
   const char *name,
   uint8_t request_vsync,
   uint8_t MSAA_samples,
-  struct Window *const window
+  Window *const window
 );
 
 uint8_t window__create_windowed_game(
@@ -80,7 +80,7 @@ uint8_t window__create_windowed_game(
   const char *name,
   uint8_t vsync,
   uint8_t request_MSAA,
-  struct Window *const window
+  Window *const window
 );
 
 #endif

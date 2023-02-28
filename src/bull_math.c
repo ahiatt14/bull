@@ -3,12 +3,12 @@
 #include "bull_math.h"
 #include "constants.h"
 
-const struct M4x4* camera__calculate_ortho(
+const M4x4* camera__calculate_ortho(
   float r,
   float t,
   float n,
   float f,
-  struct Camera *const cam
+  Camera *const cam
 ) {
   m4x4__create(
     1 / r, 0, 0, 0,
@@ -22,7 +22,7 @@ const struct M4x4* camera__calculate_ortho(
 }
 
 float rads_ccw_from_forward_around_up(
-  struct Vec3 t
+  Vec3 t
 ) {
   float rads = atan(-t.x / -t.z);
   if (t.x < 0 && t.z >= 0) {
@@ -49,24 +49,24 @@ float floop(float v, float min, float max) {
   return v;
 }
 
-struct Vec3 vec3__linear_lerp(
-  struct Vec3 t0,
-  struct Vec3 t1,
+Vec3 vec3__linear_lerp(
+  Vec3 t0,
+  Vec3 t1,
   double ratio
 ) {
-  return (struct Vec3){
+  return (Vec3){
     t0.x + ((t1.x - t0.x) * ratio),
     t0.y + ((t1.y - t0.y) * ratio),
     t0.z + ((t1.z - t0.z) * ratio)
   };
 }
 
-struct Vec3 vec3__square_lerp(
-  struct Vec3 t0,
-  struct Vec3 t1,
+Vec3 vec3__square_lerp(
+  Vec3 t0,
+  Vec3 t1,
   double ratio
 ) {
-  return (struct Vec3){
+  return (Vec3){
     t0.x + ((t1.x - t0.x) * ratio * ratio),
     t0.y + ((t1.y - t0.y) * ratio * ratio),
     t0.z + ((t1.z - t0.z) * ratio * ratio)

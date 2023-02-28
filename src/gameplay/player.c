@@ -16,10 +16,10 @@
 #include "default_vert.h"
 #include "mountain_frag.h"
 
-struct Shader player_shader;
+Shader player_shader;
 
 void player__copy_assets_to_gpu(
-  struct GPU const *const gpu
+  GPU const *const gpu
 ) {
 
   player_shader.frag_src = MOUNTAIN_FRAG_SRC;
@@ -30,7 +30,7 @@ void player__copy_assets_to_gpu(
 }
 
 EntityId create_player(
-  struct Vec3 position,
+  Vec3 position,
   void (*fire_lvl0_cannon)(
     EntityId player,
     Seconds remainder,
@@ -47,7 +47,7 @@ EntityId create_player(
 
   ecs__add_player_controller(player, ecs);
   ecs__add_look_at_center(player, ecs);
-  ecs__add_velocity(player, (struct Vec3){0}, ecs);
+  ecs__add_velocity(player, (Vec3){0}, ecs);
   ecs__add_radius_collider(player, 0.2f, ecs);
   ecs__add_weapons(
     player,
@@ -59,7 +59,7 @@ EntityId create_player(
   );
   ecs__add_transform(
     player,
-    (struct Transform){
+    (Transform){
       .position = position,
       .scale = 0.25f
     },

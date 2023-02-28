@@ -22,12 +22,12 @@ static inline uint_fast8_t has_texture(
 // TODO: expensive thing to do for every draw call
 void set_textures(
   struct Entity const *const entity,
-  struct GPU const *const gpu
+  GPU const *const gpu
 ) {
 
   uint_fast8_t selected_texture_count = 0;
 
-  static struct Texture const *textures[MAX_TEXTURES_PER_ENTITY];
+  static Texture const *textures[MAX_TEXTURES_PER_ENTITY];
 
   for (uint_fast16_t i = 0; i < TEXTURE_COUNT; i++)
     if (has_texture(1 << i, entity->draw.textures))
@@ -46,14 +46,14 @@ void set_textures(
 
 void ecs__draw_mesh(
   struct GameTime time,
-  struct Camera const *const camera,
-  struct GPU const *const gpu,
+  Camera const *const camera,
+  GPU const *const gpu,
   struct Entity const *const entity
 ) {
 
-  static struct M4x4 model;
-  static struct M3x3 normals_model;
-  static struct Shader *shader;
+  static M4x4 model;
+  static M3x3 normals_model;
+  static Shader *shader;
 
   shader = entity->draw.shader;
 
@@ -67,13 +67,13 @@ void ecs__draw_mesh(
 
 void ecs__draw_billboard(
   struct GameTime time,
-  struct Camera const *const camera,
-  struct GPU const *const gpu,
+  Camera const *const camera,
+  GPU const *const gpu,
   struct Entity const *const entity
 ) {
 
-  static struct M4x4 model, rotation;
-  static struct Shader *shader;
+  static M4x4 model, rotation;
+  static Shader *shader;
 
   shader = entity->draw.shader;
 

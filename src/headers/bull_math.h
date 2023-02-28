@@ -4,15 +4,15 @@
 #include "tail.h"
 
 float rads_ccw_from_forward_around_up(
-  struct Vec3 t
+  Vec3 t
 );
 
-const struct M4x4* camera__calculate_ortho(
+const M4x4* camera__calculate_ortho(
   float r,
   float t,
   float n,
   float f,
-  struct Camera *const cam
+  Camera *const cam
 );
 
 double d_max(double v, double max);
@@ -20,15 +20,15 @@ float f_max(float v, float max);
 
 float floop(float v, float min, float max);
 
-struct Vec3 vec3__linear_lerp(
-  struct Vec3 t0,
-  struct Vec3 t1,
+Vec3 vec3__linear_lerp(
+  Vec3 t0,
+  Vec3 t1,
   double ratio
 );
 
-struct Vec3 vec3__square_lerp(
-  struct Vec3 t0,
-  struct Vec3 t1,
+Vec3 vec3__square_lerp(
+  Vec3 t0,
+  Vec3 t1,
   double ratio
 );
 

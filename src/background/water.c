@@ -15,10 +15,10 @@
 
 #include "solid_color_frag.h"
 
-static struct Shader shader;
+static Shader shader;
 
 void water__copy_assets_to_gpu(
-  struct GPU const *const gpu
+  GPU const *const gpu
 ) {
 
   shader.vert_src = OCEAN_VERT_SRC;
@@ -30,14 +30,14 @@ void water__copy_assets_to_gpu(
 
 static void draw_water(
   struct GameTime time,
-  struct Camera const *const camera,
-  struct GPU const *const gpu,
+  Camera const *const camera,
+  GPU const *const gpu,
   struct Entity const *const water
 ) {
 
-  static struct Shader *shader;
-  static struct M4x4 model;
-  static struct M3x3 normals_model;
+  static Shader *shader;
+  static M4x4 model;
+  static M3x3 normals_model;
 
   shader = water->draw.shader;
 
@@ -53,7 +53,7 @@ static void draw_water(
   gpu->set_shader_vec2(
     shader,
     "direction",
-    vec2__normalize((struct Vec2){ -1, -1 })
+    vec2__normalize((Vec2){ -1, -1 })
   );
 
   gpu->draw_mesh(water->draw.mesh);
@@ -67,9 +67,9 @@ EntityId create_water(
 
   ecs__add_transform(
     waves,
-    (struct Transform){
-      .rotation = (struct Quaternion){0},
-      .position = (struct Vec3){ 0, 1, 0 },
+    (Transform){
+      .rotation = (Quaternion){0},
+      .position = (Vec3){ 0, 1, 0 },
       .scale = 1
     },
     ecs
@@ -89,9 +89,9 @@ EntityId create_water(
 
   ecs__add_transform(
     far_water,
-    (struct Transform){
-      .position = (struct Vec3){0},
-      .rotation = (struct Quaternion){ (struct Vec3){0}, 0 },
+    (Transform){
+      .position = (Vec3){0},
+      .rotation = (Quaternion){ (Vec3){0}, 0 },
       .scale = 300
     },
     ecs

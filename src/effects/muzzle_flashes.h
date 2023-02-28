@@ -6,11 +6,11 @@
 #include "ecs.h"
 
 void muzzle_flashes__copy_assets_to_gpu(
-  struct GPU const *const gpu
+  GPU const *const gpu
 );
 
 EntityId create_lvl0_muzzle_flash(
-  struct Transform const *const source_transform,
+  Transform const *const source_transform,
   struct ECS *const ecs
 );
 

@@ -24,25 +24,25 @@
 typedef uint16_t gamepad_button_id;
 typedef uint16_t gamepad_button_state;
 
-struct Gamepad {
-  struct Vec2 left_stick_direction;
+typedef struct TAILGAMEPAD {
+  Vec2 left_stick_direction;
   float left_trigger;
   float right_trigger;
   gamepad_button_state buttons;
   gamepad_button_state previous_buttons;
-};
+} Gamepad;
 
 uint8_t button_is_down(
   gamepad_button_id button,
-  struct Gamepad const *const gamepad
+  Gamepad const *const gamepad
 );
 uint8_t button_is_up(
   gamepad_button_id button,
-  struct Gamepad const *const gamepad
+  Gamepad const *const gamepad
 );
 uint8_t button_was_released(
   gamepad_button_id button,
-  struct Gamepad const *const gamepad
+  Gamepad const *const gamepad
 );
 
 #endif

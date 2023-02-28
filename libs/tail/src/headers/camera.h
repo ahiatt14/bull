@@ -5,24 +5,26 @@
 #include "m4x4.h"
 #include "vector.h"
 
-struct Camera {
-  struct M4x4 lookat;
-  struct M4x4 projection;
-  struct Vec3 position;
-  struct Vec3 look_target;
+typedef struct TAILCAMERA {
+  M4x4 lookat;
+  M4x4 projection;
+  Vec3 position;
+  Vec3 look_target;
   float near_clip_distance;
   float far_clip_distance;
   float horizontal_fov_in_deg;
-};
+} Camera;
 
-void camera__init(struct Camera *c);
-const struct M4x4* camera__calculate_lookat(
-  struct Vec3 world_up,
-  struct Camera *const c
+void camera__init(
+  Camera *c
 );
-const struct M4x4* camera__calculate_perspective(
-  struct Viewport *const vwprt,
-  struct Camera *const c
+const M4x4* camera__calculate_lookat(
+  Vec3 world_up,
+  Camera *const c
+);
+const M4x4* camera__calculate_perspective(
+  Viewport *const vwprt,
+  Camera *const c
 );
 
 #endif

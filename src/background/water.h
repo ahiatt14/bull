@@ -5,7 +5,7 @@
 #include "ecs.h"
 
 void water__copy_assets_to_gpu(
-  struct GPU const *const gpu
+  GPU const *const gpu
 );
 
 EntityId create_water(

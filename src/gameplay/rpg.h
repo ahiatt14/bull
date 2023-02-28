@@ -6,7 +6,7 @@
 #include "ecs.h"
 
 EntityId deploy_rpg(
-  struct Vec3 position,
+  Vec3 position,
   void (*on_rpg_deployed)(
     EntityId id,
     Seconds remainder,

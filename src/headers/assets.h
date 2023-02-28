@@ -19,10 +19,10 @@
 #define SMALL_SPARK_TEXTURE 1 << 11
 #define ARROW_TEXTURE 1 << 12
 
-extern struct Texture* TEXTURES[TEXTURE_COUNT];
+extern Texture* TEXTURES[TEXTURE_COUNT];
 
 void assets__copy_textures_to_gpu(
-  struct GPU const *const gpu
+  GPU const *const gpu
 );
 
 #endif

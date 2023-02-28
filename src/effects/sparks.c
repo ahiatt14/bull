@@ -18,8 +18,8 @@ static void destroy_spark(
   ecs__mark_for_destruction(spark, ecs);
 }
 
-static struct Vec3 random_direction() {
-  return vec3__normalize((struct Vec3){
+static Vec3 random_direction() {
+  return vec3__normalize((Vec3){
     0.5f - (rand() / (float)RAND_MAX),
     (rand() / (float)RAND_MAX),
     0.5f - (rand() / (float)RAND_MAX)
@@ -27,21 +27,21 @@ static struct Vec3 random_direction() {
 }
 
 void create_sparks(
-  struct Vec3 position,
-  struct Vec3 source_velocity,
+  Vec3 position,
+  Vec3 source_velocity,
   uint_fast8_t count,
   struct ECS *const ecs
 ) {
 
   EntityId spark;
   
-  struct Vec3 directions_to_average[2] = {
+  Vec3 directions_to_average[2] = {
     scalar_x_vec3(0.7f, source_velocity),
-    (struct Vec3){0}
+    (Vec3){0}
   };
 
-  struct Quaternion point_to_target;
-  struct Vec3 averaged_velocity;
+  Quaternion point_to_target;
+  Vec3 averaged_velocity;
 
   for (uint_fast8_t i = 0; i < count; i++) {
 
@@ -60,7 +60,7 @@ void create_sparks(
 
     ecs__add_transform(
       spark,
-      (struct Transform){
+      (Transform){
         .position = position,
         .rotation = point_to_target,
         .scale = 0.15

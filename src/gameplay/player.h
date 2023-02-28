@@ -9,14 +9,14 @@
 
 #define LVL0_CANNON_AUTOFIRE_INTERVAL 0.10f
 
-extern struct Shader player_shader;
+extern Shader player_shader;
 
 void player__copy_assets_to_gpu(
-  struct GPU const *const gpu
+  GPU const *const gpu
 );
 
 EntityId create_player(
-  struct Vec3 position,
+  Vec3 position,
   void (*fire_lvl0_cannon)(
     EntityId player,
     Seconds remainder,

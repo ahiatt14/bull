@@ -12,7 +12,7 @@
 #include "rocket_mesh.h"
 
 EntityId deploy_rpg(
-  struct Vec3 position,
+  Vec3 position,
   void (*on_rpg_deployed)(
     EntityId id,
     Seconds remainder,
@@ -24,13 +24,13 @@ EntityId deploy_rpg(
   EntityId rocket = ecs__create_entity(ecs);
   static uint_fast8_t deploy_right = 0;
 
-  struct Vec3 forward =
+  Vec3 forward =
     vec3__normalize(vec3_minus_vec3(ORIGIN, position));
 
-  struct Vec3 right =
+  Vec3 right =
     vec3__normalize(vec3__cross(forward, WORLDSPACE.up));
 
-  struct Vec3 propel_position =
+  Vec3 propel_position =
     deploy_right ?
     vec3_plus_vec3(position, right) :
     vec3_plus_vec3(position, vec3__negate(right));
@@ -38,7 +38,7 @@ EntityId deploy_rpg(
 
   ecs__add_transform(
     rocket,
-    (struct Transform){
+    (Transform){
       .position = position,
       .rotation = quaternion__create(
         WORLDSPACE.up,
@@ -85,18 +85,18 @@ void propel_rpg(
   struct ECS *const ecs
 ) {
 
-  struct Vec3 position =
+  Vec3 position =
     ecs->entities[rocket].transform.position;
-  struct Quaternion rotation =
+  Quaternion rotation =
     ecs->entities[rocket].transform.rotation;
 
-  struct Vec3 forward =
+  Vec3 forward =
     vec3__normalize(space__ccw_quat_rotate(
       rotation,
       WORLDSPACE.forward
     ));
 
-  struct Vec3 end = vec3_plus_vec3(
+  Vec3 end = vec3_plus_vec3(
     position,
     scalar_x_vec3(10.0f, forward)
   );

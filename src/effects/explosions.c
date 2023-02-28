@@ -18,8 +18,8 @@
 #include "explosion_blink_frag.h"
 #include "explosion_frag.h"
 
-static struct Shader rpg_explosion_blink_shader;
-static struct Shader rpg_explosion_fireball_shader;
+static Shader rpg_explosion_blink_shader;
+static Shader rpg_explosion_fireball_shader;
 
 static void destroy_explosion(
   EntityId explosion,
@@ -30,7 +30,7 @@ static void destroy_explosion(
 }
 
 void explosions__copy_assets_to_gpu(
-  struct GPU const *const gpu
+  GPU const *const gpu
 ) {
 
   gpu->copy_static_mesh_to_gpu(&LOWPOLY_SPHERE_FLAT_MESH);
@@ -47,13 +47,13 @@ void explosions__copy_assets_to_gpu(
 
 void create_rpg_explosion(
   EntityId rocket,
-  struct Vec3 camera_position,
+  Vec3 camera_position,
   struct ECS *const ecs
 ) {
 
   EntityId blink = ecs__create_entity(ecs);
 
-  struct Vec3 blink_position = vec3_plus_vec3(
+  Vec3 blink_position = vec3_plus_vec3(
     ecs->entities[rocket].transform.position,
     scalar_x_vec3(
       0.3f,
@@ -66,7 +66,7 @@ void create_rpg_explosion(
 
   ecs__add_transform(
     blink,
-    (struct Transform){
+    (Transform){
       .position = blink_position,
       .scale = 0.5f
     },
@@ -95,7 +95,7 @@ void create_rpg_explosion(
 
   ecs__add_transform(
     fireball,
-    (struct Transform){
+    (Transform){
       .position = ecs->entities[rocket].transform.position,
       .rotation = ecs->entities[rocket].transform.rotation,
       .scale = 0.5f
@@ -119,11 +119,11 @@ void create_rpg_explosion(
   ecs__add_uv_scroll(
     fireball,
     (struct ScrollUV){
-      .speed = (struct Vec2){
+      .speed = (Vec2){
         0.5f - rand() / (float)RAND_MAX,
         rand() / (float)RAND_MAX
       },
-      .total = (struct Vec2){0}
+      .total = (Vec2){0}
     },
     ecs
   );

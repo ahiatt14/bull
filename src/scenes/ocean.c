@@ -33,7 +33,7 @@
 
 // READ ONLY
 
-static struct Transform COOLING_TOWER_TRANSFORM = {
+static Transform COOLING_TOWER_TRANSFORM = {
   // .position = { -17, 0.3f, -40 },
   .position = {0},
   .scale = 20
@@ -43,10 +43,10 @@ static float CAM_REVOLVE_SPEED = (M_PI / 200.0f);
 
 // LOCALS
 
-static struct Gamepad gamepad;
-static struct Camera cam;
+static Gamepad gamepad;
+static Camera cam;
  
-static struct Vec3 cam_look_target = {
+static Vec3 cam_look_target = {
   40,
   2,
   0
@@ -57,7 +57,7 @@ static EntityId waves;
 
 // STEAM
 
-static struct Shader steam_shader;
+static Shader steam_shader;
 
 // SKY
 
@@ -65,15 +65,15 @@ static struct Shader steam_shader;
 
 static struct ECS ecs;
 static EntityId mist;
-static struct Shader mist_shader;
+static Shader mist_shader;
 
 void ocean__init(
-  struct Window const *const window,
-  struct Viewport *const vwprt,
-  struct GPU const *const gpu
+  Window const *const window,
+  Viewport *const vwprt,
+  GPU const *const gpu
 ) {
 
-  cam.position = (struct Vec3){ 25, 2, 150 };
+  cam.position = (Vec3){ 25, 2, 150 };
   cam.look_target = cam_look_target;
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
@@ -112,18 +112,18 @@ void ocean__init(
   mist = ecs__create_entity(&ecs);
   ecs__add_transform(
     mist,
-    (struct Transform){
+    (Transform){
       .scale = 12,
-      .rotation = (struct Quaternion){0},
-      .position = (struct Vec3){ 1, 4, 2 }
+      .rotation = (Quaternion){0},
+      .position = (Vec3){ 1, 4, 2 }
     },
     &ecs
   );
   ecs__add_uv_scroll(
     mist,
     (struct ScrollUV){
-      .speed = (struct Vec2){ -0.01f, 0 },
-      .total = (struct Vec2){0}
+      .speed = (Vec2){ -0.01f, 0 },
+      .total = (Vec2){0}
     },
     &ecs
   );
@@ -162,10 +162,10 @@ void ocean__init(
 
   // MOUNTAINS
 
-//   mountain_transform = (struct Transform){
+//   mountain_transform = (Transform){
 //     .position = { 10, -0.4f, -50 },
 //     .rotation = quaternion__create(
-//       (struct Vec3){ 0, 1, 0 },
+//       (Vec3){ 0, 1, 0 },
 //       -M_PI * 0.25f
 //     ),
 //     .scale = 13
@@ -188,9 +188,9 @@ void ocean__init(
 
 void ocean__tick(
   struct GameTime time, 
-  struct Window const *const window,
-  struct Viewport *const vwprt,
-  struct GPU const *const gpu,
+  Window const *const window,
+  Viewport *const vwprt,
+  GPU const *const gpu,
   uint8_t previous_scene,
   void (*switch_scene)(uint8_t new_scene)
 ) {
@@ -208,11 +208,11 @@ void ocean__tick(
   // static const float SPEED = 0.2f;
   // static const float STICK_DEADZONE = 0.2f;
 
-  // struct Vec2 norm_direction =
+  // Vec2 norm_direction =
   //   vec2__normalize(gamepad.left_stick_direction);
   // float magnitude =
   //   vec2__magnitude(gamepad.left_stick_direction);
-  // struct Vec2 offset = {0};
+  // Vec2 offset = {0};
 
   // if (magnitude >= STICK_DEADZONE) {
   //   offset.x =

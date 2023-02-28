@@ -13,39 +13,39 @@ struct ControllerActions {
 
 typedef double Seconds;
 
-extern struct M3x3 M3X3_IDENTITY;
-extern struct M4x4 M4X4_IDENTITY;
+extern M3x3 M3X3_IDENTITY;
+extern M4x4 M4X4_IDENTITY;
 
-extern struct Shader FLAT_TEXTURE_SHADER;
-extern struct Shader SOLID_COLOR_SHADER;
-extern struct Shader NORMALS_COLOR_SHADER;
-extern struct Shader NORMALS_VIS_SHADER;
-extern struct Shader DEFAULT_BILLBOARD_SHADER;
+extern Shader FLAT_TEXTURE_SHADER;
+extern Shader SOLID_COLOR_SHADER;
+extern Shader NORMALS_COLOR_SHADER;
+extern Shader NORMALS_VIS_SHADER;
+extern Shader DEFAULT_BILLBOARD_SHADER;
 
-extern struct PointBuffer POINT;
-extern struct DrawableMesh QUAD;
+extern PointBuffer POINT;
+extern DrawableMesh QUAD;
 
-extern const struct Vec3 COLOR_MALACHITE;
-extern const struct Vec3 COLOR_WHITE;
-extern const struct Vec3 COLOR_LIGHT_GREY;
-extern const struct Vec3 COLOR_BLACK;
-extern const struct Vec3 COLOR_RED;
-extern const struct Vec3 COLOR_GREEN;
-extern const struct Vec3 COLOR_BLUE;
-extern const struct Vec3 COLOR_SKY_BLUE;
-extern const struct Vec3 COLOR_GOLDEN_YELLOW;
-extern const struct Vec3 COLOR_EVENING_SUNLIGHT;
-extern const struct Vec3 COLOR_NEON_PURPLE;
-extern const struct Vec3 COLOR_AQUA_BLUE;
-extern const struct Vec3 COLOR_MAGENTA_WHITE;
-extern const struct Vec3 COLOR_DEEP_FOREST_GREEN;
-extern const struct Vec3 COLOR_ROYAL_GREEN;
-extern const struct Vec3 COLOR_DARK_GREY_BLUE;
-extern const struct Vec3 COLOR_DARK_SLATE_GREY;
-extern const struct Vec3 COLOR_BLOOD_RED;
-extern const struct Vec3 COLOR_HOT_PINK;
+extern const Vec3 COLOR_MALACHITE;
+extern const Vec3 COLOR_WHITE;
+extern const Vec3 COLOR_LIGHT_GREY;
+extern const Vec3 COLOR_BLACK;
+extern const Vec3 COLOR_RED;
+extern const Vec3 COLOR_GREEN;
+extern const Vec3 COLOR_BLUE;
+extern const Vec3 COLOR_SKY_BLUE;
+extern const Vec3 COLOR_GOLDEN_YELLOW;
+extern const Vec3 COLOR_EVENING_SUNLIGHT;
+extern const Vec3 COLOR_NEON_PURPLE;
+extern const Vec3 COLOR_AQUA_BLUE;
+extern const Vec3 COLOR_MAGENTA_WHITE;
+extern const Vec3 COLOR_DEEP_FOREST_GREEN;
+extern const Vec3 COLOR_ROYAL_GREEN;
+extern const Vec3 COLOR_DARK_GREY_BLUE;
+extern const Vec3 COLOR_DARK_SLATE_GREY;
+extern const Vec3 COLOR_BLOOD_RED;
+extern const Vec3 COLOR_HOT_PINK;
 
-extern const struct Vec3 ORIGIN;
-extern const struct CoordinateSpace WORLDSPACE;
+extern const Vec3 ORIGIN;
+extern const CoordinateSpace WORLDSPACE;
 
 #endif

@@ -13,7 +13,7 @@
 
 #include "explosion_blink_frag.h"
 
-static struct Shader muzzle_flash_blink_shader;
+static Shader muzzle_flash_blink_shader;
 
 static void destroy_flash(
   EntityId flash,
@@ -24,7 +24,7 @@ static void destroy_flash(
 }
 
 void muzzle_flashes__copy_assets_to_gpu(
-  struct GPU const *const gpu
+  GPU const *const gpu
 ) {
 
   muzzle_flash_blink_shader.frag_src = EXPLOSION_BLINK_FRAG_SRC;
@@ -33,16 +33,16 @@ void muzzle_flashes__copy_assets_to_gpu(
 }
 
 void create_lvl0_muzzle_flash(
-  struct Transform const *const source_transform,
+  Transform const *const source_transform,
   struct ECS *const ecs
 ) {
 
-  struct Vec3 source_forward = space__ccw_quat_rotate(
+  Vec3 source_forward = space__ccw_quat_rotate(
     source_transform->rotation,
     WORLDSPACE.forward
   );
 
-  struct Quaternion right_rotation = quaternion__create(
+  Quaternion right_rotation = quaternion__create(
     WORLDSPACE.right,
     -M_PI * 0.5f
   );
@@ -51,13 +51,13 @@ void create_lvl0_muzzle_flash(
 
   ecs__add_transform(
     flash,
-    (struct Transform){
+    (Transform){
       .position = vec3_plus_vec3(
         vec3_plus_vec3(
           source_transform->position,
           scalar_x_vec3(0.5, source_forward)
         ),
-        (struct Vec3){0, 0, 0.1f}
+        (Vec3){0, 0, 0.1f}
       ),
       .rotation = quaternion__multiply(
         source_transform->rotation,

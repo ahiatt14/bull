@@ -27,7 +27,7 @@ void ecs__remove_player_controller(
 
 void ecs__add_transform(
   EntityId id,
-  struct Transform t,
+  Transform t,
   struct ECS *const ecs
 );
 
@@ -64,7 +64,7 @@ void ecs__remove_gravity(
 
 void ecs__add_velocity(
   EntityId id,
-  struct Vec3 velocity,
+  Vec3 velocity,
   struct ECS *const ecs
 );
 
