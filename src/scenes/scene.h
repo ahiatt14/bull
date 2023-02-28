@@ -11,17 +11,17 @@
 #define SCENE__CONNECT_GAMEPAD 2
 #define SCENE__OCEAN 3
 
-struct scene;
+typedef struct BULLSCENE Scene;
 
-struct scene {
-  void (*set_previous_scene)(struct scene const *previous_scene);
+struct BULLSCENE {
+  void (*set_previous_scene)(Scene const *previous_scene);
   void (*init)(
     Window const *const window,
     Viewport *const vwprt,
     GPU const *const gpu
   );
   void (*tick)(
-    struct GameTime time,
+    GameTime time,
     Window const *const window,
     Viewport *const vwprt,
     GPU const *const gpu,
@@ -37,7 +37,7 @@ void main_menu__init(
   GPU const *const gpu
 );
 void main_menu__tick(
-  struct GameTime time,
+  GameTime time,
   Window const *const window,
   Viewport *const vwprt,
   GPU const *const gpu,
@@ -51,7 +51,7 @@ void action__init(
   GPU const *const gpu
 );
 void action__tick(
-  struct GameTime time,
+  GameTime time,
   Window const *const window,
   Viewport *const vwprt,
   GPU const *const gpu,
@@ -65,7 +65,7 @@ void connect_gamepad__init(
   GPU const *const gpu
 );
 void connect_gamepad__tick(
-  struct GameTime time,
+  GameTime time,
   Window const *const window,
   Viewport *const vwprt,
   GPU const *const gpu,
@@ -79,7 +79,7 @@ void ocean__init(
   GPU const *const gpu
 );
 void ocean__tick(
-  struct GameTime time,
+  GameTime time,
   Window const *const window,
   Viewport *const vwprt,
   GPU const *const gpu,

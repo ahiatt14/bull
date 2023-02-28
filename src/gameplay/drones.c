@@ -21,7 +21,7 @@ void drones__copy_assets_to_gpu(
 }
 
 EntityId create_drone(
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   EntityId drone = ecs__create_entity(ecs);
@@ -37,7 +37,7 @@ EntityId create_drone(
   ecs__add_alpha_effect(drone, ecs);
   ecs__add_draw(
     drone,
-    (struct Draw){
+    (Draw){
       // .textures = DRONE_TEXTURE,
       .draw = ecs__draw_mesh,
       .shader = &FLAT_TEXTURE_SHADER,

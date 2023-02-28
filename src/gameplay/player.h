@@ -20,9 +20,9 @@ EntityId create_player(
   void (*fire_lvl0_cannon)(
     EntityId player,
     Seconds remainder,
-    struct ECS *const ecs
+    ECS *const ecs
   ),
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 #endif

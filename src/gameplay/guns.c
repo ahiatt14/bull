@@ -14,7 +14,7 @@
 static void destroy_bullet(
   EntityId bullet,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
   ecs__mark_for_destruction(bullet, ecs);
 }
@@ -23,7 +23,7 @@ EntityId create_lvl0_cannonfire(
   Vec3 position,
   Vec3 direction,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   static uint_fast8_t offset_z;
@@ -63,7 +63,7 @@ EntityId create_lvl0_cannonfire(
   );
   ecs__add_timeout(
     bullet,
-    (struct Timeout){
+    (Timeout){
       .age = remainder,
       .limit = DURATION,
       .on_timeout = destroy_bullet
@@ -75,7 +75,7 @@ EntityId create_lvl0_cannonfire(
   // ecs__add_alpha_effect(bullet, ecs);
   ecs__add_draw(
     bullet,
-    (struct Draw){
+    (Draw){
       .mesh = &QUAD,
       .textures = BULLETS_TEXTURE,
       .shader = &FLAT_TEXTURE_SHADER,

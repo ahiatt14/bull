@@ -16,9 +16,9 @@ void shield__create_free_shield(
   void (*start_script)(
     EntityId id,
     Seconds remainder,
-    struct ECS const *const ecs
+    ECS const *const ecs
   ),
-  struct ECS const *const ecs
+  ECS const *const ecs
 );
 
 #endif

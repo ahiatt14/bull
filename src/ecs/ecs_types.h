@@ -32,71 +32,62 @@
 typedef uint_fast16_t EntityId;
 typedef uint_fast32_t ComponentConfig;
 
-struct ECS;
-struct Entity;
+typedef struct BULLECS ECS;
+typedef struct BULLENTITY Entity;
 
-struct Weapons {
+typedef struct BULLWEAPONS {
   void (*primary)(
     EntityId vehicle,
     Seconds remainder,
-    struct ECS *const ecs
+    ECS *const ecs
   );
   Seconds primary_autofire_interval;
   // void (*secondary)(
   //   EntityId vehicle,
   //   Seconds remainder,
-  //   struct ECS *const ecs
+  //   ECS *const ecs
   // );
   // Seconds secondary_autofire_interval;
-};
+} Weapons;
 
-struct RadiusCollider {
-  float radius;
-  void (*on_collide)(
-    EntityId id,
-    EntityId other,
-    struct ECS *const ecs
-  );
-};
-
-struct Timeout {
+typedef struct BULLTIMEOUT {
   Seconds age;
   Seconds limit;
   void (*on_timeout)(
     EntityId id,
     Seconds remainder,
-    struct ECS *const ecs
+    ECS *const ecs
   );
-};
+} Timeout;
 
-struct Repeat {
+typedef struct BULLREPEAT {
   Seconds age;
   Seconds interval;
   void (*on_interval)(
     EntityId id,
     Seconds remainder,
-    struct ECS *const ecs
+    ECS *const ecs
   );
-};
+} Repeat;
 
-struct Draw {
+typedef struct BULLDRAW {
   DrawableMesh *mesh;
   uint_fast16_t textures;
   Shader *shader;
   void (*draw)(
-    struct GameTime time,
+    GameTime time,
     Camera const *const cam,
     GPU const *const gpu,
-    struct Entity const *const entity
+    Entity const *const entity
   );
-};
+} Draw;
 
-struct ScrollUV {
+typedef struct BULLSCROLLUV {
   Vec2 speed;
   Vec2 total;
-};
+} ScrollUV;
 
-struct Vec3Lerp {
+typedef struct BULLVEC3LERP {
   Vec3 start;
   Vec3 end;
   Seconds age;
@@ -109,11 +100,11 @@ struct Vec3Lerp {
   void (*on_finish)(
     EntityId id,
     Seconds remainder,
-    struct ECS *const ecs
+    ECS *const ecs
   );
-};
+} Vec3Lerp;
 
-struct RevolveLerp {
+typedef struct BULLREVOLVELERP {
   Vec3 start;
   float target_rads;
   Seconds age;
@@ -121,46 +112,46 @@ struct RevolveLerp {
   void (*on_finish)(
     EntityId id,
     Seconds remainder,
-    struct ECS *const ecs
+    ECS *const ecs
   );
-};
+} RevolveLerp;
 
-struct RotationLerp {
+typedef struct BULLROTATIONLERP {
   Quaternion start;
   Quaternion target;
   Seconds age;
   Seconds duration;
-};
+} RotationLerp;
 
 // TODO: AoS vs SoA blah blah blah
 // TODO: do hot/cold components?
-struct Entity {
+struct BULLENTITY {
   Transform transform;
-  struct Timeout timeout;
-  struct Repeat repeat;
-  struct RevolveLerp revolve_lerp;
-  struct Vec3Lerp vec3lerp;
-  struct RotationLerp rotation_lerp;
+  Timeout timeout;
+  Repeat repeat;
+  RevolveLerp revolve_lerp;
+  Vec3Lerp vec3lerp;
+  RotationLerp rotation_lerp;
   Vec3 velocity;
-  struct ScrollUV scroll_uv;
-  struct Draw draw;
-  struct Weapons weapons;
+  ScrollUV scroll_uv;
+  Draw draw;
+  Weapons weapons;
   float radius;
   void (*on_hit_by_damager)(
     EntityId collidee,
     EntityId collider,
-    struct ECS *const ecs
+    ECS *const ecs
   );
   void (*on_picked_up)(
     EntityId pickupable,
     EntityId pickuper,
-    struct ECS *const ecs
+    ECS *const ecs
   );
   ComponentConfig config;
 };
 
-struct ECS {
-  struct Entity entities[MAX_ENTITIES];
+struct BULLECS {
+  Entity entities[MAX_ENTITIES];
   uint_fast16_t count;
   uint_fast16_t entities_to_destroy[MAX_ENTITIES];
   uint_fast16_t entities_to_destroy_count;

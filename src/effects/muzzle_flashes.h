@@ -11,7 +11,7 @@ void muzzle_flashes__copy_assets_to_gpu(
 
 EntityId create_lvl0_muzzle_flash(
   Transform const *const source_transform,
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 #endif

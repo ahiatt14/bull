@@ -49,7 +49,7 @@ void connect_gamepad__init(
 }
 
 void connect_gamepad__tick(
-  struct GameTime time,
+  GameTime time,
   Window const *const window,
   Viewport *const vwprt,
   GPU const *const gpu,

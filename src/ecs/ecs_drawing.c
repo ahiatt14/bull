@@ -21,7 +21,7 @@ static inline uint_fast8_t has_texture(
 
 // TODO: expensive thing to do for every draw call
 void set_textures(
-  struct Entity const *const entity,
+  Entity const *const entity,
   GPU const *const gpu
 ) {
 
@@ -45,10 +45,10 @@ void set_textures(
 }
 
 void ecs__draw_mesh(
-  struct GameTime time,
+  GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  struct Entity const *const entity
+  Entity const *const entity
 ) {
 
   static M4x4 model;
@@ -66,10 +66,10 @@ void ecs__draw_mesh(
 }
 
 void ecs__draw_billboard(
-  struct GameTime time,
+  GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  struct Entity const *const entity
+  Entity const *const entity
 ) {
 
   static M4x4 model, rotation;

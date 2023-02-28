@@ -3,10 +3,10 @@
 
 #include "tail.h"
 
-struct GameTime {
+typedef struct BULLGAMETIME {
   double delta;
   double sec_since_game_launch;
-};
+} GameTime;
 
 void gpu__set_mvp(
   M4x4 const *const model,

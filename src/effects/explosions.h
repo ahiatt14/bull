@@ -12,7 +12,7 @@ void explosions__copy_assets_to_gpu(
 void create_rpg_explosion(
   EntityId rocket,
   Vec3 camera_position,
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 #endif

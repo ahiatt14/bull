@@ -17,7 +17,7 @@ void main_menu__init(
 }
 
 void main_menu__tick(
-  struct GameTime time,
+  GameTime time,
   Window const *const window,
   Viewport *const vwprt,
   GPU const *const gpu,

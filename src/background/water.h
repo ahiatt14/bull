@@ -9,7 +9,7 @@ void water__copy_assets_to_gpu(
 );
 
 EntityId create_water(
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 #endif

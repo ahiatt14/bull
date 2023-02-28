@@ -16,9 +16,9 @@ EntityId deploy_rpg(
   void (*on_rpg_deployed)(
     EntityId id,
     Seconds remainder,
-    struct ECS *const ecs
+    ECS *const ecs
   ),
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   EntityId rocket = ecs__create_entity(ecs);
@@ -50,7 +50,7 @@ EntityId deploy_rpg(
   );
   ecs__add_draw(
     rocket,
-    (struct Draw){
+    (Draw){
       .mesh = &ROCKET_MESH,
       .textures = 0,
       .shader = &SOLID_COLOR_SHADER,
@@ -60,7 +60,7 @@ EntityId deploy_rpg(
   );
   ecs__add_vec3lerp(
     rocket,
-    (struct Vec3Lerp){
+    (Vec3Lerp){
       .start = position,
       .end = propel_position,
       .age = 0,
@@ -80,9 +80,9 @@ void propel_rpg(
   void (*on_rpg_timer_up)(
     EntityId id,
     Seconds remainder,
-    struct ECS *const ecs
+    ECS *const ecs
   ),
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   Vec3 position =
@@ -101,7 +101,7 @@ void propel_rpg(
     scalar_x_vec3(10.0f, forward)
   );
 
-  ecs->entities[rocket].vec3lerp = (struct Vec3Lerp){
+  ecs->entities[rocket].vec3lerp = (Vec3Lerp){
     .start = position, // TODO: give headstart with lerp remainder
     .end = end,
     .age = 0, // TODO: give headstart with lerp remainder?
@@ -113,7 +113,7 @@ void propel_rpg(
 
 void create_rpg_thruster_blink(
   EntityId rocket,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
   
 }

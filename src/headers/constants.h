@@ -6,10 +6,10 @@
 #define DELTA_CAP 1.0f / 30.0f
 
 // TODO: find better place for this
-struct ControllerActions {
+typedef struct BULLCONTROLLERACTIONS {
   void (*on_start_autofire)();
   void (*on_stop_autofire)();
-};
+} ControllerActions;
 
 typedef double Seconds;
 

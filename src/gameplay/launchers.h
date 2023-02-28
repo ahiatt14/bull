@@ -13,18 +13,18 @@ void launchers__init_scene_callbacks(
   void (*on_player_collide_with_radial)(
     EntityId launcher,
     EntityId player,
-    struct ECS *const ecs
+    ECS *const ecs
   ),
   double (*const get_seconds_since_creation)()
 );
 
 EntityId create_radial_launcher(
   Vec3 position,
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 void create_radial_launcher_spawner(
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 #endif

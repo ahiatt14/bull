@@ -38,7 +38,7 @@
 void fire_lvl0_cannon(
   EntityId id,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 /*
@@ -48,25 +48,25 @@ void fire_lvl0_cannon(
 void handle_radial_launcher_picked_up_by_player(
   EntityId launcher,
   EntityId player,
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 void handle_mine_shot_by_player(
   EntityId mine,
   EntityId projectile,
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 void on_rpg_deployed(
   EntityId rocket,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 void on_rpg_timer_up(
   EntityId rocket,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 void on_player_start_autofire();
@@ -76,12 +76,12 @@ void on_player_stop_autofire();
   ~~~~~~~~~LOCAL STATE~~~~~~~~~~
 */
 
-static struct ECS ecs;
+static ECS ecs;
 
 static Camera cam;
 static Gamepad gamepad;
 
-static struct ControllerActions player_one_actions = {
+static ControllerActions player_one_actions = {
   .on_start_autofire = on_player_start_autofire,
   .on_stop_autofire = on_player_stop_autofire
 };
@@ -134,7 +134,7 @@ void action__init(
 }
 
 void action__tick(
-  struct GameTime time,
+  GameTime time,
   Window const *const window,
   Viewport *const vwprt,
   GPU const *const gpu,
@@ -190,7 +190,7 @@ void action__tick(
 }
 
 // void guide_lag_update(
-//   struct GameTime time,
+//   GameTime time,
 //   struct Player const *const player,
 //   struct guide_lag_state *const guide_lag
 // ) {
@@ -215,7 +215,7 @@ void action__tick(
 void on_player_start_autofire() {
   ecs__add_repeat(
     PLAYER_ID,
-    (struct Repeat){
+    (Repeat){
       .age = 0,
       .interval = ecs.entities[PLAYER_ID].weapons.primary_autofire_interval,
       .on_interval = ecs.entities[PLAYER_ID].weapons.primary
@@ -231,7 +231,7 @@ void on_player_stop_autofire() {
 void fire_lvl0_cannon(
   EntityId weapon,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
   
   // TOOD: add muzzle flash
@@ -258,7 +258,7 @@ void fire_lvl0_cannon(
 void on_rpg_deployed(
   EntityId rocket,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   propel_rpg(
@@ -279,7 +279,7 @@ void on_rpg_deployed(
 void on_rpg_timer_up(
   EntityId rocket,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   ecs__mark_for_destruction(rocket, ecs);
@@ -296,16 +296,17 @@ void on_rpg_timer_up(
 static void return_player_control(
   EntityId player,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
   ecs__add_player_controller(player, ecs);
+  ecs__add_look_at_center(player, ecs);
   ecs->entities[player].draw.shader = &player_shader;
   ecs__remove_vec3lerp(player, ecs);
 }
 void handle_radial_launcher_picked_up_by_player(
   EntityId launcher,
   EntityId player,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   static float LAUNCH_SPEED = 40;
@@ -324,10 +325,11 @@ void handle_radial_launcher_picked_up_by_player(
     LAUNCH_SPEED;
 
   ecs__remove_player_controller(player, ecs);
+  ecs__remove_look_at_center(player, ecs);
   ecs->entities[player].draw.shader = &SOLID_COLOR_SHADER;
   ecs__add_vec3lerp(
     player,
-    (struct Vec3Lerp){
+    (Vec3Lerp){
       .start = start_position,
       .end = end_position,
       .age = 0,
@@ -352,7 +354,7 @@ void handle_radial_launcher_picked_up_by_player(
 void handle_mine_shot_by_player(
   EntityId mine,
   EntityId projectile,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
   // create_rpg_explosion(
   //   projectile,

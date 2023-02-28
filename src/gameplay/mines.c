@@ -21,13 +21,13 @@
 // static void (*on_shot_ptr)(
 //   EntityId mine,
 //   EntityId projectile,
-//   struct ECS *const ecs
+//   ECS *const ecs
 // );
 
 // static void destroy_mine(
 //   EntityId id,
 //   Seconds remainder,
-//   struct ECS *const ecs
+//   ECS *const ecs
 // ) {
 //   ecs__mark_for_destruction(id, ecs);
 // }
@@ -36,7 +36,7 @@
 //   void (*on_shot)(
 //     EntityId mine,
 //     EntityId projectile,
-//     struct ECS *const ecs
+//     ECS *const ecs
 //   )
 // ) {
 //   on_shot_ptr = on_shot;
@@ -51,12 +51,12 @@
 // static void start_revolution(
 //     EntityId mine,
 //     Seconds remainder,
-//     struct ECS *const ecs
+//     ECS *const ecs
 // ) {
 //   ecs__remove_vec3lerp(mine, ecs);
 //   ecs__add_revolve_lerp(
 //     mine,
-//     (struct RevolveLerp){
+//     (RevolveLerp){
 //       .start = ecs->entities[mine].transform.position,
 //       .target_rads = ccw_flags_by_id[mine] ? M_PI * 10 : -M_PI * 10,
 //       .age = remainder,
@@ -68,7 +68,7 @@
 // }
 
 // void mines__create_pattern_0(
-//   struct ECS *const ecs
+//   ECS *const ecs
 // ) {
 
 //   Vec3 spawn_start = { -2, 0, -10 };
@@ -95,7 +95,7 @@
 // }
 
 // void mines__create_pattern_1(
-//   struct ECS *const ecs
+//   ECS *const ecs
 // ) {
 
 //   Vec3 spawn_start = { 1, 0, -10 };
@@ -125,7 +125,7 @@
 //   Vec3 spawn_start,
 //   Vec3 battlefield_start,
 //   uint_fast8_t ccw,
-//   struct ECS *const ecs
+//   ECS *const ecs
 // ) {
    
 //   EntityId mine = ecs__create_entity(ecs);
@@ -141,7 +141,7 @@
 //   );
 //   ecs__add_draw(
 //     mine,
-//     (struct Draw){
+//     (Draw){
 //       .textures = BLASTED_STONE_TEXTURE,
 //       .shader = &FLAT_TEXTURE_SHADER,
 //       .mesh = &LOWPOLY_SPHERE_FLAT_MESH,
@@ -151,7 +151,7 @@
 //   );
 //   ecs__add_vec3lerp(
 //     mine,
-//     (struct Vec3Lerp){
+//     (Vec3Lerp){
 //       .start = spawn_start,
 //       .end = battlefield_start,
 //       .age = 0,

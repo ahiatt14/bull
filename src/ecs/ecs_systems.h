@@ -7,72 +7,72 @@
 #include "ecs_types.h"
 
 void ecs__control_player(
-  struct GameTime time,
+  GameTime time,
   Gamepad gamepad,
-  struct ControllerActions const *const actions,
-  struct Entity *const player
+  ControllerActions const *const actions,
+  Entity *const player
 );
 
 void ecs__gravity(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 );
 
 void ecs__move(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 );
 
 void ecs__timeout(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 );
 
 void ecs__repeat(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 );
 
 void ecs__scroll_uvs(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 );
 
 void ecs__lerp_vec3(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 );
 
 void ecs__lerp_revolve(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 );
 
 void ecs__lerp_rotation(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 );
 
 void ecs__look_at_center(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 );
 
 void ecs__check_projectile_radius_collisions(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 );
 
 void ecs__check_pickup_radius_collisions(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 );
 
 void ecs__draw(
-  struct GameTime time,
+  GameTime time,
   Camera const *const cam,
   GPU const *const gpu,
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 #endif

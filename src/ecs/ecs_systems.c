@@ -14,10 +14,10 @@
 #include "tail_helpers.h"
 
 void ecs__control_player(
-  struct GameTime time,
+  GameTime time,
   Gamepad gamepad,
-  struct ControllerActions const *const actions,
-  struct Entity *const player
+  ControllerActions const *const actions,
+  Entity *const player
 ) {
 
   // TODO: we should definitely create a Controller API
@@ -60,8 +60,8 @@ void ecs__control_player(
 }
 
 void ecs__gravity(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 ) {
 
   Vec3 acceleration = {0, -9.8 * time.delta, 0};
@@ -81,8 +81,8 @@ void ecs__gravity(
 }
 
 void ecs__move(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 ) {
 
   for (EntityId id = 0; id < ecs->count; id++) {
@@ -100,8 +100,8 @@ void ecs__move(
 }
 
 void ecs__timeout(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 ) {
   
   for (EntityId id = 0; id < ecs->count; id++) {
@@ -124,8 +124,8 @@ void ecs__timeout(
 }
 
 void ecs__repeat(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 ) {
 
   Seconds age, interval, remainder;
@@ -150,8 +150,8 @@ void ecs__repeat(
 }
 
 void ecs__scroll_uvs(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 ) {
 
   for (EntityId id = 0; id < ecs->count; id++) {
@@ -166,8 +166,8 @@ void ecs__scroll_uvs(
 }
 
 void ecs__lerp_vec3(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 ) {
 
   double ratio;
@@ -202,8 +202,8 @@ void ecs__lerp_vec3(
 }
 
 void ecs__lerp_revolve(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 ) {
 
   float ratio, rads;
@@ -260,8 +260,8 @@ void ecs__lerp_revolve(
 // // }
 
 // void ecs__lerp_rotation(
-//   struct GameTime time,
-//   struct ECS *const ecs
+//   GameTime time,
+//   ECS *const ecs
 // ) {
   
 //   // float ratio, rads;
@@ -282,8 +282,8 @@ void ecs__lerp_revolve(
 // }
 
 void ecs__look_at_center(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 ) {
 
   Vec3 forward;
@@ -310,8 +310,8 @@ void ecs__look_at_center(
 
 // TODO: learn how to do efficient collision detection in ECS!
 void ecs__check_projectile_radius_collisions(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 ) {
 
   float distance_between_positions, damagable_radius, projectile_radius;
@@ -354,8 +354,8 @@ void ecs__check_projectile_radius_collisions(
 
 // TODO: not very ECS-y of us, think about pickup interaction
 void ecs__check_pickup_radius_collisions(
-  struct GameTime time,
-  struct ECS *const ecs
+  GameTime time,
+  ECS *const ecs
 ) {
 
   if (lacks_components(
@@ -394,10 +394,10 @@ void ecs__check_pickup_radius_collisions(
 // TODO: clean up the naming/organization of all these
 // ecs drawing fns
 static void draw_entity(
-  struct GameTime time,
+  GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  struct Entity const *const entity
+  Entity const *const entity
 ) {
 
   Shader *shader = entity->draw.shader;
@@ -448,7 +448,7 @@ void swap(EntityId *id0, EntityId *id1) {
 void sort_alpha_entities(
   EntityId *alpha_entities,
   uint_fast16_t alpha_entity_count,
-  struct ECS const *const ecs
+  ECS const *const ecs
 ) {
   int i, j, min_i;
   for (i = 0; i < alpha_entity_count - 1; i++) {
@@ -463,10 +463,10 @@ void sort_alpha_entities(
 }
 
 void ecs__draw(
-  struct GameTime time,
+  GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   static EntityId alpha_entities[MAX_ENTITIES];

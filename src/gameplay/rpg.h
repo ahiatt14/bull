@@ -10,9 +10,9 @@ EntityId deploy_rpg(
   void (*on_rpg_deployed)(
     EntityId id,
     Seconds remainder,
-    struct ECS *const ecs
+    ECS *const ecs
   ),
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 void propel_rpg(
@@ -21,14 +21,14 @@ void propel_rpg(
   void (*on_rpg_timer_up)(
     EntityId id,
     Seconds remainder,
-    struct ECS *const ecs
+    ECS *const ecs
   ),
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 void create_rpg_thruster_blink(
   EntityId rocket,
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 #endif

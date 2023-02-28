@@ -24,7 +24,7 @@ static Shader rpg_explosion_fireball_shader;
 static void destroy_explosion(
   EntityId explosion,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
   ecs__mark_for_destruction(explosion, ecs);
 }
@@ -48,7 +48,7 @@ void explosions__copy_assets_to_gpu(
 void create_rpg_explosion(
   EntityId rocket,
   Vec3 camera_position,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   EntityId blink = ecs__create_entity(ecs);
@@ -74,7 +74,7 @@ void create_rpg_explosion(
   );
   ecs__add_timeout(
     blink,
-    (struct Timeout){
+    (Timeout){
       .age = 0,
       .limit = 1.0f / 30.0f,
       .on_timeout = destroy_explosion
@@ -83,7 +83,7 @@ void create_rpg_explosion(
   );
   ecs__add_draw(
     blink,
-    (struct Draw){
+    (Draw){
       .textures = BLINK_TEXTURE,
       .shader = &rpg_explosion_blink_shader,
       .draw = ecs__draw_billboard
@@ -104,7 +104,7 @@ void create_rpg_explosion(
   );
   ecs__add_timeout(
     fireball,
-    (struct Timeout){
+    (Timeout){
       .age = 0,
       .limit = 0.5f,
       .on_timeout = destroy_explosion
@@ -118,7 +118,7 @@ void create_rpg_explosion(
   );
   ecs__add_uv_scroll(
     fireball,
-    (struct ScrollUV){
+    (ScrollUV){
       .speed = (Vec2){
         0.5f - rand() / (float)RAND_MAX,
         rand() / (float)RAND_MAX
@@ -129,7 +129,7 @@ void create_rpg_explosion(
   );
   ecs__add_draw(
     fireball,
-    (struct Draw){
+    (Draw){
       .textures = FIREBALL_TEXTURE,
       .shader = &rpg_explosion_fireball_shader,
       .mesh = &LOWPOLY_SPHERE_FLAT_MESH,

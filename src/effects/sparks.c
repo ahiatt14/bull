@@ -13,7 +13,7 @@
 static void destroy_spark(
   EntityId spark,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
   ecs__mark_for_destruction(spark, ecs);
 }
@@ -30,7 +30,7 @@ void create_sparks(
   Vec3 position,
   Vec3 source_velocity,
   uint_fast8_t count,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   EntityId spark;
@@ -75,7 +75,7 @@ void create_sparks(
     ecs__add_alpha_effect(spark, ecs);
     ecs__add_draw(
       spark,
-      (struct Draw){
+      (Draw){
         .textures = SMALL_SPARK_TEXTURE,
         .shader = &DEFAULT_BILLBOARD_SHADER,
         .draw = ecs__draw_billboard
@@ -84,7 +84,7 @@ void create_sparks(
     );
     ecs__add_timeout(
       spark,
-      (struct Timeout){
+      (Timeout){
         .age = 0,
         .limit = 0.15f,
         .on_timeout = destroy_spark

@@ -6,22 +6,22 @@
 #include "ecs_types.h"
 
 void set_textures(
-  struct Entity const *const entity,
+  Entity const *const entity,
   GPU const *const gpu
 );
 
 void ecs__draw_mesh(
-  struct GameTime time,
+  GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  struct Entity const *const entity
+  Entity const *const entity
 );
 
 void ecs__draw_billboard(
-  struct GameTime time,
+  GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  struct Entity const *const entity
+  Entity const *const entity
 );
 
 #endif

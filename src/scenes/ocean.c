@@ -63,7 +63,7 @@ static Shader steam_shader;
 
 // MIST
 
-static struct ECS ecs;
+static ECS ecs;
 static EntityId mist;
 static Shader mist_shader;
 
@@ -121,7 +121,7 @@ void ocean__init(
   );
   ecs__add_uv_scroll(
     mist,
-    (struct ScrollUV){
+    (ScrollUV){
       .speed = (Vec2){ -0.01f, 0 },
       .total = (Vec2){0}
     },
@@ -130,7 +130,7 @@ void ocean__init(
   ecs__add_alpha_effect(mist, &ecs);
   ecs__add_draw(
     mist,
-    (struct Draw){
+    (Draw){
       .shader = &mist_shader,
       .textures = MIST_TEXTURE,
       .mesh = &SKY_MESH,
@@ -151,7 +151,7 @@ void ocean__init(
   );
   ecs__add_draw(
     cooling_tower,
-    (struct Draw){
+    (Draw){
       .mesh = &COOLING_TOWER_MESH,
       .textures = CONCRETE_WALL_TEXTURE,
       .shader = &FLAT_TEXTURE_SHADER,
@@ -187,7 +187,7 @@ void ocean__init(
 }
 
 void ocean__tick(
-  struct GameTime time, 
+  GameTime time, 
   Window const *const window,
   Viewport *const vwprt,
   GPU const *const gpu,

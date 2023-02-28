@@ -122,10 +122,10 @@ int main() {
   viewport__set_width(gpu.get_viewport_width(), &vwprt);
   viewport__set_height(gpu.get_viewport_height(), &vwprt);
 
-  struct scene main_menu_scene;
-  struct scene action_scene;
-  struct scene connect_gamepad;
-  struct scene ocean; 
+  Scene main_menu_scene;
+  Scene action_scene;
+  Scene connect_gamepad;
+  Scene ocean; 
   main_menu_scene.init = main_menu__init;
   main_menu_scene.tick = main_menu__tick;
   action_scene.init = action__init;
@@ -135,7 +135,7 @@ int main() {
   ocean.init = ocean__init;
   ocean.tick = ocean__tick;
 
-  struct scene const *const scenes[SCENE_COUNT] = {
+  Scene const *const scenes[SCENE_COUNT] = {
     &main_menu_scene,
     &action_scene,
     &connect_gamepad,
@@ -168,7 +168,7 @@ int main() {
     if (!paused) {
 
       static double tick_start_time;
-      static struct GameTime time;
+      static GameTime time;
 
       tick_start_time = time.sec_since_game_launch;
       time.sec_since_game_launch = window.get_seconds_since_creation();

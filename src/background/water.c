@@ -29,10 +29,10 @@ void water__copy_assets_to_gpu(
 }
 
 static void draw_water(
-  struct GameTime time,
+  GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  struct Entity const *const water
+  Entity const *const water
 ) {
 
   static Shader *shader;
@@ -60,7 +60,7 @@ static void draw_water(
 }
 
 EntityId create_water(
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
   
   EntityId waves = ecs__create_entity(ecs);
@@ -76,7 +76,7 @@ EntityId create_water(
   );
   ecs__add_draw(
     waves,
-    (struct Draw){
+    (Draw){
       .shader = &shader,
       .mesh = &OCEAN_SURFACE_MESH,
       .textures = WATER_TEXTURE,
@@ -98,7 +98,7 @@ EntityId create_water(
   );
   ecs__add_draw(
     far_water,
-    (struct Draw){
+    (Draw){
       .shader = &FLAT_TEXTURE_SHADER,
       .mesh = &QUAD,
       .textures = WATER_TEXTURE,

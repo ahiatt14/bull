@@ -18,7 +18,7 @@ static Shader muzzle_flash_blink_shader;
 static void destroy_flash(
   EntityId flash,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
   ecs__mark_for_destruction(flash, ecs);
 }
@@ -34,7 +34,7 @@ void muzzle_flashes__copy_assets_to_gpu(
 
 void create_lvl0_muzzle_flash(
   Transform const *const source_transform,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   Vec3 source_forward = space__ccw_quat_rotate(
@@ -69,7 +69,7 @@ void create_lvl0_muzzle_flash(
   );
   ecs__add_timeout(
     flash,
-    (struct Timeout){
+    (Timeout){
       .age = 0,
       .limit = 1.0f / 60.0f,
       .on_timeout = destroy_flash
@@ -78,7 +78,7 @@ void create_lvl0_muzzle_flash(
   );
   ecs__add_draw(
     flash,
-    (struct Draw){
+    (Draw){
       .textures = 0,
       .mesh = &QUAD,
       .shader = &muzzle_flash_blink_shader,

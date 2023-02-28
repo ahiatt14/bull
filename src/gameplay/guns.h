@@ -11,7 +11,7 @@ EntityId create_lvl0_cannonfire(
   Vec3 position,
   Vec3 direction,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 #endif

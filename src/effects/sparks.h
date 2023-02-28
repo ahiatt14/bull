@@ -9,7 +9,7 @@ void create_sparks(
   Vec3 position,
   Vec3 source_velocity,
   uint_fast8_t count,
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 #endif

@@ -19,7 +19,7 @@
 static void destroy_launcher(
   EntityId launcher,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
   ecs__mark_for_destruction(launcher, ecs);
 }
@@ -27,7 +27,7 @@ static void destroy_launcher(
 void (*on_player_collide_with_radial_ptr)(
   EntityId launcher,
   EntityId player,
-  struct ECS *const ecs
+  ECS *const ecs
 );
 
 // TODO: cheeky
@@ -43,7 +43,7 @@ void launchers__init_scene_callbacks(
   void (*on_player_collide_with_radial)(
     EntityId launcher,
     EntityId player,
-    struct ECS *const ecs
+    ECS *const ecs
   ),
   double (*const get_seconds_since_creation)()
 ) {
@@ -53,7 +53,7 @@ void launchers__init_scene_callbacks(
 
 EntityId create_radial_launcher(
   Vec3 position,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   EntityId launcher = ecs__create_entity(ecs);
@@ -71,7 +71,7 @@ EntityId create_radial_launcher(
   ecs__add_alpha_effect(launcher, ecs);
   ecs__add_draw(
     launcher,
-    (struct Draw){
+    (Draw){
       .textures = ARROW_TEXTURE,
       .draw = ecs__draw_mesh,
       .shader = &FLAT_TEXTURE_SHADER,
@@ -88,7 +88,7 @@ EntityId create_radial_launcher(
   static Vec2 UV_SCROLL_SPEED = (Vec2){ 0, -6 };
   ecs__add_uv_scroll(
     launcher,
-    (struct ScrollUV){
+    (ScrollUV){
       .speed = UV_SCROLL_SPEED,
       .total = scalar_x_vec2(
         get_seconds_since_creation_ptr(),
@@ -104,7 +104,7 @@ EntityId create_radial_launcher(
 static void spawn_radial_launcher(
   EntityId spawner,
   Seconds remainder,
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   static float radians;
@@ -125,7 +125,7 @@ static void spawn_radial_launcher(
 
   ecs__add_vec3lerp(
     launcher,
-    (struct Vec3Lerp){
+    (Vec3Lerp){
       .start = start,
       .end = end,
       .age = remainder,
@@ -138,14 +138,14 @@ static void spawn_radial_launcher(
 }
 
 void create_radial_launcher_spawner(
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   EntityId spawner = ecs__create_entity(ecs);
 
   ecs__add_repeat(
     spawner,
-    (struct Repeat){
+    (Repeat){
       .age = 0,
       .interval = 0.2f,
       .on_interval = spawn_radial_launcher

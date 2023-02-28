@@ -34,9 +34,9 @@ EntityId create_player(
   void (*fire_lvl0_cannon)(
     EntityId player,
     Seconds remainder,
-    struct ECS *const ecs
+    ECS *const ecs
   ),
-  struct ECS *const ecs
+  ECS *const ecs
 ) {
 
   // TODO: for now we are relying on a known constant player id of 0
@@ -51,7 +51,7 @@ EntityId create_player(
   ecs__add_radius_collider(player, 0.2f, ecs);
   ecs__add_weapons(
     player,
-    (struct Weapons){
+    (Weapons){
       .primary = fire_lvl0_cannon,
       .primary_autofire_interval = LVL0_CANNON_AUTOFIRE_INTERVAL
     },
@@ -67,7 +67,7 @@ EntityId create_player(
   );
   ecs__add_draw(
     player,
-    (struct Draw){
+    (Draw){
       .mesh = &REX_MESH,
       .textures = DARK_RUST_TEXTURE,
       .shader = &player_shader,
