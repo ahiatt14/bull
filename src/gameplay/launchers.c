@@ -11,8 +11,7 @@
 #include "constants.h"
 #include "bull_math.h"
 
-// #include "arrow_mesh.h"
-#include "lowpoly_sphere_flat_mesh.h"
+#include "arrow_mesh.h"
 
 #define START_RADIUS 10
 #define END_RADIUS 2
@@ -25,18 +24,19 @@ static void destroy_launcher(
   ecs__mark_for_destruction(launcher, ecs);
 }
 
-// TODO: I think maybe the init_scene_callback stuff should go
-// in the corresponding script files?
 void (*on_player_collide_with_radial_ptr)(
   EntityId launcher,
   EntityId player,
   struct ECS *const ecs
 );
 
+// TODO: cheeky
+double (*get_seconds_since_creation_ptr)();
+
 void launchers__copy_assets_to_gpu(
   struct GPU const *const gpu
 ) {
-  gpu->copy_static_mesh_to_gpu(&LOWPOLY_SPHERE_FLAT_MESH);
+  gpu->copy_static_mesh_to_gpu(&ARROW_MESH);
 }
 
 void launchers__init_scene_callbacks(
@@ -44,9 +44,11 @@ void launchers__init_scene_callbacks(
     EntityId launcher,
     EntityId player,
     struct ECS *const ecs
-  )
+  ),
+  double (*const get_seconds_since_creation)()
 ) {
   on_player_collide_with_radial_ptr = on_player_collide_with_radial;
+  get_seconds_since_creation_ptr = get_seconds_since_creation;
 }
 
 EntityId create_radial_launcher(
@@ -60,15 +62,7 @@ EntityId create_radial_launcher(
     launcher,
     (struct Transform){
       .position = position,
-      .scale = 0.4f
-    },
-    ecs
-  );
-  ecs__add_uv_scroll(
-    launcher,
-    (struct ScrollUV){
-      .total = (struct Vec2){0},
-      .speed = (struct Vec2){ 0, 1 }
+      .scale = 0.7f
     },
     ecs
   );
@@ -80,7 +74,7 @@ EntityId create_radial_launcher(
       .textures = ARROW_TEXTURE,
       .draw = ecs__draw_mesh,
       .shader = &FLAT_TEXTURE_SHADER,
-      .mesh = &LOWPOLY_SPHERE_FLAT_MESH
+      .mesh = &ARROW_MESH
     },
     ecs
   );
@@ -88,6 +82,18 @@ EntityId create_radial_launcher(
   ecs__add_pickupable(
     launcher,
     on_player_collide_with_radial_ptr,
+    ecs
+  );
+  static struct Vec2 UV_SCROLL_SPEED = (struct Vec2){ 0, -4 };
+  ecs__add_uv_scroll(
+    launcher,
+    (struct ScrollUV){
+      .speed = UV_SCROLL_SPEED,
+      .total = scalar_x_vec2(
+        get_seconds_since_creation_ptr(),
+        UV_SCROLL_SPEED
+      )
+    },
     ecs
   );
 

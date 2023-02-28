@@ -8,6 +8,9 @@
 #include "m3x3.h"
 #include "vector.h"
 
+#define FILTER__NEAREST 0
+#define FILTER__LINEAR 1
+
 struct Texture {
   unsigned int _impl_id;
   unsigned char *data;
@@ -63,6 +66,7 @@ struct GPU {
   );
 
   void (*copy_texture_to_gpu)(
+    uint8_t filter,
     struct Texture *const tex
   );
 

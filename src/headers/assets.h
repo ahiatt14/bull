@@ -3,7 +3,7 @@
 
 #include "tail.h"
 
-#define TEXTURE_COUNT 13
+#define TEXTURE_COUNT 14
 
 #define BLASTED_STONE_TEXTURE 1 << 0
 #define BULLETS_TEXTURE 1 << 1

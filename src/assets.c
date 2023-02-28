@@ -38,6 +38,17 @@ struct Texture* TEXTURES[TEXTURE_COUNT] = {
 void assets__copy_textures_to_gpu(
   struct GPU const *const gpu
 ) {
-  for (uint_fast8_t i = 0; i < TEXTURE_COUNT; i++)
-    gpu->copy_texture_to_gpu(TEXTURES[i]);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, &BLASTED_STONE_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, &BULLETS_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, &CLOUDS_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, &CONCRETE_WALL_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, &FIREBALL_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__LINEAR, &MIST_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, &STEAM_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__LINEAR, &WATER_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, &BLINK_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__LINEAR, &MOUNTAIN_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, &DARK_RUST_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, &SMALL_SPARK_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, &ARROW_TAIL_TEXTURE);
 }

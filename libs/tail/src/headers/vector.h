@@ -69,4 +69,9 @@ struct Vec3 scalar_x_vec3(
   struct Vec3 t
 );
 
+struct Vec2 scalar_x_vec2(
+  float s,
+  struct Vec2 t
+);
+
 #endif

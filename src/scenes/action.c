@@ -19,7 +19,7 @@
 #include "muzzle_flashes.h"
 #include "launchers.h"
 
-#include "mines.h"
+#include "drones.h"
 
 #include "rocket_mesh.h"
 
@@ -125,14 +125,14 @@ void action__init(
 
   ocean__init(window, vwprt, gpu);
 
-  launchers__copy_assets_to_gpu(gpu);
-  launchers__init_scene_callbacks(handle_radial_launcher_picked_up_by_player);
-  create_radial_launcher_spawner(&ecs);
+  // start_drone_pattern_0(&ecs);
 
-  // mines__init_scene_callbacks(handle_mine_shot_by_player);
-  // mines__copy_assets_to_gpu(gpu);
-  // mines__create_pattern_0(&ecs);
-  // mines__create_pattern_1(&ecs);
+  launchers__copy_assets_to_gpu(gpu);
+  launchers__init_scene_callbacks(
+    handle_radial_launcher_picked_up_by_player,
+    window->get_seconds_since_creation
+  );
+  create_radial_launcher_spawner(&ecs);
 }
 
 void action__tick(
