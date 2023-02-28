@@ -5,7 +5,11 @@
 
 #include "ecs.h"
 
+#define PLAYER_ID 0
+
 #define LVL0_CANNON_AUTOFIRE_INTERVAL 0.10f
+
+extern struct Shader player_shader;
 
 void player__copy_assets_to_gpu(
   struct GPU const *const gpu

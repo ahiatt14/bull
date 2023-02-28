@@ -19,10 +19,7 @@ void firing_guide__copy_assets_to_gpu(
 ) {
   guide_transform = (struct Transform){
     .position = { 0, -0.4f, 0},
-    .rotation = quaternion__create(
-      WORLDSPACE.right,
-      -(M_PI * 0.5f) 
-    ),
+    .rotation = (struct Quaternion){ (struct Vec3){0}, 0 },
     .scale = 20
   };
   guide_shader.frag_src = FIRING_GUIDE_FRAG_SRC;

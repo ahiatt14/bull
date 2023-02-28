@@ -16,7 +16,7 @@
 #include "default_vert.h"
 #include "mountain_frag.h"
 
-static struct Shader player_shader;
+struct Shader player_shader;
 
 void player__copy_assets_to_gpu(
   struct GPU const *const gpu
@@ -39,11 +39,16 @@ EntityId create_player(
   struct ECS *const ecs
 ) {
 
+  // TODO: for now we are relying on a known constant player id of 0
+  // this is only true when the player is the first entity created.
+  // once the ecs unit controller system can take a controller object
+  // then we can truly treat the player as any other entity
   EntityId player = ecs__create_entity(ecs);
 
   ecs__add_player_controller(player, ecs);
   ecs__add_look_at_center(player, ecs);
   ecs__add_velocity(player, (struct Vec3){0}, ecs);
+  ecs__add_radius_collider(player, 0.2f, ecs);
   ecs__add_weapons(
     player,
     (struct Weapons){

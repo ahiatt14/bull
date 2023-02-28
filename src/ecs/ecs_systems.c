@@ -352,7 +352,44 @@ void ecs__check_projectile_radius_collisions(
   }
 }
 
-// ecs__check_
+// TODO: not very ECS-y of us, think about pickup interaction
+void ecs__check_pickup_radius_collisions(
+  struct GameTime time,
+  struct ECS *const ecs
+) {
+
+  if (lacks_components(
+    c_PLAYER_CONTROLLER,
+    ecs->entities[PLAYER_ID].config
+  )) return;
+
+  float distance_between_positions, pickup_radius;
+
+  float player_radius = ecs->entities[PLAYER_ID].radius;
+  struct Vec3 player_position = ecs->entities[PLAYER_ID].transform.position;
+
+  for (EntityId pickup = 0; pickup < ecs->count; pickup++) {
+
+    if (lacks_components(
+      c_PICKUPABLE | c_RADIUS_COLLIDER,
+      ecs->entities[pickup].config
+    )) continue;
+
+    distance_between_positions = vec3__distance(
+      ecs->entities[pickup].transform.position,
+      player_position
+    );
+
+    pickup_radius = ecs->entities[pickup].radius;
+
+    if (
+      (distance_between_positions - pickup_radius - player_radius) >
+      (pickup_radius + player_radius)
+    ) continue;
+
+    ecs->entities[pickup].on_picked_up(pickup, PLAYER_ID, ecs);
+  }
+}
 
 // TODO: clean up the naming/organization of all these
 // ecs drawing fns

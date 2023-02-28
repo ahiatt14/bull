@@ -27,10 +27,10 @@ struct PointBuffer POINT = (struct PointBuffer){
 
 struct DrawableMesh QUAD = (struct DrawableMesh){
   .vertices = (struct Vertex[4]){
-    {{ -0.5f, -0.5f, 0 }, { 0, 1, 0 }, { 0, 0 }},
-    {{ 0.5f, -0.5f, 0 }, { 0, 1, 0 }, { 1, 0 }},
-    {{ 0.5f, 0.5f, 0 }, { 0, 1, 0 }, { 1, 1 }},
-    {{ -0.5f, 0.5f, 0 }, { 0, 1, 0 }, { 0, 1 }}
+    {{ -0.5f, 0, 0.5f }, { 0, 1, 0 }, { 0, 0 }},
+    {{ 0.5f, 0, 0.5f }, { 0, 1, 0 }, { 1, 0 }},
+    {{ 0.5f, 0, -0.5f }, { 0, 1, 0 }, { 1, 1 }},
+    {{ -0.5f, 0, -0.5f }, { 0, 1, 0 }, { 0, 1 }}
   },
   .indices = (unsigned int[6]){
     0, 1, 2,

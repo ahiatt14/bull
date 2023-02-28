@@ -34,14 +34,23 @@
 // READ ONLY
 
 static struct Transform COOLING_TOWER_TRANSFORM = {
-  .position = { -17, 0.3f, -40 },
-  .scale = 5
+  // .position = { -17, 0.3f, -40 },
+  .position = {0},
+  .scale = 20
 };
+
+static float CAM_REVOLVE_SPEED = (M_PI / 200.0f);
 
 // LOCALS
 
 static struct Gamepad gamepad;
 static struct Camera cam;
+ 
+static struct Vec3 cam_look_target = {
+  40,
+  2,
+  0
+};
 static EntityId waves;
 
 // MOUNTAINS
@@ -64,11 +73,11 @@ void ocean__init(
   struct GPU const *const gpu
 ) {
 
-  cam.position = (struct Vec3){ 0, 2, 12 };
-  cam.look_target = (struct Vec3){ 0, 2, 0 };
+  cam.position = (struct Vec3){ 25, 2, 150 };
+  cam.look_target = cam_look_target;
   cam.horizontal_fov_in_deg = 60;
   cam.near_clip_distance = 0.3f;
-  cam.far_clip_distance = 100;
+  cam.far_clip_distance = 200;
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
@@ -222,6 +231,19 @@ void ocean__tick(
   //   camera__calculate_lookat(WORLDSPACE.up, &cam);
   //   camera__calculate_perspective(vwprt, &cam);
   // }
+
+  cam.look_target = space__ccw_angle_rotate(
+    WORLDSPACE.up,
+    CAM_REVOLVE_SPEED * time.delta,
+    cam.look_target
+  );
+  cam.position = space__ccw_angle_rotate(
+    WORLDSPACE.up,
+    CAM_REVOLVE_SPEED * time.delta,
+    cam.position
+  );
+  camera__calculate_lookat(WORLDSPACE.up, &cam);
+  camera__calculate_perspective(vwprt, &cam);
 
   ecs__scroll_uvs(time, &ecs);
 

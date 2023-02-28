@@ -63,6 +63,11 @@ void ecs__check_projectile_radius_collisions(
   struct ECS *const ecs
 );
 
+void ecs__check_pickup_radius_collisions(
+  struct GameTime time,
+  struct ECS *const ecs
+);
+
 void ecs__draw(
   struct GameTime time,
   struct Camera const *const cam,

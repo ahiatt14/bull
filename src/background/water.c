@@ -91,8 +91,8 @@ EntityId create_water(
     far_water,
     (struct Transform){
       .position = (struct Vec3){0},
-      .rotation = quaternion__create(WORLDSPACE.right, -M_PI * 0.5f),
-      .scale = 200
+      .rotation = (struct Quaternion){ (struct Vec3){0}, 0 },
+      .scale = 300
     },
     ecs
   );

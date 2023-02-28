@@ -81,8 +81,6 @@ static struct ECS ecs;
 static struct Camera cam;
 static struct Gamepad gamepad;
 
-static EntityId player;
-
 static struct ControllerActions player_one_actions = {
   .on_start_autofire = on_player_start_autofire,
   .on_stop_autofire = on_player_stop_autofire
@@ -116,7 +114,7 @@ void action__init(
   muzzle_flashes__copy_assets_to_gpu(gpu);
 
   player__copy_assets_to_gpu(gpu);
-  player = create_player(
+  create_player(
     (struct Vec3){ 3, 0, 0 },
     fire_lvl0_cannon,
     &ecs
@@ -159,7 +157,7 @@ void action__tick(
     time,
     gamepad,
     &player_one_actions,
-    &ecs.entities[player]
+    &ecs.entities[PLAYER_ID]
   );
   ecs__timeout(time, &ecs);
   ecs__repeat(time, &ecs);
@@ -170,6 +168,7 @@ void action__tick(
   ecs__look_at_center(time, &ecs);
   ecs__scroll_uvs(time, &ecs);
   ecs__check_projectile_radius_collisions(time, &ecs);
+  ecs__check_pickup_radius_collisions(time, &ecs);
 
   ecs__destroy_marked_entities(&ecs);
 
@@ -178,8 +177,6 @@ void action__tick(
   ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
   gpu->clear_depth_buffer();
 
-  // TODO: apparently the bullet quad is rotated badly
-  // cuz it won't render when back faces are culled
   gpu->cull_back_faces();
 
   ecs__draw(time, &cam, gpu, &ecs);
@@ -188,7 +185,7 @@ void action__tick(
     &cam,
     gpu,
     ARENA_EDGE_RADIUS,
-    ecs.entities[player].transform.position
+    ecs.entities[PLAYER_ID].transform.position
   );
 }
 
@@ -217,18 +214,18 @@ void action__tick(
 
 void on_player_start_autofire() {
   ecs__add_repeat(
-    player,
+    PLAYER_ID,
     (struct Repeat){
       .age = 0,
-      .interval = ecs.entities[player].weapons.primary_autofire_interval,
-      .on_interval = ecs.entities[player].weapons.primary
+      .interval = ecs.entities[PLAYER_ID].weapons.primary_autofire_interval,
+      .on_interval = ecs.entities[PLAYER_ID].weapons.primary
     },
     &ecs
   );
 }
 
 void on_player_stop_autofire() {
-  ecs__remove_repeat(player, &ecs);
+  ecs__remove_repeat(PLAYER_ID, &ecs);
 }
 
 void fire_lvl0_cannon(
@@ -296,13 +293,60 @@ void on_rpg_timer_up(
   // TODO: damage radius
 }
 
+static void return_player_control(
+  EntityId player,
+  Seconds remainder,
+  struct ECS *const ecs
+) {
+  ecs__add_player_controller(player, ecs);
+  ecs->entities[player].draw.shader = &player_shader;
+  ecs__remove_vec3lerp(player, ecs);
+}
 void handle_radial_launcher_picked_up_by_player(
   EntityId launcher,
   EntityId player,
   struct ECS *const ecs
 ) {
-  printf("WE DID IT\n");
+
+  static float LAUNCH_SPEED = 40;
+
   ecs__mark_for_destruction(launcher, ecs);
+
+  struct Vec3 start_position = ecs->entities[launcher].transform.position;
+  struct Vec3 end_position = space__ccw_angle_rotate(
+    WORLDSPACE.up,
+    M_PI,
+    start_position
+  );
+
+  float travel_time =
+    vec3__distance(start_position, end_position) /
+    LAUNCH_SPEED;
+
+  ecs__remove_player_controller(player, ecs);
+  ecs->entities[player].draw.shader = &SOLID_COLOR_SHADER;
+  ecs__add_vec3lerp(
+    player,
+    (struct Vec3Lerp){
+      .start = start_position,
+      .end = end_position,
+      .age = 0,
+      .duration = travel_time,
+      .lerp = vec3__linear_lerp,
+      .on_finish = return_player_control
+    },
+    ecs
+  );
+
+  create_sparks(
+    start_position,
+    scalar_x_vec3(
+      LAUNCH_SPEED * 0.25f,
+      vec3_minus_vec3(start_position, ORIGIN)
+    ),
+    25,
+    ecs
+  );
 }
 
 void handle_mine_shot_by_player(

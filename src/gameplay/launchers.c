@@ -62,6 +62,7 @@ EntityId create_radial_launcher(
     launcher,
     (struct Transform){
       .position = position,
+      .rotation = (struct Quaternion){ (struct Vec3){0}, 0 },
       .scale = 0.7f
     },
     ecs
@@ -74,17 +75,17 @@ EntityId create_radial_launcher(
       .textures = ARROW_TEXTURE,
       .draw = ecs__draw_mesh,
       .shader = &FLAT_TEXTURE_SHADER,
-      .mesh = &ARROW_MESH
+      .mesh = &QUAD
     },
     ecs
   );
-  ecs__add_radius_collider(launcher, 0.2f, ecs);
+  ecs__add_radius_collider(launcher, 0.15f, ecs);
   ecs__add_pickupable(
     launcher,
     on_player_collide_with_radial_ptr,
     ecs
   );
-  static struct Vec2 UV_SCROLL_SPEED = (struct Vec2){ 0, -4 };
+  static struct Vec2 UV_SCROLL_SPEED = (struct Vec2){ 0, -6 };
   ecs__add_uv_scroll(
     launcher,
     (struct ScrollUV){

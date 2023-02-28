@@ -38,11 +38,6 @@ EntityId create_lvl0_cannonfire(
     rads_ccw_from_forward_around_up(direction)
   );
 
-  struct Quaternion face_quad_up = quaternion__create(
-    WORLDSPACE.right,
-    -M_PI * 0.5f
-  );
-
   struct Vec3 velocity = scalar_x_vec3(SPEED, direction);
 
   offset_z = offset_z ? 0 : 1;
@@ -57,10 +52,7 @@ EntityId create_lvl0_cannonfire(
     (struct Transform){
       .position = offset_position,
       .scale = 1.2f,
-      .rotation = quaternion__multiply(
-        point_to_target,
-        face_quad_up
-      )
+      .rotation = point_to_target
     },
     ecs
   );

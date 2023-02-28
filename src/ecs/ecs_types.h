@@ -7,9 +7,8 @@
 #include "constants.h"
 #include "tail_helpers.h"
 
-#define MAX_ENTITIES 500
+#define MAX_ENTITIES 1000
 
-// TODO: reorder these at some point
 #define c_TRANSFORM 1 << 0
 #define c_VELOCITY 1 << 1
 #define c_TIMEOUT 1 << 2
