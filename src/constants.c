@@ -19,6 +19,7 @@ Shader SOLID_COLOR_SHADER;
 Shader NORMALS_COLOR_SHADER;
 Shader NORMALS_VIS_SHADER;
 Shader DEFAULT_BILLBOARD_SHADER;
+Shader SKYBOX_SHADER;
 
 PointBuffer POINT = (PointBuffer){
   .points = (Vec3[1]){{ 0, 0, 0 }},

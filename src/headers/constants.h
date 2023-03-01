@@ -21,6 +21,7 @@ extern Shader SOLID_COLOR_SHADER;
 extern Shader NORMALS_COLOR_SHADER;
 extern Shader NORMALS_VIS_SHADER;
 extern Shader DEFAULT_BILLBOARD_SHADER;
+extern Shader SKYBOX_SHADER;
 
 extern PointBuffer POINT;
 extern DrawableMesh QUAD;

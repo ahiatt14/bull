@@ -20,6 +20,12 @@ typedef struct TAILTEXTURE {
   int channel_count;
 } Texture;
 
+typedef struct TAILCUBEMAP {
+  unsigned int _impl_id;
+  // NOTE: ordered px, nx, py, ny, pz, nz
+  Texture *sides[6];
+} Cubemap;
+
 typedef struct TAILPOINTBUFFER {
   unsigned int _impl_vbo_id;
   unsigned int _impl_vao_id;
@@ -70,6 +76,11 @@ typedef struct TAILGPU {
     Texture *const tex
   );
 
+  void (*copy_cubemap_to_gpu)(
+    uint8_t filter,
+    Cubemap *const cubemap
+  );
+
   void (*copy_shader_to_gpu)(
     Shader *const gpup
   );
@@ -79,6 +90,10 @@ typedef struct TAILGPU {
   );
   void (*select_shader)(
     Shader const *const gpup
+  );
+
+  void (*select_cubemap)(
+    Cubemap const *const cubemap
   );
   void (*select_texture)(
     Texture const *const tex

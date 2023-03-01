@@ -14,6 +14,7 @@
 
 #include "cooling_tower_mesh.h"
 
+#include "ocean_skybox.h"
 #include "water.h"
 
 #include "mountain_mesh.h"
@@ -34,7 +35,6 @@
 // READ ONLY
 
 static Transform COOLING_TOWER_TRANSFORM = {
-  // .position = { -17, 0.3f, -40 },
   .position = {0},
   .scale = 20
 };
@@ -43,27 +43,26 @@ static float CAM_REVOLVE_SPEED = (M_PI / 200.0f);
 
 // LOCALS
 
-static Gamepad gamepad;
-static Camera cam;
+static ECS ecs;
+
+// static Gamepad gamepad;
+static Camera camera;
  
-static Vec3 cam_look_target = {
+static Vec3 camera_look_target = {
   40,
   2,
   0
 };
+
+// WATER
 static EntityId waves;
 
 // MOUNTAINS
 
 // STEAM
-
-static Shader steam_shader;
-
-// SKY
+// static Shader steam_shader;
 
 // MIST
-
-static ECS ecs;
 static EntityId mist;
 static Shader mist_shader;
 
@@ -73,13 +72,13 @@ void ocean__init(
   GPU const *const gpu
 ) {
 
-  cam.position = (Vec3){ 25, 2, 150 };
-  cam.look_target = cam_look_target;
-  cam.horizontal_fov_in_deg = 60;
-  cam.near_clip_distance = 0.3f;
-  cam.far_clip_distance = 200;
-  camera__calculate_lookat(WORLDSPACE.up, &cam);
-  camera__calculate_perspective(vwprt, &cam);
+  camera.position = (Vec3){ 25, 2, 150 };
+  camera.look_target = camera_look_target;
+  camera.horizontal_fov_in_deg = 80;
+  camera.near_clip_distance = 0.3f;
+  camera.far_clip_distance = 200;
+  camera__calculate_lookat(WORLDSPACE.up, &camera);
+  camera__calculate_perspective(vwprt, &camera);
 
   // STEAM
 
@@ -100,6 +99,8 @@ void ocean__init(
 
   // SKY
 
+  ocean_skybox__copy_assets_to_gpu(gpu);
+
   // OCEAN
   water__copy_assets_to_gpu(gpu);
   waves = create_water(&ecs);
@@ -113,9 +114,9 @@ void ocean__init(
   ecs__add_transform(
     mist,
     (Transform){
-      .scale = 12,
+      .scale = 100,
       .rotation = (Quaternion){0},
-      .position = (Vec3){ 1, 4, 2 }
+      .position = (Vec3){0}
     },
     &ecs
   );
@@ -232,22 +233,27 @@ void ocean__tick(
   //   camera__calculate_perspective(vwprt, &cam);
   // }
 
-  cam.look_target = space__ccw_angle_rotate(
+  camera.look_target = space__ccw_angle_rotate(
     WORLDSPACE.up,
     CAM_REVOLVE_SPEED * time.delta,
-    cam.look_target
+    camera.look_target
   );
-  cam.position = space__ccw_angle_rotate(
+  camera.position = space__ccw_angle_rotate(
     WORLDSPACE.up,
     CAM_REVOLVE_SPEED * time.delta,
-    cam.position
+    camera.position
   );
-  camera__calculate_lookat(WORLDSPACE.up, &cam);
-  camera__calculate_perspective(vwprt, &cam);
+  camera__calculate_lookat(WORLDSPACE.up, &camera);
+  camera__calculate_perspective(vwprt, &camera);
 
   ecs__scroll_uvs(time, &ecs);
 
-  ecs__draw(time, &cam, gpu, &ecs);
+  // DRAW
+
+  draw_ocean_skybox(&camera, gpu);
+  gpu->clear_depth_buffer();
+
+  ecs__draw(time, &camera, gpu, &ecs);
 
   // STEAM
 

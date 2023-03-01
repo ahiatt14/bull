@@ -18,6 +18,13 @@
 #include "small_spark_texture.h"
 #include "arrow_texture.h"
 
+#include "ocean_sky_nx_texture.h"
+#include "ocean_sky_px_texture.h"
+#include "ocean_sky_ny_texture.h"
+#include "ocean_sky_py_texture.h"
+#include "ocean_sky_nz_texture.h"
+#include "ocean_sky_pz_texture.h"
+
 // TODO: I don't like this naming "tail_texture" vs "texture" for the bitmask vals
 Texture* TEXTURES[TEXTURE_COUNT] = {
   &BLASTED_STONE_TAIL_TEXTURE,
@@ -33,6 +40,17 @@ Texture* TEXTURES[TEXTURE_COUNT] = {
   &DARK_RUST_TAIL_TEXTURE,
   &SMALL_SPARK_TAIL_TEXTURE,
   &ARROW_TAIL_TEXTURE
+};
+
+Cubemap OCEAN_SKYBOX = {
+  .sides = (Texture*[6]){
+    &OCEAN_SKY_PX_TAIL_TEXTURE,
+    &OCEAN_SKY_NX_TAIL_TEXTURE,
+    &OCEAN_SKY_PY_TAIL_TEXTURE,
+    &OCEAN_SKY_NY_TAIL_TEXTURE,
+    &OCEAN_SKY_PZ_TAIL_TEXTURE,
+    &OCEAN_SKY_NZ_TAIL_TEXTURE
+  }
 };
 
 void assets__copy_textures_to_gpu(
@@ -51,4 +69,6 @@ void assets__copy_textures_to_gpu(
   gpu->copy_texture_to_gpu(FILTER__NEAREST, &DARK_RUST_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, &SMALL_SPARK_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, &ARROW_TAIL_TEXTURE);
+
+  gpu->copy_cubemap_to_gpu(FILTER__LINEAR, &OCEAN_SKYBOX);
 }

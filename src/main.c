@@ -15,12 +15,13 @@
 #include "default_vert.h"
 #include "billboard_geo.h"
 #include "billboard_vert.h"
+#include "skybox_frag.h"
+#include "skybox_vert.h"
 
-// #define ASPECT_RATIO (4.0f / 3.0f)
 #define ASPECT_RATIO (16.0f / 9.0f)
 #define WINDOW_HEIGHT_IN_SCREEN_COORD 900
 
-#define SCENE_COUNT 4
+#define SCENE_COUNT 1
 
 static Window window;
 static GPU gpu;
@@ -83,17 +84,10 @@ void switch_scene(uint8_t new_scene) {
 
 int main() {
 
-  // if (!window__create_fullscreen_game(
-  //   "twister",
-  //   REQUEST_VSYNC_ON,
-  //   MSAA_SAMPLES_8,
-  //   &window
-  // )) return 1;
-
   if (!window__create_fullscreen_game(
     "Bull",
     REQUEST_VSYNC_ON,
-    MSAA_SAMPLES_8,
+    MSAA_SAMPLES_16,
     &window
   )) return 1;
 
@@ -122,34 +116,24 @@ int main() {
   viewport__set_width(gpu.get_viewport_width(), &vwprt);
   viewport__set_height(gpu.get_viewport_height(), &vwprt);
 
-  Scene main_menu_scene;
+  // Scene main_menu_scene;
   Scene action_scene;
-  Scene connect_gamepad;
-  Scene ocean; 
-  main_menu_scene.init = main_menu__init;
-  main_menu_scene.tick = main_menu__tick;
+  // Scene connect_gamepad;
+  // main_menu_scene.init = main_menu__init;
+  // main_menu_scene.tick = main_menu__tick;
   action_scene.init = action__init;
   action_scene.tick = action__tick;
-  connect_gamepad.init = connect_gamepad__init;
-  connect_gamepad.tick = connect_gamepad__tick;
-  ocean.init = ocean__init;
-  ocean.tick = ocean__tick;
+  // connect_gamepad.init = connect_gamepad__init;
+  // connect_gamepad.tick = connect_gamepad__tick;
 
   Scene const *const scenes[SCENE_COUNT] = {
-    &main_menu_scene,
+    // &main_menu_scene,
     &action_scene,
-    &connect_gamepad,
-    &ocean
+    // &connect_gamepad
   };
 
-  // for (int i = 0; i < SCENE_COUNT; i++)
-  //   scenes[i]->init(&window, &vwprt, &gpu);
-
-  // current_scene = SCENE__MAIN_MENU;
-  // previous_scene = SCENE__MAIN_MENU;
-
-  // TODO: temp for testing
-  scenes[SCENE__ACTION]->init(&window, &vwprt, &gpu);
+  for (int i = 0; i < SCENE_COUNT; i++)
+    scenes[i]->init(&window, &vwprt, &gpu);
 
   // TODO: temp for testing
   current_scene = SCENE__ACTION;
@@ -220,6 +204,10 @@ void copy_shared_assets_to_gpu() {
   debugging__copy_gizmo_assets_to_gpu(&gpu);
 
   gpu.copy_points_to_gpu(&POINT);
+
+  SKYBOX_SHADER.frag_src = SKYBOX_FRAG_SRC;
+  SKYBOX_SHADER.vert_src = SKYBOX_VERT_SRC;
+  gpu.copy_shader_to_gpu(&SKYBOX_SHADER);
 
   FLAT_TEXTURE_SHADER.frag_src = FLAT_TEXTURE_FRAG_SRC;
   FLAT_TEXTURE_SHADER.vert_src = DEFAULT_VERT_SRC;

@@ -26,6 +26,8 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/default_vert.glsl vert && \
   ./${tools}validate-glsl.exe assets/glsl/solid_color_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/flat_texture_frag.glsl frag && \
+  ./${tools}validate-glsl.exe assets/glsl/skybox_frag.glsl frag && \
+  ./${tools}validate-glsl.exe assets/glsl/skybox_vert.glsl vert && \
   ./${tools}validate-glsl.exe assets/glsl/ocean_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/ocean_vert.glsl vert && \
   ./${tools}validate-glsl.exe assets/glsl/steam_frag.glsl frag && \
@@ -45,6 +47,8 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/flat_texture_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/solid_color_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/default_vert.glsl $artifact_dir && \
+  ./${tools}sourcify-glsl.exe assets/glsl/skybox_vert.glsl $artifact_dir && \
+  ./${tools}sourcify-glsl.exe assets/glsl/skybox_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/ocean_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/ocean_vert.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/steam_frag.glsl $artifact_dir && \
@@ -71,7 +75,13 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/small_spark.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/dark_rust.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/arrow.png 4 $artifact_dir && \
-  ./${tools}sourcify-png.exe assets/png/steam.png 3 $artifact_dir \
+  ./${tools}sourcify-png.exe assets/png/steam.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/ocean_sky_nx.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/ocean_sky_px.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/ocean_sky_ny.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/ocean_sky_py.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/ocean_sky_nz.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/ocean_sky_pz.png 3 $artifact_dir \
   && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_mushroom_cloud.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/exclamation.obj $artifact_dir && \
@@ -86,6 +96,7 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/sky.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/ocean_surface.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/arrow.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/cubemap.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/rex.obj $artifact_dir
 
   for filepath in ${artifact_dir}*.c; do
