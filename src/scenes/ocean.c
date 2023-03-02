@@ -29,7 +29,7 @@
 #include "billboard_geo.h"
 #include "billboard_vert.h"
 
-#include "sky_mesh.h"
+#include "mist_mesh.h"
 #include "mist_frag.h"
 
 // READ ONLY
@@ -76,7 +76,7 @@ void ocean__init(
   camera.look_target = camera_look_target;
   camera.horizontal_fov_in_deg = 80;
   camera.near_clip_distance = 0.3f;
-  camera.far_clip_distance = 200;
+  camera.far_clip_distance = 300;
   camera__calculate_lookat(WORLDSPACE.up, &camera);
   camera__calculate_perspective(vwprt, &camera);
 
@@ -109,12 +109,12 @@ void ocean__init(
   mist_shader.frag_src = MIST_FRAG_SRC;
   mist_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&mist_shader);
-  gpu->copy_static_mesh_to_gpu(&SKY_MESH);
+  gpu->copy_static_mesh_to_gpu(&MIST_MESH);
   mist = ecs__create_entity(&ecs);
   ecs__add_transform(
     mist,
     (Transform){
-      .scale = 100,
+      .scale = 200,
       .rotation = (Quaternion){0},
       .position = (Vec3){0}
     },
@@ -122,10 +122,7 @@ void ocean__init(
   );
   ecs__add_uv_scroll(
     mist,
-    (ScrollUV){
-      .speed = (Vec2){ -0.01f, 0 },
-      .total = (Vec2){0}
-    },
+    (ScrollUV){ .speed = (Vec2){ -0.01f, 0 } },
     &ecs
   );
   ecs__add_alpha_effect(mist, &ecs);
@@ -134,7 +131,7 @@ void ocean__init(
     (Draw){
       .shader = &mist_shader,
       .textures = MIST_TEXTURE,
-      .mesh = &SKY_MESH,
+      .mesh = &MIST_MESH,
       .draw = ecs__draw_mesh
     },
     &ecs

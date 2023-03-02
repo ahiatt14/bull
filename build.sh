@@ -93,7 +93,7 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/cooling_tower.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/steam_column.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/mountain.obj $artifact_dir && \
-  ./${tools}sourcify-obj.exe assets/mesh/sky.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/mist.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/ocean_surface.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/arrow.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/cubemap.obj $artifact_dir && \
