@@ -23,14 +23,20 @@ void ecs__add_player_controller(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_PLAYER_CONTROLLER;
+  if (lacks_components(
+    c_PLAYER_CONTROLLER,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_PLAYER_CONTROLLER;
 }
 
 void ecs__remove_player_controller(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_PLAYER_CONTROLLER;
+  if (has_component(
+    c_PLAYER_CONTROLLER,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_PLAYER_CONTROLLER;
 }
 
 void ecs__add_transform(
@@ -38,7 +44,10 @@ void ecs__add_transform(
   Transform t,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_TRANSFORM;
+  if (lacks_components(
+    c_TRANSFORM,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_TRANSFORM;
   ecs->entities[id].transform = t;
 }
 
@@ -46,7 +55,10 @@ void ecs__add_alpha_effect(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_ALPHA_EFFECT;
+  if (lacks_components(
+    c_ALPHA_EFFECT,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_ALPHA_EFFECT;
 }
 
 void ecs__add_draw(
@@ -54,7 +66,10 @@ void ecs__add_draw(
   Draw draw,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_DRAW;
+  if (lacks_components(
+    c_DRAW,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_DRAW;
   ecs->entities[id].draw = draw;
 }
 
@@ -62,28 +77,40 @@ void ecs__remove_draw(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_DRAW;
+  if (has_component(
+    c_DRAW,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_DRAW;
 }
 
 void ecs__add_draw_back_faces(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_DRAW_BACK_FACES;
+  if (lacks_components(
+    c_DRAW_BACK_FACES,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_DRAW_BACK_FACES;
 }
 
 void ecs__add_gravity(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_GRAVITY;
+  if (lacks_components(
+    c_GRAVITY,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_GRAVITY;
 }
 
 void ecs__remove_gravity(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_GRAVITY;
+  if (has_component(
+    c_GRAVITY,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_GRAVITY;
 }
 
 void ecs__add_velocity(
@@ -91,7 +118,10 @@ void ecs__add_velocity(
   Vec3 velocity,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_VELOCITY;
+  if (lacks_components(
+    c_VELOCITY,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_VELOCITY;
   ecs->entities[id].velocity = velocity;
 }
 
@@ -99,7 +129,10 @@ void ecs__remove_velocity(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_VELOCITY;
+  if (has_component(
+    c_VELOCITY,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_VELOCITY;
 }
 
 void ecs__add_timeout(
@@ -107,7 +140,10 @@ void ecs__add_timeout(
   Timeout t,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_TIMEOUT;
+  if (lacks_components(
+    c_TIMEOUT,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_TIMEOUT;
   ecs->entities[id].timeout = t;
 }
 
@@ -115,7 +151,10 @@ void ecs__remove_timeout(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_TIMEOUT;
+  if (has_component(
+    c_TIMEOUT,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_TIMEOUT;
 }
 
 void ecs__add_repeat(
@@ -123,7 +162,10 @@ void ecs__add_repeat(
   Repeat repeat,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_REPEAT;
+  if (lacks_components(
+    c_REPEAT,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_REPEAT;
   ecs->entities[id].repeat = repeat;
 }
 
@@ -131,7 +173,10 @@ void ecs__remove_repeat(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_REPEAT;
+  if (has_component(
+    c_REPEAT,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_REPEAT;
 }
 
 void ecs__add_vec3lerp(
@@ -139,7 +184,10 @@ void ecs__add_vec3lerp(
   Vec3Lerp vec3lerp,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_VEC3_LERP;
+  if (lacks_components(
+    c_VEC3_LERP,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_VEC3_LERP;
   ecs->entities[id].vec3lerp = vec3lerp;
 }
 
@@ -147,7 +195,10 @@ void ecs__remove_vec3lerp(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_VEC3_LERP;
+  if (has_component(
+    c_VEC3_LERP,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_VEC3_LERP;
 }
 
 void ecs__add_uv_scroll(
@@ -155,7 +206,10 @@ void ecs__add_uv_scroll(
   ScrollUV scroll_uv,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_UV_SCROLL;
+  if (lacks_components(
+    c_UV_SCROLL,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_UV_SCROLL;
   ecs->entities[id].scroll_uv = scroll_uv;
 }
 
@@ -163,7 +217,10 @@ void ecs__remove_uv_scroll(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_UV_SCROLL;
+  if (has_component(
+    c_UV_SCROLL,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_UV_SCROLL;
 }
 
 void ecs__add_revolve_lerp(
@@ -171,7 +228,10 @@ void ecs__add_revolve_lerp(
   RevolveLerp revolve_lerp,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_REVOLVE_LERP;
+  if (lacks_components(
+    c_REVOLVE_LERP,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_REVOLVE_LERP;
   ecs->entities[id].revolve_lerp = revolve_lerp;
 }
 
@@ -179,7 +239,10 @@ void ecs__remove_revolve_lerp(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_REVOLVE_LERP;
+  if (has_component(
+    c_REVOLVE_LERP,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_REVOLVE_LERP;
 }
 
 void ecs__add_rotation_lerp(
@@ -187,29 +250,41 @@ void ecs__add_rotation_lerp(
   RotationLerp rotation_lerp,
   ECS *const ecs
 ) {
+  if (lacks_components(
+    c_ROTATION_LERP,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_ROTATION_LERP;
   ecs->entities[id].rotation_lerp = rotation_lerp;
-  ecs->entities[id].config += c_ROTATION_LERP;
 }
 
 void ecs__remove_rotation_lerp(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_ROTATION_LERP;
+  if (has_component(
+    c_ROTATION_LERP,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_ROTATION_LERP;
 }
 
 void ecs__add_look_at_center(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_LOOK_AT_CENTER;
+  if (lacks_components(
+    c_LOOK_AT_CENTER,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_LOOK_AT_CENTER;
 }
 
 void ecs__remove_look_at_center(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_LOOK_AT_CENTER;
+  if (has_component(
+    c_LOOK_AT_CENTER,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_LOOK_AT_CENTER;
 }
 
 void ecs__add_weapons(
@@ -217,15 +292,21 @@ void ecs__add_weapons(
   Weapons weapons,
   ECS *const ecs
 ) {
+  if (lacks_components(
+    c_WEAPONS,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_WEAPONS;
   ecs->entities[id].weapons = weapons;
-  ecs->entities[id].config += c_WEAPONS;
 }
 
 void ecs__remove_weapons(
   EntityId id,
   ECS *const ecs  
 ) {
-  ecs->entities[id].config -= c_WEAPONS;
+  if (has_component(
+    c_WEAPONS,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_WEAPONS;
 }
 
 void ecs__add_radius_collider(
@@ -233,7 +314,10 @@ void ecs__add_radius_collider(
   float radius,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_RADIUS_COLLIDER;
+  if (lacks_components(
+    c_RADIUS_COLLIDER,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_RADIUS_COLLIDER;
   ecs->entities[id].radius = radius;
 }
 
@@ -241,7 +325,10 @@ void ecs__remove_radius_collider(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_RADIUS_COLLIDER;
+  if (has_component(
+    c_RADIUS_COLLIDER,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_RADIUS_COLLIDER;
 }
 
 void ecs__add_damagable(
@@ -253,7 +340,10 @@ void ecs__add_damagable(
   ),
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_DAMAGABLE;
+  if (lacks_components(
+    c_DAMAGABLE,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_DAMAGABLE;
   ecs->entities[id].on_hit_by_damager = on_hit_by_damager;
 }
 
@@ -261,21 +351,30 @@ void ecs__remove_damagable(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_DAMAGABLE;
+  if (has_component(
+    c_DAMAGABLE,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_DAMAGABLE;
 }
 
 void ecs__add_damager(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_DAMAGER;
+  if (lacks_components(
+    c_DAMAGER,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_DAMAGER;
 }
 
 void ecs__remove_damager(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_DAMAGER;
+  if (has_component(
+    c_DAMAGER,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_DAMAGER;
 }
 
 void ecs__add_pickupable(
@@ -287,7 +386,10 @@ void ecs__add_pickupable(
   ),
   ECS *const ecs
 ) {
-  ecs->entities[id].config += c_PICKUPABLE;
+  if (lacks_components(
+    c_PICKUPABLE,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_PICKUPABLE;
   ecs->entities[id].on_picked_up = on_picked_up;
 }
 
@@ -295,5 +397,8 @@ void ecs__remove_pickupable(
   EntityId id,
   ECS *const ecs
 ) {
-  ecs->entities[id].config -= c_PICKUPABLE;
+  if (has_component(
+    c_PICKUPABLE,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_PICKUPABLE;
 }

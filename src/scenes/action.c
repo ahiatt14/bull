@@ -18,6 +18,7 @@
 #include "sparks.h"
 #include "muzzle_flashes.h"
 #include "launchers.h"
+#include "afterimages.h"
 
 #include "drones.h"
 
@@ -30,6 +31,9 @@
 */
 
 #define ARENA_EDGE_RADIUS 8.0f
+
+// DEBUGGING
+// void log_
 
 /*
   ~~~~~~~~ENTITY ACTIONS~~~~~~~~
@@ -72,6 +76,14 @@ void on_rpg_timer_up(
 void on_player_start_autofire();
 void on_player_stop_autofire();
 
+void destroy_entity(
+  EntityId id,
+  Seconds remainder,
+  ECS *const ecs
+) {
+  ecs__mark_for_destruction(id, ecs);
+}
+
 /*
   ~~~~~~~~~LOCAL STATE~~~~~~~~~~
 */
@@ -112,6 +124,7 @@ void action__init(
 
   explosions__copy_assets_to_gpu(gpu);
   muzzle_flashes__copy_assets_to_gpu(gpu);
+  afterimages__copy_assets_to_gpu(gpu);
 
   player__copy_assets_to_gpu(gpu);
   create_player(
@@ -121,7 +134,7 @@ void action__init(
   );
   firing_guide__copy_assets_to_gpu(gpu);
 
-  ocean__init(window, vwprt, gpu);
+  // ocean__init(window, vwprt, gpu);
 
   // start_drone_pattern_0(&ecs);
 
@@ -170,16 +183,16 @@ void action__tick(
   ecs__check_projectile_radius_collisions(time, &ecs);
   ecs__check_pickup_radius_collisions(time, &ecs);
 
-  ecs__destroy_marked_entities(&ecs);
-
   // DRAW
 
-  ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
+  // ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
   gpu->clear_depth_buffer();
 
   gpu->cull_back_faces();
 
   ecs__draw(time, &cam, gpu, &ecs);
+
+  ecs__destroy_marked_entities(&ecs);
 
   firing_guide__draw(
     &cam,
@@ -298,8 +311,10 @@ static void return_player_control(
   Seconds remainder,
   ECS *const ecs
 ) {
+  ecs__remove_repeat(player, ecs);
   ecs__add_player_controller(player, ecs);
   ecs__add_look_at_center(player, ecs);
+  ecs__add_velocity(player, (Vec3){0}, ecs);
   ecs->entities[player].draw.shader = &player_shader;
   ecs__remove_vec3lerp(player, ecs);
 }
@@ -327,6 +342,7 @@ void handle_radial_launcher_picked_up_by_player(
   ecs__remove_player_controller(player, ecs);
   ecs__remove_look_at_center(player, ecs);
   ecs->entities[player].draw.shader = &SOLID_COLOR_SHADER;
+  ecs__remove_velocity(player, ecs);
   ecs__add_vec3lerp(
     player,
     (Vec3Lerp){
@@ -336,6 +352,16 @@ void handle_radial_launcher_picked_up_by_player(
       .duration = travel_time,
       .lerp = vec3__linear_lerp,
       .on_finish = return_player_control
+    },
+    ecs
+  );
+  ecs__remove_repeat(player, ecs);
+  ecs__add_repeat(
+    player,
+    (Repeat){
+      .age = 0,
+      .interval = 0.01f,
+      .on_interval = create_player_afterimage
     },
     ecs
   );

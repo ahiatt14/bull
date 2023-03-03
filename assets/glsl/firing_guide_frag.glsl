@@ -53,7 +53,8 @@ void main() {
     abs(arena_radius_worldspace - frag_radius)
   );
   
-  float total_alpha = line_alpha + player_radius_alpha + arena_radius_alpha;
+  // float total_alpha = line_alpha + player_radius_alpha + arena_radius_alpha;
+  float total_alpha = line_alpha + player_radius_alpha;
 
   FragColor = vec4(
     color + total_alpha * total_alpha,
