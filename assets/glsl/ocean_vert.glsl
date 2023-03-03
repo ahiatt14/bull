@@ -1,7 +1,7 @@
 #version 330 core
 
 #define PI 3.1415926536
-#define GRAVITY 0.4
+#define GRAVITY 0.05
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 local_normal;
@@ -86,7 +86,7 @@ void main() {
   binormal = vec3(0);
   tangent = vec3(0);
 
-  pos += gerstner_wave(normalize(vec2(1, -1)), 8, 0.2, pos);
+  pos += gerstner_wave(normalize(vec2(-1, -1)), 8, 0.2, pos);
   pos += gerstner_wave(normalize(vec2(-0.6, -0.9)), 7, 0.1, pos);
   // pos += gerstner_wave(normalize(vec2(1, 1)), 3, 0.15, pos);
 

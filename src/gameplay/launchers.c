@@ -147,7 +147,7 @@ void create_radial_launcher_spawner(
     spawner,
     (Repeat){
       .age = 0,
-      .interval = 0.2f,
+      .interval = 0.75f,
       .on_interval = spawn_radial_launcher
     },
     ecs

@@ -10,6 +10,8 @@ out vec4 FragColor;
 
 uniform sampler2D tex;
 
+uniform vec3 color = vec3(0.5);
+
 uniform vec3 light_dir = normalize(vec3(-2, -2, -8));
 uniform vec3 light_color = vec3(1);
 const float light_strength = 3;
@@ -24,8 +26,8 @@ void main() {
   vec3 material = texture(
     tex,
     fs_in.tex_uv + vec2(
-      camera_offset.x * 0.06,
-      -camera_offset.z * 0.06
+      camera_offset.x * 0.12,
+      -camera_offset.z * 0.12
     )
   ).xyz * 0.6;
 

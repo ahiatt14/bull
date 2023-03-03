@@ -39,7 +39,7 @@ static Transform COOLING_TOWER_TRANSFORM = {
   .scale = 20
 };
 
-static float CAM_REVOLVE_SPEED = (M_PI / 200.0f);
+static float CAM_REVOLVE_SPEED = (M_PI / 400.0f);
 
 // LOCALS
 
@@ -60,7 +60,7 @@ static EntityId waves;
 // MOUNTAINS
 
 // STEAM
-// static Shader steam_shader;
+static Shader steam_shader;
 
 // MIST
 static EntityId mist;
@@ -82,20 +82,41 @@ void ocean__init(
 
   // STEAM
 
-  // steam_shader.frag_src = FLAT_TEXTURE_FRAG_SRC;
-  // steam_shader.geo_src = STEAM_GEO_SRC;
-  // steam_shader.vert_src = DEFAULT_VERT_SRC;
-  // gpu->copy_shader_to_gpu(&steam_shader);
-  // gpu->copy_dynamic_mesh_to_gpu(&STEAM_COLUMN_MESH);
-  // space__create_model(
-  //   &WORLDSPACE,
-  //   &COOLING_TOWER_TRANSFORM,
-  //   &steam_local_to_world
-  // );
-  // space__create_normals_model(
-  //   &steam_local_to_world,
-  //   &steam_normals_local_to_world
-  // );
+  steam_shader.frag_src = FLAT_TEXTURE_FRAG_SRC;
+  steam_shader.geo_src = STEAM_GEO_SRC;
+  steam_shader.vert_src = DEFAULT_VERT_SRC;
+  gpu->copy_shader_to_gpu(&steam_shader);
+  gpu->copy_dynamic_mesh_to_gpu(&STEAM_COLUMN_MESH);
+  EntityId steam = ecs__create_entity(&ecs);
+  ecs__add_transform(
+    steam,
+    (Transform){
+      .scale = COOLING_TOWER_TRANSFORM.scale,
+      .position = vec3_plus_vec3(
+        COOLING_TOWER_TRANSFORM.position,
+        (Vec3){ 0, 5, 0 }
+      )
+    },
+    &ecs
+  );
+  ecs__add_uv_scroll(
+    steam,
+    (ScrollUV){
+      .speed = (Vec2){ 0.05f, 0 },
+      .total = (Vec2){0}
+    },
+    &ecs
+  );
+  ecs__add_draw(
+    steam,
+    (Draw){
+      .textures = STEAM_TEXTURE,
+      .draw = ecs__draw_mesh,
+      .shader = &steam_shader,
+      .mesh = &STEAM_COLUMN_MESH
+    },
+    &ecs
+  );
 
   // SKY
 
@@ -122,7 +143,7 @@ void ocean__init(
   );
   ecs__add_uv_scroll(
     mist,
-    (ScrollUV){ .speed = (Vec2){ -0.01f, 0 } },
+    (ScrollUV){ .speed = (Vec2){ 0, -0.01f } },
     &ecs
   );
   ecs__add_alpha_effect(mist, &ecs);
@@ -157,31 +178,6 @@ void ocean__init(
     },
     &ecs
   );
-
-  // MOUNTAINS
-
-//   mountain_transform = (Transform){
-//     .position = { 10, -0.4f, -50 },
-//     .rotation = quaternion__create(
-//       (Vec3){ 0, 1, 0 },
-//       -M_PI * 0.25f
-//     ),
-//     .scale = 13
-//   };
-//   mountain_shader.frag_src = MOUNTAIN_FRAG_SRC;
-//   mountain_shader.vert_src = DEFAULT_VERT_SRC;
-//   gpu->copy_shader_to_gpu(&mountain_shader);
-//   mesh__tile_uvs(2, 2, &MOUNTAIN_MESH);
-//   gpu->copy_static_mesh_to_gpu(&MOUNTAIN_MESH);
-//   space__create_model(
-//     &WORLDSPACE,
-//     &mountain_transform,
-//     &mountain_local_to_world
-//   );
-//   space__create_normals_model(
-//     &mountain_local_to_world,
-//     &mountain_normals_local_to_world
-//   );
 }
 
 void ocean__tick(
@@ -194,41 +190,6 @@ void ocean__tick(
 ) {
 
   // UPDATE
-
-  // for (unsigned int i = 0; i < STEAM_COLUMN_MESH.vertices_length; i++) {
-  //   STEAM_COLUMN_MESH.vertices[i].uv.x += 0.06f * time.delta;
-  // }
-  // gpu->update_gpu_mesh_data(&STEAM_COLUMN_MESH);
-
-  // TODO: DEBUGGING
-  // window->get_gamepad_input(&gamepad);
-
-  // static const float SPEED = 0.2f;
-  // static const float STICK_DEADZONE = 0.2f;
-
-  // Vec2 norm_direction =
-  //   vec2__normalize(gamepad.left_stick_direction);
-  // float magnitude =
-  //   vec2__magnitude(gamepad.left_stick_direction);
-  // Vec2 offset = {0};
-
-  // if (magnitude >= STICK_DEADZONE) {
-  //   offset.x =
-  //     SPEED * (magnitude + 1.0f) * magnitude *
-  //     norm_direction.x;
-  //   offset.y =
-  //     SPEED * (magnitude + 1.0f) * magnitude *
-  //     norm_direction.y;
-
-  //   cam.position.x += offset.x;
-  //   cam.position.z += offset.y;
-
-  //   cam.look_target.x += offset.x;
-  //   cam.look_target.z += offset.y;
-  
-  //   camera__calculate_lookat(WORLDSPACE.up, &cam);
-  //   camera__calculate_perspective(vwprt, &cam);
-  // }
 
   camera.look_target = space__ccw_angle_rotate(
     WORLDSPACE.up,
@@ -251,32 +212,4 @@ void ocean__tick(
   gpu->clear_depth_buffer();
 
   ecs__draw(time, &camera, gpu, &ecs);
-
-  // STEAM
-
-  // gpu->select_shader(&steam_shader);
-  // // gpu->select_texture(&STEAM_TAIL_TEXTURE);
-  // gpu->set_shader_float(
-  //   &steam_shader,
-  //   "speed",
-  //   -0.36f
-  // );
-  // gpu->set_shader_float(
-  //   &steam_shader,
-  //   "seconds_since_activation",
-  //   time.sec_since_game_launch
-  // );
-  // gpu->set_shader_float(
-  //   &steam_shader,
-  //   "max_altitude",
-  //   2
-  // );
-  // gpu__set_mvp(
-  //   &steam_local_to_world,
-  //   &steam_normals_local_to_world,
-  //   &cam,
-  //   &steam_shader,
-  //   gpu
-  // );
-  // gpu->draw_mesh(&STEAM_COLUMN_MESH);
 }

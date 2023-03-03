@@ -16,7 +16,7 @@ vec2 WORLD_ORIGIN = vec2(0);
 uniform vec3 player_pos_worldspace;
 uniform float arena_radius_worldspace;
 
-uniform vec3 color = vec3(0.20, 1.00, 0.33);
+uniform vec3 color = vec3(1, 0, 0);
 
 void main() {
 
@@ -26,35 +26,37 @@ void main() {
   float frag_distance_to_player_origin_line =
     abs(dot(normalize(player_to_origin_perpendicular), frag_pos_to_origin));
 
-  float frag_radius_world = distance(
+  float player_radius = distance(
+    player_pos_worldspace.xz,
+    WORLD_ORIGIN
+  );
+  float frag_radius = distance(
     fs_in.world_frag_pos.xz,
     WORLD_ORIGIN
   );
 
-  bool player_far_enough_away =
-    distance(fs_in.world_frag_pos, player_pos_worldspace) >=
-    MAX_PLAYER_TO_FRAG_DISTANCE;
+  float line_alpha = 0.9 - smoothstep(
+    0,
+    0.06,
+    frag_distance_to_player_origin_line
+  );
 
-  bool show_missile_guide =
-    frag_distance_to_player_origin_line >
-    MISSILE_GUIDE_HALF_WIDTH &&
-    frag_distance_to_player_origin_line <
-    (MISSILE_GUIDE_HALF_WIDTH + LINE_THICKNESS) &&
-    frag_radius_world <= arena_radius_worldspace;
+  float player_radius_alpha = 0.9 - smoothstep(
+    0,
+    0.06,
+    abs(frag_radius - player_radius)
+  );
 
-  bool show_radius_guide =
-    abs(frag_radius_world - arena_radius_worldspace) < 0.025 &&
-    frag_distance_to_player_origin_line > MISSILE_GUIDE_HALF_WIDTH * 2.5;
-
-  bool show_center_guide = frag_radius_world < 0.1;
-
-  // TOOD: this stinks lol
-  bool show_guide =
-    show_center_guide ||
-    (player_far_enough_away && (show_missile_guide || show_radius_guide));
+  float arena_radius_alpha = 0.9 - smoothstep(
+    0,
+    0.06,
+    abs(arena_radius_worldspace - frag_radius)
+  );
   
+  float total_alpha = line_alpha + player_radius_alpha + arena_radius_alpha;
+
   FragColor = vec4(
-    color,
-    show_guide ? 0.6 : 0.0
+    color + total_alpha * total_alpha,
+    total_alpha
   );
 }

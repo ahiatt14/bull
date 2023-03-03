@@ -11,6 +11,10 @@
 #define FILTER__NEAREST 0
 #define FILTER__LINEAR 1
 
+#define WRAP__REPEAT 0
+#define WRAP__MIRROR_REPEAT 1
+#define WRAP__CLAMP 2
+
 typedef struct TAILTEXTURE {
   unsigned int _impl_id;
   unsigned char *data;
@@ -73,6 +77,7 @@ typedef struct TAILGPU {
 
   void (*copy_texture_to_gpu)(
     uint8_t filter,
+    uint8_t wrap,
     Texture *const tex
   );
 

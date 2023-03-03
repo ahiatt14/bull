@@ -45,6 +45,7 @@ extern const Vec3 COLOR_DARK_GREY_BLUE;
 extern const Vec3 COLOR_DARK_SLATE_GREY;
 extern const Vec3 COLOR_BLOOD_RED;
 extern const Vec3 COLOR_HOT_PINK;
+extern const Vec3 COLOR_OCEAN_BLUE;
 
 extern const Vec3 ORIGIN;
 extern const CoordinateSpace WORLDSPACE;

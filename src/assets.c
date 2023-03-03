@@ -56,19 +56,19 @@ Cubemap OCEAN_SKYBOX = {
 void assets__copy_textures_to_gpu(
   GPU const *const gpu
 ) {
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, &BLASTED_STONE_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, &BULLETS_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, &CLOUDS_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, &CONCRETE_WALL_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, &FIREBALL_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__LINEAR, &MIST_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, &STEAM_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__LINEAR, &WATER_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, &BLINK_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__LINEAR, &MOUNTAIN_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, &DARK_RUST_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, &SMALL_SPARK_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, &ARROW_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &BLASTED_STONE_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &BULLETS_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &CLOUDS_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &CONCRETE_WALL_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &FIREBALL_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &MIST_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &STEAM_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &WATER_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &BLINK_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &MOUNTAIN_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &DARK_RUST_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &SMALL_SPARK_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &ARROW_TAIL_TEXTURE);
 
   gpu->copy_cubemap_to_gpu(FILTER__LINEAR, &OCEAN_SKYBOX);
 }

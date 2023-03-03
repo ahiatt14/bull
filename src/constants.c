@@ -118,6 +118,12 @@ const Vec3 COLOR_HOT_PINK = {
   146.0f / 255.0f
 };
 
+const Vec3 COLOR_OCEAN_BLUE = {
+  0,
+  0.169f,
+  0.302f
+};
+
 const Vec3 ORIGIN = { 0, 0, 0 };
 const CoordinateSpace WORLDSPACE = {
   .up = { 0, 1, 0 },
