@@ -48,9 +48,12 @@ void ecs__draw_mesh(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Entity const *const entity
+  EntityId id,
+  ECS const *const ecs
 ) {
 
+  static Entity const *entity;
+  entity = &ecs->entities[id];
   static M4x4 model;
   static M3x3 normals_model;
   static Shader *shader;
@@ -69,9 +72,12 @@ void ecs__draw_billboard(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Entity const *const entity
+  EntityId id,
+  ECS const *const ecs
 ) {
 
+  static Entity const *entity;
+  entity = &ecs->entities[id];
   static M4x4 model, rotation;
   static Shader *shader;
 

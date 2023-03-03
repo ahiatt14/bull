@@ -44,8 +44,12 @@ static void draw_waves(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Entity const *const waves
+  EntityId id,
+  ECS const *const ecs
 ) {
+
+  static Entity const *waves;
+  waves = &ecs->entities[id];
 
   static Shader *shader;
   static M4x4 model;
@@ -60,14 +64,6 @@ static void draw_waves(
 
   gpu->set_shader_vec3(shader, "camera_offset", camera->position);
 
-  // Vec3 camera_to_origin = vec3_minus_vec3(ORIGIN, camera->position);
-
-  // gpu->set_shader_vec2(
-  //   shader,
-  //   "direction",
-  //   vec2__normalize((Vec2){ camera_to_origin.x, camera_to_origin.z })
-  // );
-
   gpu->set_shader_vec3(shader, "color", COLOR_OCEAN_BLUE);
 
   gpu->draw_mesh(waves->draw.mesh);
@@ -77,9 +73,12 @@ static void draw_far_water(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Entity const *const water
+  EntityId id,
+  ECS const *const ecs
 ) {
 
+  static Entity const *water;
+  water = &ecs->entities[id];
   static Shader *shader;
   static M4x4 model;
 

@@ -78,7 +78,8 @@ typedef struct BULLDRAW {
     GameTime time,
     Camera const *const cam,
     GPU const *const gpu,
-    Entity const *const entity
+    EntityId id,
+    ECS const *const ecs
   );
 } Draw;
 

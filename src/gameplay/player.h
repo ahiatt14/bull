@@ -25,4 +25,8 @@ EntityId create_player(
   ECS *const ecs
 );
 
+EntityId create_firing_guide(
+  ECS *const ecs
+);
+
 #endif

@@ -397,8 +397,12 @@ static void draw_entity(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Entity const *const entity
+  EntityId id,
+  ECS const *const ecs
 ) {
+
+  static Entity const *entity;
+  entity = &ecs->entities[id];
 
   Shader *shader = entity->draw.shader;
 
@@ -436,7 +440,7 @@ static void draw_entity(
   gpu->set_shader_m4x4(shader, "view", &camera->lookat);
   gpu->set_shader_m4x4(shader, "projection", &camera->projection);
 
-  entity->draw.draw(time, camera, gpu, entity);
+  entity->draw.draw(time, camera, gpu, id, ecs);
 }
 
 void swap(EntityId *id0, EntityId *id1) {
@@ -483,11 +487,11 @@ void ecs__draw(
       continue;
     }
 
-    draw_entity(time, camera, gpu, &ecs->entities[id]);
+    draw_entity(time, camera, gpu, id, ecs);
   }
 
   sort_alpha_entities(alpha_entities, alpha_entity_count, ecs);
 
   for (uint_fast16_t i = 0; i < alpha_entity_count; i++)
-    draw_entity(time, camera, gpu, &ecs->entities[alpha_entities[i]]);
+    draw_entity(time, camera, gpu, alpha_entities[i], ecs);
 }

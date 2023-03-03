@@ -24,17 +24,6 @@
 
 #include "rocket_mesh.h"
 
-#include "firing_guide.h"
-
-/*
-  ~~~~~~~~~DEFINITIONS~~~~~~~~~~
-*/
-
-#define ARENA_EDGE_RADIUS 8.0f
-
-// DEBUGGING
-// void log_
-
 /*
   ~~~~~~~~ENTITY ACTIONS~~~~~~~~
 */
@@ -107,6 +96,7 @@ void action__init(
   Viewport *const vwprt,
   GPU const *const gpu
 ) {
+  
   cam.position = (Vec3){ 0, 20, 14 };
   cam.look_target = (Vec3){
     ORIGIN.x,
@@ -116,7 +106,6 @@ void action__init(
   cam.horizontal_fov_in_deg = 58;
   cam.near_clip_distance = 0.3f;
   cam.far_clip_distance = 100;
-
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
@@ -127,12 +116,13 @@ void action__init(
   afterimages__copy_assets_to_gpu(gpu);
 
   player__copy_assets_to_gpu(gpu);
+  // NOTE: player MUST be created first!
   create_player(
     (Vec3){ 3, 0, 0 },
     fire_lvl0_cannon,
     &ecs
   );
-  firing_guide__copy_assets_to_gpu(gpu);
+  create_firing_guide(&ecs);
 
   // ocean__init(window, vwprt, gpu);
 
@@ -193,13 +183,6 @@ void action__tick(
   ecs__draw(time, &cam, gpu, &ecs);
 
   ecs__destroy_marked_entities(&ecs);
-
-  firing_guide__draw(
-    &cam,
-    gpu,
-    ARENA_EDGE_RADIUS,
-    ecs.entities[PLAYER_ID].transform.position
-  );
 }
 
 // void guide_lag_update(

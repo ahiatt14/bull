@@ -5,6 +5,8 @@
 
 #define DELTA_CAP 1.0f / 30.0f
 
+#define ARENA_RADIUS 8.0f
+
 // TODO: find better place for this
 typedef struct BULLCONTROLLERACTIONS {
   void (*on_start_autofire)();

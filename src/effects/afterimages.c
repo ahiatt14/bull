@@ -35,8 +35,12 @@ static void draw_afterimage(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Entity const *const afterimage
+  EntityId id,
+  ECS const *const ecs
 ) {
+
+  static Entity const *afterimage;
+  afterimage = &ecs->entities[id];
 
   static M4x4 model;
   static M3x3 normals_model;

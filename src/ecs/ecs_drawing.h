@@ -14,14 +14,16 @@ void ecs__draw_mesh(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Entity const *const entity
+  EntityId id,
+  ECS const *const ecs
 );
 
 void ecs__draw_billboard(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Entity const *const entity
+  EntityId id,
+  ECS const *const ecs
 );
 
 #endif
