@@ -106,6 +106,11 @@ static void draw_firing_guide(
     guide->transform.scale,
     &model
   );
+  space__create_model(
+    &WORLDSPACE,
+    &guide->transform,
+    &model
+  );
 
   gpu->set_shader_m4x4(shader, "model", &model);
 
@@ -128,6 +133,7 @@ EntityId create_firing_guide(
   ecs__add_transform(
     guide,
     (Transform){
+      .position = (Vec3){ 0, -0.5f, 0 },
       .scale = 25
     },
     ecs
