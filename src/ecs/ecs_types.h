@@ -129,10 +129,11 @@ typedef struct BULLROTATIONLERP {
   );
 } RotationLerp;
 
-// TODO: AoS vs SoA blah blah blah
-// TODO: do hot/cold components?
+// TODO: I like the API this enables but it's obviously
+// terrible in terms of cache line performance
 struct BULLENTITY {
   Transform transform;
+  EntityId child; // TODO: one child now for testing
   Timeout timeout;
   Repeat repeat;
   RevolveLerp revolve_lerp;

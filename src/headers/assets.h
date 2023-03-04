@@ -13,7 +13,7 @@
 #define MIST_TEXTURE 1 << 5
 #define STEAM_TEXTURE 1 << 6
 #define WATER_TEXTURE 1 << 7
-#define BLINK_TEXTURE 1 << 8
+#define BLUE_PULSE_TEXTURE 1 << 8
 #define MOUNTAIN_TEXTURE 1 << 9
 #define DARK_RUST_TEXTURE 1 << 10
 #define SMALL_SPARK_TEXTURE 1 << 11

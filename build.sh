@@ -34,7 +34,7 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/steam_geo.glsl geo && \
   ./${tools}validate-glsl.exe assets/glsl/mushroom_cloud_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/explosion_frag.glsl frag && \
-  ./${tools}validate-glsl.exe assets/glsl/explosion_blink_frag.glsl frag && \
+  ./${tools}validate-glsl.exe assets/glsl/flash_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/firing_guide_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/billboard_vert.glsl vert && \
   ./${tools}validate-glsl.exe assets/glsl/billboard_geo.glsl geo && \
@@ -55,7 +55,7 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/steam_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/steam_geo.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/mushroom_cloud_frag.glsl $artifact_dir && \
-  ./${tools}sourcify-glsl.exe assets/glsl/explosion_blink_frag.glsl $artifact_dir && \
+  ./${tools}sourcify-glsl.exe assets/glsl/flash_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/explosion_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/firing_guide_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/billboard_vert.glsl $artifact_dir && \
@@ -68,7 +68,7 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/mountain.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/clouds.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/fireball.png 3 $artifact_dir && \
-  ./${tools}sourcify-png.exe assets/png/blink.png 4 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/blue_pulse.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/concrete_wall.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/bullets.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/blasted_stone.png 3 $artifact_dir && \

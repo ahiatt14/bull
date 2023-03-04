@@ -72,7 +72,7 @@ EntityId create_lvl0_cannonfire(
   );
   ecs__add_radius_collider(bullet, 0.15f, ecs);
   ecs__add_damager(bullet, ecs);
-  // ecs__add_alpha_effect(bullet, ecs);
+  ecs__add_alpha_effect(bullet, ecs);
   ecs__add_draw(
     bullet,
     (Draw){

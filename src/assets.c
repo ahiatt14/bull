@@ -12,7 +12,7 @@
 #include "mist_texture.h"
 #include "steam_texture.h"
 #include "water_texture.h"
-#include "blink_texture.h"
+#include "blue_pulse_texture.h"
 #include "mountain_texture.h"
 #include "dark_rust_texture.h"
 #include "small_spark_texture.h"
@@ -35,7 +35,7 @@ Texture* TEXTURES[TEXTURE_COUNT] = {
   &MIST_TAIL_TEXTURE,
   &STEAM_TAIL_TEXTURE,
   &WATER_TAIL_TEXTURE,
-  &BLINK_TAIL_TEXTURE,
+  &BLUE_PULSE_TAIL_TEXTURE,
   &MOUNTAIN_TAIL_TEXTURE,
   &DARK_RUST_TAIL_TEXTURE,
   &SMALL_SPARK_TAIL_TEXTURE,
@@ -64,7 +64,7 @@ void assets__copy_textures_to_gpu(
   gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &MIST_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &STEAM_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &WATER_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &BLINK_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &BLUE_PULSE_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &MOUNTAIN_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &DARK_RUST_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &SMALL_SPARK_TAIL_TEXTURE);

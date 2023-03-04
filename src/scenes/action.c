@@ -14,10 +14,9 @@
 #include "player.h"
 #include "guns.h"
 #include "rpg.h"
-#include "explosions.h"
+#include "flashes.h"
 #include "sparks.h"
 #include "debris.h"
-#include "muzzle_flashes.h"
 #include "launchers.h"
 #include "afterimages.h"
 
@@ -112,8 +111,7 @@ void action__init(
 
   gpu->copy_static_mesh_to_gpu(&ROCKET_MESH); // TODO: move into rpg file
 
-  explosions__copy_assets_to_gpu(gpu);
-  muzzle_flashes__copy_assets_to_gpu(gpu);
+  flashes__copy_assets_to_gpu(gpu);
   afterimages__copy_assets_to_gpu(gpu);
 
   player__copy_assets_to_gpu(gpu);
@@ -259,12 +257,12 @@ void on_rpg_deployed(
   ECS *const ecs
 ) {
 
-  propel_rpg(
-    rocket,
-    remainder,
-    on_rpg_timer_up,
-    ecs
-  );
+  // propel_rpg(
+  //   rocket,
+  //   remainder,
+  //   on_rpg_timer_up,
+  //   ecs
+  // );
 
   // create_rpg_thruster_blink(rocket, ecs);
 
@@ -274,22 +272,22 @@ void on_rpg_deployed(
 // TODO: using this standardized callback signature,
 // we can move lotsa these ancillary callbacks
 // into their parent files
-void on_rpg_timer_up(
-  EntityId rocket,
-  Seconds remainder,
-  ECS *const ecs
-) {
+// void on_rpg_timer_up(
+//   EntityId rocket,
+//   Seconds remainder,
+//   ECS *const ecs
+// ) {
 
-  ecs__mark_for_destruction(rocket, ecs);
-  create_rpg_explosion(
-    rocket,
-    cam.position, // TODO: turn cam into an ECS obj with known
-    // id (prolly 1) so systems can access it as needed
-    ecs
-  );
+//   ecs__mark_for_destruction(rocket, ecs);
+//   create_rpg_explosion(
+//     rocket,
+//     cam.position, // TODO: turn cam into an ECS obj with known
+//     // id (prolly 1) so systems can access it as needed
+//     ecs
+//   );
 
-  // TODO: damage radius
-}
+//   // TODO: damage radius
+// }
 
 static void return_player_control(
   EntityId player,
@@ -324,6 +322,11 @@ void handle_radial_launcher_picked_up_by_player(
     vec3__distance(start_position, end_position) /
     LAUNCH_SPEED;
 
+  create_blue_pulse(
+    ecs->entities[launcher].transform.position,
+    ecs
+  );
+
   ecs__remove_player_controller(player, ecs);
   ecs__remove_look_at_center(player, ecs);
   ecs->entities[player].draw.shader = &SOLID_COLOR_SHADER;
@@ -351,22 +354,15 @@ void handle_radial_launcher_picked_up_by_player(
     ecs
   );
 
-  create_sparks(
-    start_position,
-    scalar_x_vec3(
-      LAUNCH_SPEED * 0.25f,
-      vec3_minus_vec3(start_position, ORIGIN)
-    ),
-    25,
-    ecs
-  );
-
-  create_debris(
-    start_position,
-    (Vec3){0},
-    5,
-    ecs
-  );
+  // create_sparks(
+  //   start_position,
+  //   scalar_x_vec3(
+  //     LAUNCH_SPEED * 0.25f,
+  //     vec3_minus_vec3(start_position, ORIGIN)
+  //   ),
+  //   25,
+  //   ecs
+  // );
 }
 
 void handle_mine_shot_by_player(

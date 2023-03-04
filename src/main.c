@@ -163,7 +163,7 @@ int main() {
 
       window.get_gamepad_input(&gamepad);
 
-      if (button_was_released(BUTTON_START, &gamepad)) {
+      if (button_was_released(BUTTON_Y, &gamepad)) {
         break;
       }
 

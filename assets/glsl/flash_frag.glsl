@@ -15,12 +15,15 @@ uniform float limit_in_seconds;
 
 void main()
 {
-  vec4 texture_color = texture(tex, fs_in.tex_uv);
+  vec4 color = texture(tex, fs_in.tex_uv);
 
-  float fade = log(seconds_since_activation / limit_in_seconds) + 1.0;
+  float ratio = seconds_since_activation / limit_in_seconds;
 
-  if (texture_color.a < fade) discard;
+  float pulse = sin(ratio) * 5.0 - 0.5;
 
   gl_FragDepth = 0.0;
-  FragColor = texture_color;
+  FragColor = vec4(
+    color.rgb,
+    0.1
+  );
 }

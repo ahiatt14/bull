@@ -448,16 +448,36 @@ void swap(EntityId *id0, EntityId *id1) {
 void sort_alpha_entities(
   EntityId *alpha_entities,
   uint_fast16_t alpha_entity_count,
+  // Vec3 camera_position,
   ECS const *const ecs
 ) {
+
   int i, j, min_i;
+
+  // float j_distance, min_i_distance;
+  float j_y, min_i_y;
+
   for (i = 0; i < alpha_entity_count - 1; i++) {
+
     min_i = i;
-    for (j = i + 1; j < alpha_entity_count; j++)
-      if (
-        ecs->entities[alpha_entities[j]].transform.position.z <
-        ecs->entities[alpha_entities[min_i]].transform.position.z
-      ) min_i = j;
+
+    for (j = i + 1; j < alpha_entity_count; j++) {
+
+      j_y = ecs->entities[alpha_entities[j]].transform.position.y;
+      min_i_y = ecs->entities[alpha_entities[min_i]].transform.position.y;
+
+      // j_distance = vec3__distance(
+      //   ecs->entities[alpha_entities[j]].transform.position,
+      //   camera_position
+      // );
+      // min_i_distance = vec3__distance(
+      //   ecs->entities[alpha_entities[min_i]].transform.position,
+      //   camera_position
+      // );
+
+      if (j_y < min_i_y) min_i = j;
+    }
+
     swap(&alpha_entities[min_i], &alpha_entities[i]);
   }
 }
@@ -486,7 +506,12 @@ void ecs__draw(
     draw_entity(time, camera, gpu, id, ecs);
   }
 
-  sort_alpha_entities(alpha_entities, alpha_entity_count, ecs);
+  sort_alpha_entities(
+    alpha_entities,
+    alpha_entity_count,
+    // camera->position,
+    ecs
+  );
 
   for (uint_fast16_t i = 0; i < alpha_entity_count; i++)
     draw_entity(time, camera, gpu, alpha_entities[i], ecs);
