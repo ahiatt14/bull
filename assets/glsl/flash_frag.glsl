@@ -19,11 +19,9 @@ void main()
 
   float ratio = seconds_since_activation / limit_in_seconds;
 
-  float pulse = sin(ratio) * 5.0 - 0.5;
-
   gl_FragDepth = 0.0;
   FragColor = vec4(
     color.rgb,
-    0.1
+    color.a - ratio
   );
 }

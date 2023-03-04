@@ -87,7 +87,8 @@ int main() {
   if (!window__create_fullscreen_game(
     "Bull",
     REQUEST_VSYNC_ON,
-    MSAA_SAMPLES_16,
+    // MSAA_SAMPLES_16,
+    0,
     &window
   )) return 1;
 

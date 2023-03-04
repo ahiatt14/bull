@@ -77,6 +77,8 @@ void destroy_entity(
   ~~~~~~~~~LOCAL STATE~~~~~~~~~~
 */
 
+static uint8_t paused;
+
 static ECS ecs;
 
 static Camera cam;
@@ -153,25 +155,35 @@ void action__tick(
   //   return;
   // }
 
+  if (button_was_released(BUTTON_START, &gamepad))
+    paused = paused ? 0 : 1;
+
   // GAMEPLAY
 
-  ecs__control_player(
-    time,
-    gamepad,
-    &player_one_actions,
-    &ecs.entities[PLAYER_ID]
-  );
-  ecs__timeout(time, &ecs);
-  ecs__repeat(time, &ecs);
-  ecs__lerp_vec3(time, &ecs);
-  ecs__lerp_revolve(time, &ecs);
-  ecs__lerp_rotation(time, &ecs);
-  ecs__gravity(time, &ecs);
-  ecs__move(time, &ecs);
-  ecs__look_at_center(time, &ecs);
-  ecs__scroll_uvs(time, &ecs);
-  ecs__check_projectile_radius_collisions(time, &ecs);
-  ecs__check_pickup_radius_collisions(time, &ecs);
+  if (paused) {
+    
+
+
+  } else {
+    ecs__control_player(
+      time,
+      gamepad,
+      &player_one_actions,
+      &ecs.entities[PLAYER_ID]
+    );
+    ecs__timeout(time, &ecs);
+    ecs__repeat(time, &ecs);
+    ecs__lerp_vec3(time, &ecs);
+    ecs__lerp_revolve(time, &ecs);
+    ecs__lerp_rotation(time, &ecs);
+    ecs__gravity(time, &ecs);
+    ecs__move(time, &ecs);
+    ecs__look_at_center(time, &ecs);
+    ecs__scroll_uvs(time, &ecs);
+    ecs__check_projectile_radius_collisions(time, &ecs);
+    ecs__check_pickup_radius_collisions(time, &ecs);
+    ecs__destroy_marked_entities(&ecs);
+  }
 
   // DRAW
 
@@ -181,8 +193,6 @@ void action__tick(
   gpu->cull_back_faces();
 
   ecs__draw(time, &cam, gpu, &ecs);
-
-  ecs__destroy_marked_entities(&ecs);
 }
 
 // void guide_lag_update(
