@@ -241,45 +241,41 @@ void ecs__lerp_revolve(
   }
 }
 
-// Quaternion quaternion__inverse(
-//   Quaternion q
-// ) {
-//   Quaternion conjugate = {
-//     .v = vec3__negate(q.v),
-//     .w = q.w
-//   };
-//   return quaternion__multiply(conjugate, q);
-// }
+void ecs__lerp_rotation(
+  GameTime time,
+  ECS *const ecs
+) {
 
-// // static Quaternion slerp(
-// //   Quaternion q0,
-// //   Quaternion q1,
-// //   float t
-// // ) {
+  Entity *entity;
 
-// // }
+  for (EntityId id = 0; id < ecs->count; id++) {
 
-// void ecs__lerp_rotation(
-//   GameTime time,
-//   ECS *const ecs
-// ) {
-  
-//   // float ratio, rads;
+    entity = &ecs->entities[id];
 
-//   for (EntityId id = 0; id < ecs->count; id++) {
+    if (lacks_components(c_ROTATION_LERP, entity->config)) continue;
 
-//     if (lacks_components(
-//       c_ROTATION_LERP,
-//       ecs->entities[id].config
-//     )) continue;
+    entity->rotation_lerp.age += time.delta;
 
-//     ratio =
-//       ecs->entities[id].rotation_lerp.age / 
-//       ecs->entities[id].rotation_lerp.duration;
+    float ratio =
+      entity->rotation_lerp.age / 
+      entity->rotation_lerp.duration;
 
-    
-//   }
-// }
+    entity->transform.rotation =
+      quaternion__linear_slerp(
+        entity->rotation_lerp.start,
+        entity->rotation_lerp.target,
+        ratio
+      );
+
+    if (ratio < 1.0f) continue;
+
+    entity->rotation_lerp.on_finish(
+      id,
+      entity->rotation_lerp.age - entity->rotation_lerp.duration,
+      ecs
+    );
+  }
+}
 
 void ecs__look_at_center(
   GameTime time,

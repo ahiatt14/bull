@@ -122,6 +122,11 @@ typedef struct BULLROTATIONLERP {
   Quaternion target;
   Seconds age;
   Seconds duration;
+  void (*on_finish)(
+    EntityId id,
+    Seconds remainder,
+    ECS *const ecs
+  );
 } RotationLerp;
 
 // TODO: AoS vs SoA blah blah blah

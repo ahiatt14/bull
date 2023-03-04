@@ -51,7 +51,7 @@ EntityId create_lvl0_cannonfire(
     bullet,
     (Transform){
       .position = offset_position,
-      .scale = 1.5f,
+      .scale = 1,
       .rotation = point_to_target
     },
     ecs

@@ -16,6 +16,7 @@
 #include "rpg.h"
 #include "explosions.h"
 #include "sparks.h"
+#include "debris.h"
 #include "muzzle_flashes.h"
 #include "launchers.h"
 #include "afterimages.h"
@@ -166,6 +167,7 @@ void action__tick(
   ecs__repeat(time, &ecs);
   ecs__lerp_vec3(time, &ecs);
   ecs__lerp_revolve(time, &ecs);
+  ecs__lerp_rotation(time, &ecs);
   ecs__gravity(time, &ecs);
   ecs__move(time, &ecs);
   ecs__look_at_center(time, &ecs);
@@ -356,6 +358,13 @@ void handle_radial_launcher_picked_up_by_player(
       vec3_minus_vec3(start_position, ORIGIN)
     ),
     25,
+    ecs
+  );
+
+  create_debris(
+    start_position,
+    (Vec3){0},
+    5,
     ecs
   );
 }

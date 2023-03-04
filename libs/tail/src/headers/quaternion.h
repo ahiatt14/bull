@@ -24,4 +24,10 @@ void quaternion__to_m4x4(
   M4x4 *const m
 );
 
+Quaternion quaternion__linear_slerp(
+  Quaternion q0,
+  Quaternion q1,
+  float t
+);
+
 #endif
