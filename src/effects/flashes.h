@@ -10,4 +10,11 @@ EntityId create_blue_pulse(
   ECS *const ecs
 );
 
+void create_autocannon_muzzle_flash(
+  Vec3 position,
+  Vec3 direction,
+  Seconds remainder,
+  ECS *const ecs
+);
+
 #endif

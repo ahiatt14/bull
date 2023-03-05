@@ -12,9 +12,9 @@ uniform sampler2D tex;
 
 uniform vec3 color = vec3(0.5);
 
-uniform vec3 light_dir = normalize(vec3(-2, -2, -8));
+uniform vec3 light_dir = normalize(vec3(-1, -0.2, 0));
 uniform vec3 light_color = vec3(1);
-const float light_strength = 3;
+const float light_strength = 2;
 
 uniform vec3 ambient_color = vec3(1);
 const float ambient_strength = 0.1;
@@ -34,7 +34,7 @@ void main() {
   float incidence = max(dot(fs_in.normal, -light_dir), 0);
 
   vec3 light = mix(
-    incidence + light_color * light_strength,
+    incidence * 5 + light_color * light_strength,
     ambient_color * ambient_strength,
     1.0 - incidence
   );

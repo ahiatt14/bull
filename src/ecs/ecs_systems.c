@@ -493,6 +493,8 @@ void ecs__draw(
   static uint_fast16_t alpha_entity_count;
   alpha_entity_count = 0;
 
+  gpu->cull_back_faces();
+
   for (EntityId id = 0; id < ecs->count; id++) {
 
     if (lacks_components(c_DRAW, ecs->entities[id].config))
@@ -503,7 +505,12 @@ void ecs__draw(
       continue;
     }
 
+    if (has_component(c_DRAW_BACK_FACES, ecs->entities[id].config))
+      gpu->cull_no_faces();
+
     draw_entity(time, camera, gpu, id, ecs);
+
+    gpu->cull_back_faces();
   }
 
   sort_alpha_entities(
@@ -513,6 +520,15 @@ void ecs__draw(
     ecs
   );
 
-  for (uint_fast16_t i = 0; i < alpha_entity_count; i++)
+  for (uint_fast16_t i = 0; i < alpha_entity_count; i++) {
+
+    if (has_component(
+      c_DRAW_BACK_FACES,
+      ecs->entities[alpha_entities[i]].config
+    )) gpu->cull_no_faces();
+
     draw_entity(time, camera, gpu, alpha_entities[i], ecs);
+
+    gpu->cull_back_faces();
+  }
 }

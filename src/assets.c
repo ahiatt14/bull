@@ -17,6 +17,8 @@
 #include "dark_rust_texture.h"
 #include "small_spark_texture.h"
 #include "arrow_texture.h"
+#include "muzzle_flash_texture.h"
+#include "cooling_tower_light_texture.h"
 
 #include "ocean_sky_nx_texture.h"
 #include "ocean_sky_px_texture.h"
@@ -39,7 +41,9 @@ Texture* TEXTURES[TEXTURE_COUNT] = {
   &MOUNTAIN_TAIL_TEXTURE,
   &DARK_RUST_TAIL_TEXTURE,
   &SMALL_SPARK_TAIL_TEXTURE,
-  &ARROW_TAIL_TEXTURE
+  &ARROW_TAIL_TEXTURE,
+  &MUZZLE_FLASH_TAIL_TEXTURE,
+  &COOLING_TOWER_LIGHT_TAIL_TEXTURE
 };
 
 Cubemap OCEAN_SKYBOX = {
@@ -69,6 +73,8 @@ void assets__copy_textures_to_gpu(
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &DARK_RUST_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &SMALL_SPARK_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &ARROW_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__CLAMP, &MUZZLE_FLASH_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__CLAMP, &COOLING_TOWER_LIGHT_TAIL_TEXTURE);
 
-  gpu->copy_cubemap_to_gpu(FILTER__LINEAR, &OCEAN_SKYBOX);
+  gpu->copy_cubemap_to_gpu(FILTER__NEAREST, &OCEAN_SKYBOX);
 }

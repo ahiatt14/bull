@@ -78,6 +78,7 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/dark_rust.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/arrow.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/steam.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/cooling_tower_light.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/ocean_sky_nx.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/ocean_sky_px.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/ocean_sky_ny.png 3 $artifact_dir && \
@@ -93,6 +94,7 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_smooth.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/rocket.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/cooling_tower.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/muzzle_flash.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/steam_column.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/mountain.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/mist.obj $artifact_dir && \

@@ -125,7 +125,7 @@ void action__init(
   );
   create_firing_guide(&ecs);
 
-  // ocean__init(window, vwprt, gpu);
+  ocean__init(window, vwprt, gpu);
 
   // start_drone_pattern_0(&ecs);
 
@@ -187,7 +187,7 @@ void action__tick(
 
   // DRAW
 
-  // ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
+  ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
   gpu->clear_depth_buffer();
 
   gpu->cull_back_faces();
@@ -255,10 +255,15 @@ void fire_lvl0_cannon(
     ecs
   );
 
-  // create_lvl0_muzzle_flash(
-  //   &ecs->entities[weapon].transform,
-  //   ecs
-  // );
+  create_autocannon_muzzle_flash(
+    vec3_plus_vec3(
+      scalar_x_vec3(0.7f, direction),
+      ecs->entities[weapon].transform.position
+    ),
+    direction,
+    remainder,
+    ecs
+  );
 }
 
 void on_rpg_deployed(
