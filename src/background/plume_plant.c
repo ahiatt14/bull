@@ -100,7 +100,7 @@ EntityId create_plume_plant(
   ecs__add_transform(
     steam,
     (Transform){
-      .scale = 25,
+      .scale = 50,
       .position = vec3_plus_vec3(
         position,
         (Vec3){ 0, 10, 0 }
@@ -111,7 +111,7 @@ EntityId create_plume_plant(
   ecs__add_uv_scroll(
     steam,
     (ScrollUV){
-      .speed = (Vec2){ 0, 0.05f },
+      .speed = (Vec2){ 0.05f, 0.05f },
       .total = (Vec2){0}
     },
     ecs

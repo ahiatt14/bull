@@ -5,9 +5,9 @@ layout (triangle_strip, max_vertices = 3) out;
 
 uniform float total_elapsed_seconds;
 
-uniform float speed = -0.5;
-uniform float wavelength = 3.5;
-uniform float amplitude = 1;
+uniform float speed = -0.3;
+uniform float wavelength = 10;
+uniform float amplitude = 2;
 
 in VS_OUT {
   vec3 world_frag_pos;

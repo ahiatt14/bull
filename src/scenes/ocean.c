@@ -48,7 +48,7 @@ void ocean__init(
   GPU const *const gpu
 ) {
 
-  camera.position = (Vec3){ 25, 2, 120 };
+  camera.position = (Vec3){ 25, 2, 200 };
   camera.look_target = camera_look_target;
   camera.horizontal_fov_in_deg = 80;
   camera.near_clip_distance = 0.3f;
