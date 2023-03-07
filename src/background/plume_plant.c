@@ -56,7 +56,7 @@ EntityId create_plume_plant(
     cooling_tower,
     (Transform){
       .position = position,
-      .scale = 40
+      .scale = 10
     },
     ecs
   );
@@ -73,25 +73,25 @@ EntityId create_plume_plant(
 
   // LIGHTS
 
-  EntityId light = ecs__create_entity(ecs);
+  // EntityId light = ecs__create_entity(ecs);
 
-  ecs__add_transform(
-    light,
-    (Transform){
-      .position = (Vec3){ 40, 2, 0 },
-      .scale = 10
-    },
-    ecs
-  );
-  ecs__add_draw(
-    light,
-    (Draw){
-      .draw = ecs__draw_billboard,
-      .shader = &FLAT_TEXTURE_SHADER,
-      .textures = COOLING_TOWER_LIGHT_TEXTURE
-    },
-    ecs
-  );
+  // ecs__add_transform(
+  //   light,
+  //   (Transform){
+  //     .position = (Vec3){ 40, 2, 0 },
+  //     .scale = 10
+  //   },
+  //   ecs
+  // );
+  // ecs__add_draw(
+  //   light,
+  //   (Draw){
+  //     .draw = ecs__draw_billboard,
+  //     .shader = &FLAT_TEXTURE_SHADER,
+  //     .textures = COOLING_TOWER_LIGHT_TEXTURE
+  //   },
+  //   ecs
+  // );
 
   // STEAM
 
