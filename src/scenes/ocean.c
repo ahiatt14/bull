@@ -33,7 +33,7 @@ static Camera camera;
  
 static Vec3 camera_look_target = {
   40,
-  2,
+  10,
   0
 };
 
@@ -48,10 +48,10 @@ void ocean__init(
   GPU const *const gpu
 ) {
 
-  camera.position = (Vec3){ 25, 2, 200 };
+  camera.position = (Vec3){ 25, 10, 200 };
   camera.look_target = camera_look_target;
   camera.horizontal_fov_in_deg = 80;
-  camera.near_clip_distance = 0.3f;
+  camera.near_clip_distance = 1;
   camera.far_clip_distance = 300;
   camera__calculate_lookat(WORLDSPACE.up, &camera);
   camera__calculate_perspective(vwprt, &camera);
@@ -125,6 +125,7 @@ void ocean__tick(
 
   // DRAW
 
+  // TODO: can optimize here per learnopengl cubemap article
   draw_ocean_skybox(&camera, gpu);
   gpu->clear_depth_buffer();
 

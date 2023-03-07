@@ -56,7 +56,7 @@ EntityId create_plume_plant(
     cooling_tower,
     (Transform){
       .position = position,
-      .scale = 10
+      .scale = 25
     },
     ecs
   );
@@ -100,7 +100,7 @@ EntityId create_plume_plant(
   ecs__add_transform(
     steam,
     (Transform){
-      .scale = 50,
+      .scale = 250,
       .position = vec3_plus_vec3(
         position,
         (Vec3){ 0, 10, 0 }
