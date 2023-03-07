@@ -21,6 +21,8 @@ typedef struct TAILDRAWABLEMESH {
   unsigned int _impl_vbo_id;
   unsigned int _impl_ibo_id;
   unsigned int _impl_vao_id;
+  unsigned int x_tessellation_patches;
+  unsigned int y_tessellation_patches;
 } DrawableMesh;
 
 #endif

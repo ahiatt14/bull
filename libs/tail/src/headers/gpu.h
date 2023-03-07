@@ -41,10 +41,14 @@ typedef struct TAILSHADER {
   unsigned int _frag_impl_id;
   unsigned int _vert_impl_id;
   unsigned int _geo_impl_id;
+  unsigned int _tess_ctrl_impl_id;
+  unsigned int _tess_eval_impl_id;
   unsigned int _impl_id;
   const char *frag_src;
   const char *vert_src;
   const char *geo_src;
+  const char *tess_ctrl_src;
+  const char *tess_eval_src;
 } Shader;
 
 typedef struct TAILGPU {
@@ -63,16 +67,19 @@ typedef struct TAILGPU {
   void (*cull_no_faces)();  
 
   void (*copy_dynamic_mesh_to_gpu)(
-    DrawableMesh *const dm
+    DrawableMesh *const mesh
   );
   void (*copy_static_mesh_to_gpu)(
-    DrawableMesh *const dm
+    DrawableMesh *const mesh
+  );
+  void (*copy_tessellated_mesh_to_gpu)(
+    DrawableMesh *const mesh
   );
   void (*copy_points_to_gpu)(
-    PointBuffer *const pb
+    PointBuffer *const buffer
   );
   void (*update_gpu_mesh_data)(
-    DrawableMesh const *const dm
+    DrawableMesh const *const mesh
   );
 
   void (*copy_texture_to_gpu)(
@@ -87,14 +94,14 @@ typedef struct TAILGPU {
   );
 
   void (*copy_shader_to_gpu)(
-    Shader *const gpup
+    Shader *const shader
   );
   void (*copy_geo_stage_to_gpu)(
     const char *geo_src,
-    Shader *const gpup
+    Shader *const shader
   );
   void (*select_shader)(
-    Shader const *const gpup
+    Shader const *const shader
   );
 
   void (*select_cubemap)(
@@ -119,39 +126,45 @@ typedef struct TAILGPU {
   int (*get_viewport_width)();
 
   void (*set_shader_m3x3)(
-    Shader const *const gpup,
+    Shader const *const shader,
     char const *name,
     M3x3 const *const value
   );
   void (*set_shader_m4x4)(
-    Shader const *const gpup,
+    Shader const *const shader,
     char const *name,
     M4x4 const *const value
   );
   void (*set_shader_vec2)(
-    Shader const *const gpup,
+    Shader const *const shader,
     char const *name,
     Vec2 value
   );  
   void (*set_shader_vec3)(
-    Shader const *const gpup,
+    Shader const *const shader,
     char const *name,
     Vec3 value
   );
   void (*set_shader_float)(
-    Shader const *const gpup,
+    Shader const *const shader,
     char const *name,
     float value
   );
 
   void (*draw_mesh)(
-    DrawableMesh const *const dm
+    DrawableMesh const *const mesh
+  );
+  void (*draw_tessellated_mesh)(
+    DrawableMesh const *const mesh
+  );
+  void (*draw_tessellated_wireframe)(
+    DrawableMesh const *const mesh
   );
   void (*draw_wireframe)(
-    DrawableMesh const *const dm
+    DrawableMesh const *const mesh
   );
   void (*draw_points)(
-    PointBuffer const *const pb
+    PointBuffer const *const buffer
   );
 } GPU;
 
