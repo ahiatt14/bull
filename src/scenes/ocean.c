@@ -42,6 +42,14 @@ static EntityId waves;
 static EntityId mist;
 static Shader mist_shader;
 
+void draw_distant_lights(
+  GameTime time,
+  Camera const *const camera,
+  GPU const *const gpu,
+  EntityId id,
+  ECS const *const ecs
+);
+
 void ocean__init(
   Window const *const window,
   Viewport *const vwprt,
@@ -63,6 +71,34 @@ void ocean__init(
 
   plume_plant__copy_assets_to_gpu(gpu);
   plume_plant = create_plume_plant((Vec3){0}, &ecs);
+
+  for (int i = 0; i < 20; i++) {
+    
+    EntityId light = ecs__create_entity(&ecs);
+    ecs__add_transform(
+      light,
+      (Transform){
+        .position = (Vec3){
+          -1000 + i * 100,
+          20,
+          0
+        },
+        .scale = 15
+      },
+      &ecs
+    );
+    ecs__add_alpha_effect(light, &ecs);
+    ecs__add_draw(
+      light,
+      (Draw){
+        .draw = ecs__draw_billboard,
+        .textures = COOLING_TOWER_LIGHT_TEXTURE,
+        .shader = &DEFAULT_BILLBOARD_SHADER,
+        .mesh = NULL
+      },
+      &ecs
+    );
+  }
 
   // MIST
   mist_shader.frag_src = MIST_FRAG_SRC;
@@ -131,4 +167,14 @@ void ocean__tick(
   gpu->clear_depth_buffer();
 
   ecs__draw(time, &camera, gpu, &ecs);
+}
+
+void draw_distant_lights(
+  GameTime time,
+  Camera const *const camera,
+  GPU const *const gpu,
+  EntityId id,
+  ECS const *const ecs
+) {
+
 }
