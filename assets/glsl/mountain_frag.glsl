@@ -4,10 +4,10 @@ uniform sampler2D surface_texture;
 
 uniform vec3 light_dir = vec3(-1, -0.2, 0);
 uniform vec3 light_color = vec3(1, 1, 1);
-const float light_strength = 1;
+const float light_strength = 0.7;
 
 const vec3 ambient_light = vec3(1);
-const float ambient_strength = 0.5;
+const float ambient_strength = 0.2;
 
 in VS_OUT {
   vec3 world_frag_pos;

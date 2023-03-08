@@ -22,7 +22,7 @@
 
 // READ ONLY
 
-static float CAM_REVOLVE_SPEED = (M_PI / 200.0f);
+static float CAM_REVOLVE_SPEED = (M_PI / 400.0f);
 
 // LOCALS
 
@@ -32,7 +32,7 @@ static ECS ecs;
 static Camera camera;
  
 static Vec3 camera_look_target = {
-  40,
+  250,
   10,
   0
 };
@@ -48,11 +48,11 @@ void ocean__init(
   GPU const *const gpu
 ) {
 
-  camera.position = (Vec3){ 25, 10, 200 };
+  camera.position = (Vec3){ -20, 8, 2000 };
   camera.look_target = camera_look_target;
   camera.horizontal_fov_in_deg = 80;
   camera.near_clip_distance = 1;
-  camera.far_clip_distance = 300;
+  camera.far_clip_distance = 8000;
   camera__calculate_lookat(WORLDSPACE.up, &camera);
   camera__calculate_perspective(vwprt, &camera);
 
@@ -108,16 +108,17 @@ void ocean__tick(
 
   // UPDATE
 
-  camera.look_target = space__ccw_angle_rotate(
-    WORLDSPACE.up,
-    CAM_REVOLVE_SPEED * time.delta,
-    camera.look_target
-  );
-  camera.position = space__ccw_angle_rotate(
-    WORLDSPACE.up,
-    CAM_REVOLVE_SPEED * time.delta,
-    camera.position
-  );
+  // camera.look_target = space__ccw_angle_rotate(
+  //   WORLDSPACE.up,
+  //   CAM_REVOLVE_SPEED * time.delta,
+  //   camera.look_target
+  // );
+  // camera.position = space__ccw_angle_rotate(
+  //   WORLDSPACE.up,
+  //   CAM_REVOLVE_SPEED * time.delta,
+  //   camera.position
+  // );
+  camera.position.z -= 20.0f * time.delta;
   camera__calculate_lookat(WORLDSPACE.up, &camera);
   camera__calculate_perspective(vwprt, &camera);
 

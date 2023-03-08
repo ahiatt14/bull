@@ -145,6 +145,11 @@ typedef struct TAILGPU {
     char const *name,
     Vec3 value
   );
+  void (*set_shader_int)(
+    Shader const *const shader,
+    char const *name,
+    int value
+  );
   void (*set_shader_float)(
     Shader const *const shader,
     char const *name,

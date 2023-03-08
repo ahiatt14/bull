@@ -42,6 +42,35 @@ void plume_plant__copy_assets_to_gpu(
   gpu->copy_shader_to_gpu(&solid_material_shader);
 }
 
+static void draw_plume(
+  GameTime time,
+  Camera const *const camera,
+  GPU const *const gpu,
+  EntityId id,
+  ECS const *const ecs
+) {
+
+  static Entity const *plume;
+  plume = &ecs->entities[id];
+
+  static Shader *shader;
+  static M4x4 model;
+  // static M3x3 normals_model;
+
+  shader = plume->draw.shader;
+
+  space__create_model(&WORLDSPACE, &plume->transform, &model);
+  // space__create_normals_model(&model, &normals_model);
+  gpu->set_shader_m4x4(shader, "model", &model);
+  // gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
+
+  gpu->set_shader_float(shader, "wavelength", 10);
+  gpu->set_shader_float(shader, "amplitude", 0.2);
+  gpu->set_shader_float(shader, "speed", -0.01f);
+
+  gpu->draw_mesh(plume->draw.mesh);
+}
+
 EntityId create_plume_plant(
   Vec3 position,
   ECS *const ecs
@@ -51,12 +80,11 @@ EntityId create_plume_plant(
 
   EntityId cooling_tower = ecs__create_entity(ecs);
 
-  
   ecs__add_transform(
     cooling_tower,
     (Transform){
       .position = position,
-      .scale = 25
+      .scale = 200
     },
     ecs
   );
@@ -100,18 +128,15 @@ EntityId create_plume_plant(
   ecs__add_transform(
     steam,
     (Transform){
-      .scale = 250,
-      .position = vec3_plus_vec3(
-        position,
-        (Vec3){ 0, 10, 0 }
-      )
+      .scale = 150,
+      .position = position
     },
     ecs
   );
   ecs__add_uv_scroll(
     steam,
     (ScrollUV){
-      .speed = (Vec2){ 0.05f, 0.05f },
+      .speed = (Vec2){ 0, -0.01f },
       .total = (Vec2){0}
     },
     ecs
@@ -120,7 +145,7 @@ EntityId create_plume_plant(
     steam,
     (Draw){
       .textures = STEAM_TEXTURE,
-      .draw = ecs__draw_mesh,
+      .draw = draw_plume,
       .shader = &steam_shader,
       .mesh = &STEAM_COLUMN_MESH
     },

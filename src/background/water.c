@@ -14,9 +14,9 @@
 #include "waves_eval.h"
 #include "waves_frag.h"
 
-#define TESS_QUAD_VERTS_PER_EDGE 16
-#define TESS_QUAD_VERT_COUNT 512
-#define TESS_QUAD_INDEX_COUNT 4000
+#define TESS_QUAD_VERTS_PER_EDGE 40
+#define TESS_QUAD_VERT_COUNT 1600
+#define TESS_QUAD_INDEX_COUNT 10000
 
 DrawableMesh tess_quad = (DrawableMesh){
   .vertices = (Vertex[TESS_QUAD_VERT_COUNT]){0},
@@ -53,7 +53,7 @@ void water__copy_assets_to_gpu(
   waves_shader.frag_src = WAVES_FRAG_SRC;
   gpu->copy_shader_to_gpu(&waves_shader);
 
-  fill_tess_quad_data(40, TESS_QUAD_VERTS_PER_EDGE, &tess_quad);
+  fill_tess_quad_data(200, TESS_QUAD_VERTS_PER_EDGE, &tess_quad);
 
   gpu->copy_tessellated_mesh_to_gpu(&tess_quad);
 }
@@ -114,10 +114,7 @@ void fill_tess_quad_data(
         vert_row * patch_length - origin_offset
       },
       .normal = (Vec3){ 0, 1, 0 },
-      .uv = (Vec2){
-        (float)vert_row / (float)verts_per_edge,
-        (float)vert_col / (float)verts_per_edge
-      }
+      .uv = (Vec2){ vert_row, vert_col } // NOTE: this tiles a texture per patch
     };
 
     if (
@@ -154,7 +151,20 @@ static void draw_waves(
   gpu->set_shader_m4x4(shader, "model", &model);
   gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
 
+  gpu->set_shader_int(shader, "max_tess", 16);
+  gpu->set_shader_float(shader, "min_dist", 60);
+  gpu->set_shader_float(shader, "max_dist", 800);
+
+  gpu->set_shader_float(shader, "gravity", 6);
+  gpu->set_shader_vec2(shader, "wave0_dir", (Vec2){ -0.1, 0.5f });
+  gpu->set_shader_vec2(shader, "wave0_props", (Vec2){ 50, 0.3 });
+  gpu->set_shader_vec2(shader, "wave1_dir", (Vec2){ 1, -0.2f });
+  gpu->set_shader_vec2(shader, "wave1_props", (Vec2){ 35, 0.17 });
+  gpu->set_shader_vec2(shader, "wave2_dir", (Vec2){ -1, -1 });
+  gpu->set_shader_vec2(shader, "wave2_props", (Vec2){ 25, 0.11 });
+
   // gpu->set_shader_vec3(shader, "color", COLOR_OCEAN_BLUE);
 
   gpu->draw_tessellated_wireframe(waves->draw.mesh);
+  gpu->draw_tessellated_mesh(waves->draw.mesh);
 }

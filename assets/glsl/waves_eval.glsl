@@ -3,7 +3,6 @@
 layout (quads, equal_spacing, ccw) in;
 
 const float PI = 3.1415926536;
-const float GRAVITY = 9.8;
 
 uniform mat4 model = mat4(
   vec4(1.0, 0.0, 0.0, 0.0),
@@ -31,6 +30,15 @@ uniform mat3 normals_model = mat3(
 
 uniform float total_elapsed_seconds;
 
+uniform float gravity = 9.8;
+
+uniform vec2 wave0_dir = vec2(1, 0);
+uniform vec2 wave0_props = vec2(50, 0.5);
+uniform vec2 wave1_dir = vec2(1, -1);
+uniform vec2 wave1_props = vec2(40, 0.3);
+uniform vec2 wave2_dir = vec2(0, -1);
+uniform vec2 wave2_props = vec2(30, 0.2);
+
 in vec2 texture_uv[];
 
 out TES_OUT {
@@ -47,7 +55,7 @@ vec3 gerstner_wave(
   vec3 pos
 ) {
   float k = 2.0 * PI / wavelength;
-  float phase_speed = sqrt(GRAVITY / k);
+  float phase_speed = sqrt(gravity / k);
   float f =
     k * (
       dot(direction.xy, pos.xz) -
@@ -98,9 +106,9 @@ void main() {
   binormal = vec3(0);
   tangent = vec3(0);
 
-  pos += gerstner_wave(normalize(vec2(0, -1)), 50, 0.2, pos);
-  pos += gerstner_wave(normalize(vec2(-0.3, -1)), 10, 0.4, pos);
-  // pos += gerstner_wave(normalize(vec2(-1, -0.8)), 15, 0.2, pos);
+  pos += gerstner_wave(wave0_dir, wave0_props.x, wave0_props.y, pos);
+  pos += gerstner_wave(wave1_dir, wave1_props.x, wave1_props.y, pos);
+  pos += gerstner_wave(wave2_dir, wave2_props.x, wave2_props.y, pos);
 
   vec3 normal = normalize(cross(binormal, tangent));
   tes_out.normal = normals_model * normal;
