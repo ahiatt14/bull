@@ -4,10 +4,12 @@ uniform sampler2D surface_texture;
 
 uniform vec3 light_dir = vec3(0, -1, 0);
 uniform vec3 light_color = vec3(1, 1, 1);
-const float light_strength = 0.5;
+const float light_strength = 0.4;
 
 const vec3 ambient_light = vec3(1);
-const float ambient_strength = 0.4;
+const float ambient_strength = 0.3;
+
+uniform vec2 uv_scroll = vec2(0, 0);
 
 in VS_OUT {
   vec3 world_frag_pos;
@@ -19,7 +21,10 @@ out vec4 FragColor;
 
 void main()
 {
-  vec3 material = texture(surface_texture, fs_in.tex_uv).rgb;
+  vec3 material = texture(
+    surface_texture,
+    fs_in.tex_uv + uv_scroll
+  ).rgb;
 
   float incidence = max(dot(fs_in.normal, -normalize(light_dir)), 0);
 

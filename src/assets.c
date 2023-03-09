@@ -65,7 +65,7 @@ void assets__copy_textures_to_gpu(
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &CLOUDS_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &CONCRETE_WALL_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &FIREBALL_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &MIST_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &MIST_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &STEAM_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &WATER_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &BLUE_PULSE_TAIL_TEXTURE);

@@ -20,12 +20,17 @@
 
 #include "mountain_frag.h"
 
+#include "mist_frag.h"
+
 #include "cooling_tower_mesh.h"
 #include "tower_pipes_mesh.h"
+#include "tower_discharges_mesh.h"
+#include "tower_discharge_mists_mesh.h"
 
 static Shader steam_shader;
 // static Shader discharge_shader;
 static Shader solid_material_shader;
+static Shader mist_shader;
 
 void plume_plant__copy_assets_to_gpu(
   GPU const *const gpu
@@ -37,12 +42,18 @@ void plume_plant__copy_assets_to_gpu(
   gpu->copy_shader_to_gpu(&steam_shader);
   gpu->copy_dynamic_mesh_to_gpu(&STEAM_COLUMN_MESH);
 
-  gpu->copy_static_mesh_to_gpu(&COOLING_TOWER_MESH);
-  gpu->copy_static_mesh_to_gpu(&TOWER_PIPES_MESH);
-
   solid_material_shader.frag_src = MOUNTAIN_FRAG_SRC;
   solid_material_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&solid_material_shader);
+
+  mist_shader.frag_src = MIST_FRAG_SRC;
+  mist_shader.vert_src = DEFAULT_VERT_SRC;
+  gpu->copy_shader_to_gpu(&mist_shader);
+
+  gpu->copy_static_mesh_to_gpu(&COOLING_TOWER_MESH);
+  gpu->copy_static_mesh_to_gpu(&TOWER_PIPES_MESH);
+  gpu->copy_static_mesh_to_gpu(&TOWER_DISCHARGES_MESH);
+  gpu->copy_static_mesh_to_gpu(&TOWER_DISCHARGE_MISTS_MESH);
 }
 
 static void draw_plume(
@@ -118,6 +129,65 @@ EntityId create_plume_plant(
       .mesh = &TOWER_PIPES_MESH,
       .textures = DARK_RUST_TEXTURE,
       .shader = &solid_material_shader,
+      .draw = ecs__draw_mesh
+    },
+    ecs
+  );
+
+  EntityId discharges = ecs__create_entity(ecs);
+
+  ecs__add_transform(
+    discharges,
+    (Transform){
+      .position = position,
+      .scale = 150
+    },
+    ecs
+  );
+  ecs__add_uv_scroll(
+    discharges,
+    (ScrollUV){
+      .total = (Vec2){0},
+      .speed = (Vec2){ 0, 0.2f }
+    },
+    ecs
+  );
+  ecs__add_draw(
+    discharges,
+    (Draw){
+      .mesh = &TOWER_DISCHARGES_MESH,
+      .textures = WATER_TEXTURE,
+      .shader = &solid_material_shader,
+      .draw = ecs__draw_mesh
+    },
+    ecs
+  );
+
+  EntityId mists = ecs__create_entity(ecs);
+
+  ecs__add_transform(
+    mists,
+    (Transform){
+      .position = position,
+      .scale = 150
+    },
+    ecs
+  );
+  ecs__add_uv_scroll(
+    mists,
+    (ScrollUV){
+      .total = (Vec2){0},
+      .speed = (Vec2){ 0, -0.03f }
+    },
+    ecs
+  );
+  ecs__add_alpha_effect(mists, ecs);
+  ecs__add_draw(
+    mists,
+    (Draw){
+      .mesh = &TOWER_DISCHARGE_MISTS_MESH,
+      .textures = MIST_TEXTURE,
+      .shader = &mist_shader,
       .draw = ecs__draw_mesh
     },
     ecs

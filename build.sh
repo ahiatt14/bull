@@ -77,7 +77,7 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/bullets.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/blasted_stone.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/muzzle_flash.png 4 $artifact_dir && \
-  ./${tools}sourcify-png.exe assets/png/mist.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/mist.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/small_spark.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/dark_rust.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/arrow.png 4 $artifact_dir && \
@@ -105,6 +105,8 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/arrow.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/cubemap.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/tower_pipes.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/tower_discharges.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/tower_discharge_mists.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/rex.obj $artifact_dir
 
   for filepath in ${artifact_dir}*.c; do

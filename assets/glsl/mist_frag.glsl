@@ -1,20 +1,16 @@
 #version 330 core
 
-uniform sampler2D mist_texture;
-
-uniform vec2 uv_scroll;
-
-const vec3 edge_color = vec3(
-  255.0 / 255.0,
-  255.0 / 255.0,
-  30.0 / 255.0
-);
-
 in VS_OUT {
   vec3 world_frag_pos;
   vec3 normal;
   vec2 tex_uv;
 } fs_in;
+
+uniform sampler2D mist_texture;
+
+uniform vec2 uv_scroll;
+
+uniform float altitude_center = 120;
 
 out vec4 FragColor;
 
@@ -24,23 +20,16 @@ float brightness(vec3 color) {
 
 void main()
 {
-  vec3 material = texture(
+  vec4 material = texture(
     mist_texture,
     fs_in.tex_uv + uv_scroll
-  ).rgb;
+  );
 
-  float alpha = brightness(material) * brightness(material) * 3 - 1.0;
-
-  // vec3 color = mix(
-  //   material,
-  //   edge_color,
-  //   1.0 - alpha
-  // );
-
-  if (brightness(material) < 0.2) discard;
+  float abs_altitude = abs(fs_in.world_frag_pos.y - altitude_center);
+  float dist_coef = smoothstep(0, altitude_center, abs_altitude);
   
   FragColor = vec4(
-    material,
-    alpha
+    material.rgb,
+    material.a - dist_coef
   );
 }

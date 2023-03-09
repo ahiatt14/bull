@@ -20,10 +20,6 @@
 #include "mist_frag.h"
 #include "default_vert.h"
 
-// READ ONLY
-
-static float CAM_REVOLVE_SPEED = (M_PI / 400.0f);
-
 // LOCALS
 
 static ECS ecs;
@@ -56,7 +52,7 @@ void ocean__init(
   GPU const *const gpu
 ) {
 
-  camera.position = (Vec3){ -20, 8, 1200 };
+  camera.position = (Vec3){ -200, 8, 1200 };
   camera.look_target = camera_look_target;
   camera.horizontal_fov_in_deg = 80;
   camera.near_clip_distance = 1;
@@ -72,18 +68,20 @@ void ocean__init(
   plume_plant__copy_assets_to_gpu(gpu);
   plume_plant = create_plume_plant((Vec3){0}, &ecs);
 
-  for (int i = 0; i < 20; i++) {
+  EntityId light;
+  Vec3 light_position = (Vec3){ 0, 140, -500 };
+  for (int i = 0; i < 8; i++) {
     
-    EntityId light = ecs__create_entity(&ecs);
+    light = ecs__create_entity(&ecs);
     ecs__add_transform(
       light,
       (Transform){
-        .position = (Vec3){
-          -1000 + i * 100,
-          20,
-          0
-        },
-        .scale = 15
+        .position = space__ccw_angle_rotate(
+          WORLDSPACE.up,
+          ((float)i / 8.0f) * (M_PI * 2.0f),
+          light_position
+        ),
+        .scale = 10
       },
       &ecs
     );
