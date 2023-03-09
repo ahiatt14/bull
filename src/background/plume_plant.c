@@ -21,8 +21,10 @@
 #include "mountain_frag.h"
 
 #include "cooling_tower_mesh.h"
+#include "tower_pipes_mesh.h"
 
 static Shader steam_shader;
+// static Shader discharge_shader;
 static Shader solid_material_shader;
 
 void plume_plant__copy_assets_to_gpu(
@@ -36,6 +38,7 @@ void plume_plant__copy_assets_to_gpu(
   gpu->copy_dynamic_mesh_to_gpu(&STEAM_COLUMN_MESH);
 
   gpu->copy_static_mesh_to_gpu(&COOLING_TOWER_MESH);
+  gpu->copy_static_mesh_to_gpu(&TOWER_PIPES_MESH);
 
   solid_material_shader.frag_src = MOUNTAIN_FRAG_SRC;
   solid_material_shader.vert_src = DEFAULT_VERT_SRC;
@@ -84,7 +87,7 @@ EntityId create_plume_plant(
     cooling_tower,
     (Transform){
       .position = position,
-      .scale = 200
+      .scale = 150
     },
     ecs
   );
@@ -93,6 +96,27 @@ EntityId create_plume_plant(
     (Draw){
       .mesh = &COOLING_TOWER_MESH,
       .textures = CONCRETE_WALL_TEXTURE,
+      .shader = &solid_material_shader,
+      .draw = ecs__draw_mesh
+    },
+    ecs
+  );
+  
+  EntityId pipes = ecs__create_entity(ecs);
+
+  ecs__add_transform(
+    pipes,
+    (Transform){
+      .position = position,
+      .scale = 150
+    },
+    ecs
+  );
+  ecs__add_draw(
+    pipes,
+    (Draw){
+      .mesh = &TOWER_PIPES_MESH,
+      .textures = DARK_RUST_TEXTURE,
       .shader = &solid_material_shader,
       .draw = ecs__draw_mesh
     },

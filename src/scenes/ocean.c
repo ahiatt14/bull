@@ -32,8 +32,8 @@ static ECS ecs;
 static Camera camera;
  
 static Vec3 camera_look_target = {
+  200,
   250,
-  10,
   0
 };
 
@@ -56,7 +56,7 @@ void ocean__init(
   GPU const *const gpu
 ) {
 
-  camera.position = (Vec3){ -20, 8, 2000 };
+  camera.position = (Vec3){ -20, 8, 1200 };
   camera.look_target = camera_look_target;
   camera.horizontal_fov_in_deg = 80;
   camera.near_clip_distance = 1;
