@@ -68,6 +68,7 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/afterimage_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/mountain_frag.glsl $artifact_dir \
   && \
+  ./${tools}sourcify-png.exe assets/png/lcd_number.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/water.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/mountain.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/clouds.png 3 $artifact_dir && \
@@ -90,6 +91,7 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/ocean_sky_nz.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/ocean_sky_pz.png 3 $artifact_dir \
   && \
+  ./${tools}sourcify-obj.exe assets/mesh/lcd_number.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_mushroom_cloud.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/exclamation.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/bird.obj $artifact_dir && \

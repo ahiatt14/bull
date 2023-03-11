@@ -3,7 +3,7 @@
 
 #include "tail.h"
 
-#define TEXTURE_COUNT 15
+#define TEXTURE_COUNT 16
 
 #define BLASTED_STONE_TEXTURE 1 << 0
 #define BULLETS_TEXTURE 1 << 1
@@ -20,6 +20,7 @@
 #define ARROW_TEXTURE 1 << 12
 #define MUZZLE_FLASH_TEXTURE 1 << 13
 #define COOLING_TOWER_LIGHT_TEXTURE 1 << 14
+#define LCD_NUMBER_TEXTURE 1 << 15
 
 extern Cubemap OCEAN_SKYBOX;
 

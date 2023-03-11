@@ -19,6 +19,7 @@
 #include "arrow_texture.h"
 #include "muzzle_flash_texture.h"
 #include "cooling_tower_light_texture.h"
+#include "lcd_number_texture.h"
 
 #include "ocean_sky_nx_texture.h"
 #include "ocean_sky_px_texture.h"
@@ -43,7 +44,8 @@ Texture* TEXTURES[TEXTURE_COUNT] = {
   &SMALL_SPARK_TAIL_TEXTURE,
   &ARROW_TAIL_TEXTURE,
   &MUZZLE_FLASH_TAIL_TEXTURE,
-  &COOLING_TOWER_LIGHT_TAIL_TEXTURE
+  &COOLING_TOWER_LIGHT_TAIL_TEXTURE,
+  &LCD_NUMBER_TAIL_TEXTURE
 };
 
 Cubemap OCEAN_SKYBOX = {
@@ -60,6 +62,7 @@ Cubemap OCEAN_SKYBOX = {
 void assets__copy_textures_to_gpu(
   GPU const *const gpu
 ) {
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__CLAMP, &LCD_NUMBER_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &BLASTED_STONE_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &BULLETS_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &CLOUDS_TAIL_TEXTURE);

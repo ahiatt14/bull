@@ -11,6 +11,8 @@
 #include "bull_math.h"
 #include "tail_helpers.h"
 
+#include "lcd_text.h"
+
 #include "player.h"
 #include "guns.h"
 #include "rpg.h"
@@ -21,8 +23,6 @@
 #include "afterimages.h"
 
 #include "drones.h"
-
-#include "rocket_mesh.h"
 
 /*
   ~~~~~~~~ENTITY ACTIONS~~~~~~~~
@@ -84,6 +84,11 @@ static ECS ecs;
 static Camera cam;
 static Gamepad gamepad;
 
+static NumberReadout top_left_debug = {
+  .position = { 0.15, 0.8f },
+  .scale = 0.1f
+};
+
 static ControllerActions player_one_actions = {
   .on_start_autofire = on_player_start_autofire,
   .on_stop_autofire = on_player_stop_autofire
@@ -111,7 +116,7 @@ void action__init(
   camera__calculate_lookat(WORLDSPACE.up, &cam);
   camera__calculate_perspective(vwprt, &cam);
 
-  gpu->copy_static_mesh_to_gpu(&ROCKET_MESH); // TODO: move into rpg file
+  lcd_text__copy_assets_to_gpu(gpu);
 
   flashes__copy_assets_to_gpu(gpu);
   afterimages__copy_assets_to_gpu(gpu);
@@ -193,6 +198,9 @@ void action__tick(
   gpu->cull_back_faces();
 
   ecs__draw(time, &cam, gpu, &ecs);
+
+  top_left_debug.value = ecs.count;
+  lcd_text__draw_number(top_left_debug, gpu);
 }
 
 // void guide_lag_update(

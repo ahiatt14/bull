@@ -20,7 +20,7 @@ static Shader number_readout_shader;
 // TODO: add aspect ratio to position scaling
 // TODO: compress mesh based on aspect ratio toooo?
 
-void lcd_text__copy_asset_to_gpu(
+void lcd_text__copy_assets_to_gpu(
   GPU const *const gpu
 ) {
   gpu->copy_static_mesh_to_gpu(&LCD_NUMBER_MESH);
