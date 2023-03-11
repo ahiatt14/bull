@@ -230,7 +230,7 @@ void on_player_start_autofire() {
   ecs__add_repeat(
     PLAYER_ID,
     (Repeat){
-      .age = 0,
+      .age = ecs.entities[PLAYER_ID].weapons.primary_autofire_interval,
       .interval = ecs.entities[PLAYER_ID].weapons.primary_autofire_interval,
       .on_interval = ecs.entities[PLAYER_ID].weapons.primary
     },
@@ -370,7 +370,7 @@ void handle_radial_launcher_picked_up_by_player(
   ecs__add_repeat(
     player,
     (Repeat){
-      .age = 0,
+      .age = 0.01f,
       .interval = 0.01f,
       .on_interval = create_player_afterimage
     },

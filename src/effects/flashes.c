@@ -106,7 +106,7 @@ void create_autocannon_muzzle_flash(
     flash,
     (Timeout){
       .age = remainder,
-      .limit = 0.1f,
+      .limit = 0.12f,
       .on_timeout = destroy_flash
     },
     ecs
@@ -116,7 +116,7 @@ void create_autocannon_muzzle_flash(
     flash,
     (ScrollUV){
       .total = (Vec2){0},
-      .speed = (Vec2){ 7, 0 }
+      .speed = (Vec2){ 7.5f, 0 }
     },
     ecs
   );
