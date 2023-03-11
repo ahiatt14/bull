@@ -52,7 +52,7 @@ void ocean__init(
   GPU const *const gpu
 ) {
 
-  camera.position = (Vec3){ -200, 8, 1200 };
+  camera.position = (Vec3){ -200, 8, 600 };
   camera.look_target = camera_look_target;
   camera.horizontal_fov_in_deg = 80;
   camera.near_clip_distance = 1;
@@ -152,7 +152,7 @@ void ocean__tick(
   //   CAM_REVOLVE_SPEED * time.delta,
   //   camera.position
   // );
-  camera.position.z -= 20.0f * time.delta;
+  // camera.position.z -= 20.0f * time.delta;
   camera__calculate_lookat(WORLDSPACE.up, &camera);
   camera__calculate_perspective(vwprt, &camera);
 

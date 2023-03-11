@@ -345,10 +345,10 @@ void handle_radial_launcher_picked_up_by_player(
     vec3__distance(start_position, end_position) /
     LAUNCH_SPEED;
 
-  create_blue_pulse(
-    ecs->entities[launcher].transform.position,
-    ecs
-  );
+  // create_blue_pulse(
+  //   ecs->entities[launcher].transform.position,
+  //   ecs
+  // );
 
   ecs__remove_player_controller(player, ecs);
   ecs__remove_look_at_center(player, ecs);
@@ -366,16 +366,15 @@ void handle_radial_launcher_picked_up_by_player(
     },
     ecs
   );
-  ecs__remove_repeat(player, ecs);
-  ecs__add_repeat(
-    player,
-    (Repeat){
-      .age = 0.01f,
-      .interval = 0.01f,
-      .on_interval = create_player_afterimage
-    },
-    ecs
-  );
+  // ecs__add_repeat(
+  //   player,
+  //   (Repeat){
+  //     .age = 0,
+  //     .interval = 0.01f,
+  //     .on_interval = create_player_afterimage
+  //   },
+  //   ecs
+  // );
 
   // create_sparks(
   //   start_position,

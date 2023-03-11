@@ -133,7 +133,6 @@ typedef struct BULLROTATIONLERP {
 // terrible in terms of cache line performance
 struct BULLENTITY {
   Transform transform;
-  EntityId child; // TODO: one child now for testing
   Timeout timeout;
   Repeat repeat;
   RevolveLerp revolve_lerp;

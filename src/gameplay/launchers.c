@@ -108,7 +108,7 @@ static void spawn_radial_launcher(
 ) {
 
   static float radians;
-  radians += M_PI * 0.1f;
+  radians += M_PI * 0.05f;
 
   Vec3 start = space__ccw_angle_rotate(
     WORLDSPACE.up,
@@ -129,7 +129,7 @@ static void spawn_radial_launcher(
       .start = start,
       .end = end,
       .age = remainder,
-      .duration = 7.0, // TODO: base on distance spawned at
+      .duration = 1000.0, // TODO: base on distance spawned at
       .lerp = vec3__linear_lerp,
       .on_finish = destroy_launcher
     },
@@ -143,13 +143,17 @@ void create_radial_launcher_spawner(
 
   EntityId spawner = ecs__create_entity(ecs);
 
-  ecs__add_repeat(
-    spawner,
-    (Repeat){
-      .age = 0,
-      .interval = 0.75f,
-      .on_interval = spawn_radial_launcher
-    },
-    ecs
-  );
+  // ecs__add_repeat(
+  //   spawner,
+  //   (Repeat){
+  //     .age = 0,
+  //     .interval = 0.75f,
+  //     .on_interval = spawn_radial_launcher
+  //   },
+  //   ecs
+  // );
+
+  for (int i = 0; i < 16; i++) {
+    spawn_radial_launcher(0, 0, ecs);
+  }
 }

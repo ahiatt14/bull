@@ -15,17 +15,6 @@ uint_fast8_t has_component(
   ComponentConfig entity_configuration
 );
 
-void ecs__add_child(
-  EntityId parent,
-  EntityId child,
-  ECS *const ecs
-);
-
-void ecs__remove_child(
-  EntityId parent,
-  ECS *const ecs
-);
-
 void ecs__add_player_controller(
   EntityId id,
   ECS *const ecs
