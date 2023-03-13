@@ -345,10 +345,10 @@ void handle_radial_launcher_picked_up_by_player(
     vec3__distance(start_position, end_position) /
     LAUNCH_SPEED;
 
-  // create_blue_pulse(
-  //   ecs->entities[launcher].transform.position,
-  //   ecs
-  // );
+  create_blue_pulse(
+    ecs->entities[launcher].transform.position,
+    ecs
+  );
 
   ecs__remove_player_controller(player, ecs);
   ecs__remove_look_at_center(player, ecs);
@@ -366,25 +366,15 @@ void handle_radial_launcher_picked_up_by_player(
     },
     ecs
   );
-  // ecs__add_repeat(
-  //   player,
-  //   (Repeat){
-  //     .age = 0,
-  //     .interval = 0.01f,
-  //     .on_interval = create_player_afterimage
-  //   },
-  //   ecs
-  // );
-
-  // create_sparks(
-  //   start_position,
-  //   scalar_x_vec3(
-  //     LAUNCH_SPEED * 0.25f,
-  //     vec3_minus_vec3(start_position, ORIGIN)
-  //   ),
-  //   25,
-  //   ecs
-  // );
+  ecs__add_repeat(
+    player,
+    (Repeat){
+      .age = 0,
+      .interval = 0.01f,
+      .on_interval = create_player_afterimage
+    },
+    ecs
+  );
 }
 
 void handle_mine_shot_by_player(

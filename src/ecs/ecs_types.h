@@ -159,8 +159,8 @@ struct BULLENTITY {
 struct BULLECS {
   Entity entities[MAX_ENTITIES];
   uint_fast16_t count;
-  uint_fast16_t entities_to_destroy[MAX_ENTITIES];
-  uint_fast16_t entities_to_destroy_count;
+  uint_fast16_t doomed_entities[MAX_ENTITIES];
+  uint_fast16_t doomed_entity_count;
 };
 
 #endif
