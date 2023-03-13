@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "tail.h"
 
 #include "ecs_types.h"
@@ -49,6 +51,66 @@ void ecs__add_transform(
     ecs->entities[id].config
   )) ecs->entities[id].config += c_TRANSFORM;
   ecs->entities[id].transform = t;
+}
+
+void ecs__add_parent_relationship(
+  EntityId parent,
+  EntityId child,
+  ECS *const ecs
+) {
+
+  if (lacks_components(
+    c_HAS_PARENT,
+    ecs->entities[child].config
+  )) ecs->entities[child].config += c_HAS_PARENT;
+
+  if (lacks_components(
+    c_HAS_CHILDREN,
+    ecs->entities[parent].config
+  )) ecs->entities[parent].config += c_HAS_CHILDREN;
+
+  uint_fast8_t original_child_count =
+    ecs->entities[parent].hierarchy.child_count;
+
+  ecs->entities[parent].hierarchy.child_count = original_child_count + 1;
+  ecs->entities[parent].hierarchy.children[original_child_count] = child;
+  ecs->entities[child].hierarchy.parent = parent;
+}
+
+void ecs__remove_parent_relationship(
+  EntityId child,
+  ECS *const ecs
+) {
+
+  if (has_component(
+    c_HAS_PARENT,
+    ecs->entities[child].config
+  )) ecs->entities[child].config -= c_HAS_PARENT;
+
+  EntityId parent = ecs->entities[child].hierarchy.parent;
+
+  static EntityId remaining_children[MAX_DIRECT_CHILDREN];
+  uint_fast8_t remaining_child_count =
+    ecs->entities[parent].hierarchy.child_count - 1;
+
+  if (remaining_child_count == 0) {
+    ecs->entities[parent].config -= c_HAS_CHILDREN;
+    return;
+  }
+
+  for (
+    uint_fast8_t i = 0;
+    i < ecs->entities[parent].hierarchy.child_count;
+    i++
+  ) if (ecs->entities[parent].hierarchy.children[i] != child)
+    remaining_children[--remaining_child_count] =
+      ecs->entities[parent].hierarchy.children[i];
+
+  memcpy(
+    ecs->entities[parent].hierarchy.children,
+    remaining_children,
+    sizeof(EntityId) * MAX_DIRECT_CHILDREN
+  );
 }
 
 void ecs__add_alpha_effect(

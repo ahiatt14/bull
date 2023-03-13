@@ -31,6 +31,17 @@ void ecs__add_transform(
   ECS *const ecs
 );
 
+void ecs__add_parent_relationship(
+  EntityId parent,
+  EntityId child,
+  ECS *const ecs
+);
+
+void ecs__remove_parent_relationship(
+  EntityId child,
+  ECS *const ecs
+) ;
+
 void ecs__add_alpha_effect(
   EntityId id,
   ECS *const ecs

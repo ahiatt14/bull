@@ -35,6 +35,7 @@ static void draw_afterimage(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
+  Transform const *const total_transform,
   EntityId id,
   ECS const *const ecs
 ) {
@@ -48,7 +49,7 @@ static void draw_afterimage(
 
   shader = afterimage->draw.shader;
 
-  space__create_model(&WORLDSPACE, &afterimage->transform, &model);
+  space__create_model(&WORLDSPACE, total_transform, &model);
   gpu->set_shader_m4x4(shader, "model", &model);
   space__create_normals_model(&model, &normals_model);
   gpu->set_shader_m3x3(shader, "normals_model", &normals_model);

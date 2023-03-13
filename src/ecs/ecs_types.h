@@ -8,6 +8,7 @@
 #include "tail_helpers.h"
 
 #define MAX_ENTITIES 1000
+#define MAX_DIRECT_CHILDREN 6
 
 #define c_TRANSFORM 1 << 0
 #define c_VELOCITY 1 << 1
@@ -28,6 +29,8 @@
 #define c_DAMAGABLE 1 << 16
 #define c_PICKUPABLE 1 << 17
 #define c_ALPHA_EFFECT 1 << 18
+#define c_HAS_PARENT 1 << 19
+#define c_HAS_CHILDREN 1 << 20
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast32_t ComponentConfig;
@@ -78,6 +81,7 @@ typedef struct BULLDRAW {
     GameTime time,
     Camera const *const cam,
     GPU const *const gpu,
+    Transform const *const total_transform,
     EntityId id,
     ECS const *const ecs
   );
@@ -129,10 +133,17 @@ typedef struct BULLROTATIONLERP {
   );
 } RotationLerp;
 
+typedef struct BULLHIERARCHY {
+  EntityId parent;
+  EntityId children[MAX_DIRECT_CHILDREN];
+  uint_fast8_t child_count;
+} Hierarchy;
+
 // TODO: I like the API this enables but it's obviously
 // terrible in terms of cache line performance
 struct BULLENTITY {
   Transform transform;
+  Hierarchy hierarchy;
   Timeout timeout;
   Repeat repeat;
   RevolveLerp revolve_lerp;

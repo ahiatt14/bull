@@ -5,15 +5,19 @@
 
 #include "ecs_types.h"
 
-void set_textures(
-  Entity const *const entity,
-  GPU const *const gpu
+void ecs__prepare_entity_draw(
+  GameTime time,
+  Camera const *const camera,
+  GPU const *const gpu,
+  EntityId id,
+  ECS const *const ecs
 );
 
 void ecs__draw_mesh(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
+  Transform const *const total_transform,
   EntityId id,
   ECS const *const ecs
 );
@@ -22,7 +26,14 @@ void ecs__draw_billboard(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
+  Transform const *const total_transform,
   EntityId id,
+  ECS const *const ecs
+);
+
+void sort_alpha_entities(
+  EntityId *alpha_entities,
+  uint_fast16_t alpha_entity_count,
   ECS const *const ecs
 );
 

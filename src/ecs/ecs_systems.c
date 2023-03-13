@@ -348,12 +348,12 @@ void ecs__check_projectile_radius_collisions(
   }
 }
 
-// TODO: not very ECS-y of us, think about pickup interaction
 void ecs__check_pickup_radius_collisions(
   GameTime time,
   ECS *const ecs
 ) {
 
+  // TODO: not very ECS-y of us, think about pickup interaction
   if (lacks_components(
     c_PLAYER_CONTROLLER,
     ecs->entities[PLAYER_ID].config
@@ -387,101 +387,6 @@ void ecs__check_pickup_radius_collisions(
   }
 }
 
-// TODO: clean up the naming/organization of all these
-// ecs drawing fns
-static void draw_entity(
-  GameTime time,
-  Camera const *const camera,
-  GPU const *const gpu,
-  EntityId id,
-  ECS const *const ecs
-) {
-
-  static Entity const *entity;
-  entity = &ecs->entities[id];
-
-  Shader *shader = entity->draw.shader;
-
-  gpu->select_shader(shader);
-
-  if (entity->draw.textures > 0) set_textures(entity, gpu);
-
-  gpu->set_shader_float(
-    shader,
-    "total_elapsed_seconds",
-    time.sec_since_game_launch
-  );
-
-  // TODO: mmmm idk bout this
-  // it seems like uniform values are being preserved between
-  // invokations of the *same* shader regardless of whether
-  // that uniform is set. investigate
-  has_component(c_UV_SCROLL, entity->config) ?
-  gpu->set_shader_vec2(shader, "uv_scroll", entity->scroll_uv.total) :
-  gpu->set_shader_vec2(shader, "uv_scroll", (Vec2){0});
-
-  if (has_component(c_TIMEOUT, entity->config)) {
-    gpu->set_shader_float(
-      shader,
-      "seconds_since_activation",
-      entity->timeout.age
-    );
-    gpu->set_shader_float(
-      shader,
-      "limit_in_seconds",
-      entity->timeout.limit
-    );
-  }
-
-  gpu->set_shader_m4x4(shader, "view", &camera->lookat);
-  gpu->set_shader_m4x4(shader, "projection", &camera->projection);
-
-  entity->draw.draw(time, camera, gpu, id, ecs);
-}
-
-void swap(EntityId *id0, EntityId *id1) {
-  EntityId temp = *id0;
-  *id0 = *id1;
-  *id1 = temp;
-}
-
-void sort_alpha_entities(
-  EntityId *alpha_entities,
-  uint_fast16_t alpha_entity_count,
-  // Vec3 camera_position,
-  ECS const *const ecs
-) {
-
-  int i, j, min_i;
-
-  // float j_distance, min_i_distance;
-  float j_y, min_i_y;
-
-  for (i = 0; i < alpha_entity_count - 1; i++) {
-
-    min_i = i;
-
-    for (j = i + 1; j < alpha_entity_count; j++) {
-
-      j_y = ecs->entities[alpha_entities[j]].transform.position.y;
-      min_i_y = ecs->entities[alpha_entities[min_i]].transform.position.y;
-
-      // j_distance = vec3__distance(
-      //   ecs->entities[alpha_entities[j]].transform.position,
-      //   camera_position
-      // );
-      // min_i_distance = vec3__distance(
-      //   ecs->entities[alpha_entities[min_i]].transform.position,
-      //   camera_position
-      // );
-
-      if (j_y < min_i_y) min_i = j;
-    }
-
-    swap(&alpha_entities[min_i], &alpha_entities[i]);
-  }
-}
-
 void ecs__draw(
   GameTime time,
   Camera const *const camera,
@@ -504,31 +409,12 @@ void ecs__draw(
       alpha_entities[alpha_entity_count++] = id;
       continue;
     }
-
-    if (has_component(c_DRAW_BACK_FACES, ecs->entities[id].config))
-      gpu->cull_no_faces();
-
-    draw_entity(time, camera, gpu, id, ecs);
-
-    gpu->cull_back_faces();
+    
+    ecs__prepare_entity_draw(time, camera, gpu, id, ecs);
   }
 
-  sort_alpha_entities(
-    alpha_entities,
-    alpha_entity_count,
-    // camera->position,
-    ecs
-  );
+  sort_alpha_entities(alpha_entities, alpha_entity_count, ecs);
 
-  for (uint_fast16_t i = 0; i < alpha_entity_count; i++) {
-
-    if (has_component(
-      c_DRAW_BACK_FACES,
-      ecs->entities[alpha_entities[i]].config
-    )) gpu->cull_no_faces();
-
-    draw_entity(time, camera, gpu, alpha_entities[i], ecs);
-
-    gpu->cull_back_faces();
-  }
+  for (uint_fast16_t i = 0; i < alpha_entity_count; i++)
+    ecs__prepare_entity_draw(time, camera, gpu, alpha_entities[i], ecs);
 }

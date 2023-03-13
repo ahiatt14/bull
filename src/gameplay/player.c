@@ -89,6 +89,7 @@ static void draw_firing_guide(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
+  Transform const *const total_transform,
   EntityId id,
   ECS const *const ecs
 ) {
