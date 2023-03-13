@@ -79,7 +79,6 @@ EntityId create_blue_pulse(
 
 void create_autocannon_muzzle_flash(
   EntityId weapon,
-  Vec3 direction,
   Seconds remainder,
   ECS *const ecs
 ) {
@@ -91,7 +90,7 @@ void create_autocannon_muzzle_flash(
   ecs__add_transform(
     flash,
     (Transform){
-      .position = scalar_x_vec3(0.7f, direction),
+      .position = (Vec3){ 0, 0, -0.5f },
       .scale = 2,
       .rotation = quaternion__create(WORLDSPACE.up, 0)
     },

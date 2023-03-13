@@ -12,7 +12,6 @@ EntityId create_blue_pulse(
 
 void create_autocannon_muzzle_flash(
   EntityId weapon,
-  Vec3 direction,
   Seconds remainder,
   ECS *const ecs
 );

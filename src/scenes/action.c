@@ -264,7 +264,6 @@ void fire_lvl0_cannon(
 
   create_autocannon_muzzle_flash(
     weapon,
-    direction,
     remainder,
     ecs
   );

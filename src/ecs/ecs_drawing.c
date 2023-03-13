@@ -196,23 +196,24 @@ static void add_parents_transforms(
   ECS const *const ecs
 ) {
 
+  static Entity const *parent;
+  parent = &ecs->entities[child->hierarchy.parent];
+
+  total_transform->position = space__ccw_quat_rotate(
+    parent->transform.rotation,
+    total_transform->position
+  );
   total_transform->position = vec3_plus_vec3(
     total_transform->position,
-    ecs->entities[child->hierarchy.parent].transform.position
+    parent->transform.position
   );
   total_transform->rotation = quaternion__multiply(
     total_transform->rotation,
-    ecs->entities[child->hierarchy.parent].transform.rotation
+    parent->transform.rotation
   );
 
-  if (has_component(
-    c_HAS_PARENT,
-    ecs->entities[child->hierarchy.parent].config
-  )) add_parents_transforms(
-    total_transform,
-    &ecs->entities[child->hierarchy.parent],
-    ecs
-  );
+  if (has_component(c_HAS_PARENT, parent->config))
+    add_parents_transforms(total_transform, parent, ecs);
 }
 
 static inline uint_fast8_t has_texture(
