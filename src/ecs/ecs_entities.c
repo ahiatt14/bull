@@ -21,7 +21,7 @@ static void sort_ids_descending(
 static void doom_all_descendents(
   EntityId parent,
   EntityId *doomed_descendents,
-  uint_fast8_t *doomed_descendents_count,
+  uint_fast16_t *doomed_descendents_count,
   ECS const *const ecs
 );
 
@@ -47,14 +47,14 @@ void ecs__destroy_marked_entities(
 ) {
 
   static EntityId all_doomed_entities[MAX_ENTITIES];
-  uint_fast16_t all_doomed_id_count = 0;
+  uint_fast16_t all_doomed_entity_count = 0;
 
   memcpy(
     all_doomed_entities,
     ecs->doomed_entities,
     sizeof(EntityId) * ecs->doomed_entity_count
   );
-  all_doomed_id_count = ecs->doomed_entity_count;
+  all_doomed_entity_count = ecs->doomed_entity_count;
 
   for (uint_fast16_t i = 0; i < ecs->doomed_entity_count; i++) {
 
@@ -69,15 +69,15 @@ void ecs__destroy_marked_entities(
     )) doom_all_descendents(
       all_doomed_entities[i],
       all_doomed_entities,
-      &all_doomed_id_count,
+      &all_doomed_entity_count,
       ecs
     );
   }
   ecs->doomed_entity_count = 0;
 
-  sort_ids_descending(all_doomed_entities, all_doomed_id_count);
+  sort_ids_descending(all_doomed_entities, all_doomed_entity_count);
 
-  for (uint_fast16_t i = 0; i < all_doomed_id_count; i++) {
+  for (uint_fast16_t i = 0; i < all_doomed_entity_count; i++) {
     destroy_entity(all_doomed_entities[i], ecs);
   }
 }
@@ -112,7 +112,7 @@ static void sort_ids_descending(
 static void doom_all_descendents(
   EntityId parent,
   EntityId *doomed_descendents,
-  uint_fast8_t *doomed_descendents_count,
+  uint_fast16_t *doomed_descendents_count,
   ECS const *const ecs
 ) {
 

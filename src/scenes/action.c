@@ -199,7 +199,8 @@ void action__tick(
 
   ecs__draw(time, &cam, gpu, &ecs);
 
-  top_left_debug.value = ecs.count;
+  // top_left_debug.value = ecs.count;
+  top_left_debug.value = ecs.entities[PLAYER_ID].hierarchy.child_count;
   lcd_text__draw_number(top_left_debug, gpu);
 }
 
@@ -247,8 +248,6 @@ void fire_lvl0_cannon(
   Seconds remainder,
   ECS *const ecs
 ) {
-  
-  // TOOD: add muzzle flash
 
   Vec3 direction =
     vec3__normalize(vec3_minus_vec3(
@@ -264,10 +263,7 @@ void fire_lvl0_cannon(
   );
 
   create_autocannon_muzzle_flash(
-    vec3_plus_vec3(
-      scalar_x_vec3(0.7f, direction),
-      ecs->entities[weapon].transform.position
-    ),
+    weapon,
     direction,
     remainder,
     ecs

@@ -78,7 +78,7 @@ EntityId create_blue_pulse(
 }
 
 void create_autocannon_muzzle_flash(
-  Vec3 position,
+  EntityId weapon,
   Vec3 direction,
   Seconds remainder,
   ECS *const ecs
@@ -86,22 +86,18 @@ void create_autocannon_muzzle_flash(
 
   EntityId flash = ecs__create_entity(ecs);
 
-  Quaternion point_to_target = quaternion__create(
-    WORLDSPACE.up,
-    rads_ccw_from_forward_around_up(direction)
-  );
-
   // Quaternion 
 
   ecs__add_transform(
     flash,
     (Transform){
-      .position = position,
+      .position = scalar_x_vec3(0.7f, direction),
       .scale = 2,
-      .rotation = point_to_target
+      .rotation = quaternion__create(WORLDSPACE.up, 0)
     },
     ecs
   );
+  ecs__add_parent_relationship(weapon, flash, ecs);
   ecs__add_timeout(
     flash,
     (Timeout){

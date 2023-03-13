@@ -218,7 +218,10 @@ static void add_parents_transforms(
 static inline uint_fast8_t has_texture(
   uint_fast16_t texture,
   uint_fast16_t entity_texture_mask
-);
+) {
+  uint_fast16_t anded = texture & entity_texture_mask;
+  return (anded == texture) ? 1 : 0;
+}
 
 static void set_textures(
   Entity const *const entity,

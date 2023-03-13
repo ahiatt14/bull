@@ -89,21 +89,20 @@ void ecs__remove_parent_relationship(
 
   EntityId parent = ecs->entities[child].hierarchy.parent;
 
-  static EntityId remaining_children[MAX_DIRECT_CHILDREN];
-  uint_fast8_t remaining_child_count =
-    ecs->entities[parent].hierarchy.child_count - 1;
-
-  if (remaining_child_count == 0) {
+  ecs->entities[parent].hierarchy.child_count--;
+  if (ecs->entities[parent].hierarchy.child_count == 0) {
     ecs->entities[parent].config -= c_HAS_CHILDREN;
     return;
   }
 
+  static EntityId remaining_children[MAX_DIRECT_CHILDREN];
+  uint_fast8_t remaining_child_count = 0;
   for (
     uint_fast8_t i = 0;
     i < ecs->entities[parent].hierarchy.child_count;
     i++
   ) if (ecs->entities[parent].hierarchy.children[i] != child)
-    remaining_children[--remaining_child_count] =
+    remaining_children[remaining_child_count++] =
       ecs->entities[parent].hierarchy.children[i];
 
   memcpy(
