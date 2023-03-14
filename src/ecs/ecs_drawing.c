@@ -161,6 +161,7 @@ static inline void swap(EntityId *id0, EntityId *id1) {
   EntityId temp = *id0; *id0 = *id1; *id1 = temp;
 }
 void sort_alpha_entities(
+  Vec3 camera_position,
   EntityId *alpha_entities,
   uint_fast16_t alpha_entity_count,
   ECS const *const ecs
@@ -176,8 +177,6 @@ void sort_alpha_entities(
 
     for (j = i + 1; j < alpha_entity_count; j++) {
       
-      // TODO: sonofabitch, these transforms haven't been rolled up
-      // w/ their parents'
       j_y = ecs->entities[alpha_entities[j]].transform.position.y;
       min_i_y = ecs->entities[alpha_entities[min_i]].transform.position.y;
 

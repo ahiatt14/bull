@@ -103,12 +103,10 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/muzzle_flash.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/steam_column.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/mountain.obj $artifact_dir && \
-  ./${tools}sourcify-obj.exe assets/mesh/mist.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/arrow.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/cubemap.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/tower_pipes.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/tower_discharges.obj $artifact_dir && \
-  ./${tools}sourcify-obj.exe assets/mesh/tower_discharge_mists.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/rex.obj $artifact_dir
 
   for filepath in ${artifact_dir}*.c; do

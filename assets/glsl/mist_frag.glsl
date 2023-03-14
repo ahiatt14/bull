@@ -10,7 +10,7 @@ uniform sampler2D mist_texture;
 
 uniform vec2 uv_scroll;
 
-uniform float altitude_center = 120;
+uniform float max_altitude = 40;
 
 out vec4 FragColor;
 
@@ -24,12 +24,11 @@ void main()
     mist_texture,
     fs_in.tex_uv + uv_scroll
   );
-
-  float abs_altitude = abs(fs_in.world_frag_pos.y - altitude_center);
-  float dist_coef = smoothstep(0, altitude_center, abs_altitude);
   
   FragColor = vec4(
     material.rgb,
-    material.a - dist_coef
+    material.a -
+      (fs_in.world_frag_pos.y / max_altitude) -
+      (0.8 - brightness(material.rgb))
   );
 }

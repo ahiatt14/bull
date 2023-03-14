@@ -413,7 +413,12 @@ void ecs__draw(
     ecs__prepare_entity_draw(time, camera, gpu, id, ecs);
   }
 
-  sort_alpha_entities(alpha_entities, alpha_entity_count, ecs);
+  sort_alpha_entities(
+    camera->position,
+    alpha_entities,
+    alpha_entity_count,
+    ecs
+  );
 
   for (uint_fast16_t i = 0; i < alpha_entity_count; i++)
     ecs__prepare_entity_draw(time, camera, gpu, alpha_entities[i], ecs);

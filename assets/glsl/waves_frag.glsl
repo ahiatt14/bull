@@ -7,7 +7,7 @@ in TES_OUT {
 
 uniform vec3 light_dir = vec3(-1, -0.2, 0);
 uniform vec3 light_color = vec3(1, 1, 1);
-const float light_strength = 1;
+const float light_strength = 0.6;
 
 const vec3 ambient_light = vec3(1);
 const float ambient_strength = 0.1;
@@ -23,7 +23,7 @@ void main()
   float incidence = max(dot(fs_in.normal, -normalize(light_dir)), 0);
 
   vec3 light = mix(
-    incidence * 2 + light_color * light_strength,
+    incidence + light_color * light_strength,
     ambient_light * ambient_strength,
     1.0 - incidence
   );

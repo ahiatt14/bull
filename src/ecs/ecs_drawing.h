@@ -32,6 +32,7 @@ void ecs__draw_billboard(
 );
 
 void sort_alpha_entities(
+  Vec3 camera_position,
   EntityId *alpha_entities,
   uint_fast16_t alpha_entity_count,
   ECS const *const ecs
