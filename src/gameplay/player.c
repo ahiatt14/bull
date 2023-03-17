@@ -89,40 +89,30 @@ static void draw_firing_guide(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Transform const *const total_transform,
+  Transform const *const hierarchy_transform,
   EntityId id,
   ECS const *const ecs
 ) {
 
-  static Entity const *guide;
-  static Entity const *player;
-  guide = &ecs->entities[id];
-  player = &ecs->entities[PLAYER_ID];
-
-  static M4x4 model;
-  static Shader *shader;
-  shader = guide->draw.shader;
-
-  m4x4__scaling(
-    guide->transform.scale,
-    &model
+  gpu->set_shader_float(
+    ecs->entities[id].draw.shader,
+    "arena_radius_worldspace",
+    ARENA_RADIUS
   );
-  space__create_model(
-    &WORLDSPACE,
-    &guide->transform,
-    &model
-  );
-
-  gpu->set_shader_m4x4(shader, "model", &model);
-
-  gpu->set_shader_float(shader, "arena_radius_worldspace", ARENA_RADIUS);
   gpu->set_shader_vec3(
-    shader,
+    ecs->entities[id].draw.shader,
     "player_pos_worldspace",
-    player->transform.position
+    ecs->entities[PLAYER_ID].transform.position
   );
 
-  gpu->draw_mesh(guide->draw.mesh);
+  ecs__draw_mesh(
+    time,
+    camera,
+    gpu,
+    hierarchy_transform,
+    id,
+    ecs
+  );
 }
 
 EntityId create_firing_guide(

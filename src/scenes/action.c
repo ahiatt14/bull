@@ -84,10 +84,10 @@ static ECS ecs;
 static Camera cam;
 static Gamepad gamepad;
 
-static NumberReadout top_left_debug = {
-  .position = { 0.15, 0.8f },
-  .scale = 0.1f
-};
+// static NumberReadout top_left_debug = {
+//   .position = { 0.15, 0.8f },
+//   .scale = 0.1f
+// };
 
 static ControllerActions player_one_actions = {
   .on_start_autofire = on_player_start_autofire,
@@ -200,8 +200,7 @@ void action__tick(
   ecs__draw(time, &cam, gpu, &ecs);
 
   // top_left_debug.value = ecs.count;
-  top_left_debug.value = ecs.entities[PLAYER_ID].hierarchy.child_count;
-  lcd_text__draw_number(top_left_debug, gpu);
+  // lcd_text__draw_number(top_left_debug, gpu);
 }
 
 // void guide_lag_update(

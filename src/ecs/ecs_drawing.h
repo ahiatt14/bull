@@ -17,7 +17,7 @@ void ecs__draw_mesh(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Transform const *const total_transform,
+  Transform const *const hierarchy_transform,
   EntityId id,
   ECS const *const ecs
 );
@@ -26,7 +26,7 @@ void ecs__draw_billboard(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Transform const *const total_transform,
+  Transform const *const hierarchy_transform,
   EntityId id,
   ECS const *const ecs
 );

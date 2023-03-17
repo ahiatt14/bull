@@ -5,6 +5,8 @@
 
 #include "ecs.h"
 
+#include "lcd_text.h"
+
 #include "scene.h"
 
 #include "assets.h"
@@ -31,13 +33,18 @@ static Vec3 camera_look_target = {
 static EntityId plume_plant;
 static EntityId waves;
 
+static NumberReadout entity_count_debug = {
+  .position = (Vec2){ -0.9f, 0.9f },
+  .scale = 0.05f
+};
+
 void ocean__init(
   Window const *const window,
   Viewport *const vwprt,
   GPU const *const gpu
 ) {
 
-  camera.position = (Vec3){ -200, 8, 600 };
+  camera.position = (Vec3){ -600, 8, 800 };
   camera.look_target = camera_look_target;
   camera.horizontal_fov_in_deg = 80;
   camera.near_clip_distance = 1;
@@ -112,6 +119,7 @@ void ocean__tick(
   ecs__scroll_uvs(time, &ecs);
   ecs__repeat(time, &ecs);
   ecs__timeout(time, &ecs);
+  ecs__lerp_rotation(time, &ecs);
   ecs__move(time, &ecs);
   ecs__destroy_marked_entities(&ecs);
 
@@ -122,4 +130,7 @@ void ocean__tick(
   gpu->clear_depth_buffer();
 
   ecs__draw(time, &camera, gpu, &ecs);
+
+  entity_count_debug.value = ecs.count;
+  lcd_text__draw_number(entity_count_debug, gpu);
 }

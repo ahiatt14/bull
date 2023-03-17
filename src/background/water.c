@@ -37,7 +37,7 @@ static void draw_waves(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Transform const *const total_transform,
+  Transform const *const hierarchy_transform,
   EntityId id,
   ECS const *const ecs
 );
@@ -134,7 +134,7 @@ static void draw_waves(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Transform const *const total_transform,
+  Transform const *const hierarchy_transform,
   EntityId id,
   ECS const *const ecs
 ) {
@@ -148,7 +148,7 @@ static void draw_waves(
 
   shader = waves->draw.shader;
 
-  space__create_model(&WORLDSPACE, total_transform, &model);
+  space__create_model(&WORLDSPACE, hierarchy_transform, &model);
   space__create_normals_model(&model, &normals_model);
   gpu->set_shader_m4x4(shader, "model", &model);
   gpu->set_shader_m3x3(shader, "normals_model", &normals_model);

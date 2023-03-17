@@ -35,35 +35,30 @@ static void draw_afterimage(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Transform const *const total_transform,
+  Transform const *const hierarchy_transform,
   EntityId id,
   ECS const *const ecs
 ) {
 
-  static Entity const *afterimage;
-  afterimage = &ecs->entities[id];
-
-  static M4x4 model;
-  static M3x3 normals_model;
-  static Shader *shader;
-
-  shader = afterimage->draw.shader;
-
-  space__create_model(&WORLDSPACE, total_transform, &model);
-  gpu->set_shader_m4x4(shader, "model", &model);
-  space__create_normals_model(&model, &normals_model);
-  gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
-
   gpu->set_shader_vec3(
-    shader,
+    ecs->entities[id].draw.shader,
     "afterimage_pos_worldspace",
-    afterimage->transform.position
+    ecs->entities[id].transform.position
+  );
+  gpu->set_shader_vec3(
+    ecs->entities[id].draw.shader,
+    "color",
+    COLOR_AQUA_BLUE
   );
 
-  gpu->set_shader_vec3(shader, "color", COLOR_AQUA_BLUE);
-  // TODO: do a distance from player trajectory line fade thing?
-
-  gpu->draw_mesh(afterimage->draw.mesh);
+  ecs__draw_mesh(
+    time,
+    camera,
+    gpu,
+    hierarchy_transform,
+    id,
+    ecs
+  );
 }
 
 // TODO: can easily be made reusable,

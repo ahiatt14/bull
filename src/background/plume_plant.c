@@ -1,4 +1,5 @@
-#include <stdio.h> // TODO: debugging
+#include <string.h>
+#include <math.h>
 
 #include "tail.h"
 
@@ -28,6 +29,8 @@
 #include "tower_pipes_mesh.h"
 #include "tower_discharges_mesh.h"
 
+#define PLUME_PLANT_SCALE 150
+
 // LOCALS
 
 static Shader steam_shader;
@@ -46,9 +49,15 @@ static void draw_plume(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Transform const *const total_transform,
+  Transform const *const hierarchy_transform,
   EntityId id,
   ECS const *const ecs
+);
+
+static EntityId create_discharge_mist_spawner(
+  EntityId cooling_tower,
+  Vec3 position,
+  ECS *const ecs
 );
 
 static void spawn_discharge_mist(
@@ -83,15 +92,6 @@ void plume_plant__copy_assets_to_gpu(
   gpu->copy_static_mesh_to_gpu(&TOWER_DISCHARGES_MESH);
 }
 
-static void draw_plume(
-  GameTime time,
-  Camera const *const camera,
-  GPU const *const gpu,
-  Transform const *const total_transform,
-  EntityId id,
-  ECS const *const ecs
-);
-
 EntityId create_plume_plant(
   Vec3 position,
   ECS *const ecs
@@ -103,7 +103,7 @@ EntityId create_plume_plant(
     cooling_tower,
     (Transform){
       .position = position,
-      .scale = 150
+      .scale = PLUME_PLANT_SCALE
     },
     ecs
   );
@@ -125,7 +125,8 @@ EntityId create_plume_plant(
     pipes,
     (Transform){
       .position = (Vec3){0},
-      .scale = 150
+      .scale = 1,
+      .rotation = quaternion__create(WORLDSPACE.up, 0)
     },
     ecs
   );
@@ -147,7 +148,7 @@ EntityId create_plume_plant(
     discharges,
     (Transform){
       .position = (Vec3){0},
-      .scale = 150
+      .scale = 1
     },
     ecs
   );
@@ -169,12 +170,40 @@ EntityId create_plume_plant(
     },
     ecs
   );
-  ecs__add_repeat(
-    discharges,
-    (Repeat){
-      .age = 1,
-      .interval = 1,
-      .on_interval = spawn_discharge_mist
+
+  create_discharge_mist_spawner(
+    cooling_tower,
+    (Vec3){
+      0,
+      0,
+      2.35f * PLUME_PLANT_SCALE
+    },
+    ecs
+  );
+  create_discharge_mist_spawner(
+    cooling_tower,
+    (Vec3){
+      -2.35f * PLUME_PLANT_SCALE,
+      0,
+      0
+    },
+    ecs
+  );
+  create_discharge_mist_spawner(
+    cooling_tower,
+    (Vec3){
+      2.35f * PLUME_PLANT_SCALE,
+      0,
+      0
+    },
+    ecs
+  );
+  create_discharge_mist_spawner(
+    cooling_tower,
+    (Vec3){
+      0,
+      0,
+      -2.35f * PLUME_PLANT_SCALE
     },
     ecs
   );
@@ -185,7 +214,7 @@ EntityId create_plume_plant(
   ecs__add_transform(
     plume,
     (Transform){
-      .scale = 150,
+      .scale = 1,
       .position = (Vec3){0}
     },
     ecs
@@ -214,51 +243,71 @@ EntityId create_plume_plant(
 
 // HELPER DEFS
 
+static EntityId create_discharge_mist_spawner(
+  EntityId cooling_tower,
+  Vec3 position,
+  ECS *const ecs
+) {
+
+  EntityId spawner = ecs__create_entity(ecs);
+
+  ecs__add_parent_relationship(cooling_tower, spawner, ecs);
+  ecs__add_transform(
+    spawner,
+    (Transform){
+      .position = position
+    },
+    ecs
+  );
+  ecs__add_repeat(
+    spawner,
+    (Repeat){
+      .age = 0.5f,
+      .interval = 0.5f,
+      .on_interval = spawn_discharge_mist
+    },
+    ecs
+  );
+
+  return spawner;
+}
+
+static inline Vec3 generate_mist_position(
+  Vec3 initial_position
+) {
+  static uint_fast8_t i;
+  i = (i + 1) % 14;
+  return vec3_plus_vec3(
+    initial_position,
+    space__ccw_angle_rotate(
+      WORLDSPACE.up,
+      (M_PI * 2.0f) * ((float)i / 14.0f),
+      (Vec3){ 0, 0, -65 }
+    )
+  );
+}
 static void spawn_discharge_mist(
-  EntityId discharges,
+  EntityId spawner,
   Seconds remainder,
   ECS *const ecs
 ) {
 
-  static Vec3 random_offsets[6] = {
-    { 20, 0, 10 },
-    { 0, 0, 30 },
-    { 0, 0, 0 },
-    { -20, 0, 20 },
-    { 10, 0, -10 },
-    { 15, 0, 0 }
-  };
-  static uint_fast8_t random_offset_i = 0;
-
   EntityId mist = ecs__create_entity(ecs);
-
-  Vec3 initial_position = (Vec3){
-    0,
-    10,
-    2.45f * ecs->entities[discharges].transform.scale
-  };
-
-  random_offset_i = (random_offset_i + 1) % 6;
 
   ecs__add_alpha_effect(mist, ecs);
   ecs__add_transform(
     mist,
     (Transform){
-      .position = vec3_plus_vec3(
-        initial_position,
-        random_offsets[random_offset_i]
+      .position = generate_mist_position(
+        ecs->entities[spawner].transform.position
       ),
-      .scale = 20,
-      .rotation = quaternion__create(
-        WORLDSPACE.forward,
-        vec3__magnitude(random_offsets[random_offset_i])
-      )
+      .scale = 40
     },
     ecs
   );
   ecs__add_velocity(
     mist,
-    (Vec3){ 0, 5, 0 },
+    (Vec3){ -1, 4, -2 },
     ecs
   );
   ecs__add_draw(
@@ -275,7 +324,7 @@ static void spawn_discharge_mist(
     mist,
     (Timeout){
       .age = remainder,
-      .limit = 8,
+      .limit = 6,
       .on_timeout = destroy_mist
     },
     ecs
@@ -286,30 +335,35 @@ static void draw_plume(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  Transform const *const total_transform,
+  Transform const *const hierarchy_transform,
   EntityId id,
   ECS const *const ecs
 ) {
 
-  static Entity const *plume;
-  plume = &ecs->entities[id];
+  gpu->set_shader_float(
+    ecs->entities[id].draw.shader,
+    "wavelength",
+    10
+  );
+  gpu->set_shader_float(
+    ecs->entities[id].draw.shader,
+    "amplitude",
+    0.2f
+  );
+  gpu->set_shader_float(
+    ecs->entities[id].draw.shader,
+    "speed",
+    -0.01f
+  );
 
-  static Shader *shader;
-  static M4x4 model;
-  // static M3x3 normals_model;
-
-  shader = plume->draw.shader;
-
-  space__create_model(&WORLDSPACE, total_transform, &model);
-  // space__create_normals_model(&model, &normals_model);
-  gpu->set_shader_m4x4(shader, "model", &model);
-  // gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
-
-  gpu->set_shader_float(shader, "wavelength", 10);
-  gpu->set_shader_float(shader, "amplitude", 0.2);
-  gpu->set_shader_float(shader, "speed", -0.01f);
-
-  gpu->draw_mesh(plume->draw.mesh);
+  ecs__draw_mesh(
+    time,
+    camera,
+    gpu,
+    hierarchy_transform,
+    id,
+    ecs
+  );
 }
 
 static void destroy_mist(

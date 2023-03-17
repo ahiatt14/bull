@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "tail.h"
 
 #include "ecs.h"
@@ -167,23 +165,29 @@ void sort_alpha_entities(
   ECS const *const ecs
 ) {
 
-  int i, j, min_i;
+  int i, j, max_i;
 
-  float j_y, min_i_y;
+  float j_distance, max_i_distance;
 
   for (i = 0; i < alpha_entity_count - 1; i++) {
 
-    min_i = i;
+    max_i = i;
 
     for (j = i + 1; j < alpha_entity_count; j++) {
       
-      j_y = ecs->entities[alpha_entities[j]].transform.position.y;
-      min_i_y = ecs->entities[alpha_entities[min_i]].transform.position.y;
+      j_distance = vec3__distance(
+        ecs->entities[alpha_entities[j]].transform.position,
+        camera_position
+      );
+      max_i_distance = vec3__distance(
+        ecs->entities[alpha_entities[max_i]].transform.position,
+        camera_position
+      );
 
-      if (j_y < min_i_y) min_i = j;
+      if (j_distance > max_i_distance) max_i = j;
     }
 
-    swap(&alpha_entities[min_i], &alpha_entities[i]);
+    swap(&alpha_entities[max_i], &alpha_entities[i]);
   }
 }
 
@@ -200,12 +204,16 @@ static void add_parents_transforms(
 
   total_transform->position = space__ccw_quat_rotate(
     parent->transform.rotation,
-    total_transform->position
+    scalar_x_vec3(
+      parent->transform.scale,
+      total_transform->position
+    )
   );
   total_transform->position = vec3_plus_vec3(
     total_transform->position,
     parent->transform.position
   );
+  total_transform->scale *= parent->transform.scale;
   total_transform->rotation = quaternion__multiply(
     total_transform->rotation,
     parent->transform.rotation

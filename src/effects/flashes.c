@@ -85,18 +85,16 @@ void create_autocannon_muzzle_flash(
 
   EntityId flash = ecs__create_entity(ecs);
 
-  // Quaternion 
-
+  ecs__add_parent_relationship(weapon, flash, ecs);
   ecs__add_transform(
     flash,
     (Transform){
-      .position = (Vec3){ 0, 0, -0.5f },
-      .scale = 2,
+      .position = (Vec3){ 0, 0, -3 },
+      .scale = 8,
       .rotation = quaternion__create(WORLDSPACE.up, 0)
     },
     ecs
   );
-  ecs__add_parent_relationship(weapon, flash, ecs);
   ecs__add_timeout(
     flash,
     (Timeout){
@@ -106,7 +104,6 @@ void create_autocannon_muzzle_flash(
     },
     ecs
   );
-  ecs__add_alpha_effect(flash, ecs);
   ecs__add_uv_scroll(
     flash,
     (ScrollUV){

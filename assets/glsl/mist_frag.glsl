@@ -10,7 +10,8 @@ uniform sampler2D mist_texture;
 
 uniform vec2 uv_scroll;
 
-uniform float max_altitude = 40;
+uniform float seconds_since_activation;
+uniform float limit_in_seconds;
 
 out vec4 FragColor;
 
@@ -24,11 +25,14 @@ void main()
     mist_texture,
     fs_in.tex_uv + uv_scroll
   );
+
+  float ratio = seconds_since_activation / limit_in_seconds;
+  float age_alpha = sin(-3.0 * ratio) + 1.0;
   
   FragColor = vec4(
     material.rgb,
     material.a -
-      (fs_in.world_frag_pos.y / max_altitude) -
+      age_alpha -
       (0.8 - brightness(material.rgb))
   );
 }
