@@ -48,9 +48,9 @@ EntityId create_blue_pulse(
     (Transform){
       .position = vec3_plus_vec3(
         position,
-        (Vec3){ 0, 1, 0 }
+        (Vec3){ 0, 0, 0 }
       ),
-      .scale = 3
+      .scale = 2
     },
     ecs
   );
@@ -89,8 +89,8 @@ void create_autocannon_muzzle_flash(
   ecs__add_transform(
     flash,
     (Transform){
-      .position = (Vec3){ 0, 0, -3 },
-      .scale = 8,
+      .position = (Vec3){ 0, 0, -0.8f },
+      .scale = 2.4f,
       .rotation = quaternion__create(WORLDSPACE.up, 0)
     },
     ecs

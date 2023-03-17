@@ -10,7 +10,8 @@ void ecs__control_player(
   GameTime time,
   Gamepad gamepad,
   ControllerActions const *const actions,
-  Entity *const player
+  Entity *const player,
+  ECS *const ecs
 );
 
 void ecs__gravity(

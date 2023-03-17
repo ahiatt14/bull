@@ -153,7 +153,7 @@ static void draw_waves(
   gpu->set_shader_m4x4(shader, "model", &model);
   gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
 
-  gpu->set_shader_int(shader, "max_tess", 32);
+  gpu->set_shader_int(shader, "max_tess", 20);
   gpu->set_shader_float(shader, "min_dist", 60);
   gpu->set_shader_float(shader, "max_dist", 800);
 

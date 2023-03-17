@@ -17,7 +17,8 @@ void ecs__control_player(
   GameTime time,
   Gamepad gamepad,
   ControllerActions const *const actions,
-  Entity *const player
+  Entity *const player,
+  ECS *const ecs
 ) {
 
   // TODO: we should definitely create a Controller API
@@ -57,6 +58,8 @@ void ecs__control_player(
   player->velocity.z =
     SPEED * (magnitude + 1.0f) * magnitude *
     norm_direction.y;
+
+  pose_player_mech(time, player, ecs);
 }
 
 void ecs__gravity(

@@ -107,7 +107,9 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/cubemap.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/tower_pipes.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/tower_discharges.obj $artifact_dir && \
-  ./${tools}sourcify-obj.exe assets/mesh/rex.obj $artifact_dir
+  ./${tools}sourcify-obj.exe assets/mesh/player_body.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/player_left_leg.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/player_right_leg.obj $artifact_dir
 
   for filepath in ${artifact_dir}*.c; do
     echo $filepath

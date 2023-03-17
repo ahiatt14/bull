@@ -6,6 +6,8 @@
 #include "ecs.h"
 
 #define PLAYER_ID 0
+#define PLAYER_LEFT_LEG_INDEX 0
+#define PLAYER_RIGHT_LEG_INDEX 1
 
 #define LVL0_CANNON_AUTOFIRE_INTERVAL 0.10f
 
@@ -26,6 +28,12 @@ EntityId create_player(
 );
 
 EntityId create_firing_guide(
+  ECS *const ecs
+);
+
+void pose_player_mech(
+  GameTime time,
+  Entity *const player,
   ECS *const ecs
 );
 
