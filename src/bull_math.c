@@ -49,6 +49,14 @@ float floop(float v, float min, float max) {
   return v;
 }
 
+float flerp(
+  float f0,
+  float f1,
+  float t
+) {
+  return f0 + (f1 - f0) * t;
+}
+
 Vec3 vec3__linear_lerp(
   Vec3 t0,
   Vec3 t1,

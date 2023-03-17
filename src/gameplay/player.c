@@ -17,7 +17,7 @@
 #include "player_right_leg_mesh.h"
 
 #include "default_vert.h"
-#include "mountain_frag.h"
+#include "standard_material_frag.h"
 #include "firing_guide_frag.h"
 
 Shader player_shader;
@@ -27,7 +27,7 @@ void player__copy_assets_to_gpu(
   GPU const *const gpu
 ) {
 
-  player_shader.frag_src = MOUNTAIN_FRAG_SRC;
+  player_shader.frag_src = STANDARD_MATERIAL_FRAG_SRC;
   player_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&player_shader);
 

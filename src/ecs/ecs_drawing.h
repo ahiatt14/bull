@@ -9,6 +9,8 @@ void ecs__prepare_entity_draw(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
+  EntityId *point_lights,
+  uint_fast8_t point_light_count,
   EntityId id,
   ECS const *const ecs
 );

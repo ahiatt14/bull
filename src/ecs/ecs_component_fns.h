@@ -40,7 +40,18 @@ void ecs__add_parent_relationship(
 void ecs__remove_parent_relationship(
   EntityId child,
   ECS *const ecs
-) ;
+);
+
+void ecs__add_point_light_source(
+  EntityId id,
+  PointLight light,
+  ECS *const ecs
+);
+
+void ecs__remove_point_light_source(
+  EntityId id,
+  ECS *const ecs
+);
 
 void ecs__add_alpha_effect(
   EntityId id,

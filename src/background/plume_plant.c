@@ -21,7 +21,7 @@
 #include "steam_frag.h"
 #include "steam_geo.h"
 
-#include "mountain_frag.h"
+#include "standard_material_frag.h"
 
 #include "mist_frag.h"
 
@@ -78,7 +78,7 @@ void plume_plant__copy_assets_to_gpu(
   gpu->copy_shader_to_gpu(&steam_shader);
   gpu->copy_dynamic_mesh_to_gpu(&STEAM_COLUMN_MESH);
 
-  solid_material_shader.frag_src = MOUNTAIN_FRAG_SRC;
+  solid_material_shader.frag_src = STANDARD_MATERIAL_FRAG_SRC;
   solid_material_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&solid_material_shader);
 

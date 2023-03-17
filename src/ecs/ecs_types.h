@@ -31,6 +31,7 @@
 #define c_ALPHA_EFFECT 1 << 18
 #define c_HAS_PARENT 1 << 19
 #define c_HAS_CHILDREN 1 << 20
+#define c_POINT_LIGHT 1 << 21
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast32_t ComponentConfig;
@@ -72,6 +73,11 @@ typedef struct BULLREPEAT {
     ECS *const ecs
   );
 } Repeat;
+
+typedef struct BULLPOINTLIGHT {
+  Vec3 color;
+  float strength; // NOTE: 
+} PointLight;
 
 typedef struct BULLDRAW {
   DrawableMesh *mesh;
@@ -151,6 +157,7 @@ struct BULLENTITY {
   RotationLerp rotation_lerp;
   Vec3 velocity;
   ScrollUV scroll_uv;
+  PointLight point_light;
   Draw draw;
   Weapons weapons;
   float radius;

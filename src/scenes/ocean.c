@@ -61,7 +61,7 @@ void ocean__init(
   plume_plant = create_plume_plant((Vec3){0}, &ecs);
 
   EntityId light;
-  Vec3 light_position = (Vec3){ 0, 140, -500 };
+  Vec3 light_position = (Vec3){ 0, 140, -350 };
   for (int i = 0; i < 8; i++) {
     
     light = ecs__create_entity(&ecs);
@@ -74,6 +74,14 @@ void ocean__init(
           light_position
         ),
         .scale = 10
+      },
+      &ecs
+    );
+    ecs__add_point_light_source(
+      light,
+      (PointLight){
+        .color = COLOR_EVENING_SUNLIGHT,
+        .strength = 500
       },
       &ecs
     );

@@ -112,6 +112,28 @@ void ecs__remove_parent_relationship(
   );
 }
 
+void ecs__add_point_light_source(
+  EntityId id,
+  PointLight light,
+  ECS *const ecs
+) {
+  if (lacks_components(
+    c_POINT_LIGHT,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_POINT_LIGHT;
+  ecs->entities[id].point_light = light;
+}
+
+void ecs__remove_point_light_source(
+  EntityId id,
+  ECS *const ecs
+) {
+  if (has_component(
+    c_POINT_LIGHT,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_POINT_LIGHT;
+}
+
 void ecs__add_alpha_effect(
   EntityId id,
   ECS *const ecs

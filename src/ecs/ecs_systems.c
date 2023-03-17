@@ -401,6 +401,14 @@ void ecs__draw(
   static uint_fast16_t alpha_entity_count;
   alpha_entity_count = 0;
 
+  static EntityId point_lights[MAX_POINT_LIGHTS];
+  static uint_fast8_t point_light_count;
+  point_light_count = 0;
+
+  for (EntityId id = 0; id < ecs->count; id++)
+    if (has_component(c_POINT_LIGHT, ecs->entities[id].config))
+      point_lights[point_light_count++] = id;
+
   gpu->cull_back_faces();
 
   for (EntityId id = 0; id < ecs->count; id++) {
@@ -413,7 +421,15 @@ void ecs__draw(
       continue;
     }
     
-    ecs__prepare_entity_draw(time, camera, gpu, id, ecs);
+    ecs__prepare_entity_draw(
+      time,
+      camera,
+      gpu,
+      point_lights,
+      point_light_count,
+      id,
+      ecs
+    );
   }
 
   sort_alpha_entities(
@@ -424,5 +440,13 @@ void ecs__draw(
   );
 
   for (uint_fast16_t i = 0; i < alpha_entity_count; i++)
-    ecs__prepare_entity_draw(time, camera, gpu, alpha_entities[i], ecs);
+    ecs__prepare_entity_draw(
+      time,
+      camera,
+      gpu,
+      point_lights,
+      point_light_count,
+      alpha_entities[i],
+      ecs
+    );
 }

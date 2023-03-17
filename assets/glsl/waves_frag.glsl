@@ -9,8 +9,9 @@ uniform vec3 light_dir = vec3(-1, -0.2, 0);
 uniform vec3 light_color = vec3(1, 1, 1);
 const float light_strength = 0.6;
 
-const vec3 ambient_light = vec3(1);
-const float ambient_strength = 0.1;
+// TODO: common for all ambiently lit entities
+uniform vec3 ambient_color = vec3(1);
+uniform float ambient_strength = 1;
 
 uniform sampler2D surface_texture;
 
@@ -24,7 +25,7 @@ void main()
 
   vec3 light = mix(
     incidence + light_color * light_strength,
-    ambient_light * ambient_strength,
+    ambient_color * ambient_strength,
     1.0 - incidence
   );
   

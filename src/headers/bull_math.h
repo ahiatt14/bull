@@ -20,6 +20,12 @@ float f_max(float v, float max);
 
 float floop(float v, float min, float max);
 
+float flerp(
+  float f0,
+  float f1,
+  float t
+);
+
 Vec3 vec3__linear_lerp(
   Vec3 t0,
   Vec3 t1,
