@@ -61,8 +61,8 @@ void ocean__init(
   plume_plant = create_plume_plant((Vec3){0}, &ecs);
 
   EntityId light;
-  Vec3 light_position = (Vec3){ 0, 140, -350 };
-  for (int i = 0; i < 8; i++) {
+  Vec3 light_position = (Vec3){ 0, 500, -350 };
+  for (int i = 0; i < 5; i++) {
     
     light = ecs__create_entity(&ecs);
     ecs__add_transform(
@@ -70,7 +70,7 @@ void ocean__init(
       (Transform){
         .position = space__ccw_angle_rotate(
           WORLDSPACE.up,
-          ((float)i / 8.0f) * (M_PI * 2.0f),
+          ((float)i / 5.0f) * (M_PI * 2.0f),
           light_position
         ),
         .scale = 10
@@ -81,11 +81,16 @@ void ocean__init(
       light,
       (PointLight){
         .color = COLOR_EVENING_SUNLIGHT,
-        .strength = 500
+        .strength = 3000
       },
       &ecs
     );
     ecs__add_alpha_effect(light, &ecs);
+    ecs__add_velocity(
+      light,
+      (Vec3){ 0, -20, 0 },
+      &ecs
+    );
     ecs__add_draw(
       light,
       (Draw){

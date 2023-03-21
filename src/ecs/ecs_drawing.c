@@ -5,6 +5,7 @@
 
 #include "ecs.h"
 
+#include "lighting.h"
 #include "assets.h"
 #include "tail_helpers.h"
 #include "constants.h"
@@ -12,6 +13,7 @@
 
 #define MAX_TEXTURES_PER_ENTITY 5
 
+// move this to lighting.c
 #define ATTENUATION_COUNT 12
 // TODO: maybe look for a function that can approximate a LUT like this?
 const Vec3 LIGHT_ATTENUATIONS[ATTENUATION_COUNT] = {
@@ -114,8 +116,7 @@ void ecs__prepare_entity_draw(
   GameTime time,
   Camera const *const camera,
   GPU const *const gpu,
-  EntityId *point_lights,
-  uint_fast8_t point_light_count,
+  Lighting const *const lighting,
   EntityId id,
   ECS const *const ecs
 ) {
@@ -171,22 +172,28 @@ void ecs__prepare_entity_draw(
 
   Entity const *light_source;
   static char uniform_name[40];
-  for (uint_fast8_t i = 0; i < point_light_count; i++) {
+  for (uint_fast8_t i = 0; i < lighting->point_light_count; i++) {
 
-    light_source = &ecs->entities[point_lights[i]];
+    light_source = &ecs->entities[lighting->point_lights[i]];
 
     // TODO: adjust light strength with timeout ratio??? good for blinks, etc
+
+    // printf(
+    //   "attenuation: linear: %.6f quadratic %.6f\n",
+    //   calculate_attenuation(light_source->point_light.strength).x,
+    //   calculate_attenuation(light_source->point_light.strength).y
+    // );
 
     gpu->set_shader_int(
       shader,
       "point_light_count",
-      point_light_count
+      lighting->point_light_count
     );
     sprintf(uniform_name, "point_lights[%i].position", i);
     gpu->set_shader_vec3(
       shader,
       uniform_name,
-      total_transform.position
+      light_source->transform.position
     );
     sprintf(uniform_name, "point_lights[%i].color", i);
     gpu->set_shader_vec3(
@@ -356,12 +363,12 @@ static Vec2 calculate_attenuation(
 
   uint_fast8_t i = 0;
 
-  for (i = 0; i < ATTENUATION_COUNT - 1; i++)
+  for (i = 0; i < ATTENUATION_COUNT - 2; i++)
     if (strength < LIGHT_ATTENUATIONS[i + 1].x) break;
 
   float ratio =
     (strength - LIGHT_ATTENUATIONS[i].x) /
-    (LIGHT_ATTENUATIONS[i + 1].x - LIGHT_ATTENUATIONS[i].x); 
+    (LIGHT_ATTENUATIONS[i + 1].x - LIGHT_ATTENUATIONS[i].x);
   
   return (Vec2){
     flerp(LIGHT_ATTENUATIONS[i].y, LIGHT_ATTENUATIONS[i+1].y, ratio),

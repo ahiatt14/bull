@@ -1,38 +1,66 @@
 #version 330 core
 
+#define MAX_POINT_LIGHTS 20
+
+uniform sampler2D surface_texture;
+
+struct PointLight {
+  vec3 position;
+  vec3 color;
+  vec2 attenuation; // x = LINEAR, y = QUADRATIC
+};
+
+uniform PointLight point_lights[MAX_POINT_LIGHTS];
+uniform int point_light_count;
+
+uniform vec3 ambient_color = vec3(1);
+uniform float ambient_strength = 0;
+
+uniform vec2 uv_scroll = vec2(0, 0);
+
 in VS_OUT {
   vec3 world_frag_pos;
   vec3 normal;
   vec2 tex_uv;
 } fs_in;
 
-uniform sampler2D mist_texture;
-
-uniform vec2 uv_scroll;
-
-uniform float seconds_since_activation;
-uniform float limit_in_seconds;
-
 out vec4 FragColor;
 
-float brightness(vec3 color) {
-  return (color.r + color.g + color.b) / 3.0;
+vec3 calculate_diffuse(
+  PointLight light,
+  vec3 frag_pos
+) {
+
+  float frag_distance = distance(frag_pos, light.position);
+
+  float attenuation = 1.0 / (
+    (
+      1.0 +
+      light.attenuation.x * frag_distance +
+      light.attenuation.y * (frag_distance * frag_distance)
+    )
+  );
+
+  return light.color * attenuation;
+}
+
+float brightness(vec3 rgb) {
+  return (rgb.r + rgb.g + rgb.b) / 3.0;
 }
 
 void main()
 {
   vec4 material = texture(
-    mist_texture,
+    surface_texture,
     fs_in.tex_uv + uv_scroll
   );
 
-  float ratio = seconds_since_activation / limit_in_seconds;
-  float age_alpha = sin(-3.0 * ratio) + 1.0;
+  vec3 diffuse = vec3(0);
+  for (int i = 0; i < point_light_count; i++)
+    diffuse += calculate_diffuse(point_lights[i], fs_in.world_frag_pos);
   
   FragColor = vec4(
-    material.rgb,
-    material.a -
-      age_alpha -
-      (0.8 - brightness(material.rgb))
+    material.rgb * (diffuse + (ambient_color * ambient_strength) * 0.15),
+    material.a - (0.9 - brightness(material.rgb))
   );
 }

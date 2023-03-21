@@ -3,8 +3,6 @@
 
 #include "tail.h"
 
-#define MAX_POINT_LIGHTS 12
-
 #define DELTA_CAP 1.0f / 30.0f
 
 #define ARENA_RADIUS 8.0f

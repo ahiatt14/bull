@@ -1,6 +1,6 @@
 #version 330 core
 
-#define MAX_POINT_LIGHTS 12
+#define MAX_POINT_LIGHTS 20
 
 uniform sampler2D surface_texture;
 
@@ -33,7 +33,7 @@ vec3 calculate_diffuse(
 
   float frag_distance = distance(frag_pos, light.position);
 
-  vec3 light_dir = -normalize(light.position - frag_pos);
+  vec3 light_dir = normalize(light.position - frag_pos);
 
   float incidence = max(dot(fs_in.normal, light_dir), 0);
 
