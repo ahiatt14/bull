@@ -42,6 +42,7 @@ uniform vec2 wave2_props = vec2(30, 0.2);
 in vec2 texture_uv[];
 
 out TES_OUT {
+  vec3 world_frag_pos;
   vec3 normal;
   vec2 tex_uv;
 } tes_out;
@@ -112,6 +113,8 @@ void main() {
 
   vec3 normal = normalize(cross(binormal, tangent));
   tes_out.normal = normals_model * normal;
+
+  tes_out.world_frag_pos = vec3(model * vec4(pos, 1.0));
 
   gl_Position = projection * view * model * vec4(pos, 1.0);
 }

@@ -168,7 +168,7 @@ void ecs__prepare_entity_draw(
 
   // TODO: stash this state in an entity
   gpu->set_shader_vec3(shader, "ambient_color", COLOR_WHITE);
-  gpu->set_shader_float(shader, "ambient_strength", 0.2f);
+  gpu->set_shader_float(shader, "ambient_strength", 0);
 
   Entity const *light_source;
   static char uniform_name[40];
@@ -177,12 +177,6 @@ void ecs__prepare_entity_draw(
     light_source = &ecs->entities[lighting->point_lights[i]];
 
     // TODO: adjust light strength with timeout ratio??? good for blinks, etc
-
-    // printf(
-    //   "attenuation: linear: %.6f quadratic %.6f\n",
-    //   calculate_attenuation(light_source->point_light.strength).x,
-    //   calculate_attenuation(light_source->point_light.strength).y
-    // );
 
     gpu->set_shader_int(
       shader,
@@ -331,32 +325,6 @@ static void set_textures(
 static inline uint_fast8_t closest_to(float min, float max, float value) {
   return fabs(value - min) < fabs(value - max) ? 0 : 1;
 }
-// static Vec2 calculate_attenuation(
-//   float strength
-// ) {
-
-//   uint_fast8_t attenuation_index = 0;
-
-//   while (attenuation_index < ATTENUATION_COUNT - 1) {
-
-//     if (strength >= LIGHT_ATTENUATIONS[attenuation_index + 1].x) {
-//       attenuation_index++;
-//       continue;
-//     }
-
-//     attenuation_index = closest_to(
-//       LIGHT_ATTENUATIONS[attenuation_index].x,
-//       LIGHT_ATTENUATIONS[attenuation_index + 1].x,
-//       strength
-//     );
-//     break;
-//   }
-
-//   return (Vec2){
-//     LIGHT_ATTENUATIONS[attenuation_index].y,
-//     LIGHT_ATTENUATIONS[attenuation_index].z
-//   };
-// }
 static Vec2 calculate_attenuation(
   float strength
 ) {
