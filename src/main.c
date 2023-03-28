@@ -3,6 +3,7 @@
 
 #include "tail.h"
 
+#include "colors.h"
 #include "assets.h"
 #include "constants.h"
 #include "scene.h"

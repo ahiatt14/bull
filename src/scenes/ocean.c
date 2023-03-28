@@ -9,6 +9,8 @@
 
 #include "scene.h"
 
+#include "colors.h"
+#include "lighting.h"
 #include "assets.h"
 #include "constants.h"
 #include "bull_math.h"
@@ -23,19 +25,19 @@
 static ECS ecs;
 
 static Camera camera;
- 
-static Vec3 camera_look_target = {
-  200,
-  250,
-  0
-};
+static Vec3 camera_look_target = { 200, 250, 0 };
 
-static EntityId plume_plant;
-static EntityId waves;
-
-static NumberReadout entity_count_debug = {
-  .position = (Vec2){ -0.9f, 0.9f },
-  .scale = 0.05f
+static Lighting lighting = {
+  .point_count = 0,
+  .ambient = {
+    .color = COLOR_WHITE,
+    .strength = 0.05f
+  },
+  .sky = {
+    .direction = { -1, 0, 0 },
+    .color = COLOR_EVENING_SUNLIGHT,
+    .strength = 0.2f
+  }
 };
 
 void ocean__init(
@@ -44,64 +46,21 @@ void ocean__init(
   GPU const *const gpu
 ) {
 
-  camera.position = (Vec3){ -600, 8, 800 };
+  camera.position = (Vec3){ -200, 8, 500 };
   camera.look_target = camera_look_target;
   camera.horizontal_fov_in_deg = 80;
   camera.near_clip_distance = 1;
-  camera.far_clip_distance = 8000;
+  camera.far_clip_distance = 2000;
   camera__calculate_lookat(WORLDSPACE.up, &camera);
   camera__calculate_perspective(vwprt, &camera);
 
-  // ocean_skybox__copy_assets_to_gpu(gpu);
+  ocean_skybox__copy_assets_to_gpu(gpu);
 
   water__copy_assets_to_gpu(gpu);
-  waves = create_water(&ecs);
+  create_water(&ecs);
 
   plume_plant__copy_assets_to_gpu(gpu);
-  plume_plant = create_plume_plant((Vec3){0}, &ecs);
-
-  EntityId light;
-  Vec3 light_position = (Vec3){ 0, 500, -350 };
-  for (int i = 0; i < 5; i++) {
-    
-    light = ecs__create_entity(&ecs);
-    ecs__add_transform(
-      light,
-      (Transform){
-        .position = space__ccw_angle_rotate(
-          WORLDSPACE.up,
-          ((float)i / 5.0f) * (M_PI * 2.0f),
-          light_position
-        ),
-        .scale = 10
-      },
-      &ecs
-    );
-    ecs__add_point_light_source(
-      light,
-      (PointLight){
-        .color = COLOR_EVENING_SUNLIGHT,
-        .strength = 3000
-      },
-      &ecs
-    );
-    ecs__add_alpha_effect(light, &ecs);
-    ecs__add_velocity(
-      light,
-      (Vec3){ 0, -20, 0 },
-      &ecs
-    );
-    ecs__add_draw(
-      light,
-      (Draw){
-        .draw = ecs__draw_billboard,
-        .textures = COOLING_TOWER_LIGHT_TEXTURE,
-        .shader = &DEFAULT_BILLBOARD_SHADER,
-        .mesh = NULL
-      },
-      &ecs
-    );
-  }
+  create_plume_plant((Vec3){0}, &ecs);
 }
 
 void ocean__tick(
@@ -113,22 +72,6 @@ void ocean__tick(
   void (*switch_scene)(uint8_t new_scene)
 ) {
 
-  // UPDATE
-
-  // camera.look_target = space__ccw_angle_rotate(
-  //   WORLDSPACE.up,
-  //   CAM_REVOLVE_SPEED * time.delta,
-  //   camera.look_target
-  // );
-  // camera.position = space__ccw_angle_rotate(
-  //   WORLDSPACE.up,
-  //   CAM_REVOLVE_SPEED * time.delta,
-  //   camera.position
-  // );
-  // camera.position.z -= 20.0f * time.delta;
-  camera__calculate_lookat(WORLDSPACE.up, &camera);
-  camera__calculate_perspective(vwprt, &camera);
-
   ecs__scroll_uvs(time, &ecs);
   ecs__repeat(time, &ecs);
   ecs__timeout(time, &ecs);
@@ -139,11 +82,8 @@ void ocean__tick(
   // DRAW
 
   // TODO: can optimize here per learnopengl cubemap article
-  // draw_ocean_skybox(&camera, gpu);
+  draw_ocean_skybox(&camera, gpu);
   gpu->clear_depth_buffer();
 
-  ecs__draw(time, &camera, gpu, &ecs);
-
-  entity_count_debug.value = ecs.count;
-  lcd_text__draw_number(entity_count_debug, gpu);
+  ecs__draw(time, &camera, &lighting, gpu, &ecs);
 }

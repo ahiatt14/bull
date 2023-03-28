@@ -14,8 +14,6 @@
 #include "bull_math.h"
 #include "tail_helpers.h"
 
-static Lighting lighting;
-
 void ecs__control_player(
   GameTime time,
   Gamepad gamepad,
@@ -396,6 +394,7 @@ void ecs__check_pickup_radius_collisions(
 void ecs__draw(
   GameTime time,
   Camera const *const camera,
+  Lighting *const lighting,
   GPU const *const gpu,
   ECS *const ecs
 ) {
@@ -404,12 +403,10 @@ void ecs__draw(
   static uint_fast16_t alpha_entity_count;
   alpha_entity_count = 0;
 
-  lighting.point_light_count = 0;
-
+  lighting->point_count = 0;
   for (EntityId id = 0; id < ecs->count; id++)
     if (has_component(c_POINT_LIGHT, ecs->entities[id].config))
-      lighting.point_lights[lighting.point_light_count++] = id;
-
+      lighting->point_sources[lighting->point_count++] = id;
 
   gpu->cull_back_faces();
 
@@ -427,7 +424,7 @@ void ecs__draw(
       time,
       camera,
       gpu,
-      &lighting,
+      lighting,
       id,
       ecs
     );
@@ -445,7 +442,7 @@ void ecs__draw(
       time,
       camera,
       gpu,
-      &lighting,
+      lighting,
       alpha_entities[i],
       ecs
     );

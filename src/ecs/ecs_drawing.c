@@ -5,6 +5,7 @@
 
 #include "ecs.h"
 
+#include "hierarchies.h"
 #include "lighting.h"
 #include "assets.h"
 #include "tail_helpers.h"
@@ -12,6 +13,15 @@
 #include "bull_math.h"
 
 #define MAX_TEXTURES_PER_ENTITY 5
+
+// HELPER DECS
+
+void light_entity(
+  Lighting const *const lighting,
+  GPU const *const gpu,
+  EntityId id,
+  ECS const *const ecs
+);
 
 // move this to lighting.c
 #define ATTENUATION_COUNT 12
@@ -34,14 +44,6 @@ const Vec3 LIGHT_ATTENUATIONS[ATTENUATION_COUNT] = {
 // TODO: lots of optimization and cleanup possible in here
 
 // HELPER DECS
-
-// TODO: will want to move eventually once
-// other systems take advantage of hierarchies
-static void add_parents_transforms(
-  Transform *const total_transform,
-  Entity const *const child,
-  ECS const *const ecs
-);
 
 static inline uint_fast8_t has_texture(
   uint_fast16_t texture,
@@ -128,6 +130,9 @@ void ecs__prepare_entity_draw(
 
   gpu->select_shader(shader);
 
+  gpu->set_shader_m4x4(shader, "view", &camera->lookat);
+  gpu->set_shader_m4x4(shader, "projection", &camera->projection);
+
   static Transform total_transform;
   total_transform = entity->transform;
   
@@ -166,57 +171,15 @@ void ecs__prepare_entity_draw(
     );
   }
 
-  // TODO: stash this state in an entity
-  gpu->set_shader_vec3(shader, "ambient_color", COLOR_WHITE);
-  gpu->set_shader_float(shader, "ambient_strength", 0);
-
-  Entity const *light_source;
-  static char uniform_name[40];
-  for (uint_fast8_t i = 0; i < lighting->point_light_count; i++) {
-
-    light_source = &ecs->entities[lighting->point_lights[i]];
-
-    // TODO: adjust light strength with timeout ratio??? good for blinks, etc
-
-    gpu->set_shader_int(
-      shader,
-      "point_light_count",
-      lighting->point_light_count
-    );
-    sprintf(uniform_name, "point_lights[%i].position", i);
-    gpu->set_shader_vec3(
-      shader,
-      uniform_name,
-      light_source->transform.position
-    );
-    sprintf(uniform_name, "point_lights[%i].color", i);
-    gpu->set_shader_vec3(
-      shader,
-      uniform_name,
-      light_source->point_light.color
-    );
-    sprintf(uniform_name, "point_lights[%i].attenuation", i);
-    gpu->set_shader_vec2(
-      shader,
-      uniform_name,
-      calculate_attenuation(light_source->point_light.strength)
-    );
-  }
-
-  gpu->set_shader_m4x4(shader, "view", &camera->lookat);
-  gpu->set_shader_m4x4(shader, "projection", &camera->projection);
+  if (has_component(
+    c_RECEIVES_LIGHT,
+    entity->config
+  )) light_entity(lighting, gpu, id, ecs);
 
   if (has_component(c_DRAW_BACK_FACES, entity->config))
     gpu->cull_no_faces();
 
-  entity->draw.draw(
-    time,
-    camera,
-    gpu,
-    &total_transform,
-    id,
-    ecs
-  );
+  entity->draw.draw(time, camera, gpu, &total_transform, id, ecs);
 
   gpu->cull_back_faces();
 }
@@ -259,36 +222,6 @@ void sort_alpha_entities(
   }
 }
 
-static void add_parents_transforms(
-  Transform *const total_transform,
-  Entity const *const child,
-  ECS const *const ecs
-) {
-
-  static Entity const *parent;
-  parent = &ecs->entities[child->hierarchy.parent];
-
-  total_transform->position = space__ccw_quat_rotate(
-    parent->transform.rotation,
-    scalar_x_vec3(
-      parent->transform.scale,
-      total_transform->position
-    )
-  );
-  total_transform->position = vec3_plus_vec3(
-    total_transform->position,
-    parent->transform.position
-  );
-  total_transform->scale *= parent->transform.scale;
-  total_transform->rotation = quaternion__multiply(
-    total_transform->rotation,
-    parent->transform.rotation
-  );
-
-  if (has_component(c_HAS_PARENT, parent->config))
-    add_parents_transforms(total_transform, parent, ecs);
-}
-
 static inline uint_fast8_t has_texture(
   uint_fast16_t texture,
   uint_fast16_t entity_texture_mask
@@ -322,9 +255,6 @@ static void set_textures(
   }
 }
 
-static inline uint_fast8_t closest_to(float min, float max, float value) {
-  return fabs(value - min) < fabs(value - max) ? 0 : 1;
-}
 static Vec2 calculate_attenuation(
   float strength
 ) {
@@ -342,4 +272,92 @@ static Vec2 calculate_attenuation(
     flerp(LIGHT_ATTENUATIONS[i].y, LIGHT_ATTENUATIONS[i+1].y, ratio),
     flerp(LIGHT_ATTENUATIONS[i].z, LIGHT_ATTENUATIONS[i+1].z, ratio)
   };
+}
+
+void light_entity(
+  Lighting const *const lighting,
+  GPU const *const gpu,
+  EntityId id,
+  ECS const *const ecs
+) {
+
+  static Shader const *shader;
+  shader = ecs->entities[id].draw.shader;
+
+  // TODO: can I send a whole struct at once?
+  gpu->set_shader_vec3(
+    shader,
+    "ambient_color", 
+    lighting->ambient.color
+  );
+  gpu->set_shader_float(
+    shader,
+    "ambient_strength",
+    lighting->ambient.strength
+  );
+  printf("ambient color: %.3f %.3f %.3f strength: %.3f\n",
+    lighting->ambient.color.x,
+    lighting->ambient.color.y,
+    lighting->ambient.color.z,
+    lighting->ambient.strength
+  );
+
+  // gpu->set_shader_vec3(
+  //   shader,
+  //   "sky_direction"
+  // );
+
+  // TODO: optimize with UBO?
+  static Entity const *point_source;
+  static char uniform_name[40];
+  Transform point_light_hierarchy_transform;
+  for (uint_fast8_t i = 0; i < lighting->point_count; i++) {
+
+    if (lighting->point_sources[i] == id) continue;
+
+    point_source = &ecs->entities[lighting->point_sources[i]];
+
+    // TODO: adjust light strength with timeout ratio??? good for blinks, etc
+
+    if (has_component(
+      c_HAS_PARENT,
+      point_source->config
+    )) add_parents_transforms(
+      &point_light_hierarchy_transform,
+      point_source,
+      ecs
+    );
+
+    printf(
+      "x: %.3f y: %.3f z: %.3f strength: %.3f\n",
+      point_light_hierarchy_transform.position.x,
+      point_light_hierarchy_transform.position.y,
+      point_light_hierarchy_transform.position.z,
+      point_source->point_light.strength
+    );
+
+    gpu->set_shader_int(
+      shader,
+      "point_count",
+      lighting->point_count
+    );
+    sprintf(uniform_name, "point_lights[%i].position", i);
+    gpu->set_shader_vec3(
+      shader,
+      uniform_name,
+      point_light_hierarchy_transform.position
+    );
+    sprintf(uniform_name, "point_lights[%i].color", i);
+    gpu->set_shader_vec3(
+      shader,
+      uniform_name,
+      point_source->point_light.color
+    );
+    sprintf(uniform_name, "point_lights[%i].attenuation", i);
+    gpu->set_shader_vec2(
+      shader,
+      uniform_name,
+      calculate_attenuation(point_source->point_light.strength)
+    );
+  }
 }

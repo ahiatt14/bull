@@ -32,6 +32,7 @@
 #define c_HAS_PARENT 1 << 19
 #define c_HAS_CHILDREN 1 << 20
 #define c_POINT_LIGHT 1 << 21
+#define c_RECEIVES_LIGHT 1 << 22
 
 typedef uint_fast16_t EntityId;
 typedef uint_fast32_t ComponentConfig;

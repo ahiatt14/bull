@@ -4,7 +4,7 @@
 
 #include "afterimages.h"
 
-#include "constants.h"
+#include "colors.h"
 
 #include "player_body_mesh.h"
 #include "player_left_leg_mesh.h"
@@ -51,7 +51,7 @@ static void draw_afterimage(
   gpu->set_shader_vec3(
     ecs->entities[id].draw.shader,
     "color",
-    COLOR_AQUA_BLUE
+    COLOR_MOONLIGHT
   );
 
   ecs__draw_mesh(

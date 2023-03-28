@@ -7,6 +7,8 @@
 
 #include "ecs.h"
 
+#include "colors.h"
+#include "lighting.h"
 #include "constants.h"
 #include "bull_math.h"
 #include "tail_helpers.h"
@@ -83,6 +85,19 @@ static ECS ecs;
 
 static Camera cam;
 static Gamepad gamepad;
+
+static Lighting lighting = {
+  .point_count = 0,
+  .ambient = {
+    .color = COLOR_WHITE,
+    .strength = 0.5f
+  },
+  .sky = {
+    .direction = { -1, 0, 0 },
+    .color = COLOR_EVENING_SUNLIGHT,
+    .strength = 0.2f
+  }
+};
 
 static NumberReadout top_right_debug = {
   .position = { 0.8, 0.8f },
@@ -196,9 +211,7 @@ void action__tick(
   ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
   gpu->clear_depth_buffer();
 
-  gpu->cull_back_faces();
-
-  ecs__draw(time, &cam, gpu, &ecs);
+  ecs__draw(time, &cam, &lighting, gpu, &ecs);
 
   top_right_debug.value = ecs.entities[PLAYER_ID].hierarchy.child_count;
   lcd_text__draw_number(top_right_debug, gpu);

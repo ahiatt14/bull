@@ -165,8 +165,6 @@ static void draw_waves(
   gpu->set_shader_vec2(shader, "wave2_dir", (Vec2){ -1, -1 });
   gpu->set_shader_vec2(shader, "wave2_props", (Vec2){ 25, 0.11 });
 
-  // gpu->set_shader_vec3(shader, "color", COLOR_OCEAN_BLUE);
-
   gpu->draw_tessellated_wireframe(waves->draw.mesh);
   gpu->draw_tessellated_mesh(waves->draw.mesh);
 }

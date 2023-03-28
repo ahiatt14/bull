@@ -42,6 +42,16 @@ void ecs__remove_parent_relationship(
   ECS *const ecs
 );
 
+void ecs__add_receives_light(
+  EntityId id,
+  ECS *const ecs
+);
+
+void ecs__remove_receives_light(
+  EntityId id,
+  ECS *const ecs
+);
+
 void ecs__add_point_light_source(
   EntityId id,
   PointLight light,

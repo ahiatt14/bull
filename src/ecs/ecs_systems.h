@@ -6,6 +6,8 @@
 
 #include "ecs_types.h"
 
+#include "lighting.h"
+
 void ecs__control_player(
   GameTime time,
   Gamepad gamepad,
@@ -71,7 +73,8 @@ void ecs__check_pickup_radius_collisions(
 
 void ecs__draw(
   GameTime time,
-  Camera const *const cam,
+  Camera const *const camera,
+  Lighting *const lighting,
   GPU const *const gpu,
   ECS *const ecs
 );

@@ -112,6 +112,26 @@ void ecs__remove_parent_relationship(
   );
 }
 
+void ecs__add_receives_light(
+  EntityId id,
+  ECS *const ecs
+) {
+  if (lacks_components(
+    c_RECEIVES_LIGHT,
+    ecs->entities[id].config
+  )) ecs->entities[id].config += c_RECEIVES_LIGHT;
+}
+
+void ecs__remove_receives_light(
+  EntityId id,
+  ECS *const ecs
+) {
+  if (has_component(
+    c_RECEIVES_LIGHT,
+    ecs->entities[id].config
+  )) ecs->entities[id].config -= c_RECEIVES_LIGHT;
+}
+
 void ecs__add_point_light_source(
   EntityId id,
   PointLight light,

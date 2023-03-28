@@ -4,6 +4,8 @@
 #include "tail.h"
 
 #include "scene.h"
+
+#include "colors.h"
 #include "constants.h"
 #include "tail_helpers.h"
 

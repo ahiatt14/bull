@@ -28,27 +28,6 @@ extern Shader SKYBOX_SHADER;
 extern PointBuffer POINT;
 extern DrawableMesh QUAD;
 
-extern const Vec3 COLOR_MALACHITE;
-extern const Vec3 COLOR_WHITE;
-extern const Vec3 COLOR_LIGHT_GREY;
-extern const Vec3 COLOR_BLACK;
-extern const Vec3 COLOR_RED;
-extern const Vec3 COLOR_GREEN;
-extern const Vec3 COLOR_BLUE;
-extern const Vec3 COLOR_SKY_BLUE;
-extern const Vec3 COLOR_GOLDEN_YELLOW;
-extern const Vec3 COLOR_EVENING_SUNLIGHT;
-extern const Vec3 COLOR_NEON_PURPLE;
-extern const Vec3 COLOR_AQUA_BLUE;
-extern const Vec3 COLOR_MAGENTA_WHITE;
-extern const Vec3 COLOR_DEEP_FOREST_GREEN;
-extern const Vec3 COLOR_ROYAL_GREEN;
-extern const Vec3 COLOR_DARK_GREY_BLUE;
-extern const Vec3 COLOR_DARK_SLATE_GREY;
-extern const Vec3 COLOR_BLOOD_RED;
-extern const Vec3 COLOR_HOT_PINK;
-extern const Vec3 COLOR_OCEAN_BLUE;
-
 extern const Vec3 ORIGIN;
 extern const CoordinateSpace WORLDSPACE;
 

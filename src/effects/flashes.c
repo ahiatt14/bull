@@ -6,6 +6,7 @@
 
 #include "flashes.h"
 
+#include "colors.h"
 #include "constants.h"
 #include "assets.h"
 #include "bull_math.h"

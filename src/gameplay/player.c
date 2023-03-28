@@ -57,6 +57,7 @@ EntityId create_player(
   EntityId core = ecs__create_entity(ecs);
 
   ecs__add_player_controller(core, ecs);
+  ecs__add_receives_light(core, ecs);
   ecs__add_look_at_center(core, ecs);
   ecs__add_velocity(core, (Vec3){0}, ecs);
   ecs__add_radius_collider(core, 0.2f, ecs);
