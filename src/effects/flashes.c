@@ -117,7 +117,7 @@ void create_autocannon_muzzle_flash(
     flash,
     (PointLight){
       .color = COLOR_EVENING_SUNLIGHT,
-      .strength = 50
+      .strength = 10
     },
     ecs
   );

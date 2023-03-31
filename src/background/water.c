@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdio.h>
 
 #include "tail.h"
 
@@ -14,9 +15,24 @@
 #include "waves_eval.h"
 #include "waves_frag.h"
 
-#define TESS_QUAD_VERTS_PER_EDGE 40
-#define TESS_QUAD_VERT_COUNT 1600
+#define TESS_QUAD_VERTS_PER_EDGE 32
+#define TESS_QUAD_VERT_COUNT 1024
 #define TESS_QUAD_INDEX_COUNT 10000
+
+#define WAVE_COUNT 4
+
+typedef struct BULLWAVE {
+  float wavelength;
+  float steepness;
+  Vec2 direction;
+} Wave;
+
+static Wave waves[WAVE_COUNT] = {
+  { 50, 0.2f, (Vec2){ -.707f, .707f } },
+  { 32, 0.14f, (Vec2){ -1, 0 } },
+  { 15, 0.1f, (Vec2){ 0, 1 } },
+  { 10, 0.1f, (Vec2){ 1, 0 } }
+};
 
 DrawableMesh tess_quad = (DrawableMesh){
   .vertices = (Vertex[TESS_QUAD_VERT_COUNT]){0},
@@ -77,6 +93,7 @@ EntityId create_water(
   // TODO: shouldn't be necessary fml, check the winding in
   // waves_eval.glsl
   ecs__add_draw_back_faces(waves, ecs);
+  ecs__add_receives_light(waves, ecs);
   ecs__add_draw(
     waves,
     (Draw){
@@ -139,32 +156,37 @@ static void draw_waves(
   ECS const *const ecs
 ) {
 
-  static Entity const *waves;
-  waves = &ecs->entities[id];
+  static Entity const *water;
+  water = &ecs->entities[id];
 
   static Shader *shader;
   static M4x4 model;
   static M3x3 normals_model;
 
-  shader = waves->draw.shader;
+  shader = water->draw.shader;
 
   space__create_model(&WORLDSPACE, hierarchy_transform, &model);
   space__create_normals_model(&model, &normals_model);
   gpu->set_shader_m4x4(shader, "model", &model);
   gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
 
-  gpu->set_shader_int(shader, "max_tess", 20);
+  gpu->set_shader_int(shader, "max_tess", 64);
   gpu->set_shader_float(shader, "min_dist", 60);
-  gpu->set_shader_float(shader, "max_dist", 800);
+  gpu->set_shader_float(shader, "max_dist", 1000);
 
-  gpu->set_shader_float(shader, "gravity", 6);
-  gpu->set_shader_vec2(shader, "wave0_dir", (Vec2){ -0.1, 0.5f });
-  gpu->set_shader_vec2(shader, "wave0_props", (Vec2){ 50, 0.3 });
-  gpu->set_shader_vec2(shader, "wave1_dir", (Vec2){ 1, -0.2f });
-  gpu->set_shader_vec2(shader, "wave1_props", (Vec2){ 35, 0.17 });
-  gpu->set_shader_vec2(shader, "wave2_dir", (Vec2){ -1, -1 });
-  gpu->set_shader_vec2(shader, "wave2_props", (Vec2){ 25, 0.11 });
+  gpu->set_shader_float(shader, "gravity", 3);
+  gpu->set_shader_int(shader, "wave_count", WAVE_COUNT);
 
-  gpu->draw_tessellated_wireframe(waves->draw.mesh);
-  gpu->draw_tessellated_mesh(waves->draw.mesh);
+  static char uniform_name[40];
+  for (uint_fast8_t i = 0; i < WAVE_COUNT; i++) {
+    sprintf(uniform_name, "waves[%u].wavelength", i);
+    gpu->set_shader_float(shader, uniform_name, waves[i].wavelength);
+    sprintf(uniform_name, "waves[%u].steepness", i);
+    gpu->set_shader_float(shader, uniform_name, waves[i].steepness);
+    sprintf(uniform_name, "waves[%u].direction", i);
+    gpu->set_shader_vec2(shader, uniform_name, waves[i].direction);
+  }
+
+  gpu->draw_tessellated_wireframe(water->draw.mesh);
+  gpu->draw_tessellated_mesh(water->draw.mesh);
 }

@@ -25,18 +25,19 @@
 static ECS ecs;
 
 static Camera camera;
-static Vec3 camera_look_target = { 200, 250, 0 };
+static Vec3 camera_look_target = { 200, 60, 0 };
 
 static Lighting lighting = {
   .point_count = 0,
   .ambient = {
-    .color = COLOR_WHITE,
-    .strength = 0.05f
+    .color = COLOR_MOONLIGHT,
+    .strength = 0.25f
   },
   .sky = {
     .direction = { -1, 0, 0 },
     .color = COLOR_EVENING_SUNLIGHT,
-    .strength = 0.2f
+    // .color = COLOR_RED,
+    .strength = 0.5f
   }
 };
 
@@ -46,7 +47,7 @@ void ocean__init(
   GPU const *const gpu
 ) {
 
-  camera.position = (Vec3){ -200, 8, 500 };
+  camera.position = (Vec3){ -50, 20, 350 };
   camera.look_target = camera_look_target;
   camera.horizontal_fov_in_deg = 80;
   camera.near_clip_distance = 1;

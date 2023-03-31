@@ -295,17 +295,22 @@ void light_entity(
     "ambient_strength",
     lighting->ambient.strength
   );
-  printf("ambient color: %.3f %.3f %.3f strength: %.3f\n",
-    lighting->ambient.color.x,
-    lighting->ambient.color.y,
-    lighting->ambient.color.z,
-    lighting->ambient.strength
-  );
 
-  // gpu->set_shader_vec3(
-  //   shader,
-  //   "sky_direction"
-  // );
+  gpu->set_shader_vec3(
+    shader,
+    "skylight_direction",
+    lighting->sky.direction
+  );
+  gpu->set_shader_vec3(
+    shader,
+    "skylight_color",
+    lighting->sky.color
+  );
+  gpu->set_shader_float(
+    shader,
+    "skylight_strength",
+    lighting->sky.strength
+  );
 
   // TODO: optimize with UBO?
   static Entity const *point_source;
@@ -328,14 +333,8 @@ void light_entity(
       ecs
     );
 
-    printf(
-      "x: %.3f y: %.3f z: %.3f strength: %.3f\n",
-      point_light_hierarchy_transform.position.x,
-      point_light_hierarchy_transform.position.y,
-      point_light_hierarchy_transform.position.z,
-      point_source->point_light.strength
-    );
-
+    // TODO: possible debug opportunity for lingering point light issue
+    // try sending 0 before light_entity is called if there's 0 lights???
     gpu->set_shader_int(
       shader,
       "point_count",

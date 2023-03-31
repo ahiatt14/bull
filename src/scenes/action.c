@@ -90,7 +90,7 @@ static Lighting lighting = {
   .point_count = 0,
   .ambient = {
     .color = COLOR_WHITE,
-    .strength = 0.5f
+    .strength = 0.1f
   },
   .sky = {
     .direction = { -1, 0, 0 },
@@ -256,6 +256,7 @@ void on_player_stop_autofire() {
   ecs__remove_repeat(PLAYER_ID, &ecs);
 }
 
+// TODO: move to gameplay/guns.c
 void fire_lvl0_cannon(
   EntityId weapon,
   Seconds remainder,

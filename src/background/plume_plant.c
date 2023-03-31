@@ -29,7 +29,7 @@
 #include "tower_pipes_mesh.h"
 #include "tower_discharges_mesh.h"
 
-#define PLUME_PLANT_SCALE 150
+#define PLUME_PLANT_SCALE 50
 
 // LOCALS
 
@@ -157,7 +157,7 @@ EntityId create_plume_plant(
     discharges,
     (ScrollUV){
       .total = (Vec2){0},
-      .speed = (Vec2){ 0.05f, -0.2f }
+      .speed = (Vec2){ 0, -0.05f }
     },
     ecs
   );
@@ -283,7 +283,7 @@ static inline Vec3 generate_mist_position(
     space__ccw_angle_rotate(
       WORLDSPACE.up,
       (M_PI * 2.0f) * ((float)i / 14.0f),
-      (Vec3){ 0, 0, -65 }
+      (Vec3){ 0, 0, -25 }
     )
   );
 }
@@ -302,15 +302,16 @@ static void spawn_discharge_mist(
       .position = generate_mist_position(
         ecs->entities[spawner].transform.position
       ),
-      .scale = 40
+      .scale = 12
     },
     ecs
   );
   ecs__add_velocity(
     mist,
-    (Vec3){ -1, 4, -2 },
+    (Vec3){ -1, 2.5f, -2 },
     ecs
   );
+  ecs__add_receives_light(mist, ecs);
   ecs__add_draw(
     mist,
     (Draw){
