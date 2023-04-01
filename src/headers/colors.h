@@ -11,5 +11,6 @@
 // FOR LIGHTS
 #define COLOR_EVENING_SUNLIGHT (Vec3){ 1, 0.98f, 0.9f }
 #define COLOR_MOONLIGHT (Vec3){ 0.9f, 1.0f, 1.0f }
+#define COLOR_WARM_SUNSET (Vec3){ 1.0f, 0.85f, 0.7f }
 
 #endif

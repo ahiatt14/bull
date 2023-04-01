@@ -25,19 +25,19 @@
 static ECS ecs;
 
 static Camera camera;
-static Vec3 camera_look_target = { 200, 60, 0 };
+static Vec3 camera_look_target = { 200, 150, 0 };
 
 static Lighting lighting = {
   .point_count = 0,
   .ambient = {
     .color = COLOR_MOONLIGHT,
-    .strength = 0.25f
+    .strength = 0.2f
   },
   .sky = {
     .direction = { -1, 0, 0 },
-    .color = COLOR_EVENING_SUNLIGHT,
+    .color = COLOR_WARM_SUNSET,
     // .color = COLOR_RED,
-    .strength = 0.5f
+    .strength = 0.6f
   }
 };
 
@@ -47,10 +47,10 @@ void ocean__init(
   GPU const *const gpu
 ) {
 
-  camera.position = (Vec3){ -50, 20, 350 };
+  camera.position = (Vec3){ 50, 10, 400 };
   camera.look_target = camera_look_target;
   camera.horizontal_fov_in_deg = 80;
-  camera.near_clip_distance = 1;
+  camera.near_clip_distance = 0.4f;
   camera.far_clip_distance = 2000;
   camera__calculate_lookat(WORLDSPACE.up, &camera);
   camera__calculate_perspective(vwprt, &camera);
@@ -83,7 +83,7 @@ void ocean__tick(
   // DRAW
 
   // TODO: can optimize here per learnopengl cubemap article
-  draw_ocean_skybox(&camera, gpu);
+  draw_ocean_skybox(time, &camera, gpu);
   gpu->clear_depth_buffer();
 
   ecs__draw(time, &camera, &lighting, gpu, &ecs);

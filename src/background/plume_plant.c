@@ -7,6 +7,7 @@
 
 #include "plume_plant.h"
 
+#include "colors.h"
 #include "constants.h"
 #include "assets.h"
 #include "bull_math.h"
@@ -17,9 +18,8 @@
 #include "billboard_vert.h"
 
 #include "flat_texture_frag.h"
-// #include "steam_column_mesh.h"
-// #include "steam_frag.h"
-// #include "steam_geo.h"
+#include "steam_column_mesh.h"
+#include "steam_frag.h"
 
 #include "standard_material_frag.h"
 
@@ -33,7 +33,7 @@
 
 // LOCALS
 
-// static Shader steam_shader;
+static Shader steam_shader;
 static Shader solid_material_shader;
 static Shader mist_shader;
 
@@ -45,14 +45,14 @@ static void destroy_mist(
   ECS *const ecs
 );
 
-// static void draw_plume(
-//   GameTime time,
-//   Camera const *const camera,
-//   GPU const *const gpu,
-//   Transform const *const hierarchy_transform,
-//   EntityId id,
-//   ECS const *const ecs
-// );
+static void draw_plume(
+  GameTime time,
+  Camera const *const camera,
+  GPU const *const gpu,
+  Transform const *const hierarchy_transform,
+  EntityId id,
+  ECS const *const ecs
+);
 
 static EntityId create_discharge_mist_spawner(
   EntityId cooling_tower,
@@ -72,11 +72,10 @@ void plume_plant__copy_assets_to_gpu(
   GPU const *const gpu
 ) {
 
-  // steam_shader.frag_src = FLAT_TEXTURE_FRAG_SRC;
-  // steam_shader.geo_src = STEAM_GEO_SRC;
-  // steam_shader.vert_src = DEFAULT_VERT_SRC;
-  // gpu->copy_shader_to_gpu(&steam_shader);
-  // gpu->copy_dynamic_mesh_to_gpu(&STEAM_COLUMN_MESH);
+  steam_shader.frag_src = STEAM_FRAG_SRC;
+  steam_shader.vert_src = DEFAULT_VERT_SRC;
+  gpu->copy_shader_to_gpu(&steam_shader);
+  gpu->copy_dynamic_mesh_to_gpu(&STEAM_COLUMN_MESH);
 
   solid_material_shader.frag_src = STANDARD_MATERIAL_FRAG_SRC;
   solid_material_shader.vert_src = DEFAULT_VERT_SRC;
@@ -172,72 +171,71 @@ EntityId create_plume_plant(
     ecs
   );
 
-  create_discharge_mist_spawner(
-    cooling_tower,
-    (Vec3){
-      0,
-      0,
-      2.35f * PLUME_PLANT_SCALE
-    },
-    ecs
-  );
-  create_discharge_mist_spawner(
-    cooling_tower,
-    (Vec3){
-      -2.35f * PLUME_PLANT_SCALE,
-      0,
-      0
-    },
-    ecs
-  );
-  create_discharge_mist_spawner(
-    cooling_tower,
-    (Vec3){
-      2.35f * PLUME_PLANT_SCALE,
-      0,
-      0
-    },
-    ecs
-  );
-  create_discharge_mist_spawner(
-    cooling_tower,
-    (Vec3){
-      0,
-      0,
-      -2.35f * PLUME_PLANT_SCALE
-    },
-    ecs
-  );
+  Vec3 initial_spawner_position = (Vec3){ 0, 0, 2.35f * PLUME_PLANT_SCALE };
+  
+  Vec3 spawner_offset;
+  for (int i = 0; i < 4; i++) {
 
-  // EntityId plume = ecs__create_entity(ecs);
+    spawner_offset = space__ccw_angle_rotate(
+      WORLDSPACE.up,
+      M_PI * 0.5f * i,
+      initial_spawner_position
+    );
 
-  // ecs__add_parent_relationship(cooling_tower, plume, ecs);
-  // ecs__add_transform(
-  //   plume,
-  //   (Transform){
-  //     .scale = 1,
-  //     .position = (Vec3){0}
-  //   },
-  //   ecs
-  // );
-  // ecs__add_uv_scroll(
-  //   plume,
-  //   (ScrollUV){
-  //     .speed = (Vec2){ 0, -0.01f },
-  //     .total = (Vec2){0}
-  //   },
-  //   ecs
-  // );
-  // ecs__add_draw(
-  //   plume,
-  //   (Draw){
-  //     .textures = STEAM_TEXTURE,
-  //     .draw = draw_plume,
-  //     .shader = &steam_shader,
-  //     .mesh = &STEAM_COLUMN_MESH
-  //   },
-  //   ecs
-  // );
+    create_discharge_mist_spawner(
+      cooling_tower,
+      spawner_offset,
+      ecs
+    );
+
+    // EntityId glow = ecs__create_entity(ecs);
+    // ecs__add_transform(
+    //   glow,
+    //   (Transform){
+    //     .position = spawner_offset
+    //   },
+    //   ecs
+    // );
+    // ecs__add_point_light_source(
+    //   glow,
+    //   (PointLight){
+    //     .color = COLOR_RED,
+    //     .strength = 300
+    //   },
+    //   ecs
+    // );
+  }
+
+  EntityId plume = ecs__create_entity(ecs);
+
+  ecs__add_parent_relationship(cooling_tower, plume, ecs);
+  ecs__add_receives_light(plume, ecs);
+  ecs__add_transform(
+    plume,
+    (Transform){
+      .scale = 1,
+      .position = (Vec3){0}
+    },
+    ecs
+  );
+  ecs__add_uv_scroll(
+    plume,
+    (ScrollUV){
+      .speed = (Vec2){ -0.01f, 0 },
+      .total = (Vec2){0}
+    },
+    ecs
+  );
+  ecs__add_draw(
+    plume,
+    (Draw){
+      .textures = STEAM_TEXTURE,
+      .draw = draw_plume,
+      .shader = &steam_shader,
+      .mesh = &STEAM_COLUMN_MESH
+    },
+    ecs
+  );
 
   return cooling_tower;
 }
@@ -283,7 +281,7 @@ static inline Vec3 generate_mist_position(
     space__ccw_angle_rotate(
       WORLDSPACE.up,
       (M_PI * 2.0f) * ((float)i / 14.0f),
-      (Vec3){ 0, 0, -25 }
+      (Vec3){ 0, -5, -26 }
     )
   );
 }
@@ -302,7 +300,7 @@ static void spawn_discharge_mist(
       .position = generate_mist_position(
         ecs->entities[spawner].transform.position
       ),
-      .scale = 12
+      .scale = 15
     },
     ecs
   );
@@ -333,40 +331,35 @@ static void spawn_discharge_mist(
   );
 }
 
-// static void draw_plume(
-//   GameTime time,
-//   Camera const *const camera,
-//   GPU const *const gpu,
-//   Transform const *const hierarchy_transform,
-//   EntityId id,
-//   ECS const *const ecs
-// ) {
+static void draw_plume(
+  GameTime time,
+  Camera const *const camera,
+  GPU const *const gpu,
+  Transform const *const hierarchy_transform,
+  EntityId id,
+  ECS const *const ecs
+) {
 
-//   gpu->set_shader_float(
-//     ecs->entities[id].draw.shader,
-//     "wavelength",
-//     10
-//   );
-//   gpu->set_shader_float(
-//     ecs->entities[id].draw.shader,
-//     "amplitude",
-//     0.2f
-//   );
-//   gpu->set_shader_float(
-//     ecs->entities[id].draw.shader,
-//     "speed",
-//     -0.01f
-//   );
+  gpu->set_shader_float(
+    ecs->entities[id].draw.shader,
+    "min_altitude",
+    200
+  );
+  gpu->set_shader_float(
+    ecs->entities[id].draw.shader,
+    "max_altitude",
+    700
+  );
 
-//   ecs__draw_mesh(
-//     time,
-//     camera,
-//     gpu,
-//     hierarchy_transform,
-//     id,
-//     ecs
-//   );
-// }
+  ecs__draw_mesh(
+    time,
+    camera,
+    gpu,
+    hierarchy_transform,
+    id,
+    ecs
+  );
+}
 
 static void destroy_mist(
   EntityId mist,

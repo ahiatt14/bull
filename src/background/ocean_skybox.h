@@ -12,6 +12,7 @@ void ocean_skybox__copy_assets_to_gpu(
 );
 
 void draw_ocean_skybox(
+  GameTime time,
   Camera const *const camera,
   GPU const *const gpu
 );

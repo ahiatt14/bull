@@ -321,6 +321,7 @@ void light_entity(
     if (lighting->point_sources[i] == id) continue;
 
     point_source = &ecs->entities[lighting->point_sources[i]];
+    point_light_hierarchy_transform = point_source->transform;
 
     // TODO: adjust light strength with timeout ratio??? good for blinks, etc
 
@@ -332,7 +333,7 @@ void light_entity(
       point_source,
       ecs
     );
-
+    
     // TODO: possible debug opportunity for lingering point light issue
     // try sending 0 before light_entity is called if there's 0 lights???
     gpu->set_shader_int(

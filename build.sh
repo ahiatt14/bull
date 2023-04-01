@@ -33,7 +33,6 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/waves_ctrl.glsl tess_ctrl && \
   ./${tools}validate-glsl.exe assets/glsl/waves_eval.glsl tess_eval && \
   ./${tools}validate-glsl.exe assets/glsl/steam_frag.glsl frag && \
-  ./${tools}validate-glsl.exe assets/glsl/steam_geo.glsl geo && \
   ./${tools}validate-glsl.exe assets/glsl/mushroom_cloud_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/explosion_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/flash_frag.glsl frag && \
@@ -57,7 +56,6 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/waves_ctrl.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/waves_eval.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/steam_frag.glsl $artifact_dir && \
-  ./${tools}sourcify-glsl.exe assets/glsl/steam_geo.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/mushroom_cloud_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/flash_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/explosion_frag.glsl $artifact_dir && \

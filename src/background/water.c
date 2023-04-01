@@ -28,10 +28,10 @@ typedef struct BULLWAVE {
 } Wave;
 
 static Wave waves[WAVE_COUNT] = {
-  { 50, 0.2f, (Vec2){ -.707f, .707f } },
-  { 32, 0.14f, (Vec2){ -1, 0 } },
-  { 15, 0.1f, (Vec2){ 0, 1 } },
-  { 10, 0.1f, (Vec2){ 1, 0 } }
+  { 200, 0.15f, (Vec2){ -.707f, .707f } },
+  { 180, 0.10f, (Vec2){ -1, 0 } },
+  { 150, 0.08f, (Vec2){ 0, 1 } },
+  { 50, 0.05f, (Vec2){ 1, 0 } }
 };
 
 DrawableMesh tess_quad = (DrawableMesh){
@@ -94,6 +94,14 @@ EntityId create_water(
   // waves_eval.glsl
   ecs__add_draw_back_faces(waves, ecs);
   ecs__add_receives_light(waves, ecs);
+  ecs__add_uv_scroll(
+    waves,
+    (ScrollUV){
+      .total = (Vec2){0},
+      .speed = (Vec2){ 0, 100 }
+    },
+    ecs
+  );
   ecs__add_draw(
     waves,
     (Draw){
@@ -132,7 +140,8 @@ void fill_tess_quad_data(
         vert_row * patch_length - origin_offset
       },
       .normal = (Vec3){ 0, 1, 0 },
-      .uv = (Vec2){ vert_row, vert_col } // NOTE: this tiles a texture per patch
+      // .uv = (Vec2){ vert_row, vert_col } // NOTE: this tiles a texture per patch
+      .uv = (Vec2){ vert_row * 4, vert_col * 4 }
     };
 
     if (
@@ -170,11 +179,11 @@ static void draw_waves(
   gpu->set_shader_m4x4(shader, "model", &model);
   gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
 
-  gpu->set_shader_int(shader, "max_tess", 64);
+  gpu->set_shader_int(shader, "max_tess", 16);
   gpu->set_shader_float(shader, "min_dist", 60);
-  gpu->set_shader_float(shader, "max_dist", 1000);
+  gpu->set_shader_float(shader, "max_dist", 500);
 
-  gpu->set_shader_float(shader, "gravity", 3);
+  gpu->set_shader_float(shader, "gravity", 7);
   gpu->set_shader_int(shader, "wave_count", WAVE_COUNT);
 
   static char uniform_name[40];
