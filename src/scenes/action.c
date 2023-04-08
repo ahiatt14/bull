@@ -90,10 +90,10 @@ static Lighting lighting = {
   .point_count = 0,
   .ambient = {
     .color = COLOR_WHITE,
-    .strength = 0.1f
+    .strength = 0.2f
   },
   .sky = {
-    .direction = { -1, 0, 0 },
+    .direction = { 0, -1, 0 },
     .color = COLOR_EVENING_SUNLIGHT,
     .strength = 0.2f
   }

@@ -39,7 +39,7 @@ vec3 calculate_point_light_diffuse(
 }
 
 uniform PointLight point_lights[MAX_POINT_LIGHTS];
-uniform int point_light_count = 0;
+uniform int point_count = 0;
 
 uniform vec3 ambient_color = vec3(1);
 uniform float ambient_strength = 0;
@@ -69,7 +69,7 @@ void main()
   );
 
   vec3 diffuse = vec3(0);
-  for (int i = 0; i < point_light_count; i++)
+  for (int i = 0; i < point_count; i++)
     diffuse += calculate_point_light_diffuse(
       point_lights[i],
       fs_in.normal,

@@ -311,13 +311,17 @@ void light_entity(
     lighting->sky.strength
   );
 
+  gpu->set_shader_int(
+    shader,
+    "point_count",
+    lighting->point_count
+  );
+
   // TODO: optimize with UBO?
   static Entity const *point_source;
   static char uniform_name[40];
   Transform point_light_hierarchy_transform;
   for (uint_fast8_t i = 0; i < lighting->point_count; i++) {
-
-    if (lighting->point_sources[i] == id) continue;
 
     point_source = &ecs->entities[lighting->point_sources[i]];
     point_light_hierarchy_transform = point_source->transform;
@@ -331,27 +335,6 @@ void light_entity(
       &point_light_hierarchy_transform,
       point_source,
       ecs
-    );
-
-    printf(
-      "ct: %u pos: %.2f %.2f %.2f col: %.2f %.2f %.2f att: %.2f %.2f\n",
-      lighting->point_count,
-      point_light_hierarchy_transform.position.x,
-      point_light_hierarchy_transform.position.y,
-      point_light_hierarchy_transform.position.z,
-      point_source->point_light.color.x,
-      point_source->point_light.color.y,
-      point_source->point_light.color.z,
-      calculate_attenuation(point_source->point_light.strength).x,
-      calculate_attenuation(point_source->point_light.strength).y
-    );
-    
-    // TODO: possible debug opportunity for lingering point light issue
-    // try sending 0 before light_entity is called if there's 0 lights???
-    gpu->set_shader_int(
-      shader,
-      "point_count",
-      lighting->point_count
     );
     sprintf(uniform_name, "point_lights[%i].position", i);
     gpu->set_shader_vec3(

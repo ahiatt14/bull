@@ -36,7 +36,7 @@ uniform float seconds_since_activation;
 uniform float limit_in_seconds;
 
 uniform PointLight point_lights[MAX_POINT_LIGHTS];
-uniform int point_light_count;
+uniform int point_count;
 
 uniform vec3 ambient_color = vec3(1);
 uniform float ambient_strength = 0;
@@ -62,7 +62,7 @@ void main()
   );
 
   vec3 diffuse = vec3(0);
-  for (int i = 0; i < point_light_count; i++)
+  for (int i = 0; i < point_count; i++)
     diffuse += calculate_diffuse(point_lights[i], fs_in.world_frag_pos);
 
   diffuse += skylight_color * skylight_strength * 0.5;
