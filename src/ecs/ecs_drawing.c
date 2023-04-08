@@ -14,18 +14,9 @@
 
 #define MAX_TEXTURES_PER_ENTITY 5
 
-// HELPER DECS
-
-void light_entity(
-  Lighting const *const lighting,
-  GPU const *const gpu,
-  EntityId id,
-  ECS const *const ecs
-);
-
-// move this to lighting.c
+// TODO: move this to lighting.c
 #define ATTENUATION_COUNT 12
-// TODO: maybe look for a function that can approximate a LUT like this?
+
 const Vec3 LIGHT_ATTENUATIONS[ATTENUATION_COUNT] = {
   { 7, 0.7f, 1.8f },
   { 13, 0.35f, 0.44f },
@@ -45,6 +36,17 @@ const Vec3 LIGHT_ATTENUATIONS[ATTENUATION_COUNT] = {
 
 // HELPER DECS
 
+void light_entity(
+  Lighting const *const lighting,
+  GPU const *const gpu,
+  EntityId id,
+  ECS const *const ecs
+);
+
+static Vec2 calculate_attenuation(
+  float strength
+);
+
 static inline uint_fast8_t has_texture(
   uint_fast16_t texture,
   uint_fast16_t entity_texture_mask
@@ -53,10 +55,6 @@ static inline uint_fast8_t has_texture(
 static void set_textures(
   Entity const *const entity,
   GPU const *const gpu
-);
-
-static Vec2 calculate_attenuation(
-  float strength
 );
 
 // PUBLIC API
@@ -285,6 +283,7 @@ void light_entity(
   shader = ecs->entities[id].draw.shader;
 
   // TODO: can I send a whole struct at once?
+  // UBO!
   gpu->set_shader_vec3(
     shader,
     "ambient_color", 
@@ -332,6 +331,19 @@ void light_entity(
       &point_light_hierarchy_transform,
       point_source,
       ecs
+    );
+
+    printf(
+      "ct: %u pos: %.2f %.2f %.2f col: %.2f %.2f %.2f att: %.2f %.2f\n",
+      lighting->point_count,
+      point_light_hierarchy_transform.position.x,
+      point_light_hierarchy_transform.position.y,
+      point_light_hierarchy_transform.position.z,
+      point_source->point_light.color.x,
+      point_source->point_light.color.y,
+      point_source->point_light.color.z,
+      calculate_attenuation(point_source->point_light.strength).x,
+      calculate_attenuation(point_source->point_light.strength).y
     );
     
     // TODO: possible debug opportunity for lingering point light issue

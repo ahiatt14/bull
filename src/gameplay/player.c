@@ -91,6 +91,7 @@ EntityId create_player(
   EntityId left_leg = ecs__create_entity(ecs);
 
   ecs__add_parent_relationship(core, left_leg, ecs);
+  ecs__add_receives_light(left_leg, ecs);
   ecs__add_transform(
     left_leg,
     (Transform){
@@ -114,6 +115,7 @@ EntityId create_player(
   EntityId right_leg = ecs__create_entity(ecs);
 
   ecs__add_parent_relationship(core, right_leg, ecs);
+  ecs__add_receives_light(right_leg, ecs);
   ecs__add_transform(
     right_leg,
     (Transform){

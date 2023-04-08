@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdio.h>
 
 #include "tail.h"
 
@@ -117,7 +118,7 @@ void create_autocannon_muzzle_flash(
     flash,
     (PointLight){
       .color = COLOR_EVENING_SUNLIGHT,
-      .strength = 10
+      .strength = 100
     },
     ecs
   );
