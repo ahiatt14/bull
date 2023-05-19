@@ -359,29 +359,12 @@ void handle_radial_launcher_picked_up_by_player(
     ecs
   );
 
-  ecs__remove_player_controller(player, ecs);
-  ecs__remove_look_at_center(player, ecs);
-  ecs->entities[player].draw.shader = &SOLID_COLOR_SHADER;
-  ecs__remove_velocity(player, ecs);
-  ecs__add_vec3lerp(
+  launch_entity_radially(
+    start_position,
+    end_position,
+    travel_time,
+    return_player_control,
     player,
-    (Vec3Lerp){
-      .start = start_position,
-      .end = end_position,
-      .age = 0,
-      .duration = travel_time,
-      .lerp = vec3__linear_lerp,
-      .on_finish = return_player_control
-    },
-    ecs
-  );
-  ecs__add_repeat(
-    player,
-    (Repeat){
-      .age = 0,
-      .interval = 0.01f,
-      .on_interval = create_player_afterimage
-    },
     ecs
   );
 }

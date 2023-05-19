@@ -13,7 +13,7 @@
 #include "default_vert.h"
 #include "afterimage_frag.h"
 
-static Shader player_afterimage_shader;
+static Shader afterimage_shader;
 
 static void destroy_afterimage(
   EntityId afterimage,
@@ -27,9 +27,9 @@ void afterimages__copy_assets_to_gpu(
   GPU const *const gpu
 ) {
 
-  player_afterimage_shader.frag_src = AFTERIMAGE_FRAG_SRC;
-  player_afterimage_shader.vert_src = DEFAULT_VERT_SRC;
-  gpu->copy_shader_to_gpu(&player_afterimage_shader);
+  afterimage_shader.frag_src = AFTERIMAGE_FRAG_SRC;
+  afterimage_shader.vert_src = DEFAULT_VERT_SRC;
+  gpu->copy_shader_to_gpu(&afterimage_shader);
 
   // gpu->copy_static_mesh_to_gpu(&REX_MESH);
 }
@@ -64,24 +64,21 @@ static void draw_afterimage(
   );
 }
 
-// TODO: can easily be made reusable,
-// pass in params like timeout limit
-// shader, and draw callback
-void create_player_afterimage(
-  EntityId player,
+void create_afterimage(
+  EntityId entity,
   Seconds remainder,
   ECS *const ecs
 ) {
 
-  EntityId core_afterimage = ecs__create_entity(ecs);
+  EntityId afterimage = ecs__create_entity(ecs);
   ecs__add_transform(
-    core_afterimage,
-    ecs->entities[player].transform,
+    afterimage,
+    ecs->entities[entity].transform,
     ecs
   );
-  ecs__add_alpha_effect(core_afterimage, ecs);
+  ecs__add_alpha_effect(afterimage, ecs);
   ecs__add_timeout(
-    core_afterimage,
+    afterimage,
     (Timeout){
       .age = remainder,
       .limit = 0.2f,
@@ -90,11 +87,11 @@ void create_player_afterimage(
     ecs
   );
   ecs__add_draw(
-    core_afterimage,
+    afterimage,
     (Draw){
-      .mesh = &PLAYER_BODY_MESH,
+      .mesh = ecs->entities[entity].draw.mesh,
       .draw = draw_afterimage,
-      .shader = &player_afterimage_shader,
+      .shader = &afterimage_shader,
       .textures = 0
     },
     ecs
@@ -134,7 +131,7 @@ void create_player_afterimage(
   //     (Draw){
   //       .mesh = ecs->entities[child_part].draw.mesh,
   //       .draw = draw_afterimage,
-  //       .shader = &player_afterimage_shader,
+  //       .shader = &afterimage_shader,
   //       .textures = 0
   //     },
   //     ecs

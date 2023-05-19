@@ -23,6 +23,19 @@ EntityId create_radial_launcher(
   ECS *const ecs
 );
 
+void launch_entity_radially(
+  Vec3 start_position,
+  Vec3 end_position,
+  Seconds travel_time,
+  void (*on_reach_destination)(
+    EntityId entity,
+    Seconds remainder,
+    ECS *const ecs
+  ),
+  EntityId entity,
+  ECS *const ecs
+);
+
 void create_radial_launcher_spawner(
   ECS *const ecs
 );

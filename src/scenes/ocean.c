@@ -51,7 +51,7 @@ void ocean__init(
   camera.look_target = camera_look_target;
   camera.horizontal_fov_in_deg = 80;
   camera.near_clip_distance = 0.4f;
-  camera.far_clip_distance = 2000;
+  camera.far_clip_distance = 3000;
   camera__calculate_lookat(WORLDSPACE.up, &camera);
   camera__calculate_perspective(vwprt, &camera);
 
@@ -62,6 +62,7 @@ void ocean__init(
 
   plume_plant__copy_assets_to_gpu(gpu);
   create_plume_plant((Vec3){0}, &ecs);
+  create_plume_plant((Vec3){ 400, 0, -500 }, &ecs);
 }
 
 void ocean__tick(

@@ -147,52 +147,50 @@ int main() {
 
     if (paused) {
       window.wait_on_events();
-    } else {
-      window.poll_events();
+      continue;
+    }
+    
+    window.poll_events();
+
+    static double tick_start_time;
+    static GameTime time;
+
+    tick_start_time = time.sec_since_game_launch;
+    time.sec_since_game_launch = window.get_seconds_since_creation();
+    time.delta = time.sec_since_game_launch - tick_start_time;
+    if (time.delta > DELTA_CAP) time.delta = DELTA_CAP;
+
+    gpu.clear(&COLOR_BLACK);
+
+    window.get_gamepad_input(&gamepad);
+
+    if (button_was_released(BUTTON_Y, &gamepad)) {
+      break;
     }
 
-    if (!paused) {
-
-      static double tick_start_time;
-      static GameTime time;
-
-      tick_start_time = time.sec_since_game_launch;
-      time.sec_since_game_launch = window.get_seconds_since_creation();
-      time.delta = time.sec_since_game_launch - tick_start_time;
-      if (time.delta > DELTA_CAP) time.delta = DELTA_CAP;
-
-      gpu.clear(&COLOR_BLACK);
-
-      window.get_gamepad_input(&gamepad);
-
-      if (button_was_released(BUTTON_Y, &gamepad)) {
-        break;
+    if (button_was_released(BUTTON_SELECT, &gamepad)) {
+      if (window.is_fullscreen()) {
+        window.switch_to_windowed(
+          100,
+          50,
+          650,
+          650
+        );
+      } else {
+        window.switch_to_fullscreen();
       }
-
-      if (button_was_released(BUTTON_SELECT, &gamepad)) {
-        if (window.is_fullscreen()) {
-          window.switch_to_windowed(
-            100,
-            50,
-            650,
-            650
-          );
-        } else {
-          window.switch_to_fullscreen();
-        }
-      }
-
-      scenes[current_scene]->tick(
-        time,
-        &window,
-        &vwprt,
-        &gpu,
-        previous_scene,
-        switch_scene
-      );
-
-      window.request_buffer_swap();
     }
+
+    scenes[current_scene]->tick(
+      time,
+      &window,
+      &vwprt,
+      &gpu,
+      previous_scene,
+      switch_scene
+    );
+
+    window.request_buffer_swap();
   }
   
   window.end();

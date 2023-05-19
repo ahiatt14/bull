@@ -12,6 +12,7 @@
 #include "constants.h"
 #include "bull_math.h"
 
+#define MAX_UNIFORM_NAME_LENGTH 100
 #define MAX_TEXTURES_PER_ENTITY 5
 
 // TODO: move this to lighting.c
@@ -319,7 +320,7 @@ void light_entity(
 
   // TODO: optimize with UBO?
   static Entity const *point_source;
-  static char uniform_name[40];
+  static char uniform_name[MAX_UNIFORM_NAME_LENGTH];
   Transform point_light_hierarchy_transform;
   for (uint_fast8_t i = 0; i < lighting->point_count; i++) {
 

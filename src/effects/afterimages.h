@@ -11,8 +11,8 @@ void afterimages__copy_assets_to_gpu(
   GPU const *const gpu
 );
 
-void create_player_afterimage(
-  EntityId player,
+void create_afterimage(
+  EntityId entity,
   Seconds remainder,
   ECS *const ecs
 );
