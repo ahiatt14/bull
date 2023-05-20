@@ -1,5 +1,5 @@
 bin/
 obj/
 src/temp_asset_src_files/
-
+.vscode/
 game.exe

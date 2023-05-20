@@ -77,7 +77,8 @@ typedef struct BULLREPEAT {
 
 typedef struct BULLPOINTLIGHT {
   Vec3 color;
-  float strength; // NOTE: 
+  float strength; // NOTE:
+  // TODO: lol blank note smh
 } PointLight;
 
 typedef struct BULLDRAW {

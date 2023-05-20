@@ -33,6 +33,7 @@ build_assets() {
   ./${tools}validate-glsl.exe assets/glsl/waves_ctrl.glsl tess_ctrl && \
   ./${tools}validate-glsl.exe assets/glsl/waves_eval.glsl tess_eval && \
   ./${tools}validate-glsl.exe assets/glsl/steam_frag.glsl frag && \
+  ./${tools}validate-glsl.exe assets/glsl/cloud_cover_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/mushroom_cloud_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/explosion_frag.glsl frag && \
   ./${tools}validate-glsl.exe assets/glsl/flash_frag.glsl frag && \
@@ -56,6 +57,7 @@ build_assets() {
   ./${tools}sourcify-glsl.exe assets/glsl/waves_ctrl.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/waves_eval.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/steam_frag.glsl $artifact_dir && \
+  ./${tools}sourcify-glsl.exe assets/glsl/cloud_cover_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/mushroom_cloud_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/flash_frag.glsl $artifact_dir && \
   ./${tools}sourcify-glsl.exe assets/glsl/explosion_frag.glsl $artifact_dir && \
@@ -69,7 +71,6 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/lcd_number.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/water.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/mountain.png 3 $artifact_dir && \
-  ./${tools}sourcify-png.exe assets/png/clouds.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/fireball.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/blue_pulse.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/concrete_wall.png 3 $artifact_dir && \
@@ -81,6 +82,7 @@ build_assets() {
   ./${tools}sourcify-png.exe assets/png/dark_rust.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/arrow.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/steam.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/clouds.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/cooling_tower_light.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/ocean_sky_nx.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/ocean_sky_px.png 3 $artifact_dir && \
@@ -93,18 +95,19 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_mushroom_cloud.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/exclamation.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/bird.obj $artifact_dir && \
-  ./${tools}sourcify-obj.exe assets/mesh/steam_column.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_flat.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_smooth.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/rocket.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/cooling_tower.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/muzzle_flash.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/steam_column.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/cloud_wall.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/mountain.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/arrow.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/cubemap.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/tower_pipes.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/tower_discharges.obj $artifact_dir && \
+  ./${tools}sourcify-obj.exe assets/mesh/cloud_cover.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/player_body.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/player_left_leg.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/player_right_leg.obj $artifact_dir

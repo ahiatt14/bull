@@ -52,8 +52,8 @@ Cubemap OCEAN_SKYBOX = {
   .sides = (Texture*[6]){
     &OCEAN_SKY_PX_TAIL_TEXTURE,
     &OCEAN_SKY_NX_TAIL_TEXTURE,
-    &OCEAN_SKY_PY_TAIL_TEXTURE,
     &OCEAN_SKY_NY_TAIL_TEXTURE,
+    &OCEAN_SKY_PY_TAIL_TEXTURE,
     &OCEAN_SKY_PZ_TAIL_TEXTURE,
     &OCEAN_SKY_NZ_TAIL_TEXTURE
   }
@@ -72,7 +72,7 @@ void assets__copy_textures_to_gpu(
   gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &STEAM_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &WATER_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &BLUE_PULSE_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &MOUNTAIN_TAIL_TEXTURE);
+  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &MOUNTAIN_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &DARK_RUST_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &SMALL_SPARK_TAIL_TEXTURE);
   gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &ARROW_TAIL_TEXTURE);

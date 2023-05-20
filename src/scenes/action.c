@@ -211,10 +211,10 @@ void action__tick(
   ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
   gpu->clear_depth_buffer();
 
-  ecs__draw(time, &cam, &lighting, gpu, &ecs);
+  // ecs__draw(time, &cam, &lighting, gpu, &ecs);
 
   top_right_debug.value = ecs.entities[PLAYER_ID].hierarchy.child_count;
-  lcd_text__draw_number(top_right_debug, gpu);
+  // lcd_text__draw_number(top_right_debug, gpu);
 }
 
 // void guide_lag_update(

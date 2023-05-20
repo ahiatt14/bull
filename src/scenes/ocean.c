@@ -19,6 +19,15 @@
 #include "ocean_skybox.h"
 #include "water.h"
 #include "plume_plant.h"
+#include "cloud_cover.h"
+#include "cloud_wall.h"
+
+#include "cloud_cover_mesh.h"
+#include "mountain_mesh.h"
+#include "cloud_wall_mesh.h"
+#include "standard_material_frag.h"
+#include "default_vert.h"
+#include "flat_texture_frag.h"
 
 // LOCALS
 
@@ -30,16 +39,16 @@ static Vec3 camera_look_target = { 200, 150, 0 };
 static Lighting lighting = {
   .point_count = 0,
   .ambient = {
-    .color = COLOR_MOONLIGHT,
-    .strength = 0.2f
+    .color = COLOR_WARM_SUNSET,
+    .strength = 0.28f
   },
   .sky = {
-    .direction = { -1, 0, 0 },
-    .color = COLOR_WARM_SUNSET,
-    // .color = COLOR_RED,
-    .strength = 0.6f
+    .color = COLOR_MOONLIGHT,
+    .strength = 0.5f
   }
 };
+
+static Shader solid_material_shader;
 
 void ocean__init(
   Window const *const window,
@@ -47,7 +56,7 @@ void ocean__init(
   GPU const *const gpu
 ) {
 
-  camera.position = (Vec3){ 50, 10, 400 };
+  camera.position = (Vec3){ 50, 10, 700 };
   camera.look_target = camera_look_target;
   camera.horizontal_fov_in_deg = 80;
   camera.near_clip_distance = 0.4f;
@@ -55,7 +64,43 @@ void ocean__init(
   camera__calculate_lookat(WORLDSPACE.up, &camera);
   camera__calculate_perspective(vwprt, &camera);
 
+  lighting.sky.direction = vec3__normalize((Vec3){ -1, 0, 0 });
+
   ocean_skybox__copy_assets_to_gpu(gpu);
+  
+  cloud_cover__copy_assets_to_gpu(gpu);
+  create_cloud_cover(&ecs);
+  cloud_wall__copy_assets_to_gpu(gpu);
+  create_cloud_wall(&ecs);
+
+  solid_material_shader.frag_src = STANDARD_MATERIAL_FRAG_SRC;
+  solid_material_shader.vert_src = DEFAULT_VERT_SRC;
+  gpu->copy_shader_to_gpu(&solid_material_shader);
+
+  // MOUNTAIN
+
+  gpu->copy_static_mesh_to_gpu(&MOUNTAIN_MESH);
+  EntityId mountain = ecs__create_entity(&ecs);
+  ecs__add_transform(
+    mountain,
+    (Transform){
+      .position = (Vec3){ 800, 0, -1200 },
+      .scale = 400,
+      .rotation = quaternion__create(WORLDSPACE.up, M_PI * -0.35f)
+    },
+    &ecs
+  );
+  ecs__add_receives_light(mountain, &ecs);
+  ecs__add_draw(
+    mountain,
+    (Draw){
+      .mesh = &MOUNTAIN_MESH,
+      .draw = ecs__draw_mesh,
+      .textures = MOUNTAIN_TEXTURE,
+      .shader = &solid_material_shader
+    },
+    &ecs
+  ); 
 
   water__copy_assets_to_gpu(gpu);
   create_water(&ecs);

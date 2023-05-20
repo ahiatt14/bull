@@ -27,11 +27,18 @@ typedef struct BULLWAVE {
   Vec2 direction;
 } Wave;
 
+// static Wave waves[WAVE_COUNT] = {
+//   { 200, 0.15f, (Vec2){ -.707f, .707f } },
+//   { 180, 0.10f, (Vec2){ -1, 0 } },
+//   { 150, 0.08f, (Vec2){ 0, 1 } },
+//   { 50, 0.05f, (Vec2){ 1, 0 } }
+// };
+
 static Wave waves[WAVE_COUNT] = {
-  { 200, 0.15f, (Vec2){ -.707f, .707f } },
-  { 180, 0.10f, (Vec2){ -1, 0 } },
-  { 150, 0.08f, (Vec2){ 0, 1 } },
-  { 50, 0.05f, (Vec2){ 1, 0 } }
+  { 50, 0.15f, (Vec2){ -.707f, .707f } },
+  { 45, 0.10f, (Vec2){ -1, 0 } },
+  { 35, 0.08f, (Vec2){ 0, 1 } },
+  { 13, 0.05f, (Vec2){ 1, 0 } }
 };
 
 DrawableMesh tess_quad = (DrawableMesh){
@@ -140,8 +147,7 @@ void fill_tess_quad_data(
         vert_row * patch_length - origin_offset
       },
       .normal = (Vec3){ 0, 1, 0 },
-      // .uv = (Vec2){ vert_row, vert_col } // NOTE: this tiles a texture per patch
-      .uv = (Vec2){ vert_row * 4, vert_col * 4 }
+      .uv = (Vec2){ vert_row, vert_col } // NOTE: this tiles a texture per patch
     };
 
     if (

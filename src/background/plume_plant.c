@@ -343,12 +343,12 @@ static void draw_plume(
   gpu->set_shader_float(
     ecs->entities[id].draw.shader,
     "min_altitude",
-    200
+    300
   );
   gpu->set_shader_float(
     ecs->entities[id].draw.shader,
     "max_altitude",
-    700
+    500
   );
 
   ecs__draw_mesh(

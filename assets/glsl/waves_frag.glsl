@@ -65,7 +65,7 @@ void main()
 
   float skylight_incidence =
     calculate_incidence(-skylight_direction, fs_in.normal);
-  diffuse += skylight_color * skylight_strength * skylight_incidence * 4.0;
+  diffuse += skylight_color * skylight_strength * skylight_incidence;
   
   FragColor = vec4(
     material.rgb * (diffuse + (ambient_color * ambient_strength)),
