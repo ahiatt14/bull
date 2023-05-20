@@ -36,7 +36,7 @@ void create_light_row();
 static ECS ecs;
 
 static Camera camera;
-static Vec3 camera_look_target = { 200, 150, 0 };
+static EntityId camera_id, camera_look_id;
 
 static Lighting lighting = {
   .point_count = 0,
@@ -58,13 +58,35 @@ void ocean__init(
   GPU const *const gpu
 ) {
 
-  camera.position = (Vec3){ 50, 10, 700 };
-  camera.look_target = camera_look_target;
+  camera_id = ecs__create_entity(&ecs);
+  ecs__add_transform(
+    camera_id,
+    (Transform){
+      .position = (Vec3){ 50, 3, 700 }
+    },
+    &ecs
+  );
+  ecs__add_velocity(
+    camera_id,
+    (Vec3){ 1, 0, -3 },
+    &ecs
+  );
+  camera_look_id = ecs__create_entity(&ecs);
+  ecs__add_transform(
+    camera_look_id,
+    (Transform){
+      .position = (Vec3){ 200, 150, 0 }
+    },
+    &ecs
+  );
+  ecs__add_velocity(
+    camera_look_id,
+    (Vec3){ 1, 0, -3 },
+    &ecs
+  );
   camera.horizontal_fov_in_deg = 80;
   camera.near_clip_distance = 0.4f;
   camera.far_clip_distance = 3000;
-  camera__calculate_lookat(WORLDSPACE.up, &camera);
-  camera__calculate_perspective(vwprt, &camera);
 
   lighting.sky.direction = vec3__normalize((Vec3){ -1, 0, 0 });
 
@@ -131,6 +153,12 @@ void ocean__tick(
   ecs__destroy_marked_entities(&ecs);
 
   // DRAW
+  
+  camera.position = ecs.entities[camera_id].transform.position;
+  camera.look_target = ecs.entities[camera_look_id].transform.position;
+  
+  camera__calculate_lookat(WORLDSPACE.up, &camera);
+  camera__calculate_perspective(vwprt, &camera);
 
   // TODO: can optimize here per learnopengl cubemap article
   draw_ocean_skybox(time, &camera, gpu);
@@ -138,6 +166,8 @@ void ocean__tick(
 
   ecs__draw(time, &camera, &lighting, gpu, &ecs);
 }
+
+// HELPER DEFS
 
 void turn_light_on(EntityId light) {
  ecs__add_point_light_source(

@@ -35,10 +35,10 @@ typedef struct BULLWAVE {
 // };
 
 static Wave waves[WAVE_COUNT] = {
-  { 50, 0.15f, (Vec2){ -.707f, .707f } },
-  { 45, 0.10f, (Vec2){ -1, 0 } },
-  { 35, 0.08f, (Vec2){ 0, 1 } },
-  { 13, 0.05f, (Vec2){ 1, 0 } }
+  { 2.5, 0.3f, (Vec2){ -.707f, .707f } },
+  { 3, 0.18f, (Vec2){ -1, 0 } },
+  { 2.5f, 0.15f, (Vec2){ 0, 1 } },
+  { 0.4f, 0.1f, (Vec2){ 1, 0 } }
 };
 
 DrawableMesh tess_quad = (DrawableMesh){
@@ -147,7 +147,8 @@ void fill_tess_quad_data(
         vert_row * patch_length - origin_offset
       },
       .normal = (Vec3){ 0, 1, 0 },
-      .uv = (Vec2){ vert_row, vert_col } // NOTE: this tiles a texture per patch
+      // .uv = (Vec2){ vert_row, vert_col } // NOTE: this tiles a texture per patch
+      .uv = (Vec2){ vert_row * 5, vert_col * 5 }
     };
 
     if (
@@ -185,7 +186,7 @@ static void draw_waves(
   gpu->set_shader_m4x4(shader, "model", &model);
   gpu->set_shader_m3x3(shader, "normals_model", &normals_model);
 
-  gpu->set_shader_int(shader, "max_tess", 16);
+  gpu->set_shader_int(shader, "max_tess", 24);
   gpu->set_shader_float(shader, "min_dist", 60);
   gpu->set_shader_float(shader, "max_dist", 500);
 
