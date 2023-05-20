@@ -143,7 +143,7 @@ void action__init(
     fire_lvl0_cannon,
     &ecs
   );
-  create_firing_guide(&ecs);
+  // create_firing_guide(&ecs);
 
   ocean__init(window, vwprt, gpu);
 
@@ -154,7 +154,7 @@ void action__init(
     handle_radial_launcher_picked_up_by_player,
     window->get_seconds_since_creation
   );
-  create_radial_launcher_spawner(&ecs);
+  // create_radial_launcher_spawner(&ecs);
 }
 
 void action__tick(
@@ -211,7 +211,7 @@ void action__tick(
   ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
   gpu->clear_depth_buffer();
 
-  // ecs__draw(time, &cam, &lighting, gpu, &ecs);
+  ecs__draw(time, &cam, &lighting, gpu, &ecs);
 
   top_right_debug.value = ecs.entities[PLAYER_ID].hierarchy.child_count;
   // lcd_text__draw_number(top_right_debug, gpu);

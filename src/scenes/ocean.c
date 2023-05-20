@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdint.h>
 #include <math.h>
 
 #include "tail.h"
@@ -22,12 +23,13 @@
 #include "cloud_cover.h"
 #include "cloud_wall.h"
 
-#include "cloud_cover_mesh.h"
 #include "mountain_mesh.h"
-#include "cloud_wall_mesh.h"
 #include "standard_material_frag.h"
 #include "default_vert.h"
-#include "flat_texture_frag.h"
+
+// LIGHTS
+
+void create_light_row();
 
 // LOCALS
 
@@ -76,6 +78,8 @@ void ocean__init(
   solid_material_shader.frag_src = STANDARD_MATERIAL_FRAG_SRC;
   solid_material_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&solid_material_shader);
+
+  create_light_row();
 
   // MOUNTAIN
 
@@ -133,4 +137,72 @@ void ocean__tick(
   gpu->clear_depth_buffer();
 
   ecs__draw(time, &camera, &lighting, gpu, &ecs);
+}
+
+void turn_light_on(EntityId light) {
+ ecs__add_point_light_source(
+    light,
+    (PointLight){
+      .color = COLOR_RED,
+      .strength = 400
+    },
+    &ecs
+  );
+  ecs__add_draw(
+    light,
+    (Draw){
+      .mesh = NULL,
+      .textures = COOLING_TOWER_LIGHT_TEXTURE,
+      .shader = &DEFAULT_BILLBOARD_SHADER,
+      .draw = ecs__draw_billboard
+    },
+    &ecs
+  );
+}
+void toggle_light(
+  EntityId light,
+  Seconds remainder,
+  ECS *const ecs
+) {
+  if (lacks_components(
+    c_POINT_LIGHT | c_DRAW,
+    ecs->entities[light].config
+  )) {
+    turn_light_on(light);
+  } else {
+    ecs__remove_point_light_source(light, ecs);
+    ecs__remove_draw(light, ecs);
+  }
+}
+
+void create_light_row() {
+
+  static const uint_fast8_t LIGHT_COUNT = 7;
+
+  Vec3 start = (Vec3){ 400, 40, -400 };
+  Vec3 offset = (Vec3){ -80, 0, 140 };
+
+  for (int i = 0; i < LIGHT_COUNT; i++) {
+    EntityId light = ecs__create_entity(&ecs);
+    ecs__add_transform(
+      light,
+      (Transform){
+        .position = vec3_plus_vec3(start, scalar_x_vec3(i, offset)),
+        .scale = 5,
+        .rotation = quaternion__create(WORLDSPACE.up, 0)
+      },
+      &ecs
+    );
+    ecs__add_alpha_effect(light, &ecs);
+    if (i % 2 == 0) turn_light_on(light);
+    ecs__add_repeat(
+      light,
+      (Repeat){
+        .age = 0,
+        .interval = 1,
+        .on_interval = toggle_light
+      },
+      &ecs
+    );
+  }
 }
