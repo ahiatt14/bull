@@ -45,7 +45,11 @@ uniform float skylight_strength = 0;
 
 uniform vec2 uv_scroll = vec2(0, 0);
 
-uniform sampler2D surface_texture;
+uniform sampler2D water;
+uniform sampler2D wave_crest;
+
+uniform float min_altitude = 0;
+uniform float max_altitude = 1;
 
 in TES_OUT {
   vec3 world_frag_pos;
@@ -57,7 +61,8 @@ out vec4 FragColor;
 
 void main()
 {
-  vec3 material = texture(surface_texture, fs_in.tex_uv).rgb;
+  vec3 surface = texture(water, fs_in.tex_uv).rgb;
+  vec3 crest = texture(wave_crest, fs_in.tex_uv).rgb;
 
   vec3 diffuse = vec3(0);
   for (int i = 0; i < point_count; i++)
@@ -66,9 +71,23 @@ void main()
   float skylight_incidence =
     calculate_incidence(-skylight_direction, fs_in.normal);
   diffuse += skylight_color * skylight_strength * skylight_incidence;
+
+  float normalized_altitude = max(
+    0,
+    fs_in.world_frag_pos.y /
+    (max_altitude - min_altitude)
+  );
+
+  vec3 color = mix(
+    surface,
+    crest,
+    normalized_altitude
+  );
+
+  vec3 light = diffuse + (ambient_color * ambient_strength);
   
   FragColor = vec4(
-    material.rgb * (diffuse + (ambient_color * ambient_strength)),
-    1.0
+    color * light,
+    normalized_altitude + 0.5
   );
 }

@@ -70,6 +70,7 @@ build_assets() {
   && \
   ./${tools}sourcify-png.exe assets/png/lcd_number.png 4 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/water.png 3 $artifact_dir && \
+  ./${tools}sourcify-png.exe assets/png/wave_crest.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/mountain.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/fireball.png 3 $artifact_dir && \
   ./${tools}sourcify-png.exe assets/png/blue_pulse.png 4 $artifact_dir && \

@@ -62,13 +62,13 @@ void ocean__init(
   ecs__add_transform(
     camera_id,
     (Transform){
-      .position = (Vec3){ 50, 3, 700 }
+      .position = (Vec3){ 50, 2.5f, 700 }
     },
     &ecs
   );
   ecs__add_velocity(
     camera_id,
-    (Vec3){ 1, 0, -3 },
+    (Vec3){ 2, 0, -4 },
     &ecs
   );
   camera_look_id = ecs__create_entity(&ecs);
