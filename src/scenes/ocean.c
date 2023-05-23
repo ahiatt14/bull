@@ -79,11 +79,11 @@ void ocean__init(
     },
     &ecs
   );
-  ecs__add_velocity(
-    camera_look_id,
-    (Vec3){ 1, 0, -3 },
-    &ecs
-  );
+  // ecs__add_velocity(
+  //   camera_look_id,
+  //   (Vec3){ 1, 0, -3 },
+  //   &ecs
+  // );
   camera.horizontal_fov_in_deg = 80;
   camera.near_clip_distance = 0.4f;
   camera.far_clip_distance = 3000;

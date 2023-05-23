@@ -135,6 +135,7 @@ void action__init(
 
   flashes__copy_assets_to_gpu(gpu);
   afterimages__copy_assets_to_gpu(gpu);
+  drones__copy_assets_to_gpu(gpu);
 
   player__copy_assets_to_gpu(gpu);
   // NOTE: player MUST be created first!
@@ -147,7 +148,10 @@ void action__init(
 
   ocean__init(window, vwprt, gpu);
 
-  // start_drone_pattern_0(&ecs);
+  create_drone(
+    (Vec3){ -1, 0, -1 },
+    &ecs
+  );
 
   launchers__copy_assets_to_gpu(gpu);
   launchers__init_scene_callbacks(

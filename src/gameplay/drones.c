@@ -7,7 +7,11 @@
 #include "constants.h"
 #include "assets.h"
 
-// #include "drone_mesh.h"
+#include "drone_mesh.h"
+#include "standard_material_frag.h"
+#include "default_vert.h"
+
+static Shader shader;
 
 void drones__init_scene_callbacks(  
 ) {
@@ -17,10 +21,14 @@ void drones__init_scene_callbacks(
 void drones__copy_assets_to_gpu(
   GPU const *const gpu 
 ) {
-  // gpu->copy_static_mesh_to_gpu(&DRONE_MESH);
+  shader.frag_src = STANDARD_MATERIAL_FRAG_SRC;
+  shader.vert_src = DEFAULT_VERT_SRC;
+  gpu->copy_shader_to_gpu(&shader);
+  gpu->copy_static_mesh_to_gpu(&DRONE_MESH);
 }
 
 EntityId create_drone(
+  Vec3 position,
   ECS *const ecs
 ) {
 
@@ -29,19 +37,20 @@ EntityId create_drone(
   ecs__add_transform(
     drone,
     (Transform){
-      .scale = 1
+      .rotation = quaternion__create(WORLDSPACE.up, 0),
+      .position = position,
+      .scale = 0.5f
     },
     ecs
   );
-  ecs__add_look_at_center(drone, ecs);
-  ecs__add_alpha_effect(drone, ecs);
+  ecs__add_receives_light(drone, ecs);
   ecs__add_draw(
     drone,
     (Draw){
-      // .textures = DRONE_TEXTURE,
+      .textures = DARK_RUST_TEXTURE,
       .draw = ecs__draw_mesh,
-      .shader = &FLAT_TEXTURE_SHADER,
-      // .mesh = &DRONE_MESH
+      .shader = &shader,
+      .mesh = &DRONE_MESH
     },
     ecs
   );

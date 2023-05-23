@@ -114,14 +114,14 @@ void create_autocannon_muzzle_flash(
     },
     ecs
   );
-  ecs__add_point_light_source(
-    flash,
-    (PointLight){
-      .color = COLOR_EVENING_SUNLIGHT,
-      .strength = 100
-    },
-    ecs
-  );
+  // ecs__add_point_light_source(
+  //   flash,
+  //   (PointLight){
+  //     .color = COLOR_EVENING_SUNLIGHT,
+  //     .strength = 100
+  //   },
+  //   ecs
+  // );
   ecs__add_draw(
     flash,
     (Draw){

@@ -6,6 +6,7 @@
 #include "ecs.h"
 
 #include "assets.h"
+#include "colors.h"
 #include "constants.h"
 #include "bull_math.h"
 
@@ -67,6 +68,14 @@ EntityId create_lvl0_cannonfire(
       .age = remainder,
       .limit = DURATION,
       .on_timeout = destroy_bullet
+    },
+    ecs
+  );
+  ecs__add_point_light_source(
+    bullet,
+    (PointLight){
+      .strength = 10,
+      .color = COLOR_EVENING_SUNLIGHT
     },
     ecs
   );
