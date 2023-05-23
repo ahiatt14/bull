@@ -30,7 +30,7 @@
 #include "ocean_sky_nz_texture.h"
 #include "ocean_sky_pz_texture.h"
 
-uint_fast32_t BLASTED_STONE_TEXTURE = 1 << 0;
+uint_fast32_t LCD_NUMBER_TEXTURE = 1 << 0;
 uint_fast32_t BULLETS_TEXTURE = 1 << 1;
 uint_fast32_t CLOUDS_TEXTURE = 1 << 2;
 uint_fast32_t CONCRETE_WALL_TEXTURE = 1 << 3;
@@ -45,12 +45,12 @@ uint_fast32_t SMALL_SPARK_TEXTURE = 1 << 11;
 uint_fast32_t ARROW_TEXTURE = 1 << 12;
 uint_fast32_t MUZZLE_FLASH_TEXTURE = 1 << 13;
 uint_fast32_t COOLING_TOWER_LIGHT_TEXTURE = 1 << 14;
-uint_fast32_t LCD_NUMBER_TEXTURE = 1 << 15;
+uint_fast32_t BLASTED_STONE_TEXTURE = 1 << 15;
 uint_fast32_t WAVE_CREST_TEXTURE = 1 << 16;
 
 // TODO: I don't like this naming "tail_texture" vs "texture" for the bitmask vals
 Texture* TEXTURES[TEXTURE_COUNT] = {
-  &BLASTED_STONE_TAIL_TEXTURE,
+  &LCD_NUMBER_TAIL_TEXTURE,
   &BULLETS_TAIL_TEXTURE,
   &CLOUDS_TAIL_TEXTURE,
   &CONCRETE_WALL_TAIL_TEXTURE,
@@ -65,7 +65,7 @@ Texture* TEXTURES[TEXTURE_COUNT] = {
   &ARROW_TAIL_TEXTURE,
   &MUZZLE_FLASH_TAIL_TEXTURE,
   &COOLING_TOWER_LIGHT_TAIL_TEXTURE,
-  &LCD_NUMBER_TAIL_TEXTURE,
+  &BLASTED_STONE_TAIL_TEXTURE,
   &WAVE_CREST_TAIL_TEXTURE
 };
 
@@ -79,27 +79,3 @@ Cubemap OCEAN_SKYBOX = {
     &OCEAN_SKY_NZ_TAIL_TEXTURE
   }
 };
-
-void assets__copy_textures_to_gpu(
-  GPU const *const gpu
-) {
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__CLAMP, &LCD_NUMBER_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &BLASTED_STONE_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &BULLETS_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &CLOUDS_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &CONCRETE_WALL_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &FIREBALL_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &MIST_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &STEAM_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &WATER_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &WAVE_CREST_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__LINEAR, WRAP__REPEAT, &BLUE_PULSE_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &MOUNTAIN_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &DARK_RUST_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &SMALL_SPARK_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__REPEAT, &ARROW_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__CLAMP, &MUZZLE_FLASH_TAIL_TEXTURE);
-  gpu->copy_texture_to_gpu(FILTER__NEAREST, WRAP__CLAMP, &COOLING_TOWER_LIGHT_TAIL_TEXTURE);
-
-  gpu->copy_cubemap_to_gpu(FILTER__NEAREST, &OCEAN_SKYBOX);
-}

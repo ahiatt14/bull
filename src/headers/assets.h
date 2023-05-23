@@ -29,8 +29,4 @@ extern Cubemap OCEAN_SKYBOX;
 
 extern Texture* TEXTURES[TEXTURE_COUNT];
 
-void assets__copy_textures_to_gpu(
-  GPU const *const gpu
-);
-
 #endif

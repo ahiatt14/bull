@@ -6,10 +6,10 @@
 #include "constants.h"
 #include "tail_helpers.h"
 
-#define SCENE__MAIN_MENU 0
-#define SCENE__ACTION 1
+#define SCENE__LOADING 0
+#define SCENE__MAIN_MENU 1
 #define SCENE__CONNECT_GAMEPAD 2
-#define SCENE__OCEAN 3
+#define SCENE__ACTION 3
 
 typedef struct BULLSCENE Scene;
 
@@ -65,6 +65,20 @@ void pause__init(
   GPU const *const gpu
 );
 void pause__tick(
+  GameTime time,
+  Window const *const window,
+  Viewport *const vwprt,
+  GPU const *const gpu,
+  uint8_t previous_scene,
+  void (*switch_scene)(uint8_t new_scene)
+);
+
+void loading__init(
+  Window const *const window,
+  Viewport *const vwprt,
+  GPU const *const gpu
+);
+void loading__tick(
   GameTime time,
   Window const *const window,
   Viewport *const vwprt,

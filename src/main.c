@@ -22,7 +22,7 @@
 #define ASPECT_RATIO (16.0f / 9.0f)
 #define WINDOW_HEIGHT_IN_SCREEN_COORD 900
 
-#define SCENE_COUNT 1
+#define SCENE_COUNT 4
 
 static Window window;
 static GPU gpu;
@@ -34,48 +34,14 @@ static uint8_t paused = 0;
 void pause() { paused = 1; }
 void unpause() { paused = 0; }
 
+void handle_resize(
+  uint16_t framebuffer_width,
+  uint16_t framebuffer_height
+);
+void print_gamepad_connected(int slot);
+void print_gamepad_disconnected(int slot);
+
 void copy_shared_assets_to_gpu();
-
-void handle_resize(uint16_t framebuffer_width, uint16_t framebuffer_height) {
-  // TODO: I think there's a converstion out there for going from
-  // glfw screen coords & dpi to resolution. need that here, since
-  // we're using both pixels and screen coords in this math
-
-  int viewport_origin_x_pos = 0;
-  int viewport_origin_y_pos = 0;
-
-  uint16_t viewport_width = framebuffer_width;
-  uint16_t viewport_height = framebuffer_height;
-
-  Vec2 window_dimensions = window.get_window_dim_in_screen_units();
-  uint8_t window_aspect_is_wider_than_ours =
-    window_dimensions.x / window_dimensions.y > ASPECT_RATIO ? 1 : 0;
-
-  if (window_aspect_is_wider_than_ours) {
-    viewport_width = viewport_height * ASPECT_RATIO;
-    viewport_origin_x_pos = (window_dimensions.x - viewport_width) / 2.0f;
-  } else {
-    viewport_height = viewport_width / ASPECT_RATIO;
-    viewport_origin_y_pos = (window_dimensions.y - viewport_height) / 2.0f;
-  }
-
-  gpu.set_viewport(
-    viewport_origin_x_pos,
-    viewport_origin_y_pos,
-    viewport_width,
-    viewport_height
-  );
-  viewport__set_width(viewport_width, &vwprt);
-  viewport__set_height(viewport_height, &vwprt);
-}
-
-void print_gamepad_connected(int slot) {
-  printf("gamepad connected! slot: %i\n", slot);
-}
-
-void print_gamepad_disconnected(int slot) {
-  printf("gamepad disconnected! slot: %i\n", slot);
-}
 
 static uint8_t current_scene, previous_scene;
 void switch_scene(uint8_t new_scene) {
@@ -118,28 +84,33 @@ int main() {
   viewport__set_width(gpu.get_viewport_width(), &vwprt);
   viewport__set_height(gpu.get_viewport_height(), &vwprt);
 
-  // Scene main_menu_scene;
-  Scene action_scene;
-  // Scene connect_gamepad;
-  // main_menu_scene.init = main_menu__init;
-  // main_menu_scene.tick = main_menu__tick;
-  action_scene.init = action__init;
-  action_scene.tick = action__tick;
-  // connect_gamepad.init = connect_gamepad__init;
-  // connect_gamepad.tick = connect_gamepad__tick;
+  Scene loading;
+  Scene main_menu;
+  Scene connect_gamepad;
+  Scene action;
+  loading.init = loading__init;
+  loading.tick = loading__tick;
+  main_menu.init = main_menu__init;
+  main_menu.tick = main_menu__tick;
+  connect_gamepad.init = connect_gamepad__init;
+  connect_gamepad.tick = connect_gamepad__tick;
+  action.init = action__init;
+  action.tick = action__tick;
 
   Scene const *const scenes[SCENE_COUNT] = {
-    // &main_menu_scene,
-    &action_scene,
-    // &connect_gamepad
+    &loading,
+    &main_menu,
+    &connect_gamepad,
+    &action
   };
 
-  for (int i = 0; i < SCENE_COUNT; i++)
+  for (int i = 0; i < SCENE_COUNT; i++) {
     scenes[i]->init(&window, &vwprt, &gpu);
+    printf("scene %u inited\n", i);
+  }
 
-  // TODO: temp for testing
-  current_scene = SCENE__ACTION;
-  previous_scene = SCENE__ACTION;
+  current_scene = SCENE__LOADING;
+  previous_scene = SCENE__LOADING;
 
   gpu.enable_depth_test();
 
@@ -164,9 +135,7 @@ int main() {
 
     window.get_gamepad_input(&gamepad);
 
-    if (button_was_released(BUTTON_Y, &gamepad)) {
-      break;
-    }
+    if (button_was_released(BUTTON_Y, &gamepad)) break;
 
     if (button_was_released(BUTTON_SELECT, &gamepad)) {
       if (window.is_fullscreen()) {
@@ -199,8 +168,6 @@ int main() {
 
 void copy_shared_assets_to_gpu() {
 
-  assets__copy_textures_to_gpu(&gpu);
-
   debugging__copy_gizmo_assets_to_gpu(&gpu);
 
   gpu.copy_points_to_gpu(&POINT);
@@ -232,4 +199,45 @@ void copy_shared_assets_to_gpu() {
   gpu.copy_shader_to_gpu(&NORMALS_VIS_SHADER);
 
   gpu.copy_static_mesh_to_gpu(&QUAD);
+}
+
+void handle_resize(uint16_t framebuffer_width, uint16_t framebuffer_height) {
+  // TODO: I think there's a converstion out there for going from
+  // glfw screen coords & dpi to resolution. need that here, since
+  // we're using both pixels and screen coords in this math
+
+  int viewport_origin_x_pos = 0;
+  int viewport_origin_y_pos = 0;
+
+  uint16_t viewport_width = framebuffer_width;
+  uint16_t viewport_height = framebuffer_height;
+
+  Vec2 window_dimensions = window.get_window_dim_in_screen_units();
+  uint8_t window_aspect_is_wider_than_ours =
+    window_dimensions.x / window_dimensions.y > ASPECT_RATIO ? 1 : 0;
+
+  if (window_aspect_is_wider_than_ours) {
+    viewport_width = viewport_height * ASPECT_RATIO;
+    viewport_origin_x_pos = (window_dimensions.x - viewport_width) / 2.0f;
+  } else {
+    viewport_height = viewport_width / ASPECT_RATIO;
+    viewport_origin_y_pos = (window_dimensions.y - viewport_height) / 2.0f;
+  }
+
+  gpu.set_viewport(
+    viewport_origin_x_pos,
+    viewport_origin_y_pos,
+    viewport_width,
+    viewport_height
+  );
+  viewport__set_width(viewport_width, &vwprt);
+  viewport__set_height(viewport_height, &vwprt);
+}
+
+void print_gamepad_connected(int slot) {
+  printf("gamepad connected! slot: %i\n", slot);
+}
+
+void print_gamepad_disconnected(int slot) {
+  printf("gamepad disconnected! slot: %i\n", slot);
 }

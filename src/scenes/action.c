@@ -118,7 +118,7 @@ void action__init(
   Viewport *const vwprt,
   GPU const *const gpu
 ) {
-  
+
   cam.position = (Vec3){ 0, 20, 14 };
   cam.look_target = (Vec3){
     ORIGIN.x,
@@ -146,7 +146,7 @@ void action__init(
   );
   // create_firing_guide(&ecs);
 
-  ocean__init(window, vwprt, gpu);
+  // ocean__init(window, vwprt, gpu);
 
   create_drone(
     (Vec3){ -1, 0, -1 },
@@ -212,7 +212,7 @@ void action__tick(
 
   // DRAW
 
-  ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
+  // ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
   gpu->clear_depth_buffer();
 
   ecs__draw(time, &cam, &lighting, gpu, &ecs);

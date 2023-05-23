@@ -32,13 +32,13 @@ void main_menu__tick(
 
   // UPDATE
 
-  static double sec_until_action = SEC_UNTIL_ACTION;
-  sec_until_action -= time.delta;
-  if (sec_until_action <= 0) {
-    sec_until_action = SEC_UNTIL_ACTION;
-    switch_scene(SCENE__ACTION);
-    return;
-  }
+  // static double sec_until_action = SEC_UNTIL_ACTION;
+  // sec_until_action -= time.delta;
+  // if (sec_until_action <= 0) {
+  //   sec_until_action = SEC_UNTIL_ACTION;
+  //   switch_scene(SCENE__ACTION);
+  //   return;
+  // }
 
   // DRAW
 
