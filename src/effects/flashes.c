@@ -12,8 +12,6 @@
 #include "assets.h"
 #include "bull_math.h"
 
-#include "muzzle_flash_mesh.h"
-
 #include "billboard_geo.h"
 #include "billboard_vert.h"
 #include "flash_frag.h"
@@ -35,7 +33,6 @@ void flashes__copy_assets_to_gpu(
   blue_pulse_shader.vert_src = BILLBOARD_VERT_SRC;
   blue_pulse_shader.geo_src = BILLBOARD_GEO_SRC;
   gpu->copy_shader_to_gpu(&blue_pulse_shader);
-  gpu->copy_static_mesh_to_gpu(&MUZZLE_FLASH_MESH);
 }
 
 EntityId create_blue_pulse(

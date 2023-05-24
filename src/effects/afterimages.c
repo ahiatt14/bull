@@ -6,10 +6,6 @@
 
 #include "colors.h"
 
-#include "player_body_mesh.h"
-#include "player_left_leg_mesh.h"
-#include "player_right_leg_mesh.h"
-
 #include "default_vert.h"
 #include "afterimage_frag.h"
 
@@ -30,8 +26,6 @@ void afterimages__copy_assets_to_gpu(
   afterimage_shader.frag_src = AFTERIMAGE_FRAG_SRC;
   afterimage_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&afterimage_shader);
-
-  // gpu->copy_static_mesh_to_gpu(&REX_MESH);
 }
 
 static void draw_afterimage(

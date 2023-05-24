@@ -66,7 +66,7 @@ void water__copy_assets_to_gpu(
   gpu->copy_shader_to_gpu(&waves_shader);
 
   fill_tess_quad_data(100, TESS_QUAD_VERTS_PER_EDGE, &tess_quad);
-
+  // TODO: move to loading.c
   gpu->copy_tessellated_mesh_to_gpu(&tess_quad);
 }
 

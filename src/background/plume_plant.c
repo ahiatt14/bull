@@ -19,16 +19,11 @@
 #include "billboard_vert.h"
 
 #include "flat_texture_frag.h"
-#include "steam_column_mesh.h"
 #include "steam_frag.h"
 
 #include "standard_material_frag.h"
 
 #include "mist_frag.h"
-
-#include "cooling_tower_mesh.h"
-#include "tower_pipes_mesh.h"
-#include "tower_discharges_mesh.h"
 
 #define PLUME_PLANT_SCALE 50
 
@@ -76,7 +71,6 @@ void plume_plant__copy_assets_to_gpu(
   steam_shader.frag_src = STEAM_FRAG_SRC;
   steam_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&steam_shader);
-  gpu->copy_dynamic_mesh_to_gpu(&STEAM_COLUMN_MESH);
 
   solid_material_shader.frag_src = STANDARD_MATERIAL_FRAG_SRC;
   solid_material_shader.vert_src = DEFAULT_VERT_SRC;
@@ -86,10 +80,6 @@ void plume_plant__copy_assets_to_gpu(
   mist_shader.vert_src = BILLBOARD_VERT_SRC;
   mist_shader.geo_src = BILLBOARD_GEO_SRC;
   gpu->copy_shader_to_gpu(&mist_shader);
-
-  gpu->copy_static_mesh_to_gpu(&COOLING_TOWER_MESH);
-  gpu->copy_static_mesh_to_gpu(&TOWER_PIPES_MESH);
-  gpu->copy_static_mesh_to_gpu(&TOWER_DISCHARGES_MESH);
 }
 
 EntityId create_plume_plant(

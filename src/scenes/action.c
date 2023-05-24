@@ -146,14 +146,13 @@ void action__init(
   );
   // create_firing_guide(&ecs);
 
-  // ocean__init(window, vwprt, gpu);
+  ocean__init(window, vwprt, gpu);
 
   create_drone(
     (Vec3){ -1, 0, -1 },
     &ecs
   );
 
-  launchers__copy_assets_to_gpu(gpu);
   launchers__init_scene_callbacks(
     handle_radial_launcher_picked_up_by_player,
     window->get_seconds_since_creation
@@ -212,7 +211,7 @@ void action__tick(
 
   // DRAW
 
-  // ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
+  ocean__tick(time, window, vwprt, gpu, SCENE__MAIN_MENU, NULL);
   gpu->clear_depth_buffer();
 
   ecs__draw(time, &cam, &lighting, gpu, &ecs);

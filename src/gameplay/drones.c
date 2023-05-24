@@ -7,7 +7,6 @@
 #include "constants.h"
 #include "assets.h"
 
-#include "drone_mesh.h"
 #include "standard_material_frag.h"
 #include "default_vert.h"
 
@@ -24,7 +23,6 @@ void drones__copy_assets_to_gpu(
   shader.frag_src = STANDARD_MATERIAL_FRAG_SRC;
   shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&shader);
-  gpu->copy_static_mesh_to_gpu(&DRONE_MESH);
 }
 
 EntityId create_drone(

@@ -23,7 +23,6 @@
 #include "cloud_cover.h"
 #include "cloud_wall.h"
 
-#include "mountain_mesh.h"
 #include "standard_material_frag.h"
 #include "default_vert.h"
 
@@ -105,7 +104,6 @@ void ocean__init(
 
   // MOUNTAIN
 
-  gpu->copy_static_mesh_to_gpu(&MOUNTAIN_MESH);
   EntityId mountain = ecs__create_entity(&ecs);
   ecs__add_transform(
     mountain,

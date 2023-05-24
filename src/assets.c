@@ -79,3 +79,24 @@ Cubemap OCEAN_SKYBOX = {
     &OCEAN_SKY_NZ_TAIL_TEXTURE
   }
 };
+
+PointBuffer POINT = (PointBuffer){
+  .points = (Vec3[1]){{ 0, 0, 0 }},
+  .points_length = 1
+};
+
+DrawableMesh QUAD = (DrawableMesh){
+  .vertices = (Vertex[4]){
+    {{ -0.5f, 0, 0.5f }, { 0, 1, 0 }, { 0, 0 }},
+    {{ 0.5f, 0, 0.5f }, { 0, 1, 0 }, { 1, 0 }},
+    {{ 0.5f, 0, -0.5f }, { 0, 1, 0 }, { 1, 1 }},
+    {{ -0.5f, 0, -0.5f }, { 0, 1, 0 }, { 0, 1 }}
+  },
+  .indices = (unsigned int[6]){
+    0, 1, 2,
+    0, 2, 3
+  },
+  .vertices_size = sizeof(Vertex) * 4,
+  .indices_size = sizeof(unsigned int) * 6,
+  .indices_length = 6
+};

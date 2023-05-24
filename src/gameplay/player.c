@@ -12,10 +12,6 @@
 #include "constants.h"
 #include "tail_helpers.h"
 
-#include "player_body_mesh.h"
-#include "player_left_leg_mesh.h"
-#include "player_right_leg_mesh.h"
-
 #include "default_vert.h"
 #include "standard_material_frag.h"
 #include "firing_guide_frag.h"
@@ -30,10 +26,6 @@ void player__copy_assets_to_gpu(
   player_shader.frag_src = STANDARD_MATERIAL_FRAG_SRC;
   player_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&player_shader);
-
-  gpu->copy_static_mesh_to_gpu(&PLAYER_BODY_MESH);
-  gpu->copy_static_mesh_to_gpu(&PLAYER_RIGHT_LEG_MESH);
-  gpu->copy_static_mesh_to_gpu(&PLAYER_LEFT_LEG_MESH);
 
   guide_shader.frag_src = FIRING_GUIDE_FRAG_SRC;
   guide_shader.vert_src = DEFAULT_VERT_SRC;

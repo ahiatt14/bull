@@ -14,7 +14,6 @@
 // #include "billboard_geo.h"
 // #include "billboard_vert.h"
 // #include "default_vert.h"
-// #include "lowpoly_sphere_flat_mesh.h"
 // #include "explosion_blink_frag.h"
 // #include "explosion_frag.h"
 
@@ -32,8 +31,6 @@
 // void explosions__copy_assets_to_gpu(
 //   GPU const *const gpu
 // ) {
-
-//   gpu->copy_static_mesh_to_gpu(&LOWPOLY_SPHERE_FLAT_MESH);
 
 //   rpg_explosion_blink_shader.frag_src = EXPLOSION_BLINK_FRAG_SRC;
 //   rpg_explosion_blink_shader.geo_src= BILLBOARD_GEO_SRC;

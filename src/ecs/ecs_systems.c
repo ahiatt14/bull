@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "tail.h"
 
 #include "ecs_types.h"

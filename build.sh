@@ -95,7 +95,6 @@ build_assets() {
   ./${tools}sourcify-obj.exe assets/mesh/lcd_number.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_mushroom_cloud.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/exclamation.obj $artifact_dir && \
-  ./${tools}sourcify-obj.exe assets/mesh/bird.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/drone.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_flat.obj $artifact_dir && \
   ./${tools}sourcify-obj.exe assets/mesh/lowpoly_sphere_smooth.obj $artifact_dir && \

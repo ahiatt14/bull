@@ -9,7 +9,6 @@
 #include "assets.h"
 #include "constants.h"
 
-#include "cloud_wall_mesh.h"
 #include "steam_frag.h"
 #include "default_vert.h"
 
@@ -30,7 +29,6 @@ void cloud_wall__copy_assets_to_gpu(
   shader.frag_src = STEAM_FRAG_SRC;
   shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&shader);
-  gpu->copy_static_mesh_to_gpu(&CLOUD_WALL_MESH);
 }
 
 void create_cloud_wall(

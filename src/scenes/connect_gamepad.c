@@ -9,8 +9,6 @@
 #include "constants.h"
 #include "tail_helpers.h"
 
-#include "exclamation_mesh.h"
-
 #include "default_vert.h"
 
 #define EXCLAIM_HORIZONTAL_SPACING 0.2f
@@ -42,8 +40,6 @@ void connect_gamepad__init(
   // cam.far_clip_distance = 100;
   // camera__calculate_lookat(WORLDSPACE.up, &cam);
   // camera__calculate_perspective(vwprt, &cam);
-
-  // gpu->copy_static_mesh_to_gpu(&EXCLAMATION_MESH);
 
   // DrawableMesh batched_exclamation = {
   //   .vertices = 

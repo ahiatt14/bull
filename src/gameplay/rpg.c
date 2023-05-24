@@ -6,10 +6,9 @@
 
 #include "ecs.h"
 
+#include "assets.h"
 #include "bull_math.h"
 #include "constants.h"
-
-#include "rocket_mesh.h"
 
 EntityId deploy_rpg(
   Vec3 position,

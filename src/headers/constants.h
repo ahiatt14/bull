@@ -25,9 +25,6 @@ extern Shader NORMALS_VIS_SHADER;
 extern Shader DEFAULT_BILLBOARD_SHADER;
 extern Shader SKYBOX_SHADER;
 
-extern PointBuffer POINT;
-extern DrawableMesh QUAD;
-
 extern const Vec3 ORIGIN;
 extern const CoordinateSpace WORLDSPACE;
 

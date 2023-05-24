@@ -10,8 +10,6 @@
 
 // #include "mines.h"
 
-// #include "lowpoly_sphere_flat_mesh.h"
-
 // #define MAX_MINES 50
 
 // // TODO: gotta be source of the ccw/cw flip bug when mines are destroyed
@@ -40,12 +38,6 @@
 //   )
 // ) {
 //   on_shot_ptr = on_shot;
-// }
-
-// void mines__copy_assets_to_gpu(
-//   GPU const *const gpu
-// ) {
-//   gpu->copy_static_mesh_to_gpu(&LOWPOLY_SPHERE_FLAT_MESH);
 // }
 
 // static void start_revolution(

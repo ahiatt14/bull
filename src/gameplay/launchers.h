@@ -5,10 +5,6 @@
 
 #include "ecs.h"
 
-void launchers__copy_assets_to_gpu(
-  GPU const *const gpu
-);
-
 void launchers__init_scene_callbacks(
   void (*on_player_collide_with_radial)(
     EntityId launcher,

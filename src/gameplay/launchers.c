@@ -13,8 +13,6 @@
 
 #include "afterimages.h"
 
-#include "arrow_mesh.h"
-
 #define START_RADIUS 5
 #define END_RADIUS 2
 
@@ -34,12 +32,6 @@ void (*on_entity_collide_with_radial_launcher_ptr)(
 
 // TODO: cheeky
 double (*get_seconds_since_creation_ptr)();
-
-void launchers__copy_assets_to_gpu(
-  GPU const *const gpu
-) {
-  gpu->copy_static_mesh_to_gpu(&ARROW_MESH);
-}
 
 void launchers__init_scene_callbacks(
   void (*on_entity_collide_with_radial_launcher)(

@@ -7,8 +7,6 @@
 
 #include "lcd_text.h"
 
-#include "lcd_number_mesh.h"
-#include "lcd_number_texture.h"
 #include "flat_texture_frag.h"
 #include "default_vert.h"
 
@@ -23,8 +21,6 @@ static Shader number_readout_shader;
 void lcd_text__copy_assets_to_gpu(
   GPU const *const gpu
 ) {
-  gpu->copy_static_mesh_to_gpu(&LCD_NUMBER_MESH);
-
   number_readout_shader.frag_src = FLAT_TEXTURE_FRAG_SRC;
   number_readout_shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&number_readout_shader);
@@ -65,7 +61,7 @@ void lcd_text__draw_number(
   static M4x4 model;
 
   gpu->select_shader(&number_readout_shader);
-  gpu->select_texture(&LCD_NUMBER_TAIL_TEXTURE);
+  // gpu->select_texture(LCD_TAIL_TEXTURE);
 
   for (int i = 0; i < number_of_digits(readout.value); i++) {
 

@@ -7,7 +7,6 @@
 #include "assets.h"
 #include "constants.h"
 
-#include "cloud_cover_mesh.h"
 #include "cloud_cover_frag.h"
 #include "standard_material_frag.h"
 #include "default_vert.h"
@@ -29,7 +28,6 @@ void cloud_cover__copy_assets_to_gpu(
   shader.frag_src = CLOUD_COVER_FRAG_SRC;
   shader.vert_src = DEFAULT_VERT_SRC;
   gpu->copy_shader_to_gpu(&shader);
-  gpu->copy_static_mesh_to_gpu(&CLOUD_COVER_MESH);
 }
 
 void create_cloud_cover(

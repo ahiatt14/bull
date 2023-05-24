@@ -84,10 +84,7 @@ int main() {
   viewport__set_width(gpu.get_viewport_width(), &vwprt);
   viewport__set_height(gpu.get_viewport_height(), &vwprt);
 
-  Scene loading;
-  Scene main_menu;
-  Scene connect_gamepad;
-  Scene action;
+  Scene loading, main_menu, connect_gamepad, action;
   loading.init = loading__init;
   loading.tick = loading__tick;
   main_menu.init = main_menu__init;
@@ -104,10 +101,7 @@ int main() {
     &action
   };
 
-  for (int i = 0; i < SCENE_COUNT; i++) {
-    scenes[i]->init(&window, &vwprt, &gpu);
-    printf("scene %u inited\n", i);
-  }
+  for (int i = 0; i < SCENE_COUNT; i++) scenes[i]->init(&window, &vwprt, &gpu);
 
   current_scene = SCENE__LOADING;
   previous_scene = SCENE__LOADING;
@@ -197,8 +191,6 @@ void copy_shared_assets_to_gpu() {
   NORMALS_VIS_SHADER.geo_src = NORMAL_DEBUG_GEO_SRC;
   NORMALS_VIS_SHADER.vert_src = NORMAL_DEBUG_VERT_SRC;
   gpu.copy_shader_to_gpu(&NORMALS_VIS_SHADER);
-
-  gpu.copy_static_mesh_to_gpu(&QUAD);
 }
 
 void handle_resize(uint16_t framebuffer_width, uint16_t framebuffer_height) {

@@ -8,16 +8,12 @@
 #include "constants.h"
 #include "tail_helpers.h"
 
-#include "cubemap_mesh.h"
-
 static M4x4 rotation;
 static M3x3 rotation_uniform;
 
 void ocean_skybox__copy_assets_to_gpu(
   GPU const *const gpu
 ) {
-  gpu->copy_static_mesh_to_gpu(&CUBEMAP_MESH);
-
   m4x4__rotation(
     M_PI,
     WORLDSPACE.up,
